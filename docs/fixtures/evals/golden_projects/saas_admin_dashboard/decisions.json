@@ -1,0 +1,8 @@
+[
+  {
+    "key": "saas_admin_dashboard_accepted_decision",
+    "status": "accepted",
+    "summary": "Accepted decision for SaaS admin dashboard",
+    "visibility": "internal"
+  }
+]

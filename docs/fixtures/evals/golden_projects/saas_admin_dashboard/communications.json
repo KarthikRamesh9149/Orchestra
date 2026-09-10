@@ -1,0 +1,23 @@
+[
+  {
+    "key": "saas_admin_dashboard_slack_thread",
+    "provider": "slack",
+    "subject": "SaaS admin dashboard launch thread",
+    "visibility": "internal",
+    "expectedUse": "source message evidence"
+  },
+  {
+    "key": "saas_admin_dashboard_gmail_thread",
+    "provider": "gmail",
+    "subject": "SaaS admin dashboard approval email",
+    "visibility": "internal",
+    "expectedUse": "decision and approval evidence"
+  },
+  {
+    "key": "saas_admin_dashboard_whatsapp_note",
+    "provider": "whatsapp",
+    "subject": "SaaS admin dashboard client note",
+    "visibility": "internal",
+    "expectedUse": "ambiguous client communication"
+  }
+]

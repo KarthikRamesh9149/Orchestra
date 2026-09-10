@@ -1,0 +1,58 @@
+{
+  "id": "saas_admin_dashboard",
+  "title": "SaaS admin dashboard",
+  "mappedProjectFixture": "project_beta",
+  "documents": [
+    {
+      "key": "prd",
+      "title": "SaaS Admin Dashboard PRD",
+      "kind": "prd",
+      "visibility": "client_shared"
+    },
+    {
+      "key": "srs",
+      "title": "SaaS Admin Dashboard SRS",
+      "kind": "srs",
+      "visibility": "internal"
+    }
+  ],
+  "communications": [
+    {
+      "key": "digest_decision_gmail",
+      "provider": "gmail",
+      "subject": "Notification decision",
+      "body": "We decided to ship Friday digest emails instead of individual alerts.",
+      "expectedUse": "accepted decision"
+    },
+    {
+      "key": "approval_thread_gmail",
+      "provider": "gmail",
+      "subject": "Notification approval",
+      "body": "Approved: go ahead with Friday digest emails for launch.",
+      "expectedUse": "decision candidate"
+    }
+  ],
+  "expectedSocratesCategories": [
+    "current_truth",
+    "provenance",
+    "dashboard_status",
+    "brain_graph_selected_node"
+  ],
+  "expectedMessageCategories": [
+    "decision_approval",
+    "duplicate_supersession",
+    "false_positive"
+  ],
+  "expectedArtifacts": {
+    "supportingDocs": true,
+    "acceptedProposals": true,
+    "rejectedProposals": true,
+    "decisions": true,
+    "productBrain": true,
+    "brainGraph": true,
+    "viewerSections": true,
+    "dashboardSnapshot": true,
+    "expectedSocrates": true,
+    "expectedMessageIntelligence": true
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "info": {
+    "name": "Orchestra Backend Launch Loop Smoke",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:3000" },
+    { "key": "accessToken", "value": "" },
+    { "key": "projectId", "value": "" },
+    { "key": "documentId", "value": "" },
+    { "key": "messageId", "value": "" },
+    { "key": "insightId", "value": "" },
+    { "key": "proposalId", "value": "" },
+    { "key": "clientToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+    },
+    {
+      "name": "Login Manager",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/auth/login",
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"manager@orchestra.local\",\n  \"password\": \"Password123!\"\n}" }
+      }
+    },
+    {
+      "name": "Create Project",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": "{{baseUrl}}/v1/projects",
+        "body": { "mode": "raw", "raw": "{\n  \"name\": \"Launch Loop Postman\",\n  \"description\": \"Manual Postman smoke project\"\n}" }
+      }
+    },
+    {
+      "name": "Upload PRD JSON",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": "{{baseUrl}}/v1/projects/{{projectId}}/documents/upload",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kind\": \"prd\",\n  \"title\": \"Launch Loop PRD\",\n  \"visibility\": \"shared_with_client\",\n  \"sourceLabel\": \"Postman smoke\",\n  \"pastedText\": \"Managers need a weekly reporting view with accepted scope and unresolved client questions.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Manual Import",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": "{{baseUrl}}/v1/projects/{{projectId}}/communications/import",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"provider\": \"manual_import\",\n  \"accountLabel\": \"Postman manual import\",\n  \"thread\": { \"providerThreadId\": \"postman-thread\", \"subject\": \"Reporting update\", \"participants\": [] },\n  \"messages\": [{ \"providerMessageId\": \"postman-message-1\", \"senderLabel\": \"Client\", \"sentAt\": \"2026-05-11T00:00:00.000Z\", \"bodyText\": \"Decision: weekly reporting must include accepted scope changes.\", \"messageType\": \"user\", \"attachments\": [] }]\n}"
+        }
+      }
+    },
+    {
+      "name": "Socrates Stream",
+      "request": {
+        "method": "POST",
+        "description": "Postman can send the request, but the TypeScript smoke script is canonical for parsing SSE events.",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+        ],
+        "url": "{{baseUrl}}/v1/projects/{{projectId}}/socrates/sessions/{{sessionId}}/messages/stream",
+        "body": { "mode": "raw", "raw": "{\n  \"content\": \"What is the current reporting requirement for managers?\"\n}" }
+      }
+    }
+  ]
+}

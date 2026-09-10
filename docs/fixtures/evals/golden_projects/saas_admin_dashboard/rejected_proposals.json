@@ -1,0 +1,8 @@
+[
+  {
+    "key": "saas_admin_dashboard_rejected_change",
+    "status": "rejected",
+    "reason": "insufficient commitment",
+    "clientSafeSummary": false
+  }
+]

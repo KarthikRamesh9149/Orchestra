@@ -1,0 +1,74 @@
+{
+  "name": "orchestra-socrates-vscode",
+  "displayName": "Socrates - Orchestra",
+  "description": "Ask Socrates from VS Code using uploaded Orchestra beta project memory.",
+  "version": "0.1.0",
+  "private": true,
+  "publisher": "orchestra",
+  "icon": "media/icon.png",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:orchestra.openSocrates",
+    "onCommand:orchestra.connectProject",
+    "onCommand:orchestra.askSocrates",
+    "onCommand:orchestra.disconnect",
+    "onCommand:orchestra.status"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Orchestra",
+      "properties": {
+        "orchestra.apiBaseUrl": {
+          "type": "string",
+          "default": "https://beta.orchestraos.dev",
+          "scope": "machine",
+          "description": "Orchestra beta API base URL."
+        },
+        "orchestra.webBaseUrl": {
+          "type": "string",
+          "default": "https://beta.orchestraos.dev",
+          "scope": "machine",
+          "description": "Orchestra beta web app base URL for opening citations."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "orchestra.openSocrates",
+        "title": "Socrates - Orchestra: Open"
+      },
+      {
+        "command": "orchestra.connectProject",
+        "title": "Socrates - Orchestra: Connect Project"
+      },
+      {
+        "command": "orchestra.askSocrates",
+        "title": "Socrates - Orchestra: Ask"
+      },
+      {
+        "command": "orchestra.disconnect",
+        "title": "Socrates - Orchestra: Disconnect"
+      },
+      {
+        "command": "orchestra.status",
+        "title": "Socrates - Orchestra: Status"
+      }
+    ]
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "^3.9.2",
+    "typescript": "^5.7.2"
+  }
+}

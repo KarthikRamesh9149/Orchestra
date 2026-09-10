@@ -1,0 +1,23 @@
+[
+  {
+    "key": "ai_chatbot_product_slack_thread",
+    "provider": "slack",
+    "subject": "AI chatbot product launch thread",
+    "visibility": "internal",
+    "expectedUse": "source message evidence"
+  },
+  {
+    "key": "ai_chatbot_product_gmail_thread",
+    "provider": "gmail",
+    "subject": "AI chatbot product approval email",
+    "visibility": "internal",
+    "expectedUse": "decision and approval evidence"
+  },
+  {
+    "key": "ai_chatbot_product_whatsapp_note",
+    "provider": "whatsapp",
+    "subject": "AI chatbot product client note",
+    "visibility": "internal",
+    "expectedUse": "ambiguous client communication"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "key": "prd",
+    "title": "Marketplace MVP PRD",
+    "kind": "prd",
+    "visibility": "client_shared",
+    "purpose": "source requirements"
+  },
+  {
+    "key": "srs",
+    "title": "Marketplace MVP SRS",
+    "kind": "srs",
+    "visibility": "internal",
+    "purpose": "engineering detail"
+  },
+  {
+    "key": "implementation_notes",
+    "title": "Marketplace MVP Implementation Notes",
+    "kind": "notes",
+    "visibility": "internal",
+    "purpose": "internal delivery context"
+  }
+]

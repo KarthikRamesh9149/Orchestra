@@ -1,0 +1,15 @@
+{
+  "key": "logistics_dispatch_app_brain_graph",
+  "status": "accepted",
+  "nodes": [
+    "primary_node",
+    "dependent_node"
+  ],
+  "edges": [
+    {
+      "from": "primary_node",
+      "to": "dependent_node",
+      "type": "depends_on"
+    }
+  ]
+}

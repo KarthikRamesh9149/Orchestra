@@ -1,0 +1,8 @@
+[
+  {
+    "key": "logistics_dispatch_app_accepted_decision",
+    "status": "accepted",
+    "summary": "Accepted decision for Logistics dispatch app",
+    "visibility": "internal"
+  }
+]

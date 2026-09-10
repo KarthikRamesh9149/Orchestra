@@ -1,0 +1,492 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root, [data-theme="light"] {
+  /* Surfaces */
+  --bg-page: #FAF7F1;
+  --bg-card: #FFFFFF;
+  --bg-inset: #F5EFE6;
+  --bg-hover: #F0E9DC;
+  --bg-elevated: #FFFFFF;
+
+  /* Borders */
+  --border-soft: #E8E0D3;
+  --border-stronger: #D4CABA;
+  --border-divider: #EFE7DA;
+
+  /* Text */
+  --text-default: #1A1714;
+  --text-muted: #6B6258;
+  --text-faint: #756D63;
+  --text-inverse: #FAF7F1;
+  --terracotta-text: #A83D1C;
+  --teal-text: #0F6F67;
+  --amber-text: #7A500C;
+  --red-text: #9F3333;
+
+  /* Tints */
+  --tint-terracotta: #FBEEE8;
+  --tint-teal: #E0F2F0;
+  --tint-purple: #ECE9FB;
+  --tint-amber: #FAEEDB;
+  --tint-red: #FBE8E8;
+  --tint-green: #E8F0E0;
+
+  /* Shadows */
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 8px 32px rgba(0,0,0,0.08);
+
+  /* Legacy vars (keep for old components that use them) */
+  --bg: var(--bg-page);
+  --bg-1: var(--bg-card);
+  --bg-2: var(--bg-page);
+  --surface: var(--bg-card);
+  --surface-raised: var(--bg-card);
+  --text-1: var(--text-default);
+  --text-2: var(--text-muted);
+  --text-3: var(--text-faint);
+  --border: var(--border-soft);
+  --border-hover: var(--border-stronger);
+  --border-strong: var(--border-stronger);
+  --rust: var(--terracotta);
+  --rust-hover: #A04830;
+  --rust-active: #8C3E28;
+  --rust-foreground: var(--text-inverse);
+  --rust-tint: var(--tint-terracotta);
+  --success-text: #2D4A3E;
+  --success-bg: rgba(45, 74, 62, 0.1);
+  --warning-text: #8C5D1E;
+  --warning-bg: rgba(194, 136, 64, 0.12);
+  --danger-text: #9E3B2E;
+  --danger-bg: rgba(158, 59, 46, 0.1);
+  --info-text: #5A5450;
+  --info-bg: rgba(120, 113, 108, 0.1);
+  --purple-bg: var(--tint-purple);
+  --color-highlight: #fff9c4;
+
+  font-family: "Geist", -apple-system, system-ui, sans-serif;
+  color: var(--text-default);
+  background-color: var(--bg-page);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  /* Surfaces — DEEP warm black, uniform */
+  --bg-page: #0F0D0B;
+  --bg-card: #1A1714;
+  --bg-inset: #221E1A;
+  --bg-hover: #2A2521;
+  --bg-elevated: #1F1B17;
+
+  /* Borders — subtle, just barely visible */
+  --border-soft: #2A2521;
+  --border-stronger: #3A342E;
+  --border-divider: #1F1B17;
+
+  /* Text */
+  --text-default: #F5EFE6;
+  --text-muted: #A79F94;
+  --text-faint: #8D867D;
+  --text-inverse: #0F0D0B;
+  --terracotta-text: #F68A65;
+  --teal-text: #55C9BE;
+  --amber-text: #F0B86A;
+  --red-text: #F28C8C;
+
+  /* Tints — darker, more saturated for dark mode */
+  --tint-terracotta: #2E1A12;
+  --tint-teal: #122624;
+  --tint-purple: #1C1A2E;
+  --tint-amber: #2A2010;
+  --tint-red: #2E1818;
+  --tint-green: #182410;
+
+  /* Shadows — almost invisible on dark, use borders instead */
+  --shadow-card-hover: 0 0 0 1px var(--border-stronger);
+  --shadow-elevated: 0 8px 32px rgba(0,0,0,0.4);
+
+  /* Legacy vars for old components — all mapped to deep dark surfaces */
+  --bg: var(--bg-page);
+  --bg-1: var(--bg-card);
+  --bg-2: var(--bg-page);
+  --surface: var(--bg-card);
+  --surface-raised: var(--bg-inset);
+  --text-1: var(--text-default);
+  --text-2: var(--text-muted);
+  --text-3: var(--text-faint);
+  --border: var(--border-soft);
+  --border-hover: var(--border-stronger);
+  --border-strong: var(--border-stronger);
+  --rust-tint: var(--tint-terracotta);
+  --success-bg: var(--tint-teal);
+  --warning-bg: var(--tint-amber);
+  --danger-bg: var(--tint-red);
+  --info-text: var(--text-muted);
+  --info-bg: var(--bg-inset);
+  --purple-bg: var(--tint-purple);
+  --color-highlight: rgba(255, 240, 0, 0.15);
+
+  background-color: var(--bg-page);
+  color: var(--text-default);
+  color-scheme: dark;
+}
+
+/* Brand colors — IDENTICAL in both themes */
+:root {
+  --terracotta: #C75027;
+  --teal: #168278;
+  --purple: #7C6FD9;
+  --amber: #E5A663;
+  --red: #C84A4A;
+  --green: #5A8A3A;
+  --slack-purple: #7C6FD9;
+  --github-orange: #D97757;
+}
+
+body, [data-theme] {
+  background-color: var(--bg-page);
+  color: var(--text-default);
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--terracotta);
+  outline-offset: 3px;
+}
+
+/* ─── Dark scrollbars ─────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+[data-theme="dark"] ::-webkit-scrollbar { width: 10px; height: 10px; }
+[data-theme="dark"] ::-webkit-scrollbar-track { background: var(--bg-page); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: var(--border-stronger); border-radius: 5px; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Dark mode overrides for hardcoded Tailwind arbitrary values ─────────── */
+/* These override the new components that use hardcoded hex instead of vars.   */
+
+/* Page backgrounds */
+[data-theme="dark"] .bg-\[\#FAF7F1\],
+[data-theme="dark"] .bg-\[\#FAF8F5\],
+[data-theme="dark"] .bg-\[\#faf8f5\] { background-color: var(--bg-page) !important; }
+
+/* Card / white surfaces */
+[data-theme="dark"] .bg-\[\#FFFFFF\] { background-color: var(--bg-card) !important; }
+
+/* Inset / secondary surfaces */
+[data-theme="dark"] .bg-\[\#F5EFE6\],
+[data-theme="dark"] .bg-\[\#F2EDE6\],
+[data-theme="dark"] .bg-\[\#F0EDE8\] { background-color: var(--bg-inset) !important; }
+
+/* Hover backgrounds */
+[data-theme="dark"] .bg-\[\#F0E9DC\],
+[data-theme="dark"] .hover\:bg-\[\#F0E9DC\]:hover { background-color: var(--bg-hover) !important; }
+
+/* Tinted backgrounds */
+[data-theme="dark"] .bg-\[\#FBEEE8\] { background-color: var(--tint-terracotta) !important; }
+[data-theme="dark"] .bg-\[\#E0F2F0\],
+[data-theme="dark"] .bg-\[\#EEF7F5\] { background-color: var(--tint-teal) !important; }
+[data-theme="dark"] .bg-\[\#ECE9FB\],
+[data-theme="dark"] .bg-\[\#EEEAFC\] { background-color: var(--tint-purple) !important; }
+[data-theme="dark"] .bg-\[\#FAEEDB\],
+[data-theme="dark"] .bg-\[\#FEF3E2\] { background-color: var(--tint-amber) !important; }
+[data-theme="dark"] .bg-\[\#E8F5EE\],
+[data-theme="dark"] .bg-\[\#E8F0E0\] { background-color: var(--tint-teal) !important; }
+[data-theme="dark"] .bg-\[\#FBE8E8\] { background-color: var(--tint-red) !important; }
+
+/* Text colors */
+[data-theme="dark"] .text-\[\#1A1714\],
+[data-theme="dark"] .text-\[\#1A1612\],
+[data-theme="dark"] .text-\[\#1a1612\] { color: var(--text-default) !important; }
+
+[data-theme="dark"] .text-\[\#8A8378\],
+[data-theme="dark"] .text-\[\#78716C\],
+[data-theme="dark"] .text-\[\#78716c\] { color: var(--text-muted) !important; }
+
+[data-theme="dark"] .text-\[\#5A5450\],
+[data-theme="dark"] .text-\[\#5A5450\] { color: var(--text-muted) !important; }
+
+[data-theme="dark"] .text-\[\#C8C0B8\],
+[data-theme="dark"] .text-\[\#D4CABA\] { color: var(--text-faint) !important; }
+
+/* Border colors */
+[data-theme="dark"] .border-\[\#E8E0D3\] { border-color: var(--border-soft) !important; }
+[data-theme="dark"] .border-\[\#D4CABA\] { border-color: var(--border-stronger) !important; }
+[data-theme="dark"] .border-\[rgba\(26\,22\,18\,0\.08\)\] { border-color: var(--border-soft) !important; }
+[data-theme="dark"] .border-\[rgba\(26\,22\,18\,0\.12\)\] { border-color: var(--border-soft) !important; }
+[data-theme="dark"] .border-\[rgba\(26\,22\,18\,0\.2\)\] { border-color: var(--border-stronger) !important; }
+[data-theme="dark"] .border-\[rgba\(255\,255\,255\,0\.9\)\] { border-color: var(--border-soft) !important; }
+
+/* Card hover shadows → border glow in dark */
+[data-theme="dark"] .hover\:shadow-\[0_4px_16px_rgba\(0\,0\,0\,0\.04\)\]:hover,
+[data-theme="dark"] .hover\:shadow-\[0_4px_12px_rgba\(0\,0\,0\,0\.04\)\]:hover {
+  box-shadow: 0 0 0 1px var(--border-stronger) !important;
+}
+
+/* Input focus rings */
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: #C84A1F !important;
+  box-shadow: 0 0 0 3px rgba(200, 74, 31, 0.2) !important;
+}
+
+/* GitHub icon inverts in dark mode */
+[data-theme="dark"] .github-dark-invert { color: var(--text-default) !important; }
+
+/* Gradient from/via classes (e.g. SocratesPage footer) */
+[data-theme="dark"] .from-\[\#FAF7F1\] { --tw-gradient-from: var(--bg-page) !important; }
+[data-theme="dark"] .via-\[\#FAF7F1\] { --tw-gradient-via: var(--bg-page) !important; }
+[data-theme="dark"] .from-\[\#FAF8F5\] { --tw-gradient-from: var(--bg-page) !important; }
+[data-theme="dark"] .via-\[\#FAF8F5\] { --tw-gradient-via: var(--bg-page) !important; }
+
+/* Pending/dashed card bg */
+[data-theme="dark"] .bg-\[\#FDF8F4\] { background-color: var(--bg-inset) !important; }
+
+/* Keyboard shortcut pill */
+[data-theme="dark"] .bg-\[\#FAF7F1\].px-2\.5 { background-color: var(--bg-inset) !important; }
+
+/* Legacy dark text on white — used in SocratesPanel messages */
+[data-theme="dark"] .text-\[\#3D3834\] { color: var(--text-muted) !important; }
+[data-theme="dark"] .text-\[\#1A1612\] { color: var(--text-default) !important; }
+[data-theme="dark"] .text-\[\#1a1612\] { color: var(--text-default) !important; }
+
+/* Make sure white input/textarea bg works */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background-color: var(--bg-card);
+  color: var(--text-default);
+  border-color: var(--border-soft);
+}
+
+/* Diff blocks (timeline strikethrough text) */
+[data-theme="dark"] .line-through { color: var(--text-faint) !important; }
+
+/* SocratesPanel bg */
+[data-theme="dark"] .bg-\[\#FAF8F5\] { background-color: var(--bg-inset) !important; }
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: "Geist", -apple-system, system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text-1);
+  overflow-x: hidden;
+}
+
+.card-hover {
+  transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.socrates-composer textarea,
+.socrates-composer textarea:focus,
+.socrates-composer textarea:focus-visible {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+button {
+  font: inherit;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(184, 84, 61, 0.4);
+  outline-offset: 2px;
+}
+
+textarea::placeholder {
+  color: var(--text-3);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+}
+
+.solid-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.minimal-card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.minimal-divider {
+  border-color: var(--border);
+}
+
+.section-label {
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.2em;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.bg-white {
+  background-color: var(--bg-1) !important;
+}
+
+.hover\:bg-white:hover {
+  background-color: var(--bg-1) !important;
+}
+
+.bg-bg {
+  background-color: var(--bg) !important;
+}
+
+.primary-button {
+  background: var(--rust);
+  color: var(--rust-foreground);
+  font-family: "Geist", -apple-system, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  border-radius: 8px;
+  padding: 12px 24px;
+  border: 0;
+}
+
+.eyebrow {
+  font-size: 12px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-success {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+
+.status-warning {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+}
+
+.status-danger {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}
+
+.status-info {
+  color: var(--info-text);
+  background: var(--info-bg);
+}
+
+.status-purple {
+  color: var(--purple);
+  background: var(--purple-bg);
+}
+
+@layer components {
+  .orch-page {
+    @apply h-full overflow-y-auto bg-bg;
+  }
+
+  .orch-container {
+    @apply mx-auto w-full max-w-3xl px-10 py-10;
+  }
+
+  .orch-card {
+    @apply rounded-2xl border border-[rgba(26,22,18,0.08)] bg-white p-6 shadow-[0_4px_20px_rgba(26,22,18,0.04)];
+  }
+
+  .orch-input {
+    @apply w-full rounded-lg border border-[rgba(26,22,18,0.08)] bg-white px-3 py-2.5 font-sans text-[14px] text-[#1A1612] placeholder:text-[rgba(120,113,108,0.55)];
+  }
+
+  .orch-btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-[#B8543D] px-5 py-2.5 font-sans text-[14px] font-medium text-white transition-colors hover:bg-[#A04830] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .orch-btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg border border-[rgba(26,22,18,0.08)] bg-white px-5 py-2.5 font-sans text-[14px] font-medium text-[#1A1612] transition-colors hover:border-[rgba(26,22,18,0.16)] hover:bg-[#FAF8F5] disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .orch-pill-green {
+    @apply inline-flex rounded-full px-2.5 py-0.5 font-sans text-[11px] font-medium;
+    color: var(--success-text);
+    background: var(--success-bg);
+  }
+
+  .orch-pill-red {
+    @apply inline-flex rounded-full px-2.5 py-0.5 font-sans text-[11px] font-medium;
+    color: var(--danger-text);
+    background: var(--danger-bg);
+  }
+}
+
+@keyframes socrates-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes socrates-eye-move {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-3px); }
+  40%      { transform: translateX(3px); }
+  60%      { transform: translateY(-2px); }
+  80%      { transform: translateY(2px); }
+}
+@keyframes socrates-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  95%           { transform: scaleY(0.1); }
+}
+.socrates-ring {
+  animation: socrates-spin 12s linear infinite;
+}
+.socrates-eyes {
+  animation:
+    socrates-eye-move 4s ease-in-out infinite alternate,
+    socrates-blink 3s ease-in-out infinite;
+}

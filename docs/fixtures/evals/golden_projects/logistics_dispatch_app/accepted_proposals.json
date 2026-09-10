@@ -1,0 +1,10 @@
+[
+  {
+    "key": "logistics_dispatch_app_accepted_change",
+    "status": "accepted",
+    "source": "communication",
+    "sectionRef": "primary_section",
+    "brainNodeRef": "primary_node",
+    "clientSafeSummary": true
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "key": "prd",
+    "title": "Logistics dispatch app PRD",
+    "kind": "prd",
+    "visibility": "client_shared",
+    "purpose": "source requirements"
+  },
+  {
+    "key": "srs",
+    "title": "Logistics dispatch app SRS",
+    "kind": "srs",
+    "visibility": "internal",
+    "purpose": "engineering detail"
+  },
+  {
+    "key": "implementation_notes",
+    "title": "Logistics dispatch app Implementation Notes",
+    "kind": "notes",
+    "visibility": "internal",
+    "purpose": "internal delivery context"
+  }
+]

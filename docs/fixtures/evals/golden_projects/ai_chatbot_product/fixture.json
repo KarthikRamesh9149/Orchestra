@@ -1,0 +1,58 @@
+{
+  "id": "ai_chatbot_product",
+  "title": "AI chatbot product",
+  "mappedProjectFixture": "project_alpha",
+  "documents": [
+    {
+      "key": "prd",
+      "title": "AI Chatbot Product PRD",
+      "kind": "prd",
+      "visibility": "client_shared"
+    },
+    {
+      "key": "srs",
+      "title": "AI Chatbot Product SRS",
+      "kind": "srs",
+      "visibility": "internal"
+    }
+  ],
+  "communications": [
+    {
+      "key": "voice_notes_gmail",
+      "provider": "gmail",
+      "subject": "Voice input",
+      "body": "We need voice note input for early idea capture in the product brain.",
+      "expectedUse": "requirement change"
+    },
+    {
+      "key": "exploration_slack",
+      "provider": "slack",
+      "subject": "Exploration",
+      "body": "Maybe later we could explore weekly reporting for managers.",
+      "expectedUse": "false-positive guard"
+    }
+  ],
+  "expectedSocratesCategories": [
+    "brain_graph_selected_node",
+    "doc_viewer_selected_section",
+    "provenance",
+    "current_truth"
+  ],
+  "expectedMessageCategories": [
+    "real_requirement_change",
+    "false_positive",
+    "duplicate_supersession"
+  ],
+  "expectedArtifacts": {
+    "supportingDocs": true,
+    "acceptedProposals": true,
+    "rejectedProposals": true,
+    "decisions": true,
+    "productBrain": true,
+    "brainGraph": true,
+    "viewerSections": true,
+    "dashboardSnapshot": true,
+    "expectedSocrates": true,
+    "expectedMessageIntelligence": true
+  }
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "key": "marketplace_mvp_accepted_change",
+    "status": "accepted",
+    "source": "communication",
+    "sectionRef": "primary_section",
+    "brainNodeRef": "primary_node",
+    "clientSafeSummary": true
+  }
+]

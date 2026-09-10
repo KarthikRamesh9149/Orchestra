@@ -1,0 +1,12 @@
+[
+  {
+    "key": "primary_section",
+    "anchorId": "shared-summary",
+    "visibility": "client_shared"
+  },
+  {
+    "key": "internal_section",
+    "anchorId": "internal-implementation",
+    "visibility": "internal"
+  }
+]

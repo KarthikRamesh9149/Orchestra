@@ -1,0 +1,30 @@
+{
+  "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
+  "unchangedImportedFiles": 811,
+  "changes": [
+    {
+      "path": "apps/vscode-extension/package-lock.json",
+      "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
+      "importedSha256": "16a49c5b0ad1204840478785279505683d2efb65bbbcd29c8420340cc145d0f0",
+      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh."
+    },
+    {
+      "path": "apps/vscode-extension/tsconfig.json",
+      "sourceSha256": "74877cb492521356bbc1608fb37c4b0b9330850a1587ac69cd30a5d16e44b7b0",
+      "importedSha256": "19bc2a31011df342b2884aeea7c5071130ebd54a37711bd58e35f40c2f1c9b01",
+      "reason": "Explicit Node/VS Code ambient types prevent accidental parent-workspace type loading."
+    },
+    {
+      "path": "scripts/smoke/beta-browser-product-walkthrough.mjs",
+      "sourceSha256": "45eb3bb1c5c988a41862e5c861f3341c8d35b2623b3596072561f26faa80382d",
+      "importedSha256": "79222920a3131c21a71cd95df87da7062619bedb3f6a767dc4d12b52b4c51534",
+      "reason": "Replace hosted production smoke defaults with localhost; application source unchanged."
+    },
+    {
+      "path": "scripts/smoke/beta-browser-smoke.mjs",
+      "sourceSha256": "3ab4bfdae3ce99ea6e5d4d32474985f34a55adc03b658eb1efc6a4a3f131c726",
+      "importedSha256": "e4a0432562bceb899ba9230196651e55c99bb586b4d421c47d2a6d193217ae6b",
+      "reason": "Replace hosted production smoke defaults with localhost; application source unchanged."
+    }
+  ]
+}

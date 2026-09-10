@@ -1,0 +1,8 @@
+[
+  {
+    "key": "fintech_onboarding_app_rejected_change",
+    "status": "rejected",
+    "reason": "insufficient commitment",
+    "clientSafeSummary": false
+  }
+]

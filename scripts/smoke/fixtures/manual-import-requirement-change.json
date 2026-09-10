@@ -1,0 +1,48 @@
+{
+  "provider": "manual_import",
+  "accountLabel": "Day 6 manual import",
+  "thread": {
+    "providerThreadId": "day6-reporting-change-thread",
+    "subject": "Reporting requirement update",
+    "participants": [
+      {
+        "label": "Client Sponsor",
+        "email": "client.sponsor@example.com"
+      },
+      {
+        "label": "Delivery Manager",
+        "email": "manager@orchestra.local"
+      }
+    ],
+    "startedAt": "2026-05-11T00:00:00.000Z",
+    "threadUrl": "https://example.com/day6/reporting-change",
+    "rawMetadata": {
+      "fixture": "day6-launch-loop"
+    }
+  },
+  "messages": [
+    {
+      "providerMessageId": "day6-reporting-change-message-1",
+      "senderLabel": "Client Sponsor",
+      "senderEmail": "client.sponsor@example.com",
+      "sentAt": "2026-05-11T00:01:00.000Z",
+      "bodyText": "Decision: the weekly manager reporting view must include unresolved client questions and accepted scope changes, not only project health.",
+      "messageType": "user",
+      "providerPermalink": "https://example.com/day6/reporting-change/message-1",
+      "rawMetadata": {
+        "evidenceKind": "requirement_change",
+        "fixture": "day6-launch-loop"
+      },
+      "attachments": [
+        {
+          "filename": "reporting-example.txt",
+          "mimeType": "text/plain",
+          "fileSize": 128,
+          "rawMetadata": {
+            "fixtureAttachment": true
+          }
+        }
+      ]
+    }
+  ]
+}

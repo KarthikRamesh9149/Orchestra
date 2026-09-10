@@ -1,0 +1,50 @@
+{
+  "org": {
+    "name": "Orchestra Staging Rehearsal"
+  },
+  "users": [
+    { "email": "manager@orchestra.local", "displayName": "Staging Manager", "workspaceRoleDefault": "manager" },
+    { "email": "dev@orchestra.local", "displayName": "Staging Developer", "workspaceRoleDefault": "dev" },
+    { "email": "client@orchestra.local", "displayName": "Staging Client", "workspaceRoleDefault": "client" }
+  ],
+  "project": {
+    "name": "Release Rehearsal Project",
+    "description": "Synthetic launch-loop project for staging proof."
+  },
+  "documents": [
+    {
+      "kind": "prd",
+      "title": "Release Rehearsal PRD",
+      "visibility": "shared_with_client",
+      "fixturePath": "docs/fixtures/smoke/launch-loop-prd.md"
+    }
+  ],
+  "communications": [
+    {
+      "provider": "manual_import",
+      "fixturePath": "scripts/smoke/fixtures/manual-import-requirement-change.json",
+      "expectedOutcome": "reviewable_requirement_change"
+    }
+  ],
+  "firefliesTranscript": {
+    "provider": "fireflies_ai",
+    "providerTranscriptId": "staging_ff_transcript_synthetic",
+    "title": "Synthetic Client Kickoff",
+    "segments": [
+      {
+        "speakerName": "Client Sponsor",
+        "speakerEmail": "client.sponsor@example.invalid",
+        "startMs": 724000,
+        "endMs": 741000,
+        "text": "Final decision: change reporting from monthly to weekly for launch."
+      }
+    ],
+    "notTruthUntilAccepted": true
+  },
+  "clientShare": {
+    "name": "Staging client portal share",
+    "allowedDocumentIds": [],
+    "includeBrain": true,
+    "includeDashboardSummary": false
+  }
+}

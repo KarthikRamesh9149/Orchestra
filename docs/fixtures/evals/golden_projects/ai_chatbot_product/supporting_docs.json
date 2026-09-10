@@ -1,0 +1,23 @@
+[
+  {
+    "key": "prd",
+    "title": "AI chatbot product PRD",
+    "kind": "prd",
+    "visibility": "client_shared",
+    "purpose": "source requirements"
+  },
+  {
+    "key": "srs",
+    "title": "AI chatbot product SRS",
+    "kind": "srs",
+    "visibility": "internal",
+    "purpose": "engineering detail"
+  },
+  {
+    "key": "implementation_notes",
+    "title": "AI chatbot product Implementation Notes",
+    "kind": "notes",
+    "visibility": "internal",
+    "purpose": "internal delivery context"
+  }
+]

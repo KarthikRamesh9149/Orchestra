@@ -1,0 +1,58 @@
+{
+  "id": "fintech_onboarding_app",
+  "title": "Fintech onboarding app",
+  "mappedProjectFixture": "project_client_safe",
+  "documents": [
+    {
+      "key": "prd",
+      "title": "Fintech Onboarding PRD",
+      "kind": "prd",
+      "visibility": "client_shared"
+    },
+    {
+      "key": "srs",
+      "title": "Fintech Onboarding SRS",
+      "kind": "srs",
+      "visibility": "internal"
+    }
+  ],
+  "communications": [
+    {
+      "key": "client_safe_summary",
+      "provider": "manual_import",
+      "subject": "Client-safe scope",
+      "body": "Shared onboarding scope must avoid internal provider references.",
+      "expectedUse": "client-safe retrieval"
+    },
+    {
+      "key": "invalid_ref_noise",
+      "provider": "gmail",
+      "subject": "Off-topic",
+      "body": "Need a redesign of the holiday microsite, not this notification system.",
+      "expectedUse": "invalid-ref and false-positive guard"
+    }
+  ],
+  "expectedSocratesCategories": [
+    "client_safe_leakage",
+    "bad_ambiguous_no_evidence",
+    "dashboard_status",
+    "provenance"
+  ],
+  "expectedMessageCategories": [
+    "invalid_ref",
+    "false_positive",
+    "ambiguous_chat"
+  ],
+  "expectedArtifacts": {
+    "supportingDocs": true,
+    "acceptedProposals": true,
+    "rejectedProposals": true,
+    "decisions": true,
+    "productBrain": true,
+    "brainGraph": true,
+    "viewerSections": true,
+    "dashboardSnapshot": true,
+    "expectedSocrates": true,
+    "expectedMessageIntelligence": true
+  }
+}

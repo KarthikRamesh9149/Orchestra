@@ -1,0 +1,23 @@
+[
+  {
+    "key": "marketplace_mvp_slack_thread",
+    "provider": "slack",
+    "subject": "Marketplace MVP launch thread",
+    "visibility": "internal",
+    "expectedUse": "source message evidence"
+  },
+  {
+    "key": "marketplace_mvp_gmail_thread",
+    "provider": "gmail",
+    "subject": "Marketplace MVP approval email",
+    "visibility": "internal",
+    "expectedUse": "decision and approval evidence"
+  },
+  {
+    "key": "marketplace_mvp_whatsapp_note",
+    "provider": "whatsapp",
+    "subject": "Marketplace MVP client note",
+    "visibility": "internal",
+    "expectedUse": "ambiguous client communication"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "key": "prd",
+    "title": "Fintech onboarding app PRD",
+    "kind": "prd",
+    "visibility": "client_shared",
+    "purpose": "source requirements"
+  },
+  {
+    "key": "srs",
+    "title": "Fintech onboarding app SRS",
+    "kind": "srs",
+    "visibility": "internal",
+    "purpose": "engineering detail"
+  },
+  {
+    "key": "implementation_notes",
+    "title": "Fintech onboarding app Implementation Notes",
+    "kind": "notes",
+    "visibility": "internal",
+    "purpose": "internal delivery context"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "key": "fintech_onboarding_app_slack_thread",
+    "provider": "slack",
+    "subject": "Fintech onboarding app launch thread",
+    "visibility": "internal",
+    "expectedUse": "source message evidence"
+  },
+  {
+    "key": "fintech_onboarding_app_gmail_thread",
+    "provider": "gmail",
+    "subject": "Fintech onboarding app approval email",
+    "visibility": "internal",
+    "expectedUse": "decision and approval evidence"
+  },
+  {
+    "key": "fintech_onboarding_app_whatsapp_note",
+    "provider": "whatsapp",
+    "subject": "Fintech onboarding app client note",
+    "visibility": "internal",
+    "expectedUse": "ambiguous client communication"
+  }
+]

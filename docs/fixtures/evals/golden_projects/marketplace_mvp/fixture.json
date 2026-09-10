@@ -1,0 +1,60 @@
+{
+  "id": "marketplace_mvp",
+  "title": "Marketplace MVP",
+  "mappedProjectFixture": "project_alpha",
+  "documents": [
+    {
+      "key": "prd",
+      "title": "Marketplace MVP PRD",
+      "kind": "prd",
+      "visibility": "client_shared"
+    },
+    {
+      "key": "srs",
+      "title": "Marketplace MVP SRS",
+      "kind": "srs",
+      "visibility": "internal"
+    }
+  ],
+  "communications": [
+    {
+      "key": "assignment_approval_slack",
+      "provider": "slack",
+      "subject": "Assignment approvals",
+      "body": "Please require explicit manager approval before any assignment activation.",
+      "expectedUse": "accepted requirement change"
+    },
+    {
+      "key": "reporting_gmail",
+      "provider": "gmail",
+      "subject": "Reporting updates",
+      "body": "Need weekly reporting for managers instead of monthly summaries.",
+      "expectedUse": "accepted current truth"
+    }
+  ],
+  "expectedSocratesCategories": [
+    "current_truth",
+    "provenance",
+    "communication_origin",
+    "doc_viewer_selected_section",
+    "client_safe_leakage"
+  ],
+  "expectedMessageCategories": [
+    "false_positive",
+    "real_requirement_change",
+    "ambiguous_chat",
+    "invalid_ref"
+  ],
+  "expectedArtifacts": {
+    "supportingDocs": true,
+    "acceptedProposals": true,
+    "rejectedProposals": true,
+    "decisions": true,
+    "productBrain": true,
+    "brainGraph": true,
+    "viewerSections": true,
+    "dashboardSnapshot": true,
+    "expectedSocrates": true,
+    "expectedMessageIntelligence": true
+  }
+}

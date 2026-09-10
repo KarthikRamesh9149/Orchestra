@@ -1,0 +1,23 @@
+[
+  {
+    "key": "logistics_dispatch_app_slack_thread",
+    "provider": "slack",
+    "subject": "Logistics dispatch app launch thread",
+    "visibility": "internal",
+    "expectedUse": "source message evidence"
+  },
+  {
+    "key": "logistics_dispatch_app_gmail_thread",
+    "provider": "gmail",
+    "subject": "Logistics dispatch app approval email",
+    "visibility": "internal",
+    "expectedUse": "decision and approval evidence"
+  },
+  {
+    "key": "logistics_dispatch_app_whatsapp_note",
+    "provider": "whatsapp",
+    "subject": "Logistics dispatch app client note",
+    "visibility": "internal",
+    "expectedUse": "ambiguous client communication"
+  }
+]

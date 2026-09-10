@@ -1,0 +1,22 @@
+{
+  "status": "retained-source-reference-not-desktop-gates",
+  "reason": "These checks depend on excluded hosted deployment documents, environment templates or workflows. They remain runnable with the original npm test. Exclusion is specific to vitest.desktop.config.ts; it is not a passing result.",
+  "replacement": "tests/desktop-contract.test.ts now checks snapshot integrity, action inventory, explicit approval boundaries and absence of deployment/secret artifacts. Steps 2, 5, 6 and 7 must add real desktop/runtime/provider/release evidence; do not reuse old hosted certification.",
+  "tests": [
+    {"file":"tests/communication-provider-release-gate.test.ts","ownerStep":5},
+    {"file":"tests/feature13-release-gate.test.ts","ownerStep":7},
+    {"file":"tests/fireflies-connector-smoke.test.ts","ownerStep":5},
+    {"file":"tests/fix25-supabase-advisor.test.ts","ownerStep":2},
+    {"file":"tests/fix30-current-product-contract.test.ts","ownerStep":4},
+    {"file":"tests/fix31-provider-validation.test.ts","ownerStep":5},
+    {"file":"tests/fix33-release-suite.test.ts","ownerStep":7},
+    {"file":"tests/fix34-adversarial-audit.test.ts","ownerStep":7},
+    {"file":"tests/github-actions-secrets-readiness.test.ts","ownerStep":7},
+    {"file":"tests/mvp-env-profile.test.ts","ownerStep":2},
+    {"file":"tests/mvp-eval-coverage.test.ts","ownerStep":5},
+    {"file":"tests/ops-readiness.test.ts","ownerStep":7},
+    {"file":"tests/release-governance.test.ts","ownerStep":7},
+    {"file":"tests/remediation-ledger.test.ts","ownerStep":1},
+    {"file":"tests/staging-isolation.test.ts","ownerStep":6}
+  ]
+}

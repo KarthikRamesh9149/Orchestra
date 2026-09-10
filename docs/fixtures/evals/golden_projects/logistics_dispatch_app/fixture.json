@@ -1,0 +1,58 @@
+{
+  "id": "logistics_dispatch_app",
+  "title": "Logistics dispatch app",
+  "mappedProjectFixture": "project_gamma",
+  "documents": [
+    {
+      "key": "prd",
+      "title": "Logistics Dispatch PRD",
+      "kind": "prd",
+      "visibility": "client_shared"
+    },
+    {
+      "key": "srs",
+      "title": "Logistics Dispatch SRS",
+      "kind": "srs",
+      "visibility": "internal"
+    }
+  ],
+  "communications": [
+    {
+      "key": "sms_default_slack",
+      "provider": "slack",
+      "subject": "Launch contradiction",
+      "body": "Not email alerts but SMS alerts should be the launch default.",
+      "expectedUse": "conflict and requirement change"
+    },
+    {
+      "key": "sso_blocker_slack",
+      "provider": "slack",
+      "subject": "Launch blocker",
+      "body": "We are blocked until the SSO approval flow is fixed.",
+      "expectedUse": "blocker insight"
+    }
+  ],
+  "expectedSocratesCategories": [
+    "current_truth",
+    "communication_origin",
+    "dashboard_status",
+    "bad_ambiguous_no_evidence"
+  ],
+  "expectedMessageCategories": [
+    "blocker_risk_action",
+    "real_requirement_change",
+    "ambiguous_chat"
+  ],
+  "expectedArtifacts": {
+    "supportingDocs": true,
+    "acceptedProposals": true,
+    "rejectedProposals": true,
+    "decisions": true,
+    "productBrain": true,
+    "brainGraph": true,
+    "viewerSections": true,
+    "dashboardSnapshot": true,
+    "expectedSocrates": true,
+    "expectedMessageIntelligence": true
+  }
+}

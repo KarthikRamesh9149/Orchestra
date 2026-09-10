@@ -1,0 +1,23 @@
+[
+  {
+    "key": "prd",
+    "title": "SaaS admin dashboard PRD",
+    "kind": "prd",
+    "visibility": "client_shared",
+    "purpose": "source requirements"
+  },
+  {
+    "key": "srs",
+    "title": "SaaS admin dashboard SRS",
+    "kind": "srs",
+    "visibility": "internal",
+    "purpose": "engineering detail"
+  },
+  {
+    "key": "implementation_notes",
+    "title": "SaaS admin dashboard Implementation Notes",
+    "kind": "notes",
+    "visibility": "internal",
+    "purpose": "internal delivery context"
+  }
+]
