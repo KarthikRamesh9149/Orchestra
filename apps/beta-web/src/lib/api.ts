@@ -890,7 +890,7 @@ function toDoc(row: any): Doc {
     fileName,
     size: fileSize > 0 ? `${(fileSize / 1024 / 1024).toFixed(1)} MB` : "Uploaded",
     pages: version.pageCount ?? 1,
-    status: version.status === "failed" ? "failed" : version.status === "ready" ? "ready" : "processing",
+    status: version.status === "failed" ? "failed" : version.status === "ready" ? "ready" : version.status === "partial" ? "partial" : "processing",
     uploadedBy: "Project member",
     uploadedAt: row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "Recently",
     excerpt: row.summary ?? version.parseWarningJson?.summary ?? "Uploaded project memory document."

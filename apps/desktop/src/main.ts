@@ -6,6 +6,8 @@ import {loadVault} from './vault.js';
 import {HostClient} from './host-client.js';
 import {Selections} from './selections.js';
 import {verifyNativeBundle} from './integrity.js';
+import {localHttp} from './local-http.js';
+import {downloadDocument} from './document-download.js';
 
 protocol.registerSchemesAsPrivileged([{scheme:'orchestra',privileges:{standard:true,secure:true,supportFetchAPI:true}}]);
 app.setName('Orchestra Desktop Internal');
@@ -21,7 +23,7 @@ else {
  app.on('window-all-closed',()=>app.quit());
  void app.whenReady().then(async()=>{
   const resources=app.isPackaged?join(process.resourcesPath,'runtime'):join(app.getAppPath(),'../../.desktop/runtime');
-  await protocol.handle('orchestra',request=>assetResponse(join(resources,'ui'),request.url,request.method));
+  await protocol.handle('orchestra',request=>new URL(request.url).pathname.startsWith('/v1/')?localHttp(request,host):assetResponse(join(resources,'ui'),request.url,request.method));
   session.defaultSession.setPermissionRequestHandler((_contents,_permission,callback)=>callback(false));
   session.defaultSession.setPermissionCheckHandler(()=>false);
   window=new BrowserWindow({width:1280,height:850,show:false,webPreferences:{preload:join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true,devTools:!app.isPackaged}});
@@ -30,6 +32,15 @@ else {
   window.webContents.on('will-attach-webview',event=>event.preventDefault());
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
   ipcMain.handle('orchestra:status',event=>{if(!trusted(event))throw new Error('Unauthorized frame');return host.status;});
+  let downloading=false;
+  ipcMain.handle('orchestra:download-document',async(event,input:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(downloading)return {ok:false,error:{code:'download_busy',message:'Finish the current download first.'}};
+   downloading=true;
+   try{const data=await downloadDocument(input,host,async name=>{const selection=await dialog.showSaveDialog(window!,{defaultPath:name,title:'Save original document'});return selection.canceled?undefined:selection.filePath;});return {ok:true,data};}
+   catch{return {ok:false,error:{code:'download_failed',message:'The original could not be saved. Check the destination and try again.'}};}
+   finally{downloading=false;}
+  });
   ipcMain.handle('orchestra:command',async(event,input:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');const command=commandSchema.safeParse(input);
    if(!command.success)return {ok:false,error:{code:'invalid_command',message:'Unsupported or invalid desktop command'}};
@@ -49,7 +60,7 @@ else {
    {label:'Edit',submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
    {label:'View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'}]}
   ]));
-  await window.loadURL('orchestra://app/index.html');window.show();
+  await window.loadURL('orchestra://app/');window.show();
   try{
    await verifyNativeBundle(resources);
    const root=join(app.getPath('userData'),'local-runtime');const vault=await loadVault(root,safeStorage);

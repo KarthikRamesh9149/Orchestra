@@ -37,6 +37,12 @@ export class IntegrationManagementService {
       this.githubStatus(projectId, actor)
     ]);
     const providers = [slack, gmail, clickup, granola, fireflies, vscode, calendar, drive, github].map((provider) => {
+      if (this.env.RUNTIME_PROFILE === "desktop-local") {
+        return {...provider, status:provider.connected?provider.status:'not_configured', configured:provider.connected,
+          degraded:provider.connected?provider.degraded:false, needsReauth:provider.connected?provider.needsReauth:false,
+          availableActions: [], capabilities: {canConnect:false,canSync:false,canDisconnect:false},
+          limitations: [...provider.limitations, "Desktop provider and agent pairing is not qualified yet. Local file evidence remains available in Memory."]};
+      }
       const actions = new Set(provider.availableActions);
       return {
         ...provider,

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import {isDesktop,saveDesktopDocument} from '../lib/desktop';
 import { useLocation, useParams } from "react-router-dom";
 import { useAddSelectionToChat } from "../hooks/useAddSelectionToChat";
 import { getDocFileBlob, getDocViewer } from "../lib/api/documents";
@@ -98,6 +99,7 @@ export function LiveDocViewerPage() {
     setDownloading(true);
     setError(null);
     try {
+      if(isDesktop()){await saveDesktopDocument(projectId,docId);return;}
       const blob = await getDocFileBlob(projectId, docId, controller.signal);
       if (controller.signal.aborted) return;
       const url = URL.createObjectURL(blob);

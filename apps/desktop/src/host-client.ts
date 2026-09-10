@@ -4,6 +4,8 @@ import type {Command,OperationResult,RuntimeStatus} from './contracts.js';
 import type {Vault} from './vault.js';
 
 export class HostClient {
+ private authority?:{port:number;token:string;bearer:string};
+ credentials(){return this.status.state==='ready'?this.authority:undefined;}
  private child?:ChildProcess;
  private pending=new Map<string,{resolve:(value:OperationResult)=>void;timer:NodeJS.Timeout}>();
  status:RuntimeStatus={state:'starting',message:'Starting private local runtime'};
@@ -15,6 +17,7 @@ export class HostClient {
   child.on('message',(message:unknown)=>{
    if(!message||typeof message!=='object')return;
    const event=message as Record<string,unknown>;
+   if(event.type==='authority')this.authority=event.value as typeof this.authority;
    if(event.type==='ready')this.status={state:'ready',message:'Local runtime ready'};
    if(event.type==='failed')this.fail();
    if(event.type==='result'&&typeof event.id==='string'){
@@ -26,6 +29,7 @@ export class HostClient {
   child.send({type:'initialize',config});
  }
  private fail(){
+  this.authority=undefined;
   if(this.status.state!=='stopping')this.status={state:'failed',message:'Local runtime stopped. Quit and reopen Orchestra to recover.'};
   for(const value of this.pending.values()){clearTimeout(value.timer);value.resolve({ok:false,error:{code:'runtime_unavailable',message:this.status.message}});}this.pending.clear();
  }

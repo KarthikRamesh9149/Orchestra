@@ -10,7 +10,7 @@ export async function assetResponse(root:string,url:string,method='GET'):Promise
  if(path.startsWith('/v1/'))return Response.json({error:{code:'desktop_bridge_required',message:'Desktop onboarding and API integration are pending Step 4.'}},{status:503});
  if(path.includes('\\')||path.split('/').includes('..')||path.includes('\0'))return new Response(null,{status:403});
  const directory=await realpath(root);
- const requested=resolve(directory,'.'+path);
+ const requested=resolve(directory,path==='/'?'index.html':'.'+path);
  if(!requested.startsWith(directory+sep))return new Response(null,{status:403});
  let file:string;
  try{file=await realpath(requested);}catch{

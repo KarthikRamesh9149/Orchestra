@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
 export const commandSchema=z.discriminatedUnion('operation',[
+ z.object({operation:z.literal('local.bootstrap')}).strict(),
+ z.object({operation:z.literal('local.onboard')}).strict(),
  z.object({operation:z.literal('workspace.list')}).strict(),
  z.object({operation:z.literal('workspace.create'),name:z.string().trim().min(1).max(100)}).strict(),
  z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict(),
@@ -12,6 +14,9 @@ export type Command=z.infer<typeof commandSchema>;
 export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string};
 export type OperationResult={ok:true;data:unknown}|{ok:false;error:{code:string;message:string}};
 export interface DesktopBridge {
+ bootstrap():Promise<OperationResult>;
+ completeOnboarding():Promise<OperationResult>;
+ downloadDocument(projectId:string,documentId:string):Promise<OperationResult>;
  status():Promise<RuntimeStatus>;
  workspaces:{list():Promise<OperationResult>;create(name:string):Promise<OperationResult>;select(projectId:string):Promise<OperationResult>};
  chooseEvidence():Promise<OperationResult>;

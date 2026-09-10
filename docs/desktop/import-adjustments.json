@@ -1,7 +1,67 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 806,
+  "unchangedImportedFiles": 794,
   "changes": [
+    {
+      "path": "apps/beta-web/src/App.tsx",
+      "sourceSha256": "335aa4d5e5cecef1a7a1463c2a395a9756eb36bf17b2858fa72be9e23885e144",
+      "importedSha256": "47d8e51d808cd65ad82d85f54120aca1ba42f4e8c7a79a04557885967be68016",
+      "reason": "Step 4 local first-run routes; preserve hosted routes and styling."
+    },
+    {
+      "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
+      "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
+      "importedSha256": "0f4344bf1473a42c4a1e7cd0bf5b2172458d366c7089f5c38cb9d655b0650a06",
+      "reason": "Step 4 explicitly prevent unconfigured desktop research generation; qualification remains Step 5."
+    },
+    {
+      "path": "apps/beta-web/src/lib/api/client.ts",
+      "sourceSha256": "ba5e5737fdb4a7c3a412336505eddbd3070c3e7dc48a6c1dd273aef8eb8d9361",
+      "importedSha256": "798b0247331f9737180149c2fb65cbba67a8f03cb43657844b85e6e58c7127b2",
+      "reason": "Step 4 local bootstrap uses the credential-free desktop bridge; hosted browser sessions unchanged."
+    },
+    {
+      "path": "apps/beta-web/src/lib/api.ts",
+      "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
+      "importedSha256": "9f1aa21e5900b91e2813da867e5ab0d623ed5cb8381003a32cb32b862e99fed8",
+      "reason": "Step 4 partial document state must not display as endlessly processing."
+    },
+    {
+      "path": "apps/beta-web/src/lib/types.ts",
+      "sourceSha256": "2fa92d9a206d1d3df88f8e161c95b509acf803ef178b1d8202b0aa64b92fc202",
+      "importedSha256": "e04d47d045423827455d8dc9568882ba7cd8c32e63bea230478aa6b98d43927f",
+      "reason": "Step 4 preserve authoritative partial document processing state."
+    },
+    {
+      "path": "apps/beta-web/src/pages/LiveDocViewerPage.tsx",
+      "sourceSha256": "5645d0fb0f239d67bbbbd4af8b22865ec1ee704de7417e5114fecbddd72de7d5",
+      "importedSha256": "53ad7ce09f9a45614c8a4ddad531aa1945dd3e980137dbca859543bce69e871f",
+      "reason": "Step 4 user-selected native original-document save; web download remains unchanged."
+    },
+    {
+      "path": "apps/beta-web/src/pages/MemoryPage.tsx",
+      "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
+      "importedSha256": "82f6fae1ffe25ff23699652280cb1679882b5cc6de2b968cc5385244c682f6ca",
+      "reason": "Step 4 truthful partial-processing status without changing existing visual tokens."
+    },
+    {
+      "path": "apps/beta-web/src/pages/SettingsPage.tsx",
+      "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
+      "importedSha256": "606fa78e9485e16122a8408639d3cb485b2f363866df72ecf3854b3af1001a23",
+      "reason": "Step 4 explicitly unavailable local invitations; preserve shared workflow and styling."
+    },
+    {
+      "path": "apps/beta-web/src/pages/WorkspacesPage.tsx",
+      "sourceSha256": "b9ecae8f8e36b48a97a4b8c8d5e7d7b7795e3dfa64feef8881587a6e930c9020",
+      "importedSha256": "11dcdd1814d324f8195c2bd58c2edf6d0dc8e4d2223864ffcc738cbd9b39dbbf",
+      "reason": "Step 4 truthful local workspace identity and setup navigation, retaining original style."
+    },
+    {
+      "path": "apps/beta-web/src/store/chatStore.ts",
+      "sourceSha256": "c99d03ff6521436a74a6a8e9a2d9e6cabd4289177088e71c4843ccf8acfe0717",
+      "importedSha256": "23b91872d0ce3c72fe37d8bab0f58cc6ef54b0c54383664e48a0d8aaea828a73",
+      "reason": "Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged."
+    },
     {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
@@ -45,10 +105,22 @@
       "reason": "Step 2 explicit unavailable embedding capability; no mock vectors in offline mode."
     },
     {
+      "path": "src/modules/deep-research/service.ts",
+      "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
+      "importedSha256": "c8a14efbb51253ffeedcd813664ca29f8d46d9552eac1e20631de52ab55d12f5",
+      "reason": "Step 4 reject unconfigured local generation before job creation or quota allocation."
+    },
+    {
       "path": "src/modules/documents/service.ts",
       "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
       "importedSha256": "5c59aa10d537adb2993abcb439b3f510c3f7a47283cc2966fc7236e1898f4ca5",
       "reason": "Step 2 preserve lexical chunks when embeddings are unavailable; mark partial honestly."
+    },
+    {
+      "path": "src/modules/integrations/integrations.service.ts",
+      "sourceSha256": "cbcc2fbf0fecd09e45d12580ca4d880cc159c9bc35c8a4369e2f54426ec6a90e",
+      "importedSha256": "9d14638360dca535011e21cd7426ef5c12f81f62cca1d881d08faefff120f14c",
+      "reason": "Step 4 truthful desktop capability readiness; provider qualification stays Step 5."
     },
     {
       "path": "src/setup-context.ts",

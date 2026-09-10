@@ -3,6 +3,18 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'apps/beta-web/src/pages/LiveDocViewerPage.tsx':'Step 4 user-selected native original-document save; web download remains unchanged.',
+ 'src/modules/deep-research/service.ts':'Step 4 reject unconfigured local generation before job creation or quota allocation.',
+ 'apps/beta-web/src/store/chatStore.ts':'Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged.',
+ 'apps/beta-web/src/components/socrates/DeepResearch.tsx':'Step 4 explicitly prevent unconfigured desktop research generation; qualification remains Step 5.',
+ 'apps/beta-web/src/lib/types.ts':'Step 4 preserve authoritative partial document processing state.',
+ 'apps/beta-web/src/lib/api.ts':'Step 4 partial document state must not display as endlessly processing.',
+ 'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 truthful partial-processing status without changing existing visual tokens.',
+ 'apps/beta-web/src/pages/SettingsPage.tsx':'Step 4 explicitly unavailable local invitations; preserve shared workflow and styling.',
+ 'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
+ 'apps/beta-web/src/lib/api/client.ts':'Step 4 local bootstrap uses the credential-free desktop bridge; hosted browser sessions unchanged.',
+ 'apps/beta-web/src/pages/WorkspacesPage.tsx':'Step 4 truthful local workspace identity and setup navigation, retaining original style.',
+ 'apps/beta-web/src/App.tsx':'Step 4 local first-run routes; preserve hosted routes and styling.',
  'src/config/env.ts':'Step 2 explicit local runtime validation; retain managed production controls.',
  'src/setup-context.ts':'Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected.',
  'src/lib/ai/provider.ts':'Step 2 explicit unavailable embedding capability; no mock vectors in offline mode.',

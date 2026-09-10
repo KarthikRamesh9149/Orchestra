@@ -7,6 +7,8 @@ import {randomUUID} from 'node:crypto';
 import {z} from 'zod';
 import {createLocalEngine} from './engine.js';
 import {installationSecretsSchema} from '../config/installation-secrets.js';
+import {readLocalState,saveLocalState} from './local-state.js';
+import {authorizeActiveOrganization} from '../lib/auth/authorization.js';
 
 const secret=z.string().regex(/^[a-f0-9]{64}$/);
 const configSchema=z.object({root:z.string().refine(isAbsolute),bundle:z.string().refine(isAbsolute),vault:z.object({version:z.literal(1),admin:secret,runtime:secret,installation:installationSecretsSchema}).strict()}).strict();
@@ -16,6 +18,7 @@ let engine:Awaited<ReturnType<typeof createLocalEngine>>|undefined;
 let initializing=false,stopping=false;
 let stage='initializing';
 let owner:{id:string;orgId:string}|undefined;
+let installationRoot='';
 const streams=new Map<string,AbortController>();
 const subprocesses=new Set<ChildProcess>();
 const send=(message:unknown)=>{if(process.connected)process.send?.(message as object);};
@@ -49,6 +52,7 @@ process.on('disconnect',()=>{void shutdown();});process.on('SIGTERM',()=>{void s
 async function initialize(config:Config){
  stage='provisioning database';
  const {root,bundle,vault}=config;
+ installationRoot=root;
  await mkdir(root,{recursive:true,mode:0o700});
  const stat=await lstat(root);if(!stat.isDirectory()||stat.isSymbolicLink())throw new Error('Unsafe application directory');
  const cluster=join(root,'postgres');
@@ -105,16 +109,27 @@ async function initialize(config:Config){
   const organization=await tx.organization.create({data:{name:'Local installation',slug:'local-installation'}});
   return tx.user.create({data:{orgId:organization.id,email:'local-owner@localhost.invalid',normalizedEmail:'local-owner@localhost.invalid',displayName:'Local owner',globalRole:'owner',workspaceRoleDefault:'manager'},select:{id:true,orgId:true}});
  });
- stage='listening';await engine.start();const address=engine.app.server.address();send({type:'ready',port:address&&typeof address==='object'?address.port:undefined});
+ stage='listening';await engine.start();const address=engine.app.server.address();
+ const publishAuthority=()=>{if(engine&&owner&&address&&typeof address==='object')send({type:'authority',value:{port:address.port,token:engine.localToken,bearer:engine.app.jwt.sign({userId:owner.id,orgId:owner.orgId,typ:'access',globalRole:'owner',workspaceRoleDefault:'manager'},{expiresIn:'15m'})}});};
+ publishAuthority();setInterval(publishAuthority,5*60*1000).unref();send({type:'ready',port:address&&typeof address==='object'?address.port:undefined});
+}
+async function bootstrap(){
+ if(!engine||!owner)throw new Error('Runtime unavailable');
+ const [user,projects,state]=await Promise.all([engine.context.prisma.user.findUniqueOrThrow({where:{id:owner.id},include:{organization:true}}),engine.context.services.projectService.listProjects(owner.id,owner.orgId),readLocalState(installationRoot)]);
+ const workspaces=projects.map(project=>({projectId:project.id,name:project.name,slug:project.slug,organizationId:user.orgId,organizationName:user.organization.name,organizationSlug:user.organization.slug,role:'manager',current:project.id===state.projectId}));
+ return {user:{id:user.id,orgId:user.orgId,email:user.email,displayName:user.displayName,globalRole:user.globalRole,workspaceRoleDefault:user.workspaceRoleDefault,emailVerified:false,emailVerifiedAt:null,organization:user.organization},workspaces,mode:'desktop-local',aiConfigured:false,onboarded:state.onboarded??false};
 }
 async function command(value:unknown,selection?:unknown){
  if(!engine||!owner||stopping)throw new Error('Runtime unavailable');
+ await authorizeActiveOrganization(engine.context.prisma,owner.id,owner.orgId);
  const base=z.object({operation:z.string()}).parse(value);
  const services=engine.context.services;
  switch(base.operation){
+  case 'local.bootstrap':z.object({operation:z.literal('local.bootstrap')}).strict().parse(value);return bootstrap();
+  case 'local.onboard':{z.object({operation:z.literal('local.onboard')}).strict().parse(value);await saveLocalState(installationRoot,undefined,true);return bootstrap();}
   case 'workspace.list':z.object({operation:z.literal('workspace.list')}).strict().parse(value);return services.projectService.listProjects(owner.id,owner.orgId);
   case 'workspace.create':{const input=z.object({operation:z.literal('workspace.create'),name:z.string().trim().min(1).max(100)}).strict().parse(value);return services.projectService.createProject({orgId:owner.orgId,actorUserId:owner.id,name:input.name});}
-  case 'workspace.select':{const input=z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict().parse(value);const available=await services.projectService.listProjects(owner.id,owner.orgId);const selected=available.find(project=>project.id===input.projectId);if(!selected)throw new Error('Unauthorized workspace');return selected;}
+  case 'workspace.select':{const input=z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict().parse(value);const available=await services.projectService.listProjects(owner.id,owner.orgId);const selected=available.find(project=>project.id===input.projectId);if(!selected)throw new Error('Unauthorized workspace');await saveLocalState(installationRoot,input.projectId);const result=await bootstrap();return {...result,workspace:result.workspaces.find(project=>project.projectId===input.projectId)};}
   case 'evidence.upload':{
    const input=z.object({operation:z.literal('evidence.upload'),projectId:z.string().uuid(),selectionId:z.string().uuid()}).strict().parse(value);
    const file=z.object({fileName:z.string().max(255),contentType:z.string().max(150),base64:z.string().max(70*1024*1024)}).strict().parse(selection);

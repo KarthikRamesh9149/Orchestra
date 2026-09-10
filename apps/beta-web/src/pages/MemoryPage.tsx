@@ -23,6 +23,7 @@ import { useAuth } from "../context/AuthContext";
 import { useAccessibleDialog } from "../hooks/useAccessibleDialog";
 import { clearApiReadCache } from "../lib/api/client";
 import { createDocumentUploadOperationId, reconcileDocumentUpload } from "../lib/api";
+import {isDesktop,saveDesktopDocument} from '../lib/desktop';
 import {
   archiveDocument,
   connectSlack,
@@ -443,6 +444,8 @@ function DocCard({ doc, onRemove, onDownload }: { doc: Doc; onRemove: (id: strin
                 <motion.span className="h-1.5 w-1.5 rounded-full bg-[#E5A663]" animate={{ opacity: [0.5, 1, 0.5] }} transition={{ duration: 1.2, repeat: Infinity }} />
                 <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-[#E5A663]">Processing</span>
               </div>
+            ) : doc.status === "partial" ? (
+              <span title="Extracted content is available. Some processing, such as semantic indexing, is unavailable or incomplete." className="rounded-full bg-[rgba(200,74,31,0.08)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--terracotta-text)]">Partially processed</span>
             ) : doc.status === "failed" ? (
               <span className="rounded-full bg-[rgba(200,74,31,0.08)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--terracotta-text)]">Failed</span>
             ) : (
@@ -833,6 +836,7 @@ export function MemoryPage() {
   const handleDownloadDoc = async (doc: Doc) => {
     if (!projectId) { showToast("Select a workspace first.", "terracotta"); return; }
     try {
+      if(isDesktop()){const result=await saveDesktopDocument(projectId,doc.id);if(!result.cancelled)showToast('Original document saved.');return;}
       const blob = await getDocFileBlob(projectId, doc.id);
       const href = URL.createObjectURL(blob);
       const anchor = document.createElement("a");

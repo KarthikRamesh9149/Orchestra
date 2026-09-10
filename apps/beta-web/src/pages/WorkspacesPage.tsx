@@ -6,6 +6,7 @@ import { SocratesLogo } from "../components/ui/SocratesLogo";
 import { useAuth } from "../context/AuthContext";
 import type { ProjectSummary } from "../lib/api/auth";
 import { prefetchPrimaryRoute } from "../lib/performance/prefetch";
+import {isDesktop} from '../lib/desktop';
 
 function projectRole(project: ProjectSummary, userId?: string) {
   return (
@@ -91,16 +92,16 @@ export function WorkspacesPage() {
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]">Workspace access</p>
               <h1 className="mt-2 font-sans text-[38px] leading-none text-[var(--text-default)]">Choose a workspace</h1>
               <p className="mt-2 font-sans text-[14px] text-[var(--text-muted)]">
-                Signed in as {user?.email}. Workspaces are shared projects; documents live inside the selected workspace.
+                {isDesktop()?'Local workspaces stay on this Mac. No hosted account is required.':`Signed in as ${user?.email}. Workspaces are shared projects; documents live inside the selected workspace.`}
               </p>
             </div>
           </div>
           <button
             type="button"
-            onClick={() => void signOut()}
+            onClick={() => isDesktop()?navigate('/onboarding'):void signOut()}
             className="rounded-xl border border-[rgba(26,22,18,0.08)] bg-[var(--bg-card)] px-4 py-2.5 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:border-[#B8543D]/40 hover:text-[var(--text-default)]"
           >
-            Log out
+            {isDesktop()?'Privacy and setup':'Log out'}
           </button>
         </header>
 

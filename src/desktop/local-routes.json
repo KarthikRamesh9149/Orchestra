@@ -1,0 +1,1407 @@
+[
+  {
+    "method": "GET",
+    "path": "/v1/dashboard/general",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/appearance-preference",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/me/appearance-preference",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/me/avatar",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/linked-accounts",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/notification-preferences",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/me/notification-preferences",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/profile",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/me/profile",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/me/sessions/:sessionId",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/sessions",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/me/web-vitals",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/me/workspaces",
+    "source": "src/modules/me/me.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/activity",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/archive",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/export-formats",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/exports/preview",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/exports",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/quality-reports/latest",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/quality-reports/refresh",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/quality-reports",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/quality-reports",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId/refresh",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-context-packs/:packId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-context-packs",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-context-packs",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/default/generate",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/default/preview",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/default",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/archive",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/conflicts",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/diff",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/download",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/drift/refresh",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/drift",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/files/:fileId/latest",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/files/:fileId/versions/:versionId",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/files/:fileId/versions",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/files/:fileId",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/generate",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/manifest",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/preview",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/quality/refresh",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/quality",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/refresh",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/release-gate/check",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/release-gate",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/staleness",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/sync-runs/:syncRunId",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/sync-runs/:syncRunId",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/sync-runs",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId/sync-runs",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files/file-sets/:fileSetId",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-files/file-sets",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-files",
+    "source": "src/modules/agent-files/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-quality-reviews/:reviewId/archive",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-quality-reviews/:reviewId/findings",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-quality-reviews/:reviewId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-quality-reviews/pressure",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/archive",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/quality-reviews/latest",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/quality-reviews/refresh",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/quality-reviews",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/quality-reviews",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/review",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs/:runId/status",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/agent-runs/:runId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-runs/:runId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/agent-runs/:runId",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/agent-runs",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/agent-runs",
+    "source": "src/modules/agent-context/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/audit-events",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/brain/current",
+    "source": "src/modules/brain/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/brain/graph/current",
+    "source": "src/modules/brain/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/brain/rebuild",
+    "source": "src/modules/brain/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/brain/versions",
+    "source": "src/modules/brain/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/branch-deploy-truth/manual",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/branch-deploy-truth/refresh",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/branch-deploy-truth",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/change-proposals/:proposalId/accept",
+    "source": "src/modules/changes/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/change-proposals/:proposalId/reject",
+    "source": "src/modules/changes/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/change-proposals/:proposalId",
+    "source": "src/modules/changes/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/change-proposals",
+    "source": "src/modules/changes/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/change-proposals",
+    "source": "src/modules/changes/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/coding-requirements/:codingRequirementsId/accept",
+    "source": "src/modules/coding-requirements/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/coding-requirements/current",
+    "source": "src/modules/coding-requirements/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/coding-requirements/flowchart",
+    "source": "src/modules/coding-requirements/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/coding-requirements/generate",
+    "source": "src/modules/coding-requirements/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/coding-requirements/history",
+    "source": "src/modules/coding-requirements/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/communication-review",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/communications/timeline",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/connectors/:connectorId/channels",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/connectors/:connectorId/resources",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/connectors/:connectorId",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/connectors/readiness",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/connectors",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/context/:contextId/attachments/:attachmentId/content",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/context/:contextId/attachments/:attachmentId/signed-url",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/context/:contextId/reindex",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/context/:contextId",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/context/:contextId",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/context/:contextId",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/context",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/context",
+    "source": "src/modules/projects/context.routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/cost-entries/:entryId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/cost-entries/:entryId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/cost-entries/:entryId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/cost-entries",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/cost-entries",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/agent-activity",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/branch-deploy-truth",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/conflicts",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/dashboard/context-snapshot",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/files/:filePath/safe-to-touch",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/mission-control",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/mock-real",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/rationale-trace",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/readiness",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/dashboard/refresh",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard/seams",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/dashboard",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/deadlines/:deadlineId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/deadlines/:deadlineId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/deadlines/:deadlineId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/deadlines",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/deadlines",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/deep-research/:runId/add-to-memory",
+    "source": "src/modules/deep-research/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/deep-research/:runId/export",
+    "source": "src/modules/deep-research/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/deep-research/:runId",
+    "source": "src/modules/deep-research/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/deep-research/usage",
+    "source": "src/modules/deep-research/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/deep-research",
+    "source": "src/modules/deep-research/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/delivery/agent-postflight/:runId",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/delivery/agent-preflight",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/delivery/receipts/:itemId",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/delivery/traces/:itemId",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/delivery/weekly-brief",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/delivery",
+    "source": "src/modules/delivery/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/diagrams/:diagramId",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/diagrams/:diagramId",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/diagrams/:diagramId",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/diagrams/generate",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/diagrams",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/diagrams",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId/anchors/:anchorId/provenance",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId/anchors/:anchorId",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId/file",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/documents/:documentId/reprocess",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId/search",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId/view",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/documents/:documentId",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/:documentId",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/documents/generate",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/generation-templates",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/documents/upload",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents/uploads/:operationId",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/documents",
+    "source": "src/modules/documents/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/engineering-evidence/:evidenceId",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/engineering-evidence/manual",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/engineering-evidence/refresh",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/engineering-evidence/sources",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/engineering-evidence",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/conflicts/refresh",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/conflicts",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/decision-links",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/decision-links",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/duplicates/refresh",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/duplicates",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/live-working-map/refresh",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/live-working-map",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/rationale-traces/:traceId",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/rationale-traces",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/rationale-traces",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/refresh",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/safe-to-touch/file",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/fde-readiness/safe-to-touch/refresh",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/fde-readiness/safe-to-touch",
+    "source": "src/modules/fde-readiness/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/financials/breakdown",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/financials",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PUT",
+    "path": "/v1/projects/:projectId/financials",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/integration-seams/manual",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/integration-seams/refresh",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/integration-seams",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/integrations/status",
+    "source": "src/modules/integrations/integrations.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/job-runs",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/change-markers",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/comments",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/comments",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/current",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/diagrams/generate",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/review-items/:proposalId/accept",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/review-items/:proposalId/reject",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/review-items",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey/diagrams/:diagramId/embed",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey/diagrams/:diagramId",
+    "source": "src/modules/diagrams/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey/history",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey/provenance",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey/review-items",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/live-doc/sections/:sectionKey",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/live-doc/source",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/live-doc/source",
+    "source": "src/modules/live-doc/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/meeting-series/:seriesId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/meeting-series/:seriesId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/meeting-series/:seriesId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/meeting-series",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/meeting-series",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/meetings/:meetingId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/meetings/:meetingId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/meetings/:meetingId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/meetings",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/meetings",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/members",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/message-insights/:insightId",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/message-insights",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/messages/:messageId",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/mission-control",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/mock-real-registry/manual",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/mock-real-registry/refresh",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/mock-real-registry",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/ops-summary",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/recent-changes",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/responsibilities/:responsibilityId",
+    "source": "src/modules/projects/responsibilities.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/responsibilities/:responsibilityId",
+    "source": "src/modules/projects/responsibilities.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/responsibilities/:responsibilityId",
+    "source": "src/modules/projects/responsibilities.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/responsibilities",
+    "source": "src/modules/projects/responsibilities.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/responsibilities",
+    "source": "src/modules/projects/responsibilities.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/settings/bundle",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/settings",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/settings",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/actions/:actionId/apply",
+    "source": "src/modules/socrates/actions.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/actions/:actionId/reject",
+    "source": "src/modules/socrates/actions.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/actions/:actionId",
+    "source": "src/modules/socrates/actions.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/actions",
+    "source": "src/modules/socrates/actions.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/beta/ask",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/messages/stream/v1",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/recent-queries",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/actions",
+    "source": "src/modules/socrates/actions.routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/context",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages/:assistantMessageId/cancel",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages/:assistantMessageId/feedback",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages/:assistantMessageId/stream",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages/stream/v1",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages/stream",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/messages",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId/suggestions",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/socrates/sessions/:sessionId",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/sessions",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/sessions",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/socrates/v1/ask",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/socrates/v1/prewarm",
+    "source": "src/modules/socrates/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/subscriptions/:subscriptionId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/subscriptions/:subscriptionId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "PATCH",
+    "path": "/v1/projects/:projectId/subscriptions/:subscriptionId",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/subscriptions/renewals",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/subscriptions",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/subscriptions",
+    "source": "src/modules/project-ops/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/suggestions/:suggestionId/ask-socrates",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/suggestions/:suggestionId/create-review-item",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/suggestions/:suggestionId/dismiss",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/suggestions/:suggestionId/promote-to-timeline",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/suggestions/:suggestionId",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/suggestions",
+    "source": "src/modules/suggestions/suggestions.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/team-summary",
+    "source": "src/modules/dashboard/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/threads/:threadId",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/threads",
+    "source": "src/modules/communications/communications.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/timeline/events/:eventId",
+    "source": "src/modules/beta-timeline/beta-timeline.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/timeline/events",
+    "source": "src/modules/beta-timeline/beta-timeline.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/timeline",
+    "source": "src/modules/beta-timeline/beta-timeline.routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/todo-fixme/refresh",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/todo-fixme",
+    "source": "src/modules/engineering-evidence/routes.ts"
+  },
+  {
+    "method": "DELETE",
+    "path": "/v1/projects/:projectId/truth-approvers/:memberId",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/truth-approvers",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/truth-approvers",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects/:projectId/truth-inbox/:itemId/actions/:action",
+    "source": "src/modules/truth-inbox/truth-inbox.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/truth-inbox/:itemId/packet",
+    "source": "src/modules/truth-inbox/truth-inbox.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/truth-inbox/:itemId",
+    "source": "src/modules/truth-inbox/truth-inbox.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/truth-inbox",
+    "source": "src/modules/truth-inbox/truth-inbox.routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects/:projectId",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/projects",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "POST",
+    "path": "/v1/projects",
+    "source": "src/modules/projects/routes.ts"
+  },
+  {
+    "method": "GET",
+    "path": "/v1/webhooks/whatsapp-business",
+    "source": "src/modules/communications/communications.routes.ts"
+  }
+]

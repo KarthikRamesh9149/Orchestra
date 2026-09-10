@@ -2,6 +2,9 @@ import {contextBridge,ipcRenderer} from 'electron';
 import type {DesktopBridge,OperationResult,RuntimeStatus} from './contracts.js';
 const invoke=(input:unknown)=>ipcRenderer.invoke('orchestra:command',input) as Promise<OperationResult>;
 const bridge:DesktopBridge={
+ bootstrap:()=>invoke({operation:'local.bootstrap'}),
+ completeOnboarding:()=>invoke({operation:'local.onboard'}),
+ downloadDocument:(projectId,documentId)=>ipcRenderer.invoke('orchestra:download-document',{projectId,documentId}),
  status:()=>ipcRenderer.invoke('orchestra:status') as Promise<RuntimeStatus>,
  workspaces:{list:()=>invoke({operation:'workspace.list'}),create:name=>invoke({operation:'workspace.create',name}),select:projectId=>invoke({operation:'workspace.select',projectId})},
  chooseEvidence:()=>ipcRenderer.invoke('orchestra:choose-evidence'),

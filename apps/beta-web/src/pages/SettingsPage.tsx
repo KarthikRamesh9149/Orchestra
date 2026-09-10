@@ -27,6 +27,7 @@ import {
 } from "react-icons/si";
 
 import { useAuth } from "../context/AuthContext";
+import { isDesktop } from "../lib/desktop";
 import { OperationalStateNotice } from "../components/ui/OperationalStateNotice";
 import { useThemeStore } from "../store/themeStore";
 import { safeExternalUrl } from "../lib/socratesPresentation";
@@ -315,7 +316,7 @@ function WorkspaceSection() {
     if (!projectId) return;
     const [list, inviteList] = await Promise.all([
       getMembersList(projectId),
-      canManage ? listWorkspaceInvites(projectId) : Promise.resolve([]),
+      canManage && !isDesktop() ? listWorkspaceInvites(projectId) : Promise.resolve([]),
     ]);
     setMembers(list);
     setInvites(inviteList);
@@ -330,7 +331,7 @@ function WorkspaceSection() {
           const [ws, list, inviteList] = await Promise.all([
             getWorkspace(projectId),
             getMembersList(projectId),
-            canManage ? listWorkspaceInvites(projectId) : Promise.resolve([]),
+            canManage && !isDesktop() ? listWorkspaceInvites(projectId) : Promise.resolve([]),
           ]);
           if (active) {
             setWorkspace(ws);
@@ -533,7 +534,7 @@ function WorkspaceSection() {
 
         <div className="flex items-center justify-between mb-3">
           <p className={EYEBROW_MUTED}>Team ({members.length})</p>
-          {canManage && <button type="button" onClick={() => setShowInvite(!showInvite)} className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--terracotta-text)] hover:opacity-80">
+          {canManage && <button type="button" disabled={isDesktop()} title={isDesktop()?"Invitations require a shared workspace, not a local installation.":undefined} onClick={() => setShowInvite(!showInvite)} className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--terracotta-text)] hover:opacity-80">
             <UserPlus size={11} strokeWidth={1.8} /> Invite
           </button>}
         </div>
@@ -741,7 +742,7 @@ function AccountSection() {
   };
 
   const displayName = profileUser?.name ?? authUser?.displayName ?? "User";
-  const displayEmail = profileUser?.email ?? authUser?.email ?? "";
+  const displayEmail = isDesktop() ? "Local installation · no hosted account" : profileUser?.email ?? authUser?.email ?? "";
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -761,7 +762,7 @@ function AccountSection() {
           <div>
             <p className="font-sans text-[15px] font-medium text-[var(--text-default)]">{displayName}</p>
             <p className="font-mono text-[11px] text-[var(--text-muted)]">{displayEmail}</p>
-            {profileUser ? (
+            {profileUser && !isDesktop() ? (
               <div className="mt-1 flex flex-wrap items-center gap-2"><p className={`font-mono text-[9px] uppercase tracking-[0.1em] ${profileUser.emailVerified ? "text-[var(--teal-text)]" : "text-[var(--red-text)]"}`}>{profileUser.emailVerified ? "Email verified" : "Email not verified"}</p>{!profileUser.emailVerified ? <button type="button" disabled={Boolean(securityMutation)} onClick={() => void handleVerification()} className="font-mono text-[9px] uppercase text-[var(--terracotta-text)] disabled:opacity-40">{securityMutation === "verify" ? "Sending…" : "Verify email"}</button> : null}</div>
             ) : null}
           </div>
@@ -880,12 +881,12 @@ function AccountSection() {
           </button>
         )}
 
-        <form onSubmit={(event) => void handlePasswordChange(event)} className="mt-4 rounded-lg bg-[var(--bg-inset)] p-3">
+        {isDesktop()?<p className="mt-4 font-sans text-[11px] text-[var(--text-muted)]">This local identity has no account password. Access is protected by your macOS account and credential store. Shared account management belongs to your team server.</p>:<form onSubmit={(event) => void handlePasswordChange(event)} className="mt-4 rounded-lg bg-[var(--bg-inset)] p-3">
           <p className={`${EYEBROW_MUTED} mb-2`}>Change password</p>
           <p className="mb-3 font-sans text-[11px] leading-4 text-[var(--text-muted)]">Email verification is required. A successful change revokes every active session.</p>
           <div className="grid gap-2"><input aria-label="Current password" type="password" autoComplete="current-password" value={currentPassword} onChange={(event) => setCurrentPassword(event.target.value)} placeholder="Current password" className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2 text-xs text-[var(--text-default)] outline-none" /><input aria-label="New password" type="password" autoComplete="new-password" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} placeholder="New password (12+ characters)" className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2 text-xs text-[var(--text-default)] outline-none" /><input aria-label="Confirm new password" type="password" autoComplete="new-password" value={confirmNewPassword} onChange={(event) => setConfirmNewPassword(event.target.value)} placeholder="Confirm new password" className="rounded-lg border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2 text-xs text-[var(--text-default)] outline-none" /></div>
           <button type="submit" disabled={securityMutation !== null || currentPassword.length < 8 || newPassword.length < 12 || confirmNewPassword.length < 12} className="mt-3 rounded-lg border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2 font-mono text-[10px] uppercase text-[var(--text-default)] disabled:opacity-40">{securityMutation === "password" ? "Changing…" : "Change password"}</button>
-        </form>
+        </form>}
       </div>
     </section>
   );

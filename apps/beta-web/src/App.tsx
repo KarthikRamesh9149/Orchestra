@@ -2,6 +2,8 @@ import { lazy, Suspense, type ReactNode } from "react";
 import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { useChatStore } from "./store/chatStore";
+import {isDesktop} from './lib/desktop';
+const DesktopOnboardingPage=lazy(()=>import('./pages/DesktopOnboardingPage').then(module=>({default:module.DesktopOnboardingPage})));
 
 const AppShell = lazy(() => import("./components/shell/AppShell").then((module) => ({ default: module.AppShell })));
 const LoginPage = lazy(() => import("./pages/LoginPage").then((module) => ({ default: module.LoginPage })));
@@ -85,10 +87,11 @@ export default function App() {
   return (
     <Routes>
       {/* ── Auth ── */}
-      <Route path="/" element={<Deferred><LoginPage /></Deferred>} />
-      <Route path="/login" element={<Deferred><LoginPage /></Deferred>} />
+      <Route path="/" element={<Deferred>{isDesktop()?<DesktopOnboardingPage/>:<LoginPage />}</Deferred>} />
+      <Route path="/login" element={<Deferred>{isDesktop()?<DesktopOnboardingPage/>:<LoginPage />}</Deferred>} />
 
       <Route element={<AuthenticatedRoute />}>
+        {isDesktop()?<Route path="/onboarding" element={<Deferred><DesktopOnboardingPage/></Deferred>}/>:null}
         <Route path="/workspaces" element={<Deferred><WorkspacesPage /></Deferred>} />
         <Route path="/workspaces/" element={<Deferred><WorkspacesPage /></Deferred>} />
       </Route>
@@ -98,8 +101,8 @@ export default function App() {
       </Route>
 
       <Route element={<ProjectRoute />}>
-        <Route path="/onboarding" element={<Deferred><OnboardingPage /></Deferred>} />
-        <Route path="/onboarding/" element={<Deferred><OnboardingPage /></Deferred>} />
+        {!isDesktop()?<Route path="/onboarding" element={<Deferred><OnboardingPage /></Deferred>} />:null}
+        {!isDesktop()?<Route path="/onboarding/" element={<Deferred><OnboardingPage /></Deferred>} />:null}
 
         {/* ── Primary routes ── */}
         <Route element={<Deferred><AppShell /></Deferred>}>

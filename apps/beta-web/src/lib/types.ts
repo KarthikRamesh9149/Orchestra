@@ -7,7 +7,7 @@ export interface Doc {
   type: "prd" | "srs" | "spec";
   size: string;
   pages: number;
-  status: "ready" | "processing" | "failed";
+  status: "ready" | "partial" | "processing" | "failed";
   uploadedBy: string;
   uploadedAt: string;
   excerpt: string;

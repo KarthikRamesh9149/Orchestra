@@ -32,6 +32,7 @@ describe('desktop bridge authority',()=>{
  it('serves only owned packaged assets and honest API failures',async()=>{
   const root=await temporary();await writeFile(join(root,'index.html'),'<main>existing UI</main>');
   expect(await (await assetResponse(root,'orchestra://app/index.html')).text()).toContain('existing UI');
+  expect(await (await assetResponse(root,'orchestra://app/')).text()).toContain('existing UI');
   expect((await assetResponse(root,'orchestra://app/v1/me')).status).toBe(503);
   expect((await assetResponse(root,'orchestra://app/%2e%2e%2fsecret')).status).toBe(403);
   expect((await assetResponse(root,'https://app/index.html')).status).toBe(403);

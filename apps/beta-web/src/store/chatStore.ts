@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist, type PersistStorage, type StorageValue } from "zustand/middleware";
+import {isDesktop} from '../lib/desktop';
 
 export type ArtifactType = "diagram" | "summary" | "api_map" | "ownership" | "timeline_view";
 export type DiagramId = "auth-flow" | "system-arch";
@@ -106,6 +107,9 @@ export function chatDraftKey(projectId: string, conversationId: string | null | 
 
 type PersistedChat = Pick<ChatState, "identityKey" | "projectId" | "activeId" | "conversations" | "drafts" | "lastActiveByProject">;
 const DRAFT_STORAGE_KEY = "orchestra_chat_drafts_v1";
+// Only local desktop installations retain this bounded content cache across
+// app restarts. Hosted/shared browser sessions retain their existing isolation.
+const continuityMedium=()=>isDesktop()?localStorage:sessionStorage;
 let previousPersisted: PersistedChat | null = null;
 let pendingDrafts: { identityKey: string | null; drafts: Record<string, string> } | null = null;
 let draftTimer: ReturnType<typeof setTimeout> | undefined;
@@ -114,7 +118,7 @@ function flushDrafts() {
   clearTimeout(draftTimer);
   draftTimer = undefined;
   if (!pendingDrafts) return;
-  try { sessionStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(pendingDrafts)); } catch { /* Memory remains usable when storage is denied/full. */ }
+  try { continuityMedium().setItem(DRAFT_STORAGE_KEY, JSON.stringify(pendingDrafts)); } catch { /* Memory remains usable when storage is denied/full. */ }
   pendingDrafts = null;
 }
 if (typeof window !== "undefined") {
@@ -128,10 +132,10 @@ if (typeof window !== "undefined") {
 const continuityStorage: PersistStorage<PersistedChat> = {
   getItem(name) {
     try {
-      const raw = sessionStorage.getItem(name);
+      const raw = continuityMedium().getItem(name);
       if (!raw) return null;
       const saved = JSON.parse(raw) as StorageValue<PersistedChat>;
-      const draftRaw = sessionStorage.getItem(DRAFT_STORAGE_KEY);
+      const draftRaw = continuityMedium().getItem(DRAFT_STORAGE_KEY);
       const draft = draftRaw ? JSON.parse(draftRaw) : null;
       if (draft?.identityKey === saved.state.identityKey) saved.state.drafts = draft.drafts ?? {};
       previousPersisted = null;
@@ -145,7 +149,7 @@ const continuityStorage: PersistStorage<PersistedChat> = {
     if (identityChanged) {
       clearTimeout(draftTimer);
       pendingDrafts = null;
-      try { sessionStorage.removeItem(name); sessionStorage.removeItem(DRAFT_STORAGE_KEY); } catch { /* denied storage */ }
+      try { continuityMedium().removeItem(name); continuityMedium().removeItem(DRAFT_STORAGE_KEY); } catch { /* denied storage */ }
     }
     if (!prior || identityChanged || prior.projectId !== state.projectId || prior.activeId !== state.activeId || prior.conversations !== state.conversations || prior.lastActiveByProject !== state.lastActiveByProject) {
       // Bound total serialized cache size, including citation metadata. Server
@@ -163,7 +167,7 @@ const continuityStorage: PersistStorage<PersistedChat> = {
         conversations.push(cached);
         bytes += size;
       }
-      try { sessionStorage.setItem(name, JSON.stringify({ ...value, state: { ...state, conversations, drafts: {}, lastActiveByProject: Object.fromEntries(Object.entries(state.lastActiveByProject).slice(-100)) } })); } catch { /* Reload can retrieve authoritative history. */ }
+      try { continuityMedium().setItem(name, JSON.stringify({ ...value, state: { ...state, conversations, drafts: {}, lastActiveByProject: Object.fromEntries(Object.entries(state.lastActiveByProject).slice(-100)) } })); } catch { /* Reload can retrieve authoritative history. */ }
     }
     if (!prior || identityChanged || prior.drafts !== state.drafts) {
       const drafts: Record<string, string> = {};
@@ -187,7 +191,7 @@ const continuityStorage: PersistStorage<PersistedChat> = {
     clearTimeout(draftTimer);
     pendingDrafts = null;
     previousPersisted = null;
-    try { sessionStorage.removeItem(name); sessionStorage.removeItem(DRAFT_STORAGE_KEY); } catch { /* denied storage */ }
+    try { continuityMedium().removeItem(name); continuityMedium().removeItem(DRAFT_STORAGE_KEY); } catch { /* denied storage */ }
   }
 };
 

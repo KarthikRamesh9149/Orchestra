@@ -1,3 +1,4 @@
+import {isDesktop,desktopBootstrap} from '../desktop';
 export function resolveApiBaseUrl(input: { production: boolean; configuredUrl?: string }) {
   const configuredUrl = input.configuredUrl?.trim();
   // Hosted browsers use the beta-web reverse proxy so session and CSRF cookies
@@ -345,6 +346,7 @@ export async function ensureCsrfToken() {
 }
 
 export function bootstrapBrowserSession<T>(): Promise<T> {
+  if(isDesktop())return desktopBootstrap<T>();
   if (!bootstrapRequest) {
     const epoch = sessionEpoch;
     const assertCurrent = () => {
