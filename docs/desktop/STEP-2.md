@@ -1,41 +1,60 @@
-# Step 2 progress and gate
+# Step 2: Portable local engine
 
-**Incomplete. Do not merge this step into main or start Step 3.**
+All implementation belongs to private KarthikRamesh9149/Orchestra on codex/desktop-step-2. orchestrav2 is unchanged. This is an engine milestone, not an installer or full UI-parity release.
 
-All work is confined to the private Orchestra repository on `codex/desktop-step-2`. No orchestrav2 source, configuration, database or deployment changes.
+## Implemented
 
-## Verified foundation
+- Explicit local composition using original backend services, without Railway, Supabase, Redis, copied credentials or hosted signup.
+- Restricted runtime role, separate migration administrator, installation authority plus ordinary actor/project authorization.
+- Durable jobs with idempotency, claims/fencing, heartbeat API, bounded explicit retries, cancellation and domain reconciliation.
+- Transaction-fenced database effects and completion; real process-kill/retry proof.
+- Persistent PostgreSQL request/concurrency/cost limits. Disposable caches are not authoritative.
+- Private atomic storage, authenticated reads, bounded paths/symlinks, ENOSPC and fsync failure tests preserving old bytes.
+- Offline lexical indexing and cited evidence-only answers without fabricated vectors or generated truth. Missing embeddings produce honest partial status; unconfigured generative jobs fail.
+- Separate installation secrets and encrypted database-plus-file backups, bounded to 128 MiB source data / 10,000 files. Live data still relies on OS disk encryption.
+- Prisma mappings and two additive migrations; all 81 original migration files preserved.
 
-- Pinned existing PostgreSQL/pgvector image in development-only Compose. Password is generated locally, untracked, and not printed. Database is exposed on loopback port 55439 only.
-- Fresh database successfully applied all 81 preserved migrations plus the new desktop queue migration (82 total). Compatibility role names are NOLOGIN. This proves migration portability with documented prerequisites, not least-privilege runtime qualification.
-- PostgreSQL queue: payload-bound idempotency, concurrent claim exclusion, ownership/fencing checks, heartbeat, explicit failed recovery, cancellation acknowledgement and bounded retry operation.
-- An actual disposable claimant process was killed after its durable claim. Subsequent reconciliation reported `failed / worker_lease_expired`, not permanently running. Queue cancellation invalidated stale completion and heartbeat.
-- Private file driver: restart persistence, atomic replace, size/traversal/symlink checks, private POSIX directories, authenticated-route requirement instead of filesystem URL exposure.
-- Bounded encrypted archive envelope: round trip, randomization, wrong-passphrase and tamper rejection.
-- Explicit profile validation and atomic installation-secret creation with separate random secrets. Concurrent creators converge on the same published identity.
-- Verification: 1,355 applicable baseline tests passed; five database-only tests skipped in that default run and all five passed separately against the real local database. Typecheck and secret scan passed. The original Step 1 import-hash gate still passes; no imported application source was changed by this foundation commit.
+## Gate evidence
 
-## Run the isolated database checks
+Verified on macOS with the pinned developer PostgreSQL 17/pgvector container:
+
+- All 83 migrations applied to a fresh database; second deploy idempotent.
+- Authenticated HTTP upload → parse → lexical index → cited answer → authorized approval → restart → new login → identical authenticated download.
+- Unauthorized read/approval rejected. Repeated approval produced one revision.
+- Actual SIGKILL during a pending effect: rollback, explicit failure, retry and one committed effect. Healthy-worker exclusion and active cancellation tested separately.
+- Encrypted database/files restored to a separate empty database; accepted decision and source bytes verified. Disposable restore/fresh databases were removed afterwards.
+- Default regression tests explicitly skip DB integration tests; those run separately below. Exact totals are reported at completion.
+
+## Reproduce
 
 ```sh
 node scripts/desktop/dev-db.mjs up
 node scripts/desktop/dev-db.mjs migrate
+node scripts/desktop/dev-db.mjs provision-runtime
+node scripts/desktop/verify-fresh-db.mjs
 node scripts/desktop/dev-db.mjs test
-npx vitest run tests/desktop-engine-primitives.test.ts tests/desktop-runtime-profile.test.ts
+node scripts/desktop/dev-db.mjs test-engine
+npx vitest run --config vitest.desktop.config.ts --maxWorkers=4
+npm run typecheck
+node node_modules/typescript/bin/tsc -p tsconfig.json
+npm --prefix apps/beta-web test -- --run
+npm --prefix apps/beta-web run build
+npm --prefix apps/vscode-extension run build
+node scripts/desktop/verify-import.mjs --check
+node scripts/desktop/inventory.mjs --check
+node --import tsx scripts/ops/security-scan-local.ts
 ```
 
-Compose is a developer tool, not the consumer installation method. These commands require the existing local Docker engine; they do not contact hosted application services. The helper does not provide destructive reset/down-volume commands. It uses only synthetic test jobs and refuses database tests outside the exact local fixture target.
+Developer-only startup after provisioning:
 
-## Remaining gate work
+```sh
+node --import tsx scripts/desktop/run-engine.mjs
+```
 
-See ADR-002. The new primitives are deliberately not selected by the existing application bootstrap yet. In particular:
+The token is not printed. The later privileged desktop shell supplies it; browser secret storage is not the design. Compose is not the consumer installation mechanism. SIGINT/SIGTERM shut down the engine. dev-db.mjs stop retains the isolated volume. Synthetic local test fixtures are not published.
 
-- existing buildContext/server worker still need portable composition and lifecycle wiring;
-- SQL queue needs Prisma mapping and a restricted runtime database role;
-- AI budgets/limits and offline providers must be integrated without Redis or fabricated responses;
-- queue completion fencing does not fence arbitrary legacy handler side effects;
-- domain-level document/research progress must be reconciled after failure/cancellation;
-- full encrypted backup/restore and authenticated private storage integration remain;
-- disk-full/flush failure and end-to-end upload/approval/restart are not yet proven.
+## Next-stage boundaries
 
-No desktop-local readiness, complete parity, consumer packaging or complete Step 2 claim is made by the foundation tests.
+Step 3: Electron, OS credential storage and bundled runtimes. Step 4: local-owner onboarding and packaged UI parity. Step 5: real AI/connectors/MCP. Step 6: shared teams/self-hosting/migration. Steps 7/8: signed qualification and publication. None is implicitly completed by this gate.
+
+No styling changes, production deployments, paid GitHub Actions or purchases.

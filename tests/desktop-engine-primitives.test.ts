@@ -1,4 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect,vi } from "vitest";
+import * as filesystem from 'node:fs/promises';
+vi.mock('node:fs/promises',async importOriginal=>{
+ const actual=await importOriginal<typeof import('node:fs/promises')>();
+ return {...actual,open:vi.fn(actual.open)};
+});
 import { mkdtemp, mkdir, symlink, readFile, readdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -38,6 +43,21 @@ describe('private local storage',()=>{
    await expect(driver.putObject({key:'file',body:Buffer.from('oversize'),contentType:'text/plain'})).rejects.toThrow();
    expect((await readFile(join(root,'file'))).toString()).toBe('old');
   }finally{await rm(root,{recursive:true,force:true});}
+ });
+ it.each(['writeFile','sync'] as const)('preserves the previous bytes after %s fails and removes partial writes',async(operation)=>{
+  const root=await mkdtemp(join(tmpdir(),'orchestra-disk-failure-'));
+  try{
+   const driver=new PrivateLocalStorageDriver(root);await driver.putObject({key:'file',body:Buffer.from('old'),contentType:'text/plain'});
+   const original=(await vi.importActual<typeof filesystem>('node:fs/promises')).open;
+   vi.spyOn(filesystem,'open').mockImplementationOnce(async(...args)=>{
+    const handle=await original(...args);
+    vi.spyOn(handle,operation).mockRejectedValueOnce(Object.assign(new Error('Synthetic disk failure'),{code:operation==='writeFile'?'ENOSPC':'EIO'}));
+    return handle;
+   });
+   await expect(driver.putObject({key:'file',body:Buffer.from('replacement'),contentType:'text/plain'})).rejects.toThrow('Synthetic disk failure');
+   expect((await readFile(join(root,'file'))).toString()).toBe('old');
+   expect(await readdir(root)).toEqual(['file']);
+  }finally{vi.restoreAllMocks();await rm(root,{recursive:true,force:true});}
  });
 });
 

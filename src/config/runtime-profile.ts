@@ -23,7 +23,6 @@ export const runtimeProfileSchema=z.object({
 });
 export type RuntimeProfile=z.infer<typeof runtimeProfileSchema>;
 
-// This is an independent contract. The runtime composition adapter must consume
-// it before this becomes a selectable application mode; it never changes
-// DEPLOYMENT_ENV or bypasses existing managed-production validation.
+// Consumed by src/desktop/engine.ts before creating local dependencies. It never
+// changes DEPLOYMENT_ENV or bypasses managed-production validation.
 export function parseRuntimeProfile(input:unknown):RuntimeProfile{return runtimeProfileSchema.parse(input);}

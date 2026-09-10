@@ -1,0 +1,13 @@
+import { readFile,lstat } from 'node:fs/promises';
+import { resolve } from 'node:path';
+import { createLocalEngine } from '../../src/desktop/engine.ts';
+const root=resolve(import.meta.dirname,'../..');
+const filename=resolve(root,'.desktop/runtime-db.json');
+const info=await lstat(filename);
+if(!info.isFile()||info.isSymbolicLink()||(info.mode&0o077)!==0)throw new Error('Private developer runtime credentials required');
+const {password}=JSON.parse(await readFile(filename,'utf8'));
+if(!/^[0-9a-f]{64}$/.test(password))throw new Error('Invalid runtime credentials');
+const engine=await createLocalEngine({databaseUrl:`postgresql://orchestra_desktop_runtime:${password}@127.0.0.1:55439/orchestra_desktop?schema=public`,installationRoot:resolve(root,'.desktop/installation')});
+await engine.start();
+console.log('Local engine ready on 127.0.0.1:43119. Installation authority and actor authentication required. No hosted signup, Redis or AI keys loaded.');
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>{void engine.close().then(()=>process.exit(0));});

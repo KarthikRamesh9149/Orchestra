@@ -1,5 +1,7 @@
 # Step 1: isolated source and desktop contract
 
+Historical Step 1 checkpoint. Later engine work is recorded in STEP-2.md; the statements below describe the original Step 1 gate.
+
 ## Scope
 
 Private `KarthikRamesh9149/Orchestra`, branch `codex/desktop-step-1`. Snapshot source: `orchestrav2/mvp-beta-beta` at `8561d41980e97924db33e0c8f748b7cf576aac83`, reconfirmed before import. No source history, production changes, deployment, paid infrastructure or GitHub Actions.

@@ -31,6 +31,7 @@ export interface GenerationProvider {
 }
 
 export interface EmbeddingProvider {
+  readonly unavailable?: boolean;
   embedText(input: string): Promise<number[]>;
 }
 

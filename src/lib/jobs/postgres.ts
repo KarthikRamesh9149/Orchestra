@@ -38,7 +38,7 @@ export class PostgresJobDispatcher implements JobDispatcher {
     await this.db.$executeRaw`
       UPDATE desktop_jobs SET status='failed', owner_token=NULL, lease_until=NULL,
         failure_code='worker_lease_expired', updated_at=now()
-      WHERE status='running' AND lease_until < now()`;
+      WHERE id IN (SELECT id FROM desktop_jobs WHERE status='running' AND lease_until < now() FOR UPDATE SKIP LOCKED)`;
     const jobs = await this.db.$queryRaw<DesktopClaim[]>`
       WITH candidate AS (
         SELECT id FROM desktop_jobs WHERE status='queued' AND available_at<=now() AND attempts<max_attempts
@@ -69,14 +69,27 @@ export class PostgresJobDispatcher implements JobDispatcher {
   }
 
   async cancel(id: string) {
+    await this.db.$executeRaw`INSERT INTO desktop_job_cancellations(job_id) SELECT id FROM desktop_jobs
+      WHERE id=${id}::uuid AND status IN ('queued','running','failed') ON CONFLICT DO NOTHING`;
     return (await this.db.$executeRaw`UPDATE desktop_jobs SET status='cancelled',owner_token=NULL,lease_until=NULL,
       fence=fence+1,updated_at=now() WHERE id=${id}::uuid AND status IN ('queued','running','failed')`) === 1;
   }
 
   /** Caller must authorize the retry and verify the handler's effect idempotency. */
   async retryFailed(id: string) {
-    return (await this.db.$executeRaw`UPDATE desktop_jobs SET status='queued',failure_code=NULL,
+    return this.db.$transaction(async tx=>{
+    const changed=await tx.$executeRaw`UPDATE desktop_jobs SET status='queued',failure_code=NULL,
       available_at=now()+LEAST(30000,1000*power(2,attempts))*interval '1 millisecond',updated_at=now()
-      WHERE id=${id}::uuid AND status='failed' AND attempts<max_attempts`) === 1;
+      WHERE id=${id}::uuid AND status='failed' AND attempts<max_attempts`;
+    if(changed!==1)return false;
+    await tx.$executeRaw`DELETE FROM desktop_job_cancellations WHERE job_id=${id}::uuid`;
+    await tx.$executeRaw`UPDATE deep_research_runs r SET status='queued',progress_stage='queued',error_message=NULL,completed_at=NULL
+      FROM desktop_jobs j WHERE j.id=${id}::uuid AND j.name='deep_research_run' AND r.id::text=j.payload->>'runId'
+      AND r.project_id::text=j.payload->>'projectId' AND r.status='failed'`;
+    await tx.$executeRaw`UPDATE document_versions v SET status='pending',processed_at=NULL
+      FROM desktop_jobs j WHERE j.id=${id}::uuid AND j.name IN ('parse_document','chunk_document','embed_document_chunks')
+      AND v.id::text=j.payload->>'documentVersionId' AND v.parse_revision::text=j.payload->>'parseRevision' AND v.status='failed'`;
+    return true;
+    });
   }
 }

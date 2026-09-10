@@ -53,6 +53,8 @@ import { TruthImpactMapService } from "./modules/truth-inbox/truth-impact-map.se
 import { DeliveryIntelligenceService } from "./modules/delivery/service.js";
 import { SocratesFeedbackService } from "./modules/socrates/feedback.service.js";
 import type { AppContext } from "./types/index.js";
+import type { JobDispatcher } from "./lib/jobs/types.js";
+import type { AiLimiter } from "./lib/ai-ops/ai-limits.js";
 
 export function buildContext(input: {
   env: AppEnv;
@@ -63,15 +65,19 @@ export function buildContext(input: {
   embeddingProvider: EmbeddingProvider;
   transcriptionProvider: TranscriptionProvider;
   telemetry: TelemetryService;
+  jobs?: JobDispatcher;
+  aiLimiter?: AiLimiter;
 }): AppContext {
+  if(input.env.QUEUE_MODE==='postgres'&&(!input.jobs||!input.aiLimiter))
+    throw new Error('PostgreSQL runtime requires explicit durable jobs and AI limiter composition');
   const useInlineJobs = shouldUseInlineJobs(input.env);
-  const jobs =
+  const jobs = input.jobs ?? (
     useInlineJobs
       ? new InlineJobDispatcher({}, input.env)
-      : new BullMqDispatcher(input.env.REDIS_URL, `${input.env.QUEUE_PREFIX}-jobs`, input.env);
+      : new BullMqDispatcher(input.env.REDIS_URL, `${input.env.QUEUE_PREFIX}-jobs`, input.env));
   const auditService = new AuditService(input.prisma);
   const authEmailService = new AuthEmailService(input.prisma, input.env);
-  const aiLimiter = createAiLimiter({
+  const aiLimiter = input.aiLimiter ?? createAiLimiter({
     redisUrl: useInlineJobs ? undefined : input.env.REDIS_URL,
     prefix: `${input.env.QUEUE_PREFIX}:ai-limits`,
     nodeEnv: input.env.NODE_ENV

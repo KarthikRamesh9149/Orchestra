@@ -3,6 +3,11 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'src/config/env.ts':'Step 2 explicit local runtime validation; retain managed production controls.',
+ 'src/setup-context.ts':'Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected.',
+ 'src/lib/ai/provider.ts':'Step 2 explicit unavailable embedding capability; no mock vectors in offline mode.',
+ 'src/modules/documents/service.ts':'Step 2 preserve lexical chunks when embeddings are unavailable; mark partial honestly.',
+ 'prisma/schema.prisma':'Step 2 desktop queue, cancellation and limiter models; original migrations unchanged.',
  'scripts/smoke/beta-browser-smoke.mjs':'Replace hosted production smoke defaults with localhost; application source unchanged.',
  'scripts/smoke/beta-browser-product-walkthrough.mjs':'Replace hosted production smoke defaults with localhost; application source unchanged.',
  'apps/vscode-extension/tsconfig.json':'Explicit Node/VS Code ambient types prevent accidental parent-workspace type loading.',

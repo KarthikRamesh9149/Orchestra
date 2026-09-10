@@ -13,12 +13,15 @@ describe("desktop Step 1 boundary", () => {
     expect(new Set(manifest.files.map((f: {path:string}) => f.path)).size).toBe(manifest.files.length);
   });
 
-  it("preserves imported application and migration bytes", () => {
+  it("preserves original provenance and requires exact reviewed hashes for authorized evolution", () => {
     const manifest = JSON.parse(read("docs/desktop/import-manifest.json"));
+    const adjustments=JSON.parse(read('docs/desktop/import-adjustments.json')).changes as Array<{path:string;sourceSha256:string;importedSha256:string;reason:string}>;
     for (const file of manifest.files) {
       if (file.disposition !== "included") continue;
       if (!/^(src\/|prisma\/|apps\/beta-web\/src\/)/.test(file.path)) continue;
-      expect(createHash("sha256").update(readFileSync(file.path)).digest("hex"), file.path).toBe(file.sourceSha256);
+      const adjusted=adjustments.find(a=>a.path===file.path);
+      if(adjusted){expect(adjusted.sourceSha256).toBe(file.sourceSha256);expect(adjusted.reason.length).toBeGreaterThan(20);expect(file.path.startsWith('prisma/migrations/')).toBe(false);}
+      expect(createHash("sha256").update(readFileSync(file.path)).digest("hex"), file.path).toBe(adjusted?.importedSha256??file.sourceSha256);
     }
   });
 

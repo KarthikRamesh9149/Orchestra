@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 811,
+  "unchangedImportedFiles": 806,
   "changes": [
     {
       "path": "apps/vscode-extension/package-lock.json",
@@ -15,6 +15,12 @@
       "reason": "Explicit Node/VS Code ambient types prevent accidental parent-workspace type loading."
     },
     {
+      "path": "prisma/schema.prisma",
+      "sourceSha256": "776a3110bde758919bce00a05942b5660cfef525b7df49e7f59eb84b15b586cb",
+      "importedSha256": "ab217ff850db06feae9752b72028a3e2e8aaf962cf7b3779935cef61115ffa2b",
+      "reason": "Step 2 desktop queue, cancellation and limiter models; original migrations unchanged."
+    },
+    {
       "path": "scripts/smoke/beta-browser-product-walkthrough.mjs",
       "sourceSha256": "45eb3bb1c5c988a41862e5c861f3341c8d35b2623b3596072561f26faa80382d",
       "importedSha256": "79222920a3131c21a71cd95df87da7062619bedb3f6a767dc4d12b52b4c51534",
@@ -25,6 +31,30 @@
       "sourceSha256": "3ab4bfdae3ce99ea6e5d4d32474985f34a55adc03b658eb1efc6a4a3f131c726",
       "importedSha256": "e4a0432562bceb899ba9230196651e55c99bb586b4d421c47d2a6d193217ae6b",
       "reason": "Replace hosted production smoke defaults with localhost; application source unchanged."
+    },
+    {
+      "path": "src/config/env.ts",
+      "sourceSha256": "602cc1c4412cd1be30a9831d4ce4e1d188459c362cbd883fc6e2a8e286b2c995",
+      "importedSha256": "2959b9d224d3abd62c8b8938099ec5d54f30b6c34d53abcf488ea8aa0760cbc1",
+      "reason": "Step 2 explicit local runtime validation; retain managed production controls."
+    },
+    {
+      "path": "src/lib/ai/provider.ts",
+      "sourceSha256": "29e0e70c39cbc4182b637ea8cf282dd24a01a023d723ab3c1d642871c2b301e6",
+      "importedSha256": "775cc1fd11619c61b75ce544448934ec17238b0cb5fcbd8a1f52d0b39c10cbc7",
+      "reason": "Step 2 explicit unavailable embedding capability; no mock vectors in offline mode."
+    },
+    {
+      "path": "src/modules/documents/service.ts",
+      "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
+      "importedSha256": "5c59aa10d537adb2993abcb439b3f510c3f7a47283cc2966fc7236e1898f4ca5",
+      "reason": "Step 2 preserve lexical chunks when embeddings are unavailable; mark partial honestly."
+    },
+    {
+      "path": "src/setup-context.ts",
+      "sourceSha256": "8055efed3c49fab765ae20df13aada5151926de44f357a8b8558b363e21471f6",
+      "importedSha256": "532e5ae2700b245ebc1421228c6568b63343288441b9ae885d3e81798dd59ee2",
+      "reason": "Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected."
     }
   ]
 }

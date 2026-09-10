@@ -166,6 +166,7 @@ function csvListPreserveCase(defaultValue: string) {
 }
 
 const envSchema = z.object({
+  RUNTIME_PROFILE: z.enum(["desktop-local", "self-hosted", "managed"]).default("managed"),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DEPLOYMENT_ENV: z.enum(["development", "test", "staging", "production"]).optional(),
   PORT: z.coerce.number().int().positive().default(3000),
@@ -287,7 +288,7 @@ const envSchema = z.object({
   PRISMA_CONNECTION_LIMIT: z.coerce.number().int().min(1).max(20).default(3),
   PRISMA_POOL_TIMEOUT_SECONDS: z.coerce.number().int().min(1).max(120).default(20),
   REDIS_URL: z.string().default("redis://localhost:6379"),
-  QUEUE_MODE: z.enum(["bullmq", "inline"]).default("bullmq"),
+  QUEUE_MODE: z.enum(["bullmq", "inline", "postgres"]).default("bullmq"),
   QUEUE_PREFIX: z.string().default("orchestra"),
   WORKER_CONCURRENCY: z.coerce.number().int().min(1).max(50).default(5),
   ORCHESTRA_EMBED_WORKER: booleanString("false"),
@@ -671,8 +672,24 @@ const envSchema = z.object({
   CLIENT_SHARE_TOKEN_SECRET: z.string().min(16).default("change_me_client_share_secret")
 }).superRefine((value, context) => {
   const deploymentEnv = value.DEPLOYMENT_ENV ?? value.NODE_ENV;
-  const isProductionLikeDeployment = deploymentEnv === "staging" || deploymentEnv === "production";
-  const isProductionDeployment = deploymentEnv === "production";
+  const desktop = value.RUNTIME_PROFILE === "desktop-local";
+  const isProductionLikeDeployment = !desktop && (deploymentEnv === "staging" || deploymentEnv === "production");
+  const isProductionDeployment = !desktop && deploymentEnv === "production";
+  if (desktop) {
+    const fail = (field:string,message:string) => context.addIssue({code:z.ZodIssueCode.custom,path:[field],message});
+    try { const url=new URL(value.DATABASE_URL); if(!['postgres:','postgresql:'].includes(url.protocol)||!['localhost','127.0.0.1','[::1]'].includes(url.hostname))fail('DATABASE_URL','Desktop database must be local PostgreSQL'); }
+    catch { fail('DATABASE_URL','Invalid desktop database URL'); }
+    if(!['127.0.0.1','::1'].includes(value.HOST))fail('HOST','Desktop must bind loopback');
+    if(value.QUEUE_MODE!=='postgres'||value.REDIS_URL)fail('QUEUE_MODE','Desktop requires PostgreSQL jobs without Redis');
+    if(value.STORAGE_DRIVER!=='local'||!path.isAbsolute(value.STORAGE_LOCAL_ROOT))fail('STORAGE_LOCAL_ROOT','Desktop requires private absolute local storage');
+    if(value.MVP_BETA_FREE_TIER_MODE||value.DEMO_FIXTURES_ENABLED)fail('RUNTIME_PROFILE','Desktop cannot reuse hosted bypasses or demo fixtures');
+    for(const field of ['JWT_ACCESS_SECRET','JWT_REFRESH_SECRET','CLIENT_SHARE_TOKEN_SECRET','CONNECTOR_CREDENTIAL_ENCRYPTION_KEY','CONNECTOR_OAUTH_STATE_SECRET'] as const)
+      if(isWeakProductionSecret(value[field]))fail(field,'Desktop requires an installation-specific secret');
+    if(new Set([value.JWT_ACCESS_SECRET,value.JWT_REFRESH_SECRET,value.CLIENT_SHARE_TOKEN_SECRET,value.CONNECTOR_CREDENTIAL_ENCRYPTION_KEY,value.CONNECTOR_OAUTH_STATE_SECRET]).size!==5)fail('RUNTIME_PROFILE','Desktop secrets must be distinct');
+    for(const origin of [value.APP_BASE_URL,...value.CORS_ALLOWED_ORIGINS.split(',')]) {
+      try { if(!['localhost','127.0.0.1','[::1]'].includes(new URL(origin.trim()).hostname))fail('CORS_ALLOWED_ORIGINS','Desktop origins must be loopback'); } catch { fail('CORS_ALLOWED_ORIGINS','Invalid desktop origin'); }
+    }
+  } else if(value.QUEUE_MODE==='postgres') context.addIssue({code:z.ZodIssueCode.custom,path:['QUEUE_MODE'],message:'PostgreSQL queue requires explicit desktop-local profile'});
   const isFreeTierBetaProduction =
     isProductionDeployment &&
     value.MVP_BETA_FREE_TIER_MODE &&
@@ -1302,3 +1319,5 @@ export type AppEnv = z.infer<typeof envSchema>;
 export function getEnv(): AppEnv {
   return envSchema.parse(process.env);
 }
+
+export function parseEnv(input:Record<string,unknown>):AppEnv { return envSchema.parse(input); }

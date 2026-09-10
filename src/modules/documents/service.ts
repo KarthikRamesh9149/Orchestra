@@ -1803,6 +1803,7 @@ export class DocumentService {
       }
 
       for (const chunk of chunks) {
+        if (this.embeddings.unavailable) continue;
         const embedding = await this.embeddings.embedText(chunk.contextualContent ?? chunk.content);
         const vectorLiteral = `[${embedding.join(",")}]`;
         await this.prisma.$executeRawUnsafe(
@@ -1817,7 +1818,7 @@ export class DocumentService {
           id: documentVersionId,
           parseRevision: targetParseRevision
         },
-        data: { status: "ready" }
+        data: { status: this.embeddings.unavailable ? "partial" : "ready" }
       });
 
       // Invalidate stale Socrates suggestions immediately. The brain pipeline

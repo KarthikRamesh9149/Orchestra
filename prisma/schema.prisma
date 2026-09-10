@@ -1,3 +1,37 @@
+// Desktop queue CHECK constraints and partial indexes remain migration-owned.
+model DesktopJob {
+  id             String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name           String
+  idempotencyKey String @map("idempotency_key")
+  payload        Json
+  status         String @default("queued")
+  ownerToken     String? @map("owner_token") @db.Uuid
+  fence          BigInt @default(0)
+  leaseUntil     DateTime? @map("lease_until") @db.Timestamptz
+  attempts       Int @default(0)
+  maxAttempts    Int @default(3) @map("max_attempts")
+  availableAt    DateTime @default(now()) @map("available_at") @db.Timestamptz
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  failureCode    String? @map("failure_code")
+  cancellation   DesktopJobCancellation?
+  @@unique([name, idempotencyKey])
+  @@map("desktop_jobs")
+}
+
+model DesktopLimitState {
+  key String @id
+  data Json @default("{}")
+  @@map("desktop_limit_state")
+}
+
+model DesktopJobCancellation {
+  jobId String @id @map("job_id") @db.Uuid
+  requestedAt DateTime @default(now()) @map("requested_at") @db.Timestamptz
+  job DesktopJob @relation(fields:[jobId],references:[id],onDelete:Cascade,onUpdate:NoAction)
+  @@map("desktop_job_cancellations")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
