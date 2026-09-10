@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import {copyText} from '../lib/clipboard';
 import {
   Check,
   Code2,
@@ -95,7 +96,7 @@ function IntegrationIcon({ kind }: { kind: Integration["kind"] }) {
   };
   const { bg, color, icon } = configs[kind] ?? configs.generic;
   return (
-    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg" style={{ background: bg, color }}>
+    <div aria-hidden="true" className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg" style={{ background: bg, color }}>
       {icon}
     </div>
   );
@@ -218,7 +219,7 @@ function IntegrationsSection() {
                     style={
                       intg.status === "connected"
                         ? { background: "rgba(42,157,143,0.08)", color: "var(--teal-text)" }
-                        : { background: "var(--bg-inset)", color: "var(--text-faint)" }
+                        : { background: "var(--bg-inset)", color: "var(--text-muted)" }
                     }
                   >
                     {intg.status === "connected" ? "connected" : intg.status === "available" ? "available" : intg.status === "needs_attention" ? "needs attention" : "unavailable"}
@@ -372,11 +373,13 @@ function WorkspaceSection() {
     }
   };
 
-  const handleCopySlug = () => {
+  const handleCopySlug = async () => {
     if (!workspace) return;
-    navigator.clipboard?.writeText(workspace.slug);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
+    try {
+      await copyText(workspace.slug);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch { showToast("Workspace slug could not be copied.", "error"); }
   };
 
   const handleInvite = async () => {
@@ -489,6 +492,7 @@ function WorkspaceSection() {
         <div className="flex items-center gap-3">
           {editingName ? (
             <input
+              aria-label="Workspace name"
               value={nameValue}
               onChange={(e) => setNameValue(e.target.value)}
               className="flex-1 rounded-lg border border-[var(--terracotta)] bg-[var(--bg-page)] px-3 py-2 font-sans text-[14px] text-[var(--text-default)] outline-none"

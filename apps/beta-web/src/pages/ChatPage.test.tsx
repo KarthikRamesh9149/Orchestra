@@ -237,6 +237,28 @@ describe("server-authoritative Socrates chat", () => {
     expect(mocks.uploadDoc.mock.calls[0][2].operationId).toBe(mocks.reconcileDocumentUpload.mock.calls[0][1]);
   });
 
+  it.each([[false, true], [true, true], [true, false]])('preserves a late first-session handoff without overriding a later selection (%s, away=%s)', async (chooseAnother, leaveRoute) => {
+    let accept!: () => void;
+    mocks.streamSocratesV1.mockImplementation((_projectId, _question, _sessionId, opts) => new Promise(resolve => {
+      accept = () => {
+        opts?.handlers?.onMessageCreated?.({sessionId: SESSION_ID, userMessageId: USER_MESSAGE_ID, assistantMessageId: ASSISTANT_MESSAGE_ID, createdAt: '2026-08-19T01:00:01.000Z'});
+        history = [userRow('Keep the pending chat'), assistantRow('Persisted late answer.')];
+        resolve({answer_md:'Persisted late answer.',citations:[],open_targets:[],suggested_prompts:[],confidence:'high',limitations:[],artifact:null,sourceStates:{},modelMetadata:{},sessionId:SESSION_ID,message:{userMessageId:USER_MESSAGE_ID,assistantMessageId:ASSISTANT_MESSAGE_ID,createdAt:'2026-08-19T01:00:01.000Z'}});
+      };
+    }));
+    const first = renderChat();
+    await userEvent.setup().type(screen.getByPlaceholderText('Ask Socrates anything about your project…'), 'Keep the pending chat{Enter}');
+    await waitFor(() => expect(mocks.streamSocratesV1).toHaveBeenCalledTimes(1));
+    if (leaveRoute) first.unmount();
+    if (chooseAnother) act(() => useChatStore.getState().setActiveId(null));
+    await act(async () => accept());
+    expect(useChatStore.getState().activeId).toBe(chooseAnother ? null : SESSION_ID);
+    if (!leaveRoute) first.unmount();
+    renderChat();
+    if (!chooseAnother) await waitFor(() => expect(screen.getByText('Persisted late answer.')).toBeVisible());
+    else expect(screen.getByTestId('location')).toHaveTextContent('/chat');
+  });
+
   it("[FIX-36] restores an unsent draft after the chat route unmounts", async () => {
     const user = userEvent.setup();
     const first = renderChat();

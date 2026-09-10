@@ -164,7 +164,7 @@ function PendingActions({
         type="button"
         onClick={onApprove}
         disabled={pending}
-        className="rounded-full bg-[#2A9D8F] px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
+        className="rounded-full bg-[var(--teal)] px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-white transition-opacity hover:opacity-90"
       >
         {pending ? "Saving…" : "Approve"}
       </button>
@@ -172,7 +172,7 @@ function PendingActions({
         type="button"
         onClick={onReject}
         disabled={pending}
-        className="rounded-full border border-[rgba(158,59,46,0.2)] px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[#9E3B2E] transition-colors hover:border-[#9E3B2E]"
+        className="rounded-full border border-[rgba(158,59,46,0.2)] px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--red-text)] transition-colors hover:border-[var(--red-text)]"
       >
         {pending ? "Saving…" : "Reject"}
       </button>

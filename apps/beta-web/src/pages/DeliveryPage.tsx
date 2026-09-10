@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, useTransition } from "react";
+import {copyText} from '../lib/clipboard';
+import {isDesktop} from '../lib/desktop';
 import { Link } from "react-router-dom";
 import { AlertTriangle, CheckCircle2, CircleDashed, Clipboard, Download, ExternalLink, HeartPulse, RefreshCw, Rocket, ShieldCheck, Sparkles, Workflow } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -106,15 +108,23 @@ export function DeliveryPage() {
   const copyPreflight = async () => {
     if (!preflight) return;
     try {
-      await navigator.clipboard.writeText(agentHandoff(preflight, projectId, targetAgent));
+      await copyText(agentHandoff(preflight, projectId, targetAgent));
       toast(`Exact ${agentLabel(targetAgent)} context pack copied.`, "success");
     } catch {
       toast("The context pack could not be copied. Download it instead.", "error");
     }
   };
 
-  const downloadPreflight = () => {
+  const downloadPreflight = async () => {
     if (!preflight) return;
+    if(isDesktop()){
+      try{
+        const download=(window.orchestra as typeof window.orchestra & {downloadPreflight?:(projectId:string,packId:string)=>Promise<{ok:boolean;error?:{message:string}}>})?.downloadPreflight;
+        if(!download)throw new Error('Native context pack save is unavailable.');
+        const result=await download(projectId,preflight.contextPack.id);if(!result.ok)throw new Error(result.error?.message??'Save failed.');
+      }catch(error){toast(error instanceof Error?error.message:'Context pack could not be saved.', 'error');}
+      return;
+    }
     const blob = new Blob([agentHandoff(preflight, projectId, targetAgent)], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -204,7 +214,7 @@ function AgentPreflightPanel({ projectId, taskPrompt, targetAgent, result, busy,
       {result.blockers.length ? <div className="mt-3 rounded-lg border border-[var(--amber-text)]/20 bg-[var(--tint-amber)] p-3"><p className="font-mono text-[9px] uppercase text-[var(--amber-text)]">Resolve before implementation</p><BulletList items={result.blockers} /><div className="mt-3 flex flex-wrap gap-3"><TargetLink href="/truth-inbox" label="Review in Truth Inbox" /><TargetLink href="/memory" label="Add current truth or acceptance criteria" /><TargetLink href="/chat" label="Ask Socrates" /></div></div> : null}
       <div className="mt-3 grid gap-3 md:grid-cols-2"><ResultList title="Current accepted truth" items={result.currentAcceptedTruth} emptyText="No accepted Product Brain truth matches this task yet." /><ResultList title="Technical constraints" items={result.technicalConstraints} emptyText="No task-specific technical constraints are recorded." /><ResultList title="Known conflicts" items={result.knownConflicts} emptyText="No unresolved conflict is linked to this task." /><ResultList title="Required tests" items={result.requiredTests} emptyText="No task-specific acceptance or test requirement is recorded." /><ResultList title="Implementation boundaries" items={result.implementationBoundaries} emptyText="No additional implementation boundary is recorded." /><ResultList title="Open questions" items={result.openQuestions} emptyText="No additional open question is recorded." /></div>
       <div className="mt-3 rounded-lg border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-3"><p className="text-xs font-semibold text-[var(--text-default)]">Give this exact pack to {agentLabel(targetAgent)}</p><p className="mt-1 text-[11px] leading-4 text-[var(--text-muted)]">Connect {agentLabel(targetAgent)} to Orchestra MCP, then call <span className="font-mono text-[10px] text-[var(--text-default)]">orchestra.get_context_pack</span> with project <span className="font-mono text-[10px]">{projectId}</span> and pack <span className="font-mono text-[10px]">{result.contextPack.id}</span>. After implementation, record the run through <span className="font-mono text-[10px] text-[var(--text-default)]">orchestra.record_agent_run</span> so Postflight can review the evidence.</p><div className="mt-3 flex flex-wrap gap-2"><button type="button" onClick={onCopy} className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)]"><Clipboard size={12} aria-hidden="true" />Copy for {agentLabel(targetAgent)}</button><button type="button" onClick={onDownload} className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)]"><Download size={12} aria-hidden="true" />Download Markdown</button></div></div>
-      <McpAgentSetup projectId={projectId} packId={result.contextPack.id} targetAgent={targetAgent} toast={toast} />
+      {isDesktop() ? <p role="note" className="mt-3 text-xs text-[var(--text-muted)]">This pack is stored locally. Copy or save it for review. External agent connections are not configured in this build; MCP pairing is qualified in Step 5.</p> : <McpAgentSetup projectId={projectId} packId={result.contextPack.id} targetAgent={targetAgent} toast={toast} />}
       <details className="mt-3"><summary className="cursor-pointer text-xs font-medium text-[var(--terracotta-text)]">Open generated context pack</summary><pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap rounded-lg bg-[var(--bg-elevated)] p-3 font-mono text-[10px] leading-5 text-[var(--text-muted)]">{result.contextPack.bodyMarkdown}</pre></details>
     </div> : null}
   </section>;

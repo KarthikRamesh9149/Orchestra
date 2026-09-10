@@ -1,12 +1,18 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 794,
+  "unchangedImportedFiles": 786,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
       "sourceSha256": "335aa4d5e5cecef1a7a1463c2a395a9756eb36bf17b2858fa72be9e23885e144",
       "importedSha256": "47d8e51d808cd65ad82d85f54120aca1ba42f4e8c7a79a04557885967be68016",
       "reason": "Step 4 local first-run routes; preserve hosted routes and styling."
+    },
+    {
+      "path": "apps/beta-web/src/components/shell/NavRail.tsx",
+      "sourceSha256": "3480ca2ab69d0d131022bd6b698fe5e987a185383d3fca851f44b56859fde0e6",
+      "importedSha256": "91374666971165229bf37f07d0b70df3bf6d42993802acaa71eaf1eb47793c79",
+      "reason": "Step 4 use the existing accessible terracotta text token for selected navigation."
     },
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
@@ -33,6 +39,30 @@
       "reason": "Step 4 preserve authoritative partial document processing state."
     },
     {
+      "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
+      "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
+      "importedSha256": "b1c0f5230ed6bcdb04dba591ae619f85aceb9f00f97f08d35e74ace8259ad947",
+      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection."
+    },
+    {
+      "path": "apps/beta-web/src/pages/ChatPage.tsx",
+      "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
+      "importedSha256": "02248e68538955f9e16ac89059812755b781fbcd9ab282761a9a28b184f03908",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions."
+    },
+    {
+      "path": "apps/beta-web/src/pages/DashboardPage.tsx",
+      "sourceSha256": "5eb2d83facb18799c764a06412238b4f9099802bf4a40f7b06646b614adbd094",
+      "importedSha256": "4e17f081955e63b0716425f08ce7a0d2ee13b194e28e5936778d0f9bc5672dcf",
+      "reason": "Step 4 maintain readable provider labels during existing hover opacity using the existing text token."
+    },
+    {
+      "path": "apps/beta-web/src/pages/DeliveryPage.tsx",
+      "sourceSha256": "d0ebdf4b131fe053a09bb19a1103e84210773baa3c2bb51a20e6bc99cecbcdd7",
+      "importedSha256": "83d02170f199f0f90540688b0a9f13f1a4bad01b026bf1fa9036c8ce840ea356",
+      "reason": "Step 4 native context-pack save and clipboard with explicit failures; preserve hosted behavior and visual structure."
+    },
+    {
       "path": "apps/beta-web/src/pages/LiveDocViewerPage.tsx",
       "sourceSha256": "5645d0fb0f239d67bbbbd4af8b22865ec1ee704de7417e5114fecbddd72de7d5",
       "importedSha256": "53ad7ce09f9a45614c8a4ddad531aa1945dd3e980137dbca859543bce69e871f",
@@ -41,14 +71,26 @@
     {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
       "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
-      "importedSha256": "82f6fae1ffe25ff23699652280cb1679882b5cc6de2b968cc5385244c682f6ca",
-      "reason": "Step 4 truthful partial-processing status without changing existing visual tokens."
+      "importedSha256": "2a01c362f0bc65ddf624b6d05bf2f4ef3cf94894581ebdc58e255270dce45810",
+      "reason": "Step 4 truthful partial-processing status and authorized native clipboard feedback without redesign."
     },
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "606fa78e9485e16122a8408639d3cb485b2f363866df72ecf3854b3af1001a23",
+      "importedSha256": "cabde95daa96757b4fd7c8129fbabcc566f0f1bf1cc107643af0561ed4a3634c",
       "reason": "Step 4 explicitly unavailable local invitations; preserve shared workflow and styling."
+    },
+    {
+      "path": "apps/beta-web/src/pages/TimelinePage.tsx",
+      "sourceSha256": "55ef10b78a371f999959d21416c4a76cf1aca82e65c3bba565f55812aa81598a",
+      "importedSha256": "fd8492a1feef2f218dd3a956e6be9d10dcb578168f0e8aff06a7af4a51237ab1",
+      "reason": "Step 4 reuse existing accessible teal/red theme tokens for approval and review controls; preserve layout and interaction."
+    },
+    {
+      "path": "apps/beta-web/src/pages/TruthInboxPage.tsx",
+      "sourceSha256": "1b315aa52bc52f1ed62c358d8dd05156c61a28055424fab5e3d09fbd2f683ad7",
+      "importedSha256": "477243879dcb1ebc734a81a98e2932865bdae86f01d2698b2349e3133d002edc",
+      "reason": "Step 4 explicit filter names for reliable keyboard and assistive-technology operation; no styling changes."
     },
     {
       "path": "apps/beta-web/src/pages/WorkspacesPage.tsx",
@@ -113,14 +155,20 @@
     {
       "path": "src/modules/documents/service.ts",
       "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
-      "importedSha256": "5c59aa10d537adb2993abcb439b3f510c3f7a47283cc2966fc7236e1898f4ca5",
-      "reason": "Step 2 preserve lexical chunks when embeddings are unavailable; mark partial honestly."
+      "importedSha256": "6d8ce92af233791f5093d69d0f61e56065e1608aab5f657001b6c376c0c5ae82",
+      "reason": "Steps 2/4 preserve offline lexical chunks and honest partial status; enqueue deterministic source projections after desktop uploads without changing the hosted beta shortcut."
     },
     {
       "path": "src/modules/integrations/integrations.service.ts",
       "sourceSha256": "cbcc2fbf0fecd09e45d12580ca4d880cc159c9bc35c8a4369e2f54426ec6a90e",
       "importedSha256": "9d14638360dca535011e21cd7426ef5c12f81f62cca1d881d08faefff120f14c",
       "reason": "Step 4 truthful desktop capability readiness; provider qualification stays Step 5."
+    },
+    {
+      "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
+      "sourceSha256": "add6f4df391aacd88b1b7a2806564a3cce10a8a77eb8096c58351d614793448b",
+      "importedSha256": "5aefdad6a8ba349ef02b33b0d7e89b95695494fb09a81dfc6d0cc3d05bb61a98",
+      "reason": "Step 4 packet truth-state boundary reflects persisted accepted/rejected decisions instead of always claiming a pending decision."
     },
     {
       "path": "src/setup-context.ts",

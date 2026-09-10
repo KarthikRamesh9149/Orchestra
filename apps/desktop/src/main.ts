@@ -1,4 +1,6 @@
-import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog,safeStorage} from 'electron';
+import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog,safeStorage,clipboard,shell} from 'electron';
+import {openConfirmedExternal} from './external-link.js';
+import {copyPlainText} from './clipboard.js';
 import {join} from 'node:path';
 import {commandSchema,isTrustedFrame} from './contracts.js';
 import {assetResponse} from './assets.js';
@@ -7,7 +9,7 @@ import {HostClient} from './host-client.js';
 import {Selections} from './selections.js';
 import {verifyNativeBundle} from './integrity.js';
 import {localHttp} from './local-http.js';
-import {downloadDocument} from './document-download.js';
+import {downloadDocument,downloadPreflight} from './document-download.js';
 
 protocol.registerSchemesAsPrivileged([{scheme:'orchestra',privileges:{standard:true,secure:true,supportFetchAPI:true}}]);
 app.setName('Orchestra Desktop Internal');
@@ -27,12 +29,32 @@ else {
   session.defaultSession.setPermissionRequestHandler((_contents,_permission,callback)=>callback(false));
   session.defaultSession.setPermissionCheckHandler(()=>false);
   window=new BrowserWindow({width:1280,height:850,show:false,webPreferences:{preload:join(__dirname,'preload.cjs'),sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true,devTools:!app.isPackaged}});
-  window.webContents.setWindowOpenHandler(()=>({action:'deny'}));
-  window.webContents.on('will-navigate',(event,url)=>{if(!isTrustedFrame(url,true))event.preventDefault();});
+  let externalPrompt=false;
+  const outside=async(url:string)=>{
+   if(externalPrompt)return;externalPrompt=true;
+   try{await openConfirmedExternal(url,async destination=>(await dialog.showMessageBox(window!,{type:'question',message:'Open this source in your browser?',detail:destination,buttons:['Cancel','Open browser'],defaultId:0,cancelId:0})).response===1,destination=>shell.openExternal(destination));}
+   catch{await dialog.showMessageBox(window!,{type:'error',message:'The source could not be opened in your browser.'});}
+   finally{externalPrompt=false;}
+  };
+  window.webContents.setWindowOpenHandler(({url})=>{void outside(url);return {action:'deny'};});
+  window.webContents.on('will-navigate',(event,url)=>{if(!isTrustedFrame(url,true)){event.preventDefault();void outside(url);}});
   window.webContents.on('will-attach-webview',event=>event.preventDefault());
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
   ipcMain.handle('orchestra:status',event=>{if(!trusted(event))throw new Error('Unauthorized frame');return host.status;});
+  ipcMain.handle('orchestra:copy-text',(event,input:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   try{return {ok:true,data:copyPlainText(input,text=>clipboard.writeText(text))};}
+   catch{return {ok:false,error:{code:'copy_failed',message:'The text could not be copied.'}};}
+  });
   let downloading=false;
+  ipcMain.handle('orchestra:download-preflight',async(event,input:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(downloading)return {ok:false,error:{code:'download_busy',message:'Finish the current download first.'}};
+   downloading=true;
+   try{return {ok:true,data:await downloadPreflight(input,host,async name=>{const result=await dialog.showSaveDialog(window!,{defaultPath:name,title:'Save Preflight context pack'});return result.canceled?undefined:result.filePath;})};}
+   catch{return {ok:false,error:{code:'download_failed',message:'The context pack could not be saved. Check the destination and try again.'}};}
+   finally{downloading=false;}
+  });
   ipcMain.handle('orchestra:download-document',async(event,input:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
    if(downloading)return {ok:false,error:{code:'download_busy',message:'Finish the current download first.'}};

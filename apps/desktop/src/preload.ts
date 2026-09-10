@@ -4,7 +4,9 @@ const invoke=(input:unknown)=>ipcRenderer.invoke('orchestra:command',input) as P
 const bridge:DesktopBridge={
  bootstrap:()=>invoke({operation:'local.bootstrap'}),
  completeOnboarding:()=>invoke({operation:'local.onboard'}),
+ copyText:text=>ipcRenderer.invoke('orchestra:copy-text',text),
  downloadDocument:(projectId,documentId)=>ipcRenderer.invoke('orchestra:download-document',{projectId,documentId}),
+ downloadPreflight:(projectId,packId)=>ipcRenderer.invoke('orchestra:download-preflight',{projectId,packId}),
  status:()=>ipcRenderer.invoke('orchestra:status') as Promise<RuntimeStatus>,
  workspaces:{list:()=>invoke({operation:'workspace.list'}),create:name=>invoke({operation:'workspace.create',name}),select:projectId=>invoke({operation:'workspace.select',projectId})},
  chooseEvidence:()=>ipcRenderer.invoke('orchestra:choose-evidence'),

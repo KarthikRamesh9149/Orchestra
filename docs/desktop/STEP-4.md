@@ -1,6 +1,6 @@
-# Step 4: local UI implementation and acceptance checkpoint
+# Step 4: local UI implementation and acceptance
 
-Status: **In progress. Do not merge Step 4 into main yet.**
+Status: **Mac-local Step 4 gate passed. Internal development milestone, not public-release or real-AI certification.**
 
 Repository: private `KarthikRamesh9149/Orchestra`, branch `codex/desktop-step-4`, based on completed Mac Step 3 `34a4b51`. Windows is deferred by the user. No production repository, hosted service, public release, paid Actions or provider account was changed.
 
@@ -33,11 +33,11 @@ Verified in the consolidated run:
 
 Native-save testing supplies a synthetic destination through a test replacement of the OS save-dialog result. It verifies the real authorized download and file-writing implementation, not a manually operated native save panel. UI scripts use Playwright Electron; no Browser plugin was installed because no supported installation action was available.
 
-Automated verification: **1,377 backend tests passed; 195 frontend tests passed**. Backend and desktop typechecks, frontend production build, original-source hash/inventory checks, focused native security tests and the local security scanner passed. Thirteen optional database tests remain skipped in the general suite; they are not relabelled as passes. The final consolidated packaged smoke completed with zero recorded renderer exceptions or HTTP failures.
+These initial checkpoint results are historical. Candidate-specific totals, completed acceptance work and qualification limits are recorded in [STEP-4-ACCEPTANCE.md](STEP-4-ACCEPTANCE.md).
 
-## Remaining Step 4 acceptance work
+## Acceptance work added after the initial checkpoint
 
-The main workflows above are not evidence that every parity row is complete. Keep the gate open for:
+The following are now implemented and exercised by additional packaged acceptance scripts; see the final report for exact outcomes:
 
 - Packaged Truth Inbox/Change Packet/impact-map accept/reject/assign/snooze workflows using controlled populated truth fixtures, including Product Brain and Live Doc persistence.
 - Delivery traces/receipts, FDE findings, feedback and all corresponding source-navigation/failure paths with populated evidence.
@@ -45,4 +45,4 @@ The main workflows above are not evidence that every parity row is complete. Kee
 - Complete keyboard/focus, resizing/zoom and failure/restart coverage against the action inventory; repeatable startup and warm-route measurements. No p95 performance certification is claimed.
 - Explicit review of AI-dependent UI states. Real external generation and connector/agent-client qualification remain Step 5, and shared workflows remain Step 6; unavailable states are not functional certification of those features.
 
-The generated feature inventory deliberately remains a structural inventory, not a blanket passing runtime ledger. Step 4 must not be marked complete or merged until its remaining acceptance work is evidenced.
+The generated feature inventory deliberately remains structural: it includes hidden legacy and shared controls, not 331 independent runtime passes. The final report maps current local workflow families to evidence and preserves Step 5/6/7 ownership. Real model/provider tests, shared teams, population performance benchmarks, signing and publication are not claimed by this local milestone. Stop after Step 4 and wait for authorization for Step 5.

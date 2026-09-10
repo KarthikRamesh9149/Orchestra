@@ -833,6 +833,12 @@ export function ChatPage() {
     const paint = () => {
       const state = useChatStore.getState();
       if (!projectId || state.projectId !== projectId) return;
+      // A first message can receive its server ID while this route is away.
+      // Follow the remembered selection on remount, not a stale route callback.
+      if (!conversationId && state.activeId) {
+        navigate(`/chat/${state.activeId}`, { replace: true });
+        return;
+      }
       const pending = activeChatRequests.get(conversationId ?? `pending:${projectId}`);
       if (pending && pending.projectId === projectId && pending.generation === state.generation) {
         setMessages([...pending.baseMessages, streamingMessage(pending)]);
@@ -844,7 +850,7 @@ export function ChatPage() {
     streamObservers.add(paint);
     paint();
     return () => { streamObservers.delete(paint); };
-  }, [projectId, conversationId]);
+  }, [projectId, conversationId, navigate]);
 
   // Clear the render cache before paint when the active tenant changes.
   useLayoutEffect(() => {
@@ -1000,7 +1006,7 @@ export function ChatPage() {
     const trimmed = text.trim();
     const currentConvId = activeConvId ?? conversationId ?? null;
     const submittedDraftId = draftConversationId;
-    if (!trimmed || requestInFlightRef.current || (currentConvId && activeChatRequests.has(currentConvId))) return;
+    if (!trimmed || requestInFlightRef.current || activeChatRequests.has(currentConvId ?? `pending:${projectId}`)) return;
 
     if (!projectId) {
       addToast("Open or create a project before asking Socrates.", "info");
@@ -1009,6 +1015,7 @@ export function ChatPage() {
 
     requestInFlightRef.current = true;
     const generation = useChatStore.getState().generation;
+    const selectionAtSubmit = useChatStore.getState().lastActiveByProject;
     const isCurrentIdentity = () => generation === useChatStore.getState().generation && useChatStore.getState().projectId === projectId;
     const isVisible = () => mountedRef.current && isCurrentIdentity() && visibleRoute.current.projectId === projectId &&
       (visibleRoute.current.conversationId ?? null) === (convId ?? null);
@@ -1067,7 +1074,11 @@ export function ChatPage() {
                 hasArtifacts: false,
                 messages: baseMessages,
               });
-              if (stillOnNewChat) {
+              // Preserve the accepted chat across navigation, but never steal
+              // selection after the user explicitly chose another/new chat.
+              const selectionUnchanged = useChatStore.getState().lastActiveByProject === selectionAtSubmit;
+              if (selectionUnchanged) setActiveId(convId);
+              if (stillOnNewChat && selectionUnchanged) {
                 setActiveConvId(convId);
                 setActiveId(convId);
                 navigate(`/chat/${convId}`, { replace: true });

@@ -16,7 +16,9 @@ export type OperationResult={ok:true;data:unknown}|{ok:false;error:{code:string;
 export interface DesktopBridge {
  bootstrap():Promise<OperationResult>;
  completeOnboarding():Promise<OperationResult>;
+ copyText(text:string):Promise<OperationResult>;
  downloadDocument(projectId:string,documentId:string):Promise<OperationResult>;
+ downloadPreflight(projectId:string,packId:string):Promise<OperationResult>;
  status():Promise<RuntimeStatus>;
  workspaces:{list():Promise<OperationResult>;create(name:string):Promise<OperationResult>;select(projectId:string):Promise<OperationResult>};
  chooseEvidence():Promise<OperationResult>;

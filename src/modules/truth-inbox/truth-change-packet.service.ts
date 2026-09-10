@@ -234,7 +234,7 @@ export class TruthChangePacketService {
       impactMap,
       confidence,
       decision: { required: canDecide, options, blockers },
-      boundaries: boundaryStates(newEvidence.length, true, currentAcceptedTruth.length),
+      boundaries: boundaryStates(newEvidence.length, true, currentAcceptedTruth.length, proposal.status),
       generatedAt: new Date().toISOString(),
       limitations: unique([
         "Evidence, interpretation, proposed change, and accepted truth are separate records.",
@@ -293,11 +293,12 @@ function decisionOptions(item: TruthInboxItem, acceptReady: boolean): TruthChang
   return options;
 }
 
-function boundaryStates(evidenceCount: number, proposed: boolean, acceptedCount: number): TruthChangePacket["boundaries"] {
+export function boundaryStates(evidenceCount: number, proposed: boolean, acceptedCount: number, proposalStatus = "proposed"): TruthChangePacket["boundaries"] {
+  const decided = ["accepted", "rejected", "superseded"].includes(proposalStatus);
   return [
     { stage: "evidence", state: evidenceCount ? "present" : "missing", label: "Evidence", detail: evidenceCount ? `${evidenceCount} source record${evidenceCount === 1 ? "" : "s"}` : "No available source record" },
     { stage: "interpretation", state: evidenceCount ? "present" : "missing", label: "Interpretation", detail: "Machine or workflow interpretation; never truth by itself" },
-    { stage: "proposed_change", state: proposed ? "pending" : "missing", label: "Proposed change", detail: proposed ? "Awaiting an authorized human decision" : "No change proposal exists yet" },
+    { stage: "proposed_change", state: proposed ? decided ? "present" : "pending" : "missing", label: "Proposed change", detail: !proposed ? "No change proposal exists yet" : decided ? `Recorded proposal state: ${proposalStatus}. Opening this packet does not change that decision.` : "Awaiting an authorized human decision" },
     { stage: "accepted_truth", state: "unchanged", label: "Accepted truth", detail: acceptedCount ? `${acceptedCount} linked accepted record${acceptedCount === 1 ? "" : "s"}; unchanged by opening this packet` : "No accepted truth changed" }
   ];
 }

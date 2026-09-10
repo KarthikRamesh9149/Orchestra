@@ -64,7 +64,7 @@ describe.skipIf(!enabled)('real restricted desktop engine',()=>{
   try{
    const services=engine.context.services;
    const project=await services.projectService.createProject({orgId:org.id,actorUserId:user.id,name:'Local source evidence'});
-   const source=Buffer.from('# Offline acceptance\n\nThe launch approval requires exactly three reviewers. The retention period is ninety days.');
+   const source=Buffer.from('# Offline acceptance\n\nThe launch approval workflow requires exactly three reviewers. The retention period is ninety days.');
    const login=await services.authService.login({email:user.email,password,sessionMode:'bearer'});
    const headers={'x-orchestra-local-token':engine.localToken,authorization:`Bearer ${login.accessToken}`};
    const uploadResponse=await engine.app.inject({method:'POST',url:`/v1/projects/${project.id}/documents/upload`,headers,payload:{title:'Offline acceptance',kind:'prd',visibility:'internal',pastedText:source.toString()}});
@@ -85,16 +85,18 @@ describe.skipIf(!enabled)('real restricted desktop engine',()=>{
    expect(answer.citations.length).toBeGreaterThan(0);
    expect(answer.modelMetadata.provider).not.toBe('openai');
    expect(answer.costEstimate.modelCalls).toBe(0);
-   // Explicit synthetic human-authored initial truth, not mock AI output.
+   // The real offline worker now projects the uploaded human-authored source.
+   // Do not seed an artifact: doing so used to conceal the disabled chain.
    const section=await owner.documentSection.findFirstOrThrow({where:{documentVersionId:version.id}});
-   const artifact=await owner.artifactVersion.create({data:{projectId:project.id,artifactType:'brain_graph',versionNumber:1,status:'accepted',payloadJson:{origin:'synthetic-human-authored'},createdBy:user.id}});
-   const node=await owner.brainNode.create({data:{projectId:project.id,artifactVersionId:artifact.id,nodeKey:'launch',nodeType:'constraint',title:'Launch review',summary:'Three reviewers',status:'active'}});
+   const artifact=await owner.artifactVersion.findFirstOrThrow({where:{projectId:project.id,artifactType:'brain_graph',status:'accepted'},orderBy:{versionNumber:'desc'}});
+   const node=await owner.brainNode.findFirstOrThrow({where:{artifactVersionId:artifact.id}});
    const proposal=await services.changeProposalService.create(project.id,user.id,{title:'Clarify launch approval',summary:'Require three reviewers',proposalType:'clarification',newUnderstanding:{text:'Launch approval requires exactly three reviewers.'},affectedDocumentSectionIds:[section.id],affectedBrainNodeIds:[node.id],communicationMessageIds:[],externalEvidenceRefs:['synthetic-source:'+version.id]});
    await expect(services.changeProposalService.accept(project.id,proposal.id,randomUUID())).rejects.toThrow();
    expect((await services.changeProposalService.accept(project.id,proposal.id,user.id)).status).toBe('accepted');
    expect((await services.changeProposalService.accept(project.id,proposal.id,user.id)).status).toBe('accepted');
    for(let n=0;n<30&&await engine.worker.runOnce();n++){}
    expect(await owner.liveDocSectionRevision.count({where:{proposalId:proposal.id}})).toBe(1);
+   expect((await owner.specChangeProposal.findUniqueOrThrow({where:{id:proposal.id}})).acceptedBrainVersionId).toBeTruthy();
    await engine.close();engine=await createLocalEngine({databaseUrl:process.env.DESKTOP_RUNTIME_DATABASE_URL!,installationRoot:root});
    expect(await engine.context.storage.getObject(version.fileKey)).toEqual(source);
    expect(JSON.stringify(await engine.context.services.documentService.searchDocument(project.id,uploaded.documentId,user.id,{q:'three reviewers'}))).toContain('three reviewers');

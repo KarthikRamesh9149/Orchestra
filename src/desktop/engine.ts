@@ -15,6 +15,7 @@ import { PostgresWorker } from '../lib/jobs/postgres-worker.js';
 import { PostgresAiLimiter } from '../lib/ai-ops/postgres-limits.js';
 import { createJobHandlers } from '../lib/jobs/handlers.js';
 import { acquireDatabaseOwnership } from './database-ownership.js';
+import { requiresExternalGeneration } from './offline-jobs.js';
 
 /** Engine composition only. Native ownership, onboarding and packaging belong
  * to subsequent steps. No environment credentials are implicitly inherited. */
@@ -61,10 +62,10 @@ export async function createLocalEngine(input:{databaseUrl:string; installationR
     });
     const worker=new PostgresWorker(prisma,tx=>{
       const handlers=createJobHandlers(buildContext({...shared,prisma:tx,jobs:new PostgresJobDispatcher(tx)}));
-      // Legacy generation services may build fallback artifacts after provider
-      // errors. Offline mode must not turn those into apparently generated truth.
+      // Keep actual model work unavailable, but do not block deterministic
+      // source/accepted-decision projections merely because of legacy names.
       for(const name of Object.keys(handlers) as Array<keyof typeof handlers>)
-        if(name.startsWith('generate_')||name.startsWith('classify_')||name==='apply_accepted_change'||name==='deep_research_run')
+        if(requiresExternalGeneration(name))
           handlers[name]=async()=>{throw new Error('ai_not_configured');};
       return handlers;
     });

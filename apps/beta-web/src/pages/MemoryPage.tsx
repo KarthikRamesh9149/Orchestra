@@ -1,4 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import {copyText} from '../lib/clipboard';
+import {useToastStore} from '../components/ui/Toaster';
 import {
   Check,
   Copy,
@@ -371,7 +373,7 @@ function DocMenu({ doc, onRemove, onDownload }: { doc: Doc; onRemove: () => void
             {[
               { label: "Open", icon: FileText, action: () => { navigate(`/memory/docs/${doc.id}/view`); setOpen(false); } },
               { label: "Download original", icon: Download, action: () => { onDownload(); setOpen(false); } },
-              { label: "Copy doc ID", icon: Copy, action: () => { void navigator.clipboard?.writeText(doc.id); setOpen(false); } },
+              { label: "Copy doc ID", icon: Copy, action: () => { void copyText(doc.id).then(()=>setOpen(false)).catch(()=>useToastStore.getState().add('Document ID could not be copied.', 'error')); } },
             ].map(({ label, icon: Icon, action }) => (
               <button key={label} type="button" onClick={action} className="flex w-full items-center gap-3 px-4 py-2.5 font-sans text-[13px] text-[var(--text-default)] hover:bg-[var(--bg-inset)]">
                 <Icon size={14} strokeWidth={1.7} className="text-[var(--text-muted)]" /> {label}

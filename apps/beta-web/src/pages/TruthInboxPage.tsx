@@ -335,7 +335,7 @@ export function TruthInboxPage() {
 }
 
 function FilterSelect({ label, value, options, labels = {}, onChange }: { label: string; value: string; options: string[]; labels?: Record<string, string>; onChange: (value: string) => void }) {
-  return <label className="text-[10px] text-[var(--text-muted)]"><span className="mb-1 block font-mono uppercase tracking-[0.1em]">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-lg border border-[var(--border-soft)] bg-[var(--bg-elevated)] px-2 py-2 text-xs text-[var(--text-default)]"><option value="">{label === "Status" ? "Needs attention" : `All ${label.toLowerCase()}`}</option>{options.map((option) => <option key={option} value={option}>{labels[option] ?? option.replace(/_/g, " ")}</option>)}</select></label>;
+  return <label className="text-[10px] text-[var(--text-muted)]"><span className="mb-1 block font-mono uppercase tracking-[0.1em]">{label}</span><select aria-label={label} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-lg border border-[var(--border-soft)] bg-[var(--bg-elevated)] px-2 py-2 text-xs text-[var(--text-default)]"><option value="">{label === "Status" ? "Needs attention" : `All ${label.toLowerCase()}`}</option>{options.map((option) => <option key={option} value={option}>{labels[option] ?? option.replace(/_/g, " ")}</option>)}</select></label>;
 }
 
 function EvidenceRow({ evidence }: { evidence: TruthInboxItem["evidence"][number] }) {

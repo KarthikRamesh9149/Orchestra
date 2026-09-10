@@ -12,8 +12,18 @@ export async function downloadDocument(input:unknown,host:HostClient,selectPath:
  if(!response.ok)throw new Error('The authorized original document is unavailable.');
  const type=response.headers.get('content-type')??'';
  const extension=type.includes('pdf')?'.pdf':type.includes('wordprocessingml')?'.docx':type.includes('spreadsheetml')?'.xlsx':type.includes('csv')?'.csv':'.txt';
+ return saveResponse(response,`Orchestra-document-${documentId}${extension}`,selectPath);
+}
+export async function downloadPreflight(input:unknown,host:HostClient,selectPath:(name:string)=>Promise<string|undefined>){
+ const {projectId,packId}=z.object({projectId:z.string().uuid(),packId:z.string().uuid()}).strict().parse(input);
+ const result=await localHttp(new Request(`orchestra://app/v1/projects/${projectId}/agent-context-packs/${packId}`),host);
+ if(!result.ok)throw new Error('The authorized context pack is unavailable.');
+ const payload=z.object({data:z.object({id:z.literal(packId),bodyMarkdown:z.string().max(1024*1024)})}).parse(await result.json());
+ return saveResponse(new Response(`# Orchestra Agent Preflight\n\nProject ID: ${projectId}\nContext pack ID: ${packId}\n\n${payload.data.bodyMarkdown}`),`orchestra-preflight-${packId}.md`,selectPath);
+}
+async function saveResponse(response:Response,name:string,selectPath:(name:string)=>Promise<string|undefined>){
  try {
- const path=await selectPath(`Orchestra-document-${documentId}${extension}`);if(!path){return {cancelled:true};}
+ const path=await selectPath(name);if(!path){return {cancelled:true};}
  try{const stat=await lstat(path);if(!stat.isFile()||stat.isSymbolicLink())throw new Error('Choose a regular destination file.');}catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
  const temporary=join(dirname(path),'.orchestra-download-'+randomUUID());
  const file=await open(temporary,constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY|constants.O_NOFOLLOW,0o600);

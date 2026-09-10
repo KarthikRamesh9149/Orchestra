@@ -2,7 +2,7 @@
 
 One Source of Truth and Product Brain for high-speed teams.
 
-Private desktop-development repository. **Not a public desktop release yet.** The local engine and internal Mac shell have passed their scoped gates. Product onboarding/parity remain Step 4; Windows is explicitly deferred until test hardware is available. Do not run it against existing production infrastructure.
+Private desktop-development repository. **Not a public desktop release yet.** The local engine, internal Mac shell and local onboarding/workflows have passed their scoped gates through Step 4. Real AI/connectors/MCP qualification remains Step 5; Windows is explicitly deferred until test hardware is available. Do not run it against existing production infrastructure.
 
 ## Development baseline
 
@@ -12,9 +12,11 @@ Node.js 24 and npm are used for this baseline. Install dependencies with `npm ci
 
 See [desktop contract](docs/desktop/CONTRACT.md), [architecture](docs/desktop/ADR-001.md), [threat model](docs/desktop/THREAT-MODEL.md), [feature inventory](docs/desktop/feature-parity.json), and [Step 1 evidence](docs/desktop/STEP-1.md).
 
-For the portable engine, see [Step 2 setup and evidence](docs/desktop/STEP-2.md) and [its runtime decisions](docs/desktop/ADR-002.md). It uses local PostgreSQL, private files, durable jobs and offline evidence search without hosted signup or Redis. AI provider setup, packaged UI and operating-system qualification are not claimed complete.
+For the portable engine, see [Step 2 setup and evidence](docs/desktop/STEP-2.md) and [its runtime decisions](docs/desktop/ADR-002.md). It uses local PostgreSQL, private files, durable jobs and offline evidence search without hosted signup or Redis. Real AI provider and public-distribution qualification are not claimed complete.
 
 For the internal Mac shell and deferred release qualification, see [Step 3](docs/desktop/STEP-3.md) and [native runtime decisions](docs/desktop/ADR-003.md). This is not a public release.
+
+For local onboarding, chat continuity, source ingestion, approval/Live Doc and native recovery evidence, see [Step 4 acceptance](docs/desktop/STEP-4-ACCEPTANCE.md). The packaged tests use synthetic local data; they do not certify real AI models, external providers or shared teams.
 
 The source was imported as a snapshot, without upstream Git history. Its immutable revision and per-file hashes are recorded in [import manifest](docs/desktop/import-manifest.json). Excluded historical release evidence is not a claim that those upstream checks were unnecessary or passed here.
 

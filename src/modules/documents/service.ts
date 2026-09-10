@@ -1829,7 +1829,9 @@ export class DocumentService {
       });
 
       await this.finishJob(JobNames.embedDocumentChunks, embedKey);
-      if (this.isMvpBetaMode()) {
+      // Desktop owns a durable offline projection worker. The hosted beta
+      // shortcut must not leave newly uploaded local sources out of its Brain.
+      if (this.isMvpBetaMode() && this.env?.RUNTIME_PROFILE !== "desktop-local") {
         await this.enqueueDashboardRefresh(version.projectId, "document_ready");
         return { skipped: false };
       }

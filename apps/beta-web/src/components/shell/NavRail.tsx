@@ -311,7 +311,7 @@ export function NavRail() {
                   <span
                     className="whitespace-nowrap font-sans text-[13px]"
                     style={{
-                      color: active ? "var(--terracotta)" : "var(--text-default)",
+                      color: active ? "var(--terracotta-text)" : "var(--text-default)",
                       fontWeight: active ? 500 : 400,
                     }}
                   >

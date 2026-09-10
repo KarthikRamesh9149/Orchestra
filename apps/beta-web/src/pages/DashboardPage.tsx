@@ -419,7 +419,7 @@ function CalendarCard({ events }: { events: CalendarEvent[] }) {
     <div className={`${CARD} col-span-12 flex flex-col gap-4 sm:col-span-6 xl:col-span-4`}>
       <button type="button" onClick={() => navigate("/settings#integrations")} className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left">
         <SiGooglecalendar aria-hidden="true" focusable="false" size={14} color="#4285F4" />
-        <p className={EYEBROW_MUTED}>Google Calendar</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--text-default)]">Google Calendar</p>
       </button>
       <div className="flex items-center justify-between">
         <p className="font-sans text-[14px] font-medium text-[var(--text-default)]">Upcoming</p>
@@ -447,7 +447,7 @@ function SlackCard({ messages }: { messages: SlackMessage[] }) {
     <div className={`${CARD} col-span-12 flex flex-col gap-4 sm:col-span-6 xl:col-span-4`}>
       <button type="button" onClick={() => navigate("/settings#integrations")} className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left">
         <SiSlack aria-hidden="true" focusable="false" size={14} color="#4A154B" />
-        <p className={EYEBROW_MUTED}>Slack</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--text-default)]">Slack</p>
       </button>
       <div className="flex items-center justify-between">
         <span className="font-mono text-[12px] text-[var(--text-default)]">{messages[0]?.channelName ? `#${messages[0].channelName}` : "No channel connected"}</span>
@@ -478,7 +478,7 @@ function GitBranchCard({ commits }: { commits: GitCommitType[] }) {
     <div className={`${CARD} col-span-12 flex flex-col gap-4 sm:col-span-6 xl:col-span-4`}>
       <button type="button" onClick={() => navigate("/settings#integrations")} className="flex items-center gap-2 hover:opacity-80 transition-opacity text-left">
         <SiGithub aria-hidden="true" focusable="false" size={14} className="github-dark-invert text-[var(--text-default)]" />
-        <p className={EYEBROW_MUTED}>GitHub</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--text-default)]">GitHub</p>
       </button>
       <div className="flex items-center justify-between">
         <span className="truncate font-mono text-[12px] text-[var(--text-default)]">{commits[0]?.repository ?? "No repository connected"}</span>
