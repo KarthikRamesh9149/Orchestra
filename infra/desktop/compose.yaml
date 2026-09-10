@@ -1,0 +1,20 @@
+name: orchestra-desktop-dev
+services:
+  postgres:
+    image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+    environment:
+      POSTGRES_DB: orchestra_desktop
+      POSTGRES_USER: orchestra_migrator
+      POSTGRES_PASSWORD: ${DESKTOP_DB_PASSWORD:?Generate a development-only password first}
+    ports:
+      - "127.0.0.1:${DESKTOP_DB_PORT:-55439}:5432"
+    volumes:
+      - desktop-pg:/var/lib/postgresql/data
+      - ./bootstrap.sql:/docker-entrypoint-initdb.d/010-orchestra.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U orchestra_migrator -d orchestra_desktop"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+volumes:
+  desktop-pg:
