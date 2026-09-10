@@ -53,7 +53,7 @@ const families=[
 ].map(([id,scope,ownerStep])=>({id,scope,ownerStep,owner:`Step ${ownerStep} implementer`,modes:id==='identity'?['shared']:['local','shared'],status:'planned',acceptance:`Run ${scope} in the applicable clean packaged environment; record normal, failure and restart evidence. External provider/model tests require real authorized accounts; publication requires Step 8 approval.`}));
 output('docs/desktop/feature-parity.json',{schemaVersion:1,sourceSha:'8561d41980e97924db33e0c8f748b7cf576aac83',coverage:'All JSX event bindings and native interactive elements in non-test frontend TSX, including currently hidden/legacy components. Source inventory is conservative, not runtime visibility proof. Family gates include backend/native workflows without JSX. Settings and agent controls require additional Step 5/6 gates as applicable.',families,actions});
 const dependencies=[];
-for(const lock of ['package-lock.json','apps/beta-web/package-lock.json','apps/vscode-extension/package-lock.json']){
+for(const lock of ['package-lock.json','apps/beta-web/package-lock.json','apps/vscode-extension/package-lock.json','apps/desktop/package-lock.json']){
  const data=JSON.parse(fs.readFileSync(lock,'utf8'));
  for(const [location,pkg] of Object.entries(data.packages||{}))if(location)dependencies.push({lock,location,version:pkg.version,license:pkg.license??'NOT RECORDED: inspect installed package license before distribution',integrity:pkg.integrity??null});
 }

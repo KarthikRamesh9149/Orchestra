@@ -2,7 +2,7 @@
 
 One Source of Truth and Product Brain for high-speed teams.
 
-Private desktop-development repository. **Not a desktop release yet.** A verified developer local engine is available; consumer installation and the native shell remain later steps. Do not run it against existing production infrastructure.
+Private desktop-development repository. **Not a desktop release yet.** A verified developer local engine and an incomplete internal Mac shell candidate are available. Windows and clean-machine qualification remain open. Do not run it against existing production infrastructure.
 
 ## Development baseline
 
@@ -13,6 +13,8 @@ Node.js 24 and npm are used for this baseline. Install dependencies with `npm ci
 See [desktop contract](docs/desktop/CONTRACT.md), [architecture](docs/desktop/ADR-001.md), [threat model](docs/desktop/THREAT-MODEL.md), [feature inventory](docs/desktop/feature-parity.json), and [Step 1 evidence](docs/desktop/STEP-1.md).
 
 For the portable engine, see [Step 2 setup and evidence](docs/desktop/STEP-2.md) and [its runtime decisions](docs/desktop/ADR-002.md). It uses local PostgreSQL, private files, durable jobs and offline evidence search without hosted signup or Redis. AI provider setup, packaged UI and operating-system qualification are not claimed complete.
+
+For the internal shell candidate and explicit blocked gates, see [Step 3](docs/desktop/STEP-3.md) and [native runtime decisions](docs/desktop/ADR-003.md). It is not merged into main or a public release.
 
 The source was imported as a snapshot, without upstream Git history. Its immutable revision and per-file hashes are recorded in [import manifest](docs/desktop/import-manifest.json). Excluded historical release evidence is not a claim that those upstream checks were unnecessary or passed here.
 

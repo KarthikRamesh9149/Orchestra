@@ -1,0 +1,20 @@
+{
+  "name": "orchestra-desktop",
+  "version": "0.0.3",
+  "private": true,
+  "type": "module",
+  "main": "dist/main.cjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "electron .",
+    "package": "node scripts/package.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "electron": "44.3.0",
+    "@electron/packager": "20.3.0",
+    "esbuild": "0.28.2",
+    "typescript": "5.8.3",
+    "@types/node": "24.3.0"
+  }
+}

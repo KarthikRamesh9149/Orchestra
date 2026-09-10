@@ -3,7 +3,7 @@ import { join, resolve } from 'node:path';
 import { PrismaClient } from '@prisma/client';
 import { parseEnv } from '../config/env.js';
 import { parseRuntimeProfile } from '../config/runtime-profile.js';
-import { loadInstallationSecrets } from '../config/installation-secrets.js';
+import { loadInstallationSecrets, installationSecretsSchema, type InstallationSecrets } from '../config/installation-secrets.js';
 import { buildContext } from '../setup-context.js';
 import { buildApp } from '../app/build-app.js';
 import { createLogger } from '../lib/logging/logger.js';
@@ -18,10 +18,11 @@ import { acquireDatabaseOwnership } from './database-ownership.js';
 
 /** Engine composition only. Native ownership, onboarding and packaging belong
  * to subsequent steps. No environment credentials are implicitly inherited. */
-export async function createLocalEngine(input:{databaseUrl:string; installationRoot:string; port?:number}) {
+export async function createLocalEngine(input:{databaseUrl:string; installationRoot:string; port?:number; secrets?:InstallationSecrets}) {
   const root=resolve(input.installationRoot);
   const profile=parseRuntimeProfile({profile:'desktop-local',databaseUrl:input.databaseUrl,host:'127.0.0.1',queue:'postgres',storageRoot:join(root,'data','files')});
-  const secrets=await loadInstallationSecrets(join(root,'credentials'));
+  // Native hosts supply OS-vault material; never publish a plaintext duplicate.
+  const secrets=input.secrets?installationSecretsSchema.parse(input.secrets):await loadInstallationSecrets(join(root,'credentials'));
   const port=input.port??43119;
   const env=parseEnv({
     RUNTIME_PROFILE:profile.profile,NODE_ENV:'production',DEPLOYMENT_ENV:'production',

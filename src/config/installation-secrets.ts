@@ -4,7 +4,7 @@ import { mkdir,lstat,open,link,unlink } from "node:fs/promises";
 import { join } from "node:path";
 import { z } from "zod";
 
-const schema=z.object({
+export const installationSecretsSchema=z.object({
   version:z.literal(1),
   loopback:z.string().regex(/^[0-9a-f]{64}$/),
   access:z.string().regex(/^[0-9a-f]{64}$/),
@@ -12,7 +12,8 @@ const schema=z.object({
   connectorEncryption:z.string().regex(/^[0-9a-f]{64}$/),
   oauthState:z.string().regex(/^[0-9a-f]{64}$/),
   clientShare:z.string().regex(/^[0-9a-f]{64}$/),
-});
+}).strict();
+export type InstallationSecrets=z.infer<typeof installationSecretsSchema>;
 /** Private bootstrap material, not an OS credential-vault replacement.
  * The caller supplies a dedicated credentials directory, outside project data.
  * Step 3 wraps this authority in the OS vault/runtime supervisor. */
@@ -34,7 +35,7 @@ export async function loadInstallationSecrets(directory:string){
   try{
     const stat=await handle.stat();
     if(!stat.isFile()||stat.size>4096||(process.platform!=='win32'&&(stat.mode&0o077)!==0))throw new Error('Unsafe installation secret file');
-    const result=schema.parse(JSON.parse(await handle.readFile('utf8')));
+    const result=installationSecretsSchema.parse(JSON.parse(await handle.readFile('utf8')));
     if(new Set(Object.values(result).filter(v=>typeof v==='string')).size!==6)throw new Error('Installation secrets must be distinct');
     return result;
   }finally{await handle.close();}

@@ -1,0 +1,11 @@
+import {packager} from '@electron/packager';
+import {access,readFile,writeFile} from 'node:fs/promises';
+import {resolve,join} from 'node:path';
+import {randomUUID} from 'node:crypto';
+const root=resolve(import.meta.dirname,'../../..');
+const manifest=JSON.parse(await readFile(join(root,'.desktop/runtime/native-manifest.json'),'utf8'));
+if(manifest.platform!==`${process.platform}-${process.arch}`)throw new Error('A matching native runtime is required; cross-platform qualification cannot be skipped');
+await access(join(root,'apps/desktop/dist/main.cjs'));
+const outputs=await packager({dir:join(root,'apps/desktop'),name:'Orchestra Desktop Internal',appBundleId:'dev.orchestra.desktop.internal',appVersion:'0.0.3',electronVersion:'44.3.0',platform:process.platform,arch:process.arch,out:join(root,'.desktop/packages',randomUUID()),overwrite:false,asar:true,prune:false,ignore:[/^\/node_modules($|\/)/,/^\/src($|\/)/,/^\/scripts($|\/)/,/^\/tsconfig\.json$/],extraResource:[join(root,'.desktop/runtime')]});
+console.log(outputs.join('\n'));
+await writeFile(join(root,'.desktop/latest-package.txt'),outputs[0]+'\n');
