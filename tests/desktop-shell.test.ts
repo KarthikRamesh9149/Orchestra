@@ -8,10 +8,18 @@ import {assetResponse,CSP} from '../apps/desktop/src/assets.js';
 import {Selections} from '../apps/desktop/src/selections.js';
 import {verifyNativeBundle} from '../apps/desktop/src/integrity.js';
 import {createHash} from 'node:crypto';
+import {loadVault} from '../apps/desktop/src/vault.js';
 const directories:string[]=[];
 async function temporary(){const path=await mkdtemp(join(tmpdir(),'orchestra-shell-test-'));directories.push(path);return path;}
 afterEach(async()=>{for(const path of directories.splice(0))await rm(path,{recursive:true,force:true});});
 describe('desktop bridge authority',()=>{
+ it('refuses unavailable credential protection before writing secrets',async()=>{
+  const root=await temporary();await expect(loadVault(root,{isEncryptionAvailable:()=>false,encryptString:()=>{throw new Error('must not run');},decryptString:()=>{throw new Error('must not run');}})).rejects.toThrow('plaintext fallback is forbidden');
+ });
+ it('refuses corrupt protected credentials rather than replacing the identity',async()=>{
+  const root=await temporary();await writeFile(join(root,'credentials.enc'),'corrupt',{mode:0o600});
+  await expect(loadVault(root,{isEncryptionAvailable:()=>true,encryptString:()=>{throw new Error('must not run');},decryptString:()=>{throw new Error('OS decryption rejected');}})).rejects.toThrow('OS decryption rejected');
+ });
  it('accepts only owned top-level frames',()=>{
   expect(isTrustedFrame('orchestra://app/chat/test',true)).toBe(true);
   for(const url of ['https://app/','file:///app','orchestra://evil/','orchestra://user@app/'])expect(isTrustedFrame(url,true)).toBe(false);

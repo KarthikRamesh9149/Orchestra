@@ -1,4 +1,4 @@
-import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog} from 'electron';
+import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog,safeStorage} from 'electron';
 import {join} from 'node:path';
 import {commandSchema,isTrustedFrame} from './contracts.js';
 import {assetResponse} from './assets.js';
@@ -52,7 +52,7 @@ else {
   await window.loadURL('orchestra://app/index.html');window.show();
   try{
    await verifyNativeBundle(resources);
-   const root=join(app.getPath('userData'),'local-runtime');const vault=await loadVault(root);
+   const root=join(app.getPath('userData'),'local-runtime');const vault=await loadVault(root,safeStorage);
    host.start(join(resources,'native/node',process.platform==='win32'?'node.exe':'bin/node'),join(resources,'backend/dist/src/desktop/native-host.js'),{root,bundle:resources,vault});
   }catch{host.status={state:'failed',message:'Local runtime could not start. OS credential protection and bundled runtime are required.'};}
  }).catch(()=>{app.exit(1);});

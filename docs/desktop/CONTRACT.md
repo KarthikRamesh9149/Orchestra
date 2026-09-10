@@ -8,7 +8,7 @@ Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit
 
 1. Reviewed, buildable source snapshot; complete action inventory; architecture, threat model, provenance and external dependencies recorded.
 2. Fresh plain PostgreSQL/pgvector local engine: upload → parse → index → cited answer → authorized approval → restart preserves state. Worker-kill/retry cannot duplicate accepted effects. No hidden Redis dependency.
-3. Internal Mac ARM and Windows x64 packages launch without developer tools; provision, save, quit and reopen safely. Duplicate-launch/process-kill recovery passes.
+3. Internal Mac ARM package launches without developer tools; provision, save, quit and reopen safely. Duplicate-launch/process-kill recovery passes. Windows x64 is deferred by explicit user instruction until a Windows test machine is available; it is not claimed supported or tested.
 4. Every assigned parity row passes normal, failure and restart flows in packaged UI, without a terminal. Preserve style and truthful unavailable states.
 5. Each advertised provider/model/client combination passes real-account tests on both platforms, with privacy-consistent traffic. Preflight pack ID → authorized MCP retrieval → linked Postflight verified in Codex, Claude and Cursor; VS Code pairing verified.
 6. Two machines and different roles observe authoritative shared changes. Isolation, compatibility, fresh self-hosting, export/import, backup/restore and upgrade pass.
@@ -16,6 +16,8 @@ Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit
 8. Explicit source/publication approval, independent public download/build/install/core journey/update checks on both platforms.
 
 ## Product rules
+
+- Scope revision: the user authorized Mac-only development until Windows hardware is available, and explicitly authorized finishing Step 3 followed by Step 4 in the same request. This does not authorize Step 5 or publication. Windows rows remain deferred, not passed.
 
 - Existing visible product functionality is assigned in the feature inventory, not silently removed. Local-only presentation controls remain local; shared mutations require live server authorization.
 - Local mode needs no hosted signup and does not claim fake email verification. Shared identity remains server-owned.

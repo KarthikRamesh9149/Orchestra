@@ -1,4 +1,3 @@
-import {safeStorage} from 'electron';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {mkdir,lstat,open,rename,unlink} from 'node:fs/promises';
 import {constants} from 'node:fs';
@@ -7,7 +6,8 @@ import {z} from 'zod';
 const secret=z.string().regex(/^[a-f0-9]{64}$/);
 export const vaultSchema=z.object({version:z.literal(1),admin:secret,runtime:secret,installation:z.object({version:z.literal(1),loopback:secret,access:secret,refresh:secret,connectorEncryption:secret,oauthState:secret,clientShare:secret}).strict()}).strict();
 export type Vault=z.infer<typeof vaultSchema>;
-export async function loadVault(root:string):Promise<Vault>{
+export interface CredentialProtection {isEncryptionAvailable():boolean;encryptString(value:string):Buffer;decryptString(value:Buffer):string}
+export async function loadVault(root:string,safeStorage:CredentialProtection):Promise<Vault>{
  if(!safeStorage.isEncryptionAvailable())throw new Error('OS credential protection unavailable; plaintext fallback is forbidden');
  await mkdir(root,{recursive:true,mode:0o700});
  const directory=await lstat(root);

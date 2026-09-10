@@ -26,12 +26,12 @@ for(const file of [...await files(join(pg,'bin')),...await files(join(pg,'lib'))
  execFileSync('/usr/bin/codesign',['--force','--sign','-',file],{stdio:'ignore'});
 }
 const runtime=await mkdtemp(join(root,'.desktop/runtime-build-'));
-await cp(join(native,'pgsql'),join(runtime,'native/pgsql'),{recursive:true});
+await cp(join(native,'pgsql'),join(runtime,'native/pgsql'),{recursive:true,verbatimSymlinks:true});
 await mkdir(join(runtime,'native/node/bin'),{recursive:true});
 await cp(join(native,'node/bin/node'),join(runtime,'native/node/bin/node'));
 await cp(join(native,'node/LICENSE'),join(runtime,'native/node/LICENSE'));
 await cp(join(root,'dist/src'),join(runtime,'backend/dist/src'),{recursive:true});
-await cp(join(root,'node_modules'),join(runtime,'backend/node_modules'),{recursive:true});
+await cp(join(root,'node_modules'),join(runtime,'backend/node_modules'),{recursive:true,verbatimSymlinks:true});
 await cp(join(root,'prisma'),join(runtime,'backend/prisma'),{recursive:true});
 await writeFile(join(runtime,'backend/package.json'),JSON.stringify({private:true,type:'module'}));
 await cp(join(root,'apps/beta-web/dist'),join(runtime,'ui'),{recursive:true});

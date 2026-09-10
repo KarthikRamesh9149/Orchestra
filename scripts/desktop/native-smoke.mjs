@@ -4,12 +4,12 @@ import {join,resolve} from 'node:path';
 import {randomBytes,randomUUID} from 'node:crypto';
 import {once} from 'node:events';
 import assert from 'node:assert/strict';
-const root=resolve(import.meta.dirname,'../..'),bundle=join(root,'.desktop/runtime');
-const data=await mkdtemp(join(root,'.desktop/native-smoke-'));
+const root=resolve(import.meta.dirname,'../..'),bundle=process.env.ORCHESTRA_TEST_BUNDLE??join(root,'.desktop/runtime');
+const data=await mkdtemp(join(process.env.ORCHESTRA_TEST_ROOT??join(root,'.desktop'),'native-smoke-'));
 const fresh=()=>randomBytes(32).toString('hex');
 const vault={version:1,admin:fresh(),runtime:fresh(),installation:{version:1,loopback:fresh(),access:fresh(),refresh:fresh(),connectorEncryption:fresh(),oauthState:fresh(),clientShare:fresh()}};
 async function launch(){
- const child=spawn(join(bundle,'native/node/bin/node'),[join(bundle,'backend/dist/src/desktop/native-host.js')],{env:{PATH:'',TMPDIR:process.env.TMPDIR??'',NODE_ENV:'production'},stdio:['ignore','ignore','ignore','ipc']});
+ const child=spawn(process.env.ORCHESTRA_TEST_LAUNCHER??join(bundle,'native/node/bin/node'),[join(bundle,'backend/dist/src/desktop/native-host.js')],{cwd:bundle,env:{PATH:'',TMPDIR:process.env.TMPDIR??'',NODE_ENV:'production',ORCHESTRA_QA_BINARY:join(bundle,'native/node/bin/node')},stdio:['ignore','ignore','ignore','ipc']});
  await new Promise((ok,fail)=>{
   const timer=setTimeout(()=>fail(new Error('Readiness timeout')),180000);
   child.on('message',event=>{if(event.type==='ready'){clearTimeout(timer);child.localPort=event.port;ok();}if(event.type==='failed'){clearTimeout(timer);fail(new Error('Failed at '+event.stage));}});
@@ -26,6 +26,8 @@ async function stop(child,disconnect=false){const stopped=once(child,'exit');if(
 let child;
 try{
  child=await launch();console.log('Fresh native launch passed with empty PATH');
+ await assert.rejects(launch(),/Failed|exited/);
+ console.log('Competing engine rejected without attaching to or stopping the owned database');
  assert.equal((await fetch(`http://127.0.0.1:${child.localPort}/health`)).status,401);
  assert.equal((await fetch(`http://127.0.0.1:${child.localPort}/health`,{headers:{'x-orchestra-local-token':'invalid'}})).status,401);
  console.log('Loopback rejects missing and incorrect installation authority');
@@ -38,6 +40,12 @@ try{
  await stop(child,true);child=await launch();
  assert((await request(child,{operation:'workspace.list'})).data.some(project=>project.id===projectId));
  await assert.rejects(access(join(data,'credentials/installation.json')));
+ const killed=once(child,'exit');child.kill('SIGKILL');await killed;
+ // The independent PostgreSQL owner sees the engine's IPC disappear.
+ let cleared=false;for(let i=0;i<150;i++){try{await access(join(data,'postgres/postmaster.pid'));}catch{cleared=true;break;}await new Promise(resolve=>setTimeout(resolve,100));}
+ assert(cleared,'Database owner did not stop after engine SIGKILL');child=await launch();
+ assert((await request(child,{operation:'workspace.list'})).data.some(project=>project.id===projectId));
+ console.log('Engine SIGKILL recovery passed without killing a PID from disk');
  await stop(child);child=undefined;
  console.log('Parent IPC loss recovery and no plaintext engine-secret duplicate passed');
  console.log('Synthetic test data retained privately: '+data);

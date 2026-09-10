@@ -2,7 +2,7 @@
 
 One Source of Truth and Product Brain for high-speed teams.
 
-Private desktop-development repository. **Not a desktop release yet.** A verified developer local engine and an incomplete internal Mac shell candidate are available. Windows and clean-machine qualification remain open. Do not run it against existing production infrastructure.
+Private desktop-development repository. **Not a public desktop release yet.** The local engine and internal Mac shell have passed their scoped gates. Product onboarding/parity remain Step 4; Windows is explicitly deferred until test hardware is available. Do not run it against existing production infrastructure.
 
 ## Development baseline
 
@@ -14,7 +14,7 @@ See [desktop contract](docs/desktop/CONTRACT.md), [architecture](docs/desktop/AD
 
 For the portable engine, see [Step 2 setup and evidence](docs/desktop/STEP-2.md) and [its runtime decisions](docs/desktop/ADR-002.md). It uses local PostgreSQL, private files, durable jobs and offline evidence search without hosted signup or Redis. AI provider setup, packaged UI and operating-system qualification are not claimed complete.
 
-For the internal shell candidate and explicit blocked gates, see [Step 3](docs/desktop/STEP-3.md) and [native runtime decisions](docs/desktop/ADR-003.md). It is not merged into main or a public release.
+For the internal Mac shell and deferred release qualification, see [Step 3](docs/desktop/STEP-3.md) and [native runtime decisions](docs/desktop/ADR-003.md). This is not a public release.
 
 The source was imported as a snapshot, without upstream Git history. Its immutable revision and per-file hashes are recorded in [import manifest](docs/desktop/import-manifest.json). Excluded historical release evidence is not a claim that those upstream checks were unnecessary or passed here.
 

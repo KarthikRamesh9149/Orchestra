@@ -1,6 +1,6 @@
 # Step 3: native shell candidate
 
-Status: **INCOMPLETE. Do not merge into main or represent this as a consumer release.**
+Status: **Mac-only internal Step 3 gate passed. Not a consumer/public release.** The user explicitly deferred Windows until test hardware is available and authorized Step 4 after this step.
 
 Scope: private `KarthikRamesh9149/Orchestra`, branch `codex/desktop-step-3`, based on Step 2 main `69bb0d33c1f06ecddaec39780e391b75c6e38cc8`. No production repository or service changes.
 
@@ -41,11 +41,18 @@ Packaged Electron check: `orchestra://app/workspaces`, title `Orchestra`, render
 
 Final applicable regression run: 1,362 backend tests passed; 13 optional database integration tests skipped by that unit-run configuration. The separate native database smoke supplies the new runtime proof, including rejection of missing/incorrect loopback authority; it does not relabel the 13 skips as passes. Existing frontend suite: 191 passed. Five focused shell tests cover schema/frame authorization, safe assets, single-use file selection and native inventory corruption. Backend/desktop typechecks, backend/frontend/extension builds, source-provenance/inventory checks and the local security scan passed. Electron lockfile audit reports zero known vulnerabilities; that is not a complete native-library security certification.
 
-## Mandatory open gates
+## Mac completion evidence
 
-1. Windows x64 native build/runtime/Prisma/parser inventory and protected credential bootstrap. No Windows package exists or has passed qualification.
-2. Independent clean Mac and Windows launch/provision/save/quit/reopen, duplicate-launch and forced-termination tests.
-3. Complete fault-injection matrix: hard-killed guardian, interrupted migration, denied keychain access, port collisions and platform-specific child-process recovery. Normal parent IPC loss alone does not close these cases.
-4. Exact-final-package rerun after remaining corrections. Evidence for earlier candidates is not automatically transferred.
+Follow-up run: 1,364 applicable tests passed, 13 optional database tests skipped; seven focused shell tests passed. Denied OS credential protection and corrupt credential envelopes fail closed. The independent PostgreSQL watchdog stops the owned database after engine SIGKILL; restart preserves saved state. A competing engine fails without attaching to or stopping the first database. No PID read from disk is used to kill unrelated processes.
 
-Step 3 remains open until these pass. Step 4 is onboarding and feature parity, and is not started by this work.
+The exact package was relocated outside the repository with a fresh user profile and empty PATH. Save/reopen passed with Chromium sandboxing retained. A separate native-runtime run additionally denied file reads to the source repository, Xcode, Homebrew and `/usr/local`; fresh migrations, loopback authorization, competing ownership, save/restart and engine-kill recovery passed. This is isolated same-host proof, not a claim about a second physical Mac.
+
+An attempted additional OS sandbox around all of Electron was incompatible with Chromium's own sandbox initialization. Chromium protection was not disabled; the app relocation and stricter backend isolation were tested separately instead.
+
+## Deferred release qualification
+
+1. Windows native build, protected initialization and machine qualification are explicitly deferred, not passed.
+2. Independent hardware, older supported macOS versions, signing, notarization and public installation remain Steps 7–8.
+3. The broader Step 7 matrix still includes disk exhaustion, interrupted upgrades/migrations, sleep/wake and simultaneous hard-killing of the engine and its independent database watchdog. Passing ordinary lifecycle tests does not certify these scenarios.
+
+The user-authorized next step is Step 4: onboarding and feature parity, without restyling the application.

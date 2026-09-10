@@ -8,7 +8,7 @@ No signing credentials, provider approvals, Windows test hardware or legal owner
 | Third-party dependency and transitive license review | Implementer prepares inventory; owner approves rights exceptions | Lockfile metadata inventory required; full bundled notices and binaries checked again in Steps 3/7/8 |
 | Existing visual assets/fonts/icon rights | Owner confirms origin; implementer records notices | Unconfirmed; omitted binary assets cannot be treated as cleared |
 | Mac Apple Silicon development | Current local Mac | Host available; clean-machine independent qualification not yet provided |
-| Windows x64 machine and independent tester | Owner nominates tester | Not confirmed; blocks Steps 3/5/6/7/8 qualification |
+| Windows x64 machine and independent tester | Owner nominates tester | Explicitly deferred by the user; current development is Mac-only. Windows cannot be advertised or released until independently qualified |
 | Mac developer signing/notarization credentials | Owner | Not confirmed; blocks signed release; no purchase authorized |
 | Windows signing credentials | Owner | Not confirmed; blocks signed release; no purchase authorized |
 | GitHub native authorization registration | Owner/provider administrator | Not confirmed; Step 5 real credential-backed approval required |

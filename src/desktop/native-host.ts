@@ -72,7 +72,8 @@ async function initialize(config:Config){
  if((await lstat(cluster)).isSymbolicLink())throw new Error('Unsafe database directory');
  const port=await freePort();
  stage='starting database';
- postgres=spawn(executable('postgres'),['-D',cluster,'-h','127.0.0.1','-p',String(port),'-c','unix_socket_directories='],{env:environment,stdio:'ignore',windowsHide:true});
+ postgres=spawn(process.execPath,[join(bundle,'backend/dist/src/desktop/postgres-watchdog.js')],{env:environment,stdio:['ignore','ignore','ignore','ipc'],windowsHide:true});
+ postgres.send?.({executable:executable('postgres'),cluster,port});
  postgres.on('error',()=>{send({type:'failed'});void shutdown();});
  postgres.once('exit',()=>{if(!stopping){send({type:'failed'});void shutdown();}});
  const sqlEnv={PGPASSWORD:vault.admin};
