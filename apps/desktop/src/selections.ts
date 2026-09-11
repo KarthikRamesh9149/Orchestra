@@ -1,4 +1,4 @@
-import {open} from 'node:fs/promises';
+import {open,realpath} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {basename,extname} from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -8,7 +8,8 @@ export class Selections {
  private entries=new Map<string,{path:string;size:number;mtimeMs:number;ino:number;expires:number}>();
  async add(path:string){
   for(const [id,value] of this.entries)if(value.expires<Date.now())this.entries.delete(id);
-  if(this.entries.size>=16||!types[extname(path).toLowerCase()])throw new Error('Unsupported selection');
+  if(this.entries.size>=116||!types[extname(path).toLowerCase()])throw new Error('Unsupported selection');
+  if(await realpath(path)!==path)throw new Error('Symbolic links are not supported');
   const file=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);
   try{const stat=await file.stat();if(!stat.isFile()||stat.size>limit)throw new Error('Select a regular file smaller than 50 MiB');
    const id=randomUUID();this.entries.set(id,{path,size:stat.size,mtimeMs:stat.mtimeMs,ino:stat.ino,expires:Date.now()+300000});return {selectionId:id,name:basename(path),size:stat.size};
@@ -16,6 +17,7 @@ export class Selections {
  }
  async consume(id:string){
   const entry=this.entries.get(id);this.entries.delete(id);if(!entry||entry.expires<Date.now())throw new Error('Select the file again');
+  if(await realpath(entry.path)!==entry.path)throw new Error('Selected file path changed');
   const file=await open(entry.path,constants.O_RDONLY|constants.O_NOFOLLOW);
   try{
    const stat=await file.stat();if(!stat.isFile()||stat.size!==entry.size||stat.mtimeMs!==entry.mtimeMs||stat.ino!==entry.ino)throw new Error('Selected file changed');

@@ -1,5 +1,5 @@
 import {describe,it,expect,afterEach} from 'vitest';
-import {mkdtemp,writeFile,mkdir,symlink,rm} from 'node:fs/promises';
+import {mkdtemp,writeFile,mkdir,symlink,rm,realpath} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {randomUUID} from 'node:crypto';
@@ -10,7 +10,7 @@ import {verifyNativeBundle} from '../apps/desktop/src/integrity.js';
 import {createHash} from 'node:crypto';
 import {loadVault} from '../apps/desktop/src/vault.js';
 const directories:string[]=[];
-async function temporary(){const path=await mkdtemp(join(tmpdir(),'orchestra-shell-test-'));directories.push(path);return path;}
+async function temporary(){const path=await realpath(await mkdtemp(join(tmpdir(),'orchestra-shell-test-')));directories.push(path);return path;}
 afterEach(async()=>{for(const path of directories.splice(0))await rm(path,{recursive:true,force:true});});
 describe('desktop bridge authority',()=>{
  it('refuses unavailable credential protection before writing secrets',async()=>{

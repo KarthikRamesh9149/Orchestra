@@ -15,9 +15,11 @@ export function isLocalRoute(method:string,path:string){
  return patterns.some(route=>route.method===method&&route.segments.length===segments.length&&route.segments.every((segment,index)=>segment.startsWith(':')?validParameter(segment,segments[index]!):segment===segments[index]));
 }
 const failure=(status:number,code:string,message:string)=>Response.json({data:null,error:{code,message}},{status});
-export async function localHttp(request:Request,host:HostClient):Promise<Response>{
+export async function localHttp(request:Request,host:HostClient,nativeCredentials=false):Promise<Response>{
  const url=new URL(request.url);
  if(url.protocol!=='orchestra:'||url.host!=='app'||url.username||url.password)return failure(403,'invalid_origin','Invalid application origin');
+ let decodedPath:string;try{decodedPath=decodeURIComponent(url.pathname);}catch{return failure(403,'invalid_path','Invalid application path');}
+ if(/^\/v1\/mcp\/tokens(?:\/|$)/.test(decodedPath)&&!nativeCredentials)return failure(403,'native_pairing_required','Use the native scoped MCP pairing control.');
  if(url.pathname==='/v1/auth/csrf'&&request.method==='GET')return Response.json({data:{csrfToken:'native-transport-no-browser-cookie'},error:null});
  const special=url.pathname==='/v1/auth/bootstrap'||url.pathname==='/v1/auth/me'||url.pathname==='/v1/me/workspaces'||url.pathname==='/v1/me/workspaces/switch';
  if(special){
@@ -28,7 +30,8 @@ export async function localHttp(request:Request,host:HostClient):Promise<Respons
   const data=result.data as {user:unknown;workspaces:unknown[]};
   return Response.json({data:url.pathname==='/v1/auth/me'?data.user:url.pathname==='/v1/me/workspaces'?data.workspaces:data,error:null});
  }
- if(!isLocalRoute(request.method,url.pathname))return failure(403,'desktop_scope_unavailable','This action requires a shared workspace or a provider configured in a later desktop step.');
+ const nativePairingRoute=nativeCredentials&&request.method==='POST'&&(url.pathname==='/v1/mcp/tokens'||/^\/v1\/mcp\/tokens\/[0-9a-fA-F-]{36}\/revoke$/.test(url.pathname));
+ if(!nativePairingRoute&&!isLocalRoute(request.method,url.pathname))return failure(403,'desktop_scope_unavailable','This action requires a shared workspace or a provider configured in a later desktop step.');
  const authority=host.credentials();if(!authority)return failure(503,'runtime_unavailable','The local engine is starting or unavailable.');
  const headers=new Headers({'Authorization':'Bearer '+authority.bearer,'X-Orchestra-Local-Token':authority.token});
  for(const name of ['content-type','x-idempotency-key','accept']){const value=request.headers.get(name);if(value)headers.set(name,value);}

@@ -3,8 +3,10 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'src/modules/communications/message-indexing.service.ts':'Step 5 retain honest lexical communication evidence when desktop embedding configuration or request allowance is unavailable; no mock vectors, semantic completion remains explicit.',
  'src/modules/truth-inbox/truth-change-packet.service.ts':'Step 4 packet truth-state boundary reflects persisted accepted/rejected decisions instead of always claiming a pending decision.',
- 'apps/beta-web/src/pages/DeliveryPage.tsx':'Step 4 native context-pack save and clipboard with explicit failures; preserve hosted behavior and visual structure.',
+ 'apps/beta-web/src/pages/DeliveryPage.tsx':'Steps 4/5 native context-pack save, clipboard and scoped MCP pairing; preserve hosted behavior and existing visual tokens.',
+ 'apps/beta-web/src/components/delivery/McpAgentSetup.tsx':'Step 5 dispatch desktop pairing through the protected native bridge while retaining the hosted implementation.',
  'apps/beta-web/src/pages/DashboardPage.tsx':'Step 4 maintain readable provider labels during existing hover opacity using the existing text token.',
  'apps/beta-web/src/components/shell/NavRail.tsx':'Step 4 use the existing accessible terracotta text token for selected navigation.',
  'apps/beta-web/src/pages/TimelinePage.tsx':'Step 4 reuse existing accessible teal/red theme tokens for approval and review controls; preserve layout and interaction.',
@@ -18,7 +20,7 @@ const adjustments={
  'apps/beta-web/src/pages/ChatPage.tsx':'Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions.',
  'apps/beta-web/src/pages/ChatPage.test.tsx':'Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection.',
  'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 truthful partial-processing status and authorized native clipboard feedback without redesign.',
- 'apps/beta-web/src/pages/SettingsPage.tsx':'Step 4 explicitly unavailable local invitations; preserve shared workflow and styling.',
+ 'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 unavailable local invitations plus lazy desktop-only protected AI, explicit folder sources and native Slack controls; preserve shared workflow and styling.',
  'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
  'apps/beta-web/src/lib/api/client.ts':'Step 4 local bootstrap uses the credential-free desktop bridge; hosted browser sessions unchanged.',
  'apps/beta-web/src/pages/WorkspacesPage.tsx':'Step 4 truthful local workspace identity and setup navigation, retaining original style.',

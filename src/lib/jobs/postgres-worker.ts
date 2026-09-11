@@ -3,6 +3,16 @@ import type { JobHandler } from "./queue.js";
 import type { JobName } from "./types.js";
 import { PostgresJobDispatcher } from "./postgres.js";
 
+/** Never persist exception messages, payloads or provider credentials. */
+export function safeDesktopJobFailure(error:unknown){
+ const value=error as {code?:unknown;name?:unknown;meta?:{code?:unknown}}|null;
+ if(['ai_request_budget_exceeded','embedding_not_configured','ai_not_configured','ai_provider_failed','ai_busy','ai_revoked'].includes(String(value?.code)))return String(value!.code);
+ if(typeof value?.code==='string'&&/^P\d{4}$/.test(value.code))return value.code+(typeof value.meta?.code==='string'&&/^[A-Z0-9]{5}$/.test(value.meta.code)?`_${value.meta.code}`:'');
+ if(error instanceof TypeError)return 'handler_type_error';
+ if(value?.name==='PrismaClientValidationError')return 'handler_validation_error';
+ return 'handler_failed';
+}
+
 /** Reuses the active transaction when an imported service requests nesting.
  * Outer Serializable transaction provides the strongest requested isolation. */
 export function transactionClient(tx:Prisma.TransactionClient):PrismaClient {
@@ -40,7 +50,7 @@ export class PostgresWorker {
         await tx.$executeRaw`UPDATE desktop_jobs SET status='completed',owner_token=NULL,lease_until=NULL,updated_at=now()
           WHERE id=${claim.id}::uuid AND owner_token=${claim.owner_token}::uuid AND fence=${claim.fence} AND status='running'`;
       },{isolationLevel:'Serializable',maxWait:5000,timeout:120000});
-    }catch(error){await queue.fail(claim);await this.reconcileFailures();this.onError(error);}
+    }catch(error){await queue.fail(claim,safeDesktopJobFailure(error));await this.reconcileFailures();this.onError(error);}
     return true;
   }
   /** Only terminal queue failures affect unfinished domain work. Completed

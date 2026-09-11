@@ -2,6 +2,8 @@ import {spawn,type ChildProcess} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
 import type {Command,OperationResult,RuntimeStatus} from './contracts.js';
 import type {Vault} from './vault.js';
+import type {ProtectedSettings} from './protected-settings.js';
+import type {DesktopSlackBatch,DesktopSlackDisconnect} from '../../../src/desktop/slack-contract.js';
 
 export class HostClient {
  private authority?:{port:number;token:string;bearer:string};
@@ -10,7 +12,7 @@ export class HostClient {
  private pending=new Map<string,{resolve:(value:OperationResult)=>void;timer:NodeJS.Timeout}>();
  status:RuntimeStatus={state:'starting',message:'Starting private local runtime'};
  constructor(private readonly delta:(value:{requestId:string;delta:string})=>void){}
- start(node:string,entry:string,config:{root:string;bundle:string;vault:Vault}){
+ start(node:string,entry:string,config:{root:string;bundle:string;vault:Vault;ai?:NonNullable<ProtectedSettings['ai']>}){
   if(this.child)throw new Error('Runtime already started');
   const env:NodeJS.ProcessEnv={PATH:'',TMPDIR:process.env.TMPDIR??'',SystemRoot:process.env.SystemRoot??'',NODE_ENV:'production'};
   const child=this.child=spawn(node,[entry],{env,stdio:['ignore','ignore','ignore','ipc'],windowsHide:true});
@@ -33,7 +35,7 @@ export class HostClient {
   if(this.status.state!=='stopping')this.status={state:'failed',message:'Local runtime stopped. Quit and reopen Orchestra to recover.'};
   for(const value of this.pending.values()){clearTimeout(value.timer);value.resolve({ok:false,error:{code:'runtime_unavailable',message:this.status.message}});}this.pending.clear();
  }
- request(command:Command,selection?:{fileName:string;contentType:string;base64:string}):Promise<OperationResult>{
+ request(command:Command|DesktopSlackBatch|DesktopSlackDisconnect,selection?:{fileName:string;contentType:string;base64:string}):Promise<OperationResult>{
   if(this.status.state!=='ready'||!this.child?.connected)return Promise.resolve({ok:false,error:{code:'runtime_unavailable',message:this.status.message}});
   if(this.pending.size>=16)return Promise.resolve({ok:false,error:{code:'busy',message:'Too many pending operations'}});
   const id=randomUUID();

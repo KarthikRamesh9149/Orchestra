@@ -9,9 +9,13 @@ import {createLocalEngine} from './engine.js';
 import {installationSecretsSchema} from '../config/installation-secrets.js';
 import {readLocalState,saveLocalState} from './local-state.js';
 import {authorizeActiveOrganization} from '../lib/auth/authorization.js';
+import {desktopAiSchema} from './ai-provider.js';
+import {startMcpSocket} from './mcp-socket.js';
+import {ingestDesktopSlack} from './slack-ingest.js';
+import {desktopSlackDisconnectSchema} from './slack-contract.js';
 
 const secret=z.string().regex(/^[a-f0-9]{64}$/);
-const configSchema=z.object({root:z.string().refine(isAbsolute),bundle:z.string().refine(isAbsolute),vault:z.object({version:z.literal(1),admin:secret,runtime:secret,installation:installationSecretsSchema}).strict()}).strict();
+const configSchema=z.object({root:z.string().refine(isAbsolute),bundle:z.string().refine(isAbsolute),vault:z.object({version:z.literal(1),admin:secret,runtime:secret,installation:installationSecretsSchema}).strict(),ai:desktopAiSchema.optional()}).strict();
 type Config=z.infer<typeof configSchema>;
 let postgres:ChildProcess|undefined;
 let engine:Awaited<ReturnType<typeof createLocalEngine>>|undefined;
@@ -19,6 +23,8 @@ let initializing=false,stopping=false;
 let stage='initializing';
 let owner:{id:string;orgId:string}|undefined;
 let installationRoot='';
+let aiConfigured=false;
+let mcpSocket:Awaited<ReturnType<typeof startMcpSocket>>|undefined;
 const streams=new Map<string,AbortController>();
 const subprocesses=new Set<ChildProcess>();
 const send=(message:unknown)=>{if(process.connected)process.send?.(message as object);};
@@ -40,6 +46,7 @@ async function shutdown(){
  if(stopping)return;stopping=true;
  for(const child of subprocesses)child.kill('SIGTERM');
  for(const stream of streams.values())stream.abort();
+ await mcpSocket?.close().catch(()=>{});
  await engine?.close().catch(()=>{});
  const child=postgres;
  if(child&&child.exitCode===null&&child.signalCode===null)await new Promise<void>(resolve=>{
@@ -100,7 +107,8 @@ async function initialize(config:Config){
  EXECUTE format('GRANT SELECT,INSERT,UPDATE,DELETE ON TABLE public.%I TO orchestra_desktop_runtime',t.tablename);
  IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename=t.tablename AND policyname='desktop_runtime_access') THEN EXECUTE format('CREATE POLICY desktop_runtime_access ON public.%I TO orchestra_desktop_runtime USING (true) WITH CHECK (true)',t.tablename); END IF; END LOOP; END $$;`,'orchestra');
  stage='starting engine';
- engine=await createLocalEngine({databaseUrl:`postgresql://orchestra_desktop_runtime:${vault.runtime}@127.0.0.1:${port}/orchestra?schema=public`,installationRoot:root,secrets:vault.installation,port:await freePort()});
+ engine=await createLocalEngine({databaseUrl:`postgresql://orchestra_desktop_runtime:${vault.runtime}@127.0.0.1:${port}/orchestra?schema=public`,installationRoot:root,secrets:vault.installation,port:await freePort(),ai:config.ai});
+ aiConfigured=!!config.ai;
  const db=engine.context.prisma;
  // Installation-local principal, not a hosted account or verified email identity.
  stage='initializing local identity';
@@ -111,13 +119,14 @@ async function initialize(config:Config){
  });
  stage='listening';await engine.start();const address=engine.app.server.address();
  const publishAuthority=()=>{if(engine&&owner&&address&&typeof address==='object')send({type:'authority',value:{port:address.port,token:engine.localToken,bearer:engine.app.jwt.sign({userId:owner.id,orgId:owner.orgId,typ:'access',globalRole:'owner',workspaceRoleDefault:'manager'},{expiresIn:'15m'})}});};
+ mcpSocket=await startMcpSocket(root,(authorization,request)=>engine!.context.services.mcpService.handleJsonRpc(authorization,request));
  publishAuthority();setInterval(publishAuthority,5*60*1000).unref();send({type:'ready',port:address&&typeof address==='object'?address.port:undefined});
 }
 async function bootstrap(){
  if(!engine||!owner)throw new Error('Runtime unavailable');
  const [user,projects,state]=await Promise.all([engine.context.prisma.user.findUniqueOrThrow({where:{id:owner.id},include:{organization:true}}),engine.context.services.projectService.listProjects(owner.id,owner.orgId),readLocalState(installationRoot)]);
  const workspaces=projects.map(project=>({projectId:project.id,name:project.name,slug:project.slug,organizationId:user.orgId,organizationName:user.organization.name,organizationSlug:user.organization.slug,role:'manager',current:project.id===state.projectId}));
- return {user:{id:user.id,orgId:user.orgId,email:user.email,displayName:user.displayName,globalRole:user.globalRole,workspaceRoleDefault:user.workspaceRoleDefault,emailVerified:false,emailVerifiedAt:null,organization:user.organization},workspaces,mode:'desktop-local',aiConfigured:false,onboarded:state.onboarded??false};
+ return {user:{id:user.id,orgId:user.orgId,email:user.email,displayName:user.displayName,globalRole:user.globalRole,workspaceRoleDefault:user.workspaceRoleDefault,emailVerified:false,emailVerifiedAt:null,organization:user.organization},workspaces,mode:'desktop-local',aiConfigured,onboarded:state.onboarded??false};
 }
 async function command(value:unknown,selection?:unknown){
  if(!engine||!owner||stopping)throw new Error('Runtime unavailable');
@@ -125,6 +134,12 @@ async function command(value:unknown,selection?:unknown){
  const base=z.object({operation:z.string()}).parse(value);
  const services=engine.context.services;
  switch(base.operation){
+  case 'desktop.slack.disconnect':{
+   const input=desktopSlackDisconnectSchema.parse(value);
+   await engine.context.prisma.communicationConnector.updateMany({where:{provider:'slack',createdBy:owner.id,project:{orgId:owner.orgId},AND:[{configJson:{path:['desktop'],equals:true}},{configJson:{path:['teamId'],equals:input.teamId}}]},data:{status:'revoked',lastError:null}});
+   return {disconnected:true};
+  }
+  case 'desktop.slack.ingest':return ingestDesktopSlack(engine.context.prisma,owner,value);
   case 'local.bootstrap':z.object({operation:z.literal('local.bootstrap')}).strict().parse(value);return bootstrap();
   case 'local.onboard':{z.object({operation:z.literal('local.onboard')}).strict().parse(value);await saveLocalState(installationRoot,undefined,true);return bootstrap();}
   case 'workspace.list':z.object({operation:z.literal('workspace.list')}).strict().parse(value);return services.projectService.listProjects(owner.id,owner.orgId);
@@ -137,9 +152,9 @@ async function command(value:unknown,selection?:unknown){
    return services.documentService.uploadFile({projectId:input.projectId,actorUserId:owner.id,kind:'reference',title:file.fileName,visibility:'internal',fileName:file.fileName,contentType:file.contentType,buffer});
   }
   case 'socrates.ask':{
-   const input=z.object({operation:z.literal('socrates.ask'),projectId:z.string().uuid(),requestId:z.string().uuid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().uuid().optional()}).strict().parse(value);
+   const input=z.object({operation:z.literal('socrates.ask'),projectId:z.string().uuid(),requestId:z.string().uuid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().uuid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict().parse(value);
    if(streams.size>=2||streams.has(input.requestId))throw new Error('Stream limit');const controller=new AbortController();streams.set(input.requestId,controller);
-   try{return await services.socratesService.askV1ProjectMemory({projectId:input.projectId,actorUserId:owner.id,question:input.question,sessionId:input.sessionId,signal:controller.signal,onDelta:delta=>{send({type:'delta',requestId:input.requestId,delta});}});}finally{streams.delete(input.requestId);}
+   try{return await services.socratesService.askV1ProjectMemory({projectId:input.projectId,actorUserId:owner.id,question:input.question,sessionId:input.sessionId,selectedSources:input.selectedSources,signal:controller.signal,onDelta:delta=>{send({type:'delta',requestId:input.requestId,delta});}});}finally{streams.delete(input.requestId);}
   }
   case 'socrates.cancel':{const input=z.object({operation:z.literal('socrates.cancel'),requestId:z.string().uuid()}).strict().parse(value);streams.get(input.requestId)?.abort();return {cancelled:true};}
   default:throw new Error('Unsupported operation');

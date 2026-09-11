@@ -19,7 +19,7 @@ for(const file of files.sort()){
    if(handlers.length||['button','input','select','textarea','form','a','Link','NavLink'].includes(tag)){
     const line=source.getLineAndCharacterOfPosition(node.getStart(source)).line+1;
     const sharedOnly=/LoginPage|WorkspacesPage|ClientWorkspacePage/.test(file);
-    const ownerStep=/McpAgentSetup/.test(file)?5:sharedOnly?6:4;
+    const ownerStep=/McpAgentSetup|DesktopMcpSetup|DesktopAiSettings|DesktopSources|DesktopSlackSettings/.test(file)?5:sharedOnly?6:4;
     const siblingTest=file.replace(/\.tsx$/,'.test.tsx');
     const label=attrs.find(a=>['aria-label','title','placeholder'].includes(a.name.getText(source)))?.initializer?.getText(source)
       || (ts.isJsxElement(node.parent)?node.parent.children.filter(ts.isJsxText).map(n=>n.text.trim()).filter(Boolean).join(' ').slice(0,160):'')

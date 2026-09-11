@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Clipboard, KeyRound, Plug, ShieldCheck, Trash2 } from "lucide-react";
 import { createMcpToken, getMcpReadiness, listMcpTokens, revokeMcpToken, type McpReadiness, type McpToken } from "../../lib/api/mcp";
+import {isDesktop} from '../../lib/desktop';
+import {DesktopMcpSetup} from './DesktopMcpSetup';
 
 type Agent = "codex" | "claude" | "cursor";
 
-export function McpAgentSetup({ projectId, packId, targetAgent, toast }: { projectId: string; packId: string; targetAgent: Agent; toast: (message: string, kind: "success" | "error" | "info") => void }) {
+type Props={projectId:string;packId:string;targetAgent:Agent;toast:(message:string,kind:'success'|'error'|'info')=>void};
+export function McpAgentSetup(props:Props){return isDesktop()?<DesktopMcpSetup {...props}/>:<HostedMcpAgentSetup {...props}/>;}
+function HostedMcpAgentSetup({ projectId, packId, targetAgent, toast }: Props) {
   const [readiness, setReadiness] = useState<McpReadiness | null>(null);
   const [tokens, setTokens] = useState<McpToken[]>([]);
   const [secret, setSecret] = useState<string | null>(null);

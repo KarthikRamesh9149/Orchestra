@@ -1,12 +1,18 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 786,
+  "unchangedImportedFiles": 784,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
       "sourceSha256": "335aa4d5e5cecef1a7a1463c2a395a9756eb36bf17b2858fa72be9e23885e144",
       "importedSha256": "47d8e51d808cd65ad82d85f54120aca1ba42f4e8c7a79a04557885967be68016",
       "reason": "Step 4 local first-run routes; preserve hosted routes and styling."
+    },
+    {
+      "path": "apps/beta-web/src/components/delivery/McpAgentSetup.tsx",
+      "sourceSha256": "08dff045c450a459b01c8c9360ba6467bb41ea48f240e7beae42b9dd9a6b1a89",
+      "importedSha256": "8088f2acadc4811131c2fab9e75aebaf408b92386c39e69b95135e0d2a71c815",
+      "reason": "Step 5 dispatch desktop pairing through the protected native bridge while retaining the hosted implementation."
     },
     {
       "path": "apps/beta-web/src/components/shell/NavRail.tsx",
@@ -59,8 +65,8 @@
     {
       "path": "apps/beta-web/src/pages/DeliveryPage.tsx",
       "sourceSha256": "d0ebdf4b131fe053a09bb19a1103e84210773baa3c2bb51a20e6bc99cecbcdd7",
-      "importedSha256": "83d02170f199f0f90540688b0a9f13f1a4bad01b026bf1fa9036c8ce840ea356",
-      "reason": "Step 4 native context-pack save and clipboard with explicit failures; preserve hosted behavior and visual structure."
+      "importedSha256": "bdd8daec25380b2962811f0ad68e5d7c8d03923ae838eb880ed512be2bb688bd",
+      "reason": "Steps 4/5 native context-pack save, clipboard and scoped MCP pairing; preserve hosted behavior and existing visual tokens."
     },
     {
       "path": "apps/beta-web/src/pages/LiveDocViewerPage.tsx",
@@ -77,8 +83,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "cabde95daa96757b4fd7c8129fbabcc566f0f1bf1cc107643af0561ed4a3634c",
-      "reason": "Step 4 explicitly unavailable local invitations; preserve shared workflow and styling."
+      "importedSha256": "3f2e854c0dfa7db730e64f9deba3e5a6af479bc2d5ba81b4c79b25897fccfbb7",
+      "reason": "Steps 4/5 unavailable local invitations plus lazy desktop-only protected AI, explicit folder sources and native Slack controls; preserve shared workflow and styling."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -145,6 +151,12 @@
       "sourceSha256": "29e0e70c39cbc4182b637ea8cf282dd24a01a023d723ab3c1d642871c2b301e6",
       "importedSha256": "775cc1fd11619c61b75ce544448934ec17238b0cb5fcbd8a1f52d0b39c10cbc7",
       "reason": "Step 2 explicit unavailable embedding capability; no mock vectors in offline mode."
+    },
+    {
+      "path": "src/modules/communications/message-indexing.service.ts",
+      "sourceSha256": "6acaa121649f7e54594c6338f21b8ccfe924d5f9d14cc5dbc99f467bff0191cf",
+      "importedSha256": "d74b3e11fb766aef7f5cf026f513b14c8891bb34873bdd3ef4a776a07279f952",
+      "reason": "Step 5 retain honest lexical communication evidence when desktop embedding configuration or request allowance is unavailable; no mock vectors, semantic completion remains explicit."
     },
     {
       "path": "src/modules/deep-research/service.ts",

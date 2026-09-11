@@ -13,7 +13,7 @@ import {
   UserPlus,
   X,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { BiLogoMicrosoftTeams } from "react-icons/bi";
 import {
   SiClickup,
@@ -68,6 +68,9 @@ import { useToastStore } from "../components/ui/Toaster";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CARD = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)]";
+const DesktopAiSettings=lazy(()=>import('../components/settings/DesktopAiSettings'));
+const DesktopSources=lazy(()=>import('../components/settings/DesktopSources'));
+const DesktopSlackSettings=lazy(()=>import('../components/settings/DesktopSlackSettings'));
 const EYEBROW = "font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]";
 const EYEBROW_MUTED = "font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]";
 
@@ -914,6 +917,9 @@ export function SettingsPage() {
         </header>
 
         <div className="flex flex-col gap-10">
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop AI settings…</p>}><DesktopAiSettings/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading local sources…</p>}><DesktopSources/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop Slack…</p>}><DesktopSlackSettings/></Suspense>}
           <IntegrationsSection />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <WorkspaceSection />

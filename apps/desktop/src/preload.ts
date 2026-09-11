@@ -2,6 +2,9 @@ import {contextBridge,ipcRenderer} from 'electron';
 import type {DesktopBridge,OperationResult,RuntimeStatus} from './contracts.js';
 const invoke=(input:unknown)=>ipcRenderer.invoke('orchestra:command',input) as Promise<OperationResult>;
 const bridge:DesktopBridge={
+ slack:{inspect:()=>ipcRenderer.invoke('orchestra:slack-inspect'),connect:()=>ipcRenderer.invoke('orchestra:slack-connect'),cancel:()=>ipcRenderer.invoke('orchestra:slack-cancel'),revoke:()=>ipcRenderer.invoke('orchestra:slack-revoke'),channels:()=>ipcRenderer.invoke('orchestra:slack-channels'),importChannel:input=>ipcRenderer.invoke('orchestra:slack-import',input)},
+ mcp:{inspect:()=>ipcRenderer.invoke('orchestra:mcp-inspect'),pair:input=>ipcRenderer.invoke('orchestra:mcp-pair',input),revoke:id=>ipcRenderer.invoke('orchestra:mcp-revoke',id)},
+ ai:{inspect:()=>ipcRenderer.invoke('orchestra:ai-inspect'),configure:preferences=>ipcRenderer.invoke('orchestra:ai-configure',preferences),revoke:()=>ipcRenderer.invoke('orchestra:ai-revoke')},
  bootstrap:()=>invoke({operation:'local.bootstrap'}),
  completeOnboarding:()=>invoke({operation:'local.onboard'}),
  copyText:text=>ipcRenderer.invoke('orchestra:copy-text',text),
@@ -10,6 +13,7 @@ const bridge:DesktopBridge={
  status:()=>ipcRenderer.invoke('orchestra:status') as Promise<RuntimeStatus>,
  workspaces:{list:()=>invoke({operation:'workspace.list'}),create:name=>invoke({operation:'workspace.create',name}),select:projectId=>invoke({operation:'workspace.select',projectId})},
  chooseEvidence:()=>ipcRenderer.invoke('orchestra:choose-evidence'),
+ chooseFolder:()=>ipcRenderer.invoke('orchestra:choose-folder'),
  uploadEvidence:(projectId,selectionId)=>invoke({operation:'evidence.upload',projectId,selectionId}),
  ask:input=>invoke({operation:'socrates.ask',...input}),
  cancel:requestId=>invoke({operation:'socrates.cancel',requestId}),

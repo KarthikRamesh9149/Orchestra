@@ -61,9 +61,10 @@ export class PostgresJobDispatcher implements JobDispatcher {
       AND status='running' AND lease_until>now()`) === 1;
   }
 
-  async fail(job: DesktopClaim) {
+  async fail(job: DesktopClaim, failureCode='handler_failed') {
+    if(!/^(handler_failed|ai_request_budget_exceeded|embedding_not_configured|ai_not_configured|ai_provider_failed|ai_busy|ai_revoked|P\d{4}(?:_[A-Z0-9]{5})?|handler_type_error|handler_validation_error)$/.test(failureCode))failureCode='handler_failed';
     return (await this.db.$executeRaw`UPDATE desktop_jobs SET status='failed',owner_token=NULL,lease_until=NULL,
-      failure_code='handler_failed',updated_at=now()
+      failure_code=${failureCode},updated_at=now()
       WHERE id=${job.id}::uuid AND owner_token=${job.owner_token}::uuid AND fence=${job.fence}
       AND status='running' AND lease_until>now()`) === 1;
   }

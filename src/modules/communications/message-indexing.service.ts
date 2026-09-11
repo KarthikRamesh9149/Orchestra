@@ -104,10 +104,6 @@ export class MessageIndexingService {
     });
 
     const firefliesSegments = message.provider === "fireflies_ai" ? extractFirefliesSegments(message.rawMetadataJson) : [];
-    const contentSignature = stableBodyHash(
-      message.bodyText,
-      JSON.stringify(firefliesSegments.length > 0 ? firefliesSegments : existingChunks.map((chunk) => chunk.metadataJson))
-    );
     const attachmentNames = message.attachments
       .map((attachment) => attachment.filename)
       .filter((value): value is string => Boolean(value && value.trim().length > 0));
@@ -127,6 +123,11 @@ export class MessageIndexingService {
       subject: message.thread.subject,
       attachmentNames
     });
+    // Hash source inputs, never previous index output (which contains this hash).
+    const contentSignature = stableBodyHash(contextualBody, JSON.stringify({
+      bodyHtml: message.bodyHtml, firefliesSegments,
+      metadata: extractSafeProviderEvidenceMetadata(message.rawMetadataJson)
+    }));
 
     const existingSignature = existingChunks[0]?.metadataJson;
     if (
@@ -134,7 +135,8 @@ export class MessageIndexingService {
       typeof existingSignature === "object" &&
       existingSignature !== null &&
       "contentSignature" in existingSignature &&
-      (existingSignature as { contentSignature?: unknown }).contentSignature === contentSignature
+      (existingSignature as { contentSignature?: unknown }).contentSignature === contentSignature &&
+      (this.embeddingProvider.unavailable || (existingSignature as {semanticIndexed?:unknown}).semanticIndexed !== false)
     ) {
       return { indexed: false, chunkCount: existingChunks.length };
     }
@@ -197,7 +199,15 @@ export class MessageIndexingService {
               thread: message.thread,
               attachmentNames
             });
-      const embedding = await this.embeddingProvider.embedText(chunkContext);
+      // Local lexical evidence must survive deliberately unavailable semantic
+      // indexing. Never substitute mock vectors or claim semantic completion.
+      let embedding: number[] | undefined;
+      if (!this.embeddingProvider.unavailable) {
+        try { embedding = await this.embeddingProvider.embedText(chunkContext); }
+        catch (error) {
+          if (!(error instanceof AppError) || !['ai_request_budget_exceeded', 'embedding_not_configured'].includes(error.code)) throw error;
+        }
+      }
       const created = await this.prisma.communicationMessageChunk.create({
         data: {
           messageId: message.id,
@@ -210,11 +220,11 @@ export class MessageIndexingService {
           contextualContent: chunkContext,
           lexicalContent,
           tokenCount: chunk.tokenCount,
-          metadataJson: chunk.metadata
+          metadataJson: { ...chunk.metadata, semanticIndexed: !!embedding }
         }
       });
 
-      await this.prisma.$executeRawUnsafe(
+      if(embedding)await this.prisma.$executeRawUnsafe(
         "UPDATE communication_message_chunks SET embedding = CAST($1 AS extensions.vector) WHERE id = CAST($2 AS uuid)",
         `[${embedding.join(",")}]`,
         created.id
