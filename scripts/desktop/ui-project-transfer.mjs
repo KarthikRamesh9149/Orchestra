@@ -13,7 +13,7 @@ const pdf=await new Promise(resolve=>{const parts=[],doc=new PDFDocument();doc.o
 const previous=join(repo,'.desktop/packages/95e81595-cd24-433e-b211-a8b43edd2af2/Orchestra Desktop Internal-darwin-arm64');
 const launch=directory=>_electron.launch({executablePath:join(directory,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{HOME:process.env.HOME,PATH:'',TMPDIR:process.env.TMPDIR,NODE_EXTRA_CA_CERTS:join(repo,'.desktop/self-host-v1-qualification/tls-certificate.pem')},timeout:60000});
 let app=await launch(previous);
-let page=await app.firstWindow(),sharedProjectId;const pass=name=>{proof.passed.push(name);console.log('PASS',name);};
+let page=await app.firstWindow(),sharedProjectId,localProjectId;const pass=name=>{proof.passed.push(name);console.log('PASS',name);};
 try{
  page.on('pageerror',e=>proof.errors.push(e.message));
  assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.3');proof.previousPackage=previous;
@@ -27,6 +27,7 @@ try{
  assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.4');
  await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
  pass('populated 0.0.3 to 0.0.4 application upgrade preserves local workspace and document; schema unchanged');
+ localProjectId=await page.evaluate(async()=>{const r=await fetch('/v1/me/workspaces');return (await r.json()).data[0].projectId;});
  await app.evaluate(({dialog,clipboard},archive)=>{
   globalThis.syntheticClip='';globalThis.savedPassphrase='';
   clipboard.readText=()=>globalThis.syntheticClip;clipboard.writeText=value=>{globalThis.syntheticClip=value;globalThis.savedPassphrase=value;};clipboard.clear=()=>{globalThis.syntheticClip='';};
@@ -81,6 +82,11 @@ try{
  const restored=app.waitForEvent('window');await page.getByRole('button',{name:'Open Transfer qualification',exact:true}).click();page=await restored;page.on('pageerror',e=>proof.errors.push(e.message));
  await page.getByRole('button',{name:'Return to local'}).waitFor();await page.goto(viewer);await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor({timeout:30000});
  assert.equal((await data(base+'/change-proposals/'+proposal.id)).status,'accepted');assert(JSON.stringify(await data(base+'/live-doc/current')).includes('four reviewers'));pass('protected shared login, imported source and accepted truth survive whole-app restart');
+ const localDenied=await page.evaluate(async id=>(await fetch(`/v1/projects/${id}/settings`)).status,localProjectId);assert([403,404].includes(localDenied));pass('shared server cannot read the local-only project');
+ const sessions=await data('/v1/me/sessions'),current=sessions.find(session=>session.current);assert(current);
+ await data('/v1/me/sessions/'+current.id,'DELETE');
+ await page.goto('orchestra://app/memory');await page.getByLabel('Email',{exact:true}).waitFor({timeout:30000});
+ assert.equal(await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).count(),0);pass('server-side current-session revocation removes shared content and requires sign-in');
  assert.deepEqual(proof.errors,[]);
 }catch(error){proof.failure=String(error);await page.screenshot({path:join(profile,'failure.png')}).catch(()=>{});throw error;}
 finally{await writeFile(join(profile,'evidence.json'),JSON.stringify(proof,null,2));console.log('Evidence',join(profile,'evidence.json'));await app.close();}

@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 774,
+  "unchangedImportedFiles": 773,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -99,10 +99,16 @@
       "reason": "Step 4 user-selected native original-document save; web download remains unchanged."
     },
     {
+      "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",
+      "sourceSha256": "c4e17f06fa5564d83f0a280ce3e0115e7c52f8c32aa9e38c4bd9062f846f7eec",
+      "importedSha256": "bc4dab839e207e3f5d91b595d7713f4d79338b85575128da6cac6fa582272317",
+      "reason": "Step 6 regression verifies renderer-initiated download reports a request, not a completed native save."
+    },
+    {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
       "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
-      "importedSha256": "2a01c362f0bc65ddf624b6d05bf2f4ef3cf94894581ebdc58e255270dce45810",
-      "reason": "Step 4 truthful partial-processing status and authorized native clipboard feedback without redesign."
+      "importedSha256": "d4bbc6e6454c8abb8886adc40c73ec0b2dca2ee273bdcb86b13d4d4b4615d947",
+      "reason": "Step 4 truthful partial-processing status and native clipboard feedback; Step 6 shared/browser download wording no longer claims a saved file before the save dialog completes. No redesign."
     },
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",

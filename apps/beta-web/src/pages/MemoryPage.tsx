@@ -846,7 +846,7 @@ export function MemoryPage() {
       anchor.download = doc.fileName ?? doc.name;
       anchor.click();
       URL.revokeObjectURL(href);
-      showToast("Original document downloaded.");
+      showToast("Download requested. Complete the save dialog to keep the file.");
     } catch (error) {
       showToast(error instanceof Error ? error.message : "Could not download the original document.", "terracotta");
     }

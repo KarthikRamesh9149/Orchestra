@@ -230,6 +230,8 @@ describe("[FIX-20] Memory document persistence", () => {
     expect(createObjectUrl).toHaveBeenCalled();
     expect(anchorClick).toHaveBeenCalled();
     expect(revokeObjectUrl).toHaveBeenCalledWith("blob:memory-document");
+    expect(screen.queryByText("Original document downloaded.")).not.toBeInTheDocument();
+    expect(screen.getByText("Download requested. Complete the save dialog to keep the file.")).toBeInTheDocument();
   });
 
   it("shows provider provenance and opens the real provider source", async () => {

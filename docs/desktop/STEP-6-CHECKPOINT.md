@@ -281,3 +281,36 @@ Step 7 prerequisite inspection, not a Step 7 pass: unrestricted keychain inspect
 finds an Apple Development identity, but no Developer ID Application distribution
 identity. Signing/notarization remains blocked until the required credential is
 available. No signing-warning bypass or purchase is authorized or performed.
+
+### Final single-Mac isolation/download follow-up
+
+- Extended the packaged journey to 13 passing checks with local-project rejection
+  by the shared server and real current-session revocation followed by sign-in.
+  Evidence: `/private/tmp/orchestra-transfer-ui-FxbIyW/evidence.json`.
+- `verify-shared-tenant-isolation.ts` created a disposable different-organization
+  project and proved six real read/write/workspace-switch/transfer denials. Being
+  its creator did not bypass missing organization/project membership. The rejected
+  rename left its original name intact.
+- Reused the unchanged cache implementation's six native checks from
+  `/private/tmp/orchestra-step6-cache-ui-c3anEO/evidence.json`: authorized cached
+  metadata, visible read-only state, offline write rejection, expiry, reconnect
+  authorization and wake-event purge. Network/manifest/native wake were controlled
+  test conditions, not a physical-sleep or two-machine claim.
+- Reproduced and fixed premature shared/browser download-success wording. The
+  native local save path still reports success only when its native operation
+  confirms it. Shared/browser initiation now reports a download request instead
+  of claiming the file was saved. No styles or layout changed. All 12 Memory
+  tests and frontend production build passed.
+- Rebuilt internal package
+  `.desktop/packages/33e2d7ca-07fc-4120-966c-5301fb7699c7/Orchestra Desktop Internal-darwin-arm64`.
+  `ui-shared-download-cancel.mjs` verified a real authenticated download reaching
+  the native handler and cancellation without a false saved-file message.
+  Evidence: `/private/tmp/orchestra-transfer-ui-FxbIyW/download-cancel-evidence.json`.
+
+These checks close the remaining recorded single-Mac packaged revocation,
+offline, isolation and download-cancellation items. The outstanding Step 6 gate
+is real self-hosted email/provider qualification. Configuration inspection found
+no configured Gmail, Drive, Slack or GitHub server credentials. Dedicated
+registrations were requested; desktop/production grants were not repurposed.
+Two-computer testing is explicitly deferred by the user. Step 7 has not begun
+and Step 6 has not been merged while its remaining credential-backed gate is open.
