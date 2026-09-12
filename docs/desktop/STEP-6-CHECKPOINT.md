@@ -225,3 +225,59 @@ Step 6 remains incomplete. Outstanding items above still apply except the clean
 image build blocker. Operator backup tooling/provider configuration, remaining
 packaged failure checks and transfer orphan reconciliation are not certified by
 this follow-up. Two-computer qualification still requires a second machine.
+
+### 13 September: operator recovery and packaged failure qualification
+
+The user explicitly deferred two-computer qualification and authorized proceeding
+to Step 7 after all other Step 6 requirements pass. CONTRACT.md now records this
+scope revision. Two-computer behaviour is **deferred**, not a simulated pass.
+
+- Added the bounded operator `self-host-recovery.ts` command and RECOVERY.md:
+  encrypted PostgreSQL/private-files/Redis snapshots, protected passphrase input,
+  exclusive maintenance lock, local Docker-context restriction, exact image and
+  configuration binding, no-overwrite output and new-target-only restore.
+  Application services are stopped during snapshot and restarted afterward.
+  Restore leaves target services stopped for deliberate provisioning/verification.
+- Qualified final encrypted backup/restore with real synthetic volumes in
+  `orchestra-operator-restore-final-20260913`. The restored API, worker and web
+  booted. `verify-operator-restore.ts` matched document/version/accepted-brain/member
+  fingerprints, authenticated, verified two exact-hash source downloads, and
+  logged out. A populated-target retry was rejected. The earlier complete queue
+  recovery evidence remains applicable to unchanged queue/worker code.
+- Added optional backed-up orphan quarantine. Four unreferenced synthetic
+  transfer files moved to recoverable quarantine; no data was deleted. Repeating
+  reconciliation found zero candidates. Immutable transfer namespace filtering
+  preserves committed references and unrelated files. Quarantine deliberately
+  does not reclaim disk space.
+- Final private synthetic archive:
+  `/private/tmp/orchestra-operator-recovery-zGJ40d/final-config-bound.orchbk`.
+  Its co-located test passphrase is synthetic qualification material only, not the
+  documented operator practice. Configuration and secrets were not committed.
+- New internal Mac package:
+  `.desktop/packages/84e2c885-725b-40cb-add5-f8c5e41cb2ea/Orchestra Desktop Internal-darwin-arm64`.
+  Extended packaged transfer harness passed 11 checks: local upload/viewer,
+  populated application upgrade, cancelled export, encrypted export,
+  wrong-passphrase rejection, cancelled import, mapped import, reload/viewer,
+  real approval/Live Doc update, and whole-app restart persistence.
+  `/private/tmp/orchestra-transfer-ui-FPj2RC/evidence.json` records the exact scope.
+  Native dialogs/clipboard were controlled; encryption, files, APIs and persistence
+  were real. Expected anonymous bootstrap 401 and one non-core web-vitals 503
+  were observed; there were no renderer exceptions.
+- Backend suite: 1,594 passed, 13 skipped. Frontend: 228 passed. Final recovery
+  configuration-binding changes additionally passed the nine focused archive
+  tests and backend typecheck. Native build/typecheck, import provenance, inventory,
+  security scan and whitespace checks passed. No paid CI or production changes.
+- Added implementation-derived operator email/provider configuration guidance in
+  PROVIDERS.md. It distinguishes registration/configuration from actual delivery
+  and server-specific qualification, and corrects the allowlist's beta-only scope.
+
+Still open: real self-hosted Gmail delivery and provider qualification (the local
+server has no Gmail, Drive, Slack or GitHub credentials), and final remaining
+packaged revocation/offline/cross-tenant review. Schema-changing/interrupted-update
+qualification is retained for Step 7, not represented by the unchanged-schema
+0.0.3-to-0.0.4 application upgrade. Step 6 has not been merged into main.
+
+Step 7 prerequisite inspection, not a Step 7 pass: unrestricted keychain inspection
+finds an Apple Development identity, but no Developer ID Application distribution
+identity. Signing/notarization remains blocked until the required credential is
+available. No signing-warning bypass or purchase is authorized or performed.

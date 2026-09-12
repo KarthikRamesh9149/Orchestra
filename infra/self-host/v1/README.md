@@ -83,8 +83,8 @@ configuration when generation is enabled. No key or paid account is supplied.
 
 Invited users can redeem email-bound join codes and choose their own passwords.
 Code creation is not proof that an email was delivered. This candidate does not
-configure an email sender automatically; automated sender setup and its operator
-instructions remain a Step 6 gap. Never reuse the founder's hosted sender or
+configure an email sender automatically. See [PROVIDERS.md](PROVIDERS.md) for
+operator configuration and required real-account checks. Never reuse the founder's hosted sender or
 desktop user's local provider grants.
 
 Register separate server-owned provider applications and exact server callbacks.
@@ -92,7 +92,7 @@ Configuration is validated in `src/config/env.ts`: Slack uses `SLACK_CLIENT_ID`,
 `SLACK_CLIENT_SECRET` and `SLACK_REDIRECT_URI`; Google uses `GOOGLE_CLIENT_ID`,
 `GOOGLE_CLIENT_SECRET` and `GOOGLE_REDIRECT_URI`; GitHub uses its `GITHUB_APP_*`
 configuration. Required webhook secrets must be supplied when webhooks are
-enabled. The release allowlist defaults to VS Code. Add a provider to
+enabled. In the production beta profile the release allowlist defaults to VS Code. Add a provider to
 `PROVIDER_RELEASE_VALIDATED_PROVIDERS` only after its real server-specific
 connect, sync, evidence and revoke tests pass. Step 5's desktop connector tests
 do not certify these separate server registrations.
@@ -161,7 +161,9 @@ on the populated restore. It refuses accounts outside the synthetic qualificatio
 domain and stops its restored stack afterward. Its temporary ownership capability
 is granted only to the one-off restore helper; API and worker remain restricted.
 
-Operator-facing complete backup tooling remains unqualified. A populated native
+The bounded operator backup/isolated restore workflow is documented in
+[RECOVERY.md](RECOVERY.md), including its tested limits and maintenance downtime.
+A populated native
 0.0.3-to-0.0.4 application upgrade and scoped encrypted core transfer with explicit
 identity mapping passed on one Mac; see `docs/desktop/STEP-6-CHECKPOINT.md` for the
 exact evidence and exclusions. This is not proof of a schema-changing upgrade or
