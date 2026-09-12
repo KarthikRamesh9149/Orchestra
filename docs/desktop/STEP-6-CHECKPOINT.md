@@ -100,6 +100,43 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 
 ### Outstanding work
 
+### Scoped transfer engine follow-up, 12 September 2026
+
+- Added an internal, versioned encrypted transfer format and database/storage
+  service. A reviewed field allowlist covers documents, exact source files,
+  parsed sections/chunks, Product Brain versions/nodes/links, accepted decisions,
+  proposals and Live Doc history. Unknown record families/fields are rejected.
+- Credentials, permission grants, private chats, connector configuration and
+  non-core workflows are excluded. This is not a full workspace export. External
+  references in user-authored JSON remain historical references, not imported
+  connector authority. Embeddings are not transferred; model-aware reindexing
+  and complete source-reference presentation still require integration.
+- Requires a live project manager, an exact reviewed archive digest, explicit
+  one-to-one identity mapping to active destination members and acknowledgement
+  of imported historical truth. Source identity mapping and original import
+  lineage are retained in the audit record and subsequent exports.
+- Imports use an empty core destination, immutable private file keys, a locked
+  serializable database transaction and create-only records. Late ID collisions
+  roll back all database changes. Known successful retries do not stage new
+  files. Interrupted or failed first attempts can leave private unreferenced
+  files; safe orphan reconciliation is not yet implemented.
+- Twelve targeted tests and the full backend suite passed: 1,574 passed,
+  13 skipped. TypeScript build, import-provenance and action-inventory gates
+  passed. The initial sandbox run could not bind test loopback sockets; the
+  complete authorized rerun passed without changing assertions.
+- `scripts/desktop/verify-project-transfer.mjs` passed seven real synthetic
+  restricted-role PostgreSQL/storage checks: denied authority/mapping/consent,
+  byte/decision preservation, idempotency, export with lineage, late-collision
+  rollback, manager revocation and persistence over a fresh connection.
+  It creates labelled synthetic projects only in the isolated qualification
+  stack. A fresh connection is not an application crash or version upgrade.
+- **Not exposed in the UI or an HTTP route yet.** Native archive selection,
+  passphrase handling, mapping preview/confirmation, local-to-shared integration
+  and packaged normal/failure/restart journeys remain. No new visible feature is
+  claimed complete by this service-level proof.
+
+### Remaining gate
+
 1. Packaged shared-window qualification and remaining session revocation/offline
    state-purge checks, including native download/cancel behaviour.
 2. Further offline/shared workflow qualification. Optional document-metadata
