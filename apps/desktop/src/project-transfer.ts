@@ -13,6 +13,7 @@ export class NativeProjectTransfer{
  private async exclusive<T>(run:()=>Promise<T>){if(this.disposed||this.busy)throw new Error('Finish the current transfer or reopen this window.');this.busy=true;try{return await run();}finally{this.busy=false;}}
  async export(projectId:string){return this.exclusive(async()=>{
   z.string().uuid().parse(projectId);const passphrase=await this.deps.passphrase(true);if(!passphrase)return {cancelled:true};
+  if(this.disposed)throw new Error('Window closed');
   const result=await this.deps.send('export',projectId,{passphrase});
   const base64=z.string().max(Math.ceil(nativeArchiveLimit/3)*4).parse(result.archiveBase64),bytes=Buffer.from(base64,'base64');
   if(bytes.length>nativeArchiveLimit||bytes.toString('base64')!==base64)throw new Error('Transfer exceeds the supported archive size.');
@@ -21,7 +22,9 @@ export class NativeProjectTransfer{
  async preview(projectId:string){return this.exclusive(async()=>{
   z.string().uuid().parse(projectId);this.clear();
   const bytes=await this.deps.choose();if(!bytes)return {cancelled:true};if(bytes.length>nativeArchiveLimit)throw new Error('Choose an archive up to 16 MiB.');
+  if(this.disposed)throw new Error('Window closed');
   const passphrase=await this.deps.passphrase(false);if(!passphrase)return {cancelled:true};
+  if(this.disposed)throw new Error('Window closed');
   const archiveBase64=bytes.toString('base64'),result=await this.deps.send('preview',projectId,{archiveBase64,passphrase});
   const digest=z.string().regex(/^[a-f0-9]{64}$/).parse(result.digest);
   if(this.disposed)throw new Error('Window closed');

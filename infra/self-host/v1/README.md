@@ -13,6 +13,11 @@ trusted by the desktop client, and a protected configuration directory outside
 source control. The consumer local desktop app does not require Docker; these
 instructions are for the shared server operator.
 
+The current source build exceeded a 2 GiB container VM during strict TypeScript
+compilation. Allocate at least 4 GiB to the build VM; this is a build prerequisite,
+not a measured production runtime sizing recommendation. Do not disable type
+checking to work around an undersized builder.
+
 From this repository root, generate **new** installation-specific configuration:
 
 ```sh
@@ -101,8 +106,8 @@ isolated in-memory browser partition; grants are encrypted by macOS-protected
 storage outside the renderer. Neither another server's credentials nor the local
 owner token is forwarded.
 
-Shared offline caching is disabled. The optional administrator-enabled read-only
-cache is not implemented or advertised as available. Server removal attempts
+Shared offline caching is disabled by default. The optional administrator-enabled
+document-metadata cache is described below. Server removal attempts
 confirmed remote sign-out first; an outage is reported, not silently treated as
 successful revocation.
 
@@ -156,9 +161,11 @@ on the populated restore. It refuses accounts outside the synthetic qualificatio
 domain and stops its restored stack afterward. Its temporary ownership capability
 is granted only to the one-off restore helper; API and worker remain restricted.
 
-Operator-facing complete backup tooling, old-version-to-new-version upgrades, and
-scoped project export/import with identity mapping still require implementation
-and qualification. Reapplying migrations is not an actual version upgrade. Do not
-use a whole database restore as a substitute for authorized project transfer.
+Operator-facing complete backup tooling remains unqualified. A populated native
+0.0.3-to-0.0.4 application upgrade and scoped encrypted core transfer with explicit
+identity mapping passed on one Mac; see `docs/desktop/STEP-6-CHECKPOINT.md` for the
+exact evidence and exclusions. This is not proof of a schema-changing upgrade or
+two-computer operation. Reapplying migrations is not an actual version upgrade.
+Do not use a whole database restore as a substitute for authorized project transfer.
 
 No full recovery, two-computer or release-readiness claim is made by this package.

@@ -32,3 +32,42 @@ it('drops pending authority on close and rejects subsequent commit',async()=>{
  const {controller}=setup(),preview=await controller.preview(project);controller.close();
  await expect(controller.commit({projectId:project,previewId:preview.previewId,identityMap:{},acknowledgeHistoricalTruth:true})).rejects.toThrow();
 });
+it.each(['export','preview'] as const)('does not send %s after the window closes during its passphrase dialog',async(action)=>{
+ let resolve!:(value:string)=>void;
+ const send=vi.fn();
+ const controller=new NativeProjectTransfer({send,choose:async()=>Buffer.from('fixture'),passphrase:()=>new Promise(r=>{resolve=r;}),save:vi.fn(),confirm:async()=>true});
+ const operation=controller[action](project);
+ await vi.waitFor(()=>expect(resolve).toBeTypeOf('function'));
+ controller.close();resolve('synthetic-passphrase');
+ await expect(operation).rejects.toThrow('Window closed');
+ expect(send).not.toHaveBeenCalled();
+});
+it('expires a preview without allowing an import',async()=>{
+ vi.useFakeTimers();
+ const {controller,send}=setup();
+ try{
+  const preview=await controller.preview(project);
+  await vi.advanceTimersByTimeAsync(300001);
+  await expect(controller.commit({projectId:project,previewId:preview.previewId,identityMap:{},acknowledgeHistoricalTruth:true})).rejects.toThrow('expired');
+  expect(send).toHaveBeenCalledTimes(1);
+ }finally{controller.close();vi.useRealTimers();}
+});
+it('does not import if confirmation is cancelled',async()=>{
+ const send=vi.fn(async()=>({digest:'a'.repeat(64)}));
+ const controller=new NativeProjectTransfer({send,choose:async()=>Buffer.from('fixture'),passphrase:async()=> 'synthetic-passphrase',save:vi.fn(),confirm:async()=>false});
+ try{
+  const preview=await controller.preview(project);
+  expect(await controller.commit({projectId:project,previewId:preview.previewId,identityMap:{},acknowledgeHistoricalTruth:true})).toEqual({cancelled:true});
+  expect(send).toHaveBeenCalledTimes(1);
+ }finally{controller.close();}
+});
+it('does not import when the preview expires during confirmation',async()=>{
+ vi.useFakeTimers();
+ const send=vi.fn(async()=>({digest:'a'.repeat(64)}));
+ const controller=new NativeProjectTransfer({send,choose:async()=>Buffer.from('fixture'),passphrase:async()=> 'synthetic-passphrase',save:vi.fn(),confirm:async()=>{await vi.advanceTimersByTimeAsync(300001);return true;}});
+ try{
+  const preview=await controller.preview(project);
+  await expect(controller.commit({projectId:project,previewId:preview.previewId,identityMap:{},acknowledgeHistoricalTruth:true})).rejects.toThrow('expired');
+  expect(send).toHaveBeenCalledTimes(1);
+ }finally{controller.close();vi.useRealTimers();}
+});

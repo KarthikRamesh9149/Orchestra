@@ -195,3 +195,33 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 6. Actual two-computer role/authority qualification.
 
 The user confirmed on 12 September that only one Mac is available. Two isolated profiles/processes on that Mac can supply development evidence, but do not satisfy item 6. This hardware limitation does not block the remaining implementation and is not permission to weaken the gate. Step 6 is not complete and must not be merged into private main yet.
+
+### 13 September: clean image and transfer cancellation follow-up
+
+- With explicit user approval, increased the local Colima VM from 2 GiB to
+  4 GiB and restarted it. No paid resources or production configuration changed.
+- `docker build --no-cache -f infra/self-host/v1/Dockerfile -t
+  orchestra-self-host:step6-qualification .` passed with the existing strict
+  TypeScript compiler settings. Image identity:
+  `sha256:eccd969826298850a1e046e3984591534056412d071c109b00db4f81521854eb`.
+  This closes the earlier clean-image build failure; the Dockerfile was not weakened.
+- Recreated the synthetic API, worker and web from that image. All were healthy;
+  inspection confirmed no host `dist` mount. The 12 real HTTPS shared-runtime
+  checks passed, including exact upload/download bytes, different-role denial,
+  private-chat isolation, refresh rotation and logout. Local evidence:
+  `.desktop/step6-shared-runtime.json`. This remains single-machine evidence.
+- Reproduced a native transfer bug: closing the window during its passphrase
+  dialog still allowed an export/preview request to start. Added closed-window
+  checks before sending either request and after native file selection.
+- Transfer regression coverage now includes window closure, five-minute expiry,
+  cancellation of confirmation and expiry while confirmation is open. The
+  transfer/native suites passed 22 tests; native typecheck/build, import
+  provenance check and whitespace check passed. These new cases use controlled
+  dialogs/timers, not a claim of complete packaged failure-path qualification.
+- Corrected stale self-hosting documentation that still described implemented
+  metadata caching and scoped core transfer as absent.
+
+Step 6 remains incomplete. Outstanding items above still apply except the clean
+image build blocker. Operator backup tooling/provider configuration, remaining
+packaged failure checks and transfer orphan reconciliation are not certified by
+this follow-up. Two-computer qualification still requires a second machine.
