@@ -22,12 +22,17 @@ export async function slackRequest(method:'oauth.v2.access'|'auth.test'|'auth.re
  try{for(;;){const {value,done}=await reader.read();if(done)break;size+=value.length;if(size>2*1024*1024)throw new Error('Slack response exceeds limit');parts.push(value);}}
  finally{await reader.cancel();}
  let payload:unknown;try{payload=JSON.parse(Buffer.concat(parts).toString('utf8'));}catch{throw new Error('Invalid Slack response');}
+ // Revocation is retriable after a partially completed disconnect. These errors
+ // mean the supplied token is already unusable; never tolerate them on reads.
+ if(method==='auth.revoke'&&z.object({ok:z.literal(false),error:z.enum(['token_revoked','token_expired','invalid_auth'])}).safeParse(payload).success)return {ok:true,revoked:true};
  if(!z.object({ok:z.literal(true)}).safeParse(payload).success)throw new Error('Slack rejected the request; check access or reconnect.');
  return payload;
 }
 function parseToken(value:unknown){
  const token=tokenSchema.parse(value);const scopes=token.scope.split(',').filter(Boolean);
- if(scopes.length!==2||requiredScopes.some(scope=>!scopes.includes(scope)))throw new Error('Unexpected Slack permissions; reconnect with read-only scopes.');
+ // Slack includes the implicit self-identity scope on rotated user tokens even
+ // when the initial authed_user response lists only the requested read scopes.
+ if(new Set(scopes).size!==scopes.length||scopes.some(scope=>!['identify',...requiredScopes].includes(scope))||requiredScopes.some(scope=>!scopes.includes(scope)))throw new Error('Unexpected Slack permissions; reconnect with read-only scopes.');
  return {accessToken:token.access_token,refreshToken:token.refresh_token,expiresAt:Date.now()+token.expires_in*1000,scopes:[...requiredScopes]};
 }
 export async function connectSlack(openBrowser:(url:string)=>Promise<void>,signal?:AbortSignal,fetchImpl:typeof fetch=fetch):Promise<SlackCredential>{
@@ -49,4 +54,11 @@ export async function refreshSlack(value:SlackCredential,fetchImpl:typeof fetch=
  if(credential.expiresAt>Date.now()+60000)return credential;
  const payload=await slackRequest('oauth.v2.access',new URLSearchParams({grant_type:'refresh_token',client_id:SLACK_DESKTOP_CLIENT_ID,refresh_token:credential.refreshToken}),undefined,fetchImpl,signal);
  return slackCredentialSchema.parse({...credential,...parseToken(payload)});
+}
+/** Revoke minting authority first, then access. Never rotate to disconnect. */
+export async function revokeSlack(value:SlackCredential,fetchImpl:typeof fetch=fetch):Promise<void>{
+ const credential=slackCredentialSchema.parse(value);
+ for(const token of [credential.refreshToken,credential.accessToken]){
+  z.object({ok:z.literal(true),revoked:z.literal(true)}).parse(await slackRequest('auth.revoke',new URLSearchParams({token}),undefined,fetchImpl));
+ }
 }

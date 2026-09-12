@@ -25,9 +25,17 @@ describe('native local API authority',()=>{
   await expect(service.startRun(randomUUID(),{userId:randomUUID(),orgId:randomUUID()},{researchFocus:'local evidence',sources:['docs'],outputFormat:'full_report',privacyMode:'internal_only',webSearchEnabled:false} as never)).rejects.toMatchObject({code:'ai_not_configured'});
   expect(projectService.ensureProjectAccess).toHaveBeenCalledOnce();expect(prisma.$transaction).not.toHaveBeenCalled();expect(jobs.enqueue).not.toHaveBeenCalled();
  });
+ it('allows configured desktop research to enter the normal authorized quota transaction',async()=>{
+  const prisma={$transaction:vi.fn().mockRejectedValue(new Error('quota-transaction-reached'))},projectService={ensureProjectAccess:vi.fn().mockResolvedValue({projectRole:'manager'})};
+  const service=new DeepResearchService(prisma as never,{RUNTIME_PROFILE:'desktop-local',BETA_DEEP_RESEARCH_ENABLED:true,OPENAI_API_KEY:'synthetic-configured-key'} as never,{} as never,{} as never,{} as never,projectService as never,{} as never,{} as never,{} as never);
+  await expect(service.startRun(randomUUID(),{userId:randomUUID(),orgId:randomUUID()},{researchFocus:'local evidence',sources:['docs'],outputFormat:'exec_summary',privacyMode:'internal_only',webSearchEnabled:false})).rejects.toThrow('quota-transaction-reached');
+  expect(projectService.ensureProjectAccess).toHaveBeenCalledOnce();expect(prisma.$transaction).toHaveBeenCalledOnce();
+ });
  it('permits reviewed local contracts but rejects provider, signup and malformed paths',()=>{
   const project=randomUUID();
   expect(isLocalRoute('GET',`/v1/projects/${project}/subscriptions`)).toBe(true);
+  expect(isLocalRoute('GET',`/v1/projects/${project}/github/code-status`)).toBe(true);
+  expect(isLocalRoute('POST',`/v1/projects/${project}/github/repositories/link`)).toBe(false);
   expect(isLocalRoute('GET',`/v1/projects/${project}/members`)).toBe(true);
   expect(isLocalRoute('GET',`/v1/projects/${project}/truth-inbox/proposal%3A${randomUUID()}/packet`)).toBe(true);
   expect(isLocalRoute('GET',`/v1/projects/${project}/dashboard/files/src%2Findex.ts/safe-to-touch`)).toBe(true);
@@ -47,7 +55,7 @@ describe('native local API authority',()=>{
   const response=await localHttp(new Request(`orchestra://app/v1/projects/${randomUUID()}/documents`,{headers:{authorization:'evil',cookie:'evil','x-orchestra-local-token':'evil'}}),host());
   const [url,options]=fetcher.mock.calls[0]!;expect(url).toMatch(/^http:\/\/127\.0\.0\.1:43119\/v1\/projects\//);expect(options.redirect).toBe('error');
   expect(options.headers.get('authorization')).toBe('Bearer private-bearer');expect(options.headers.get('cookie')).toBeNull();expect(options.headers.get('x-orchestra-local-token')).toBe('private-installation-token');
-  expect(response.headers.get('set-cookie')).toBeNull();expect(await response.text()).toBe('saved');
+  expect(response.headers.get('set-cookie')).toBeNull();expect(response.headers.get('cache-control')).toBe('no-store');expect(await response.text()).toBe('saved');
  });
  it('preserves backend rejection and incremental streams without buffering',async()=>{
   let output!:ReadableStreamDefaultController<Uint8Array>;const source=new ReadableStream<Uint8Array>({start(controller){output=controller;}});

@@ -97,6 +97,17 @@ export const deepResearchReportShape = z.object({
 });
 export type DeepResearchLlmOutput = z.infer<typeof deepResearchReportShape>;
 
+// Native Responses structured output requires every property to be present.
+// Keep tolerant legacy normalization for persisted/hosted reports, not the wire
+// schema sent to a strict provider. Empty arrays/strings represent absent items.
+export const deepResearchStructuredSchema = z.object({
+  executiveSummary: deepResearchReportShape.shape.executiveSummary,
+  findings: z.array(deepResearchFindingSchema.extend({sources:deepResearchFindingSchema.shape.sources.removeDefault()})).max(12),
+  marketContext: deepResearchReportShape.shape.marketContext.removeDefault(),
+  expansionOpportunities: deepResearchReportShape.shape.expansionOpportunities.removeDefault(),
+  recommendedActions: z.array(deepResearchActionSchema.extend({source:deepResearchActionSchema.shape.source.removeDefault()})).max(12)
+}).strict();
+
 // ── LLM-output normalization (tolerant of key/type drift) ──
 function coerceStr(v: unknown, max: number): string {
   if (Array.isArray(v)) return v.map((x) => (typeof x === "string" ? x : JSON.stringify(x))).filter(Boolean).join(" · ").slice(0, max);

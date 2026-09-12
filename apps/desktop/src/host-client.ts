@@ -4,6 +4,8 @@ import type {Command,OperationResult,RuntimeStatus} from './contracts.js';
 import type {Vault} from './vault.js';
 import type {ProtectedSettings} from './protected-settings.js';
 import type {DesktopSlackBatch,DesktopSlackDisconnect} from '../../../src/desktop/slack-contract.js';
+import type {DesktopGitHubBatch} from '../../../src/desktop/github-contract.js';
+import type {DesktopDriveFile} from '../../../src/desktop/drive-contract.js';
 
 export class HostClient {
  private authority?:{port:number;token:string;bearer:string};
@@ -35,7 +37,7 @@ export class HostClient {
   if(this.status.state!=='stopping')this.status={state:'failed',message:'Local runtime stopped. Quit and reopen Orchestra to recover.'};
   for(const value of this.pending.values()){clearTimeout(value.timer);value.resolve({ok:false,error:{code:'runtime_unavailable',message:this.status.message}});}this.pending.clear();
  }
- request(command:Command|DesktopSlackBatch|DesktopSlackDisconnect,selection?:{fileName:string;contentType:string;base64:string}):Promise<OperationResult>{
+ request(command:Command|DesktopSlackBatch|DesktopSlackDisconnect|DesktopGitHubBatch|DesktopDriveFile,selection?:{fileName:string;contentType:string;base64:string}):Promise<OperationResult>{
   if(this.status.state!=='ready'||!this.child?.connected)return Promise.resolve({ok:false,error:{code:'runtime_unavailable',message:this.status.message}});
   if(this.pending.size>=16)return Promise.resolve({ok:false,error:{code:'busy',message:'Too many pending operations'}});
   const id=randomUUID();

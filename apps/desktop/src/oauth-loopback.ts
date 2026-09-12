@@ -2,7 +2,10 @@ import {createServer} from 'node:http';
 import {randomBytes,createHash,timingSafeEqual} from 'node:crypto';
 
 /** Native main only. No renderer-supplied destinations, codes or verifier. */
-export async function startOAuthCallback(input:{port:number;signal?:AbortSignal;timeoutMs?:number}){
+export async function startOAuthCallback(input:{port:number;provider?:'slack'|'drive';signal?:AbortSignal;timeoutMs?:number}){
+ if(input.provider!==undefined&&!['slack','drive'].includes(input.provider))throw new Error('Unsupported callback provider');
+ const provider=input.provider??'slack',callbackPath=`/oauth/${provider}/callback`;
+ let pickedFileIds:string[]=[];
  if(!Number.isInteger(input.port)||input.port<0||input.port>65535)throw new Error('Invalid callback port');
  const timeoutMs=input.timeoutMs??180000;
  if(!Number.isFinite(timeoutMs)||timeoutMs<1||timeoutMs>180000)throw new Error('Invalid callback deadline');
@@ -25,7 +28,7 @@ export async function startOAuthCallback(input:{port:number;signal?:AbortSignal;
   const reject=(status:number)=>{res.writeHead(status);res.end('Invalid authorization callback.');};
   if(settled||req.method!=='GET'||req.headers.host!==expectedHost||!req.url||req.url.length>4096)return reject(400);
   let url:URL;try{url=new URL(req.url,`http://${expectedHost}`);}catch{return reject(400);}
-  if(url.origin!==`http://${expectedHost}`||url.pathname!=='/oauth/slack/callback')return reject(404);
+  if(url.origin!==`http://${expectedHost}`||url.pathname!==callbackPath)return reject(404);
   const received=Buffer.from(url.searchParams.get('state')??'');const expected=Buffer.from(state);
   if(url.searchParams.getAll('state').length!==1||received.length!==expected.length||!timingSafeEqual(received,expected))return reject(400);
   const value=url.searchParams.get('code');
@@ -33,6 +36,12 @@ export async function startOAuthCallback(input:{port:number;signal?:AbortSignal;
    settled=true;res.end('Authorization was declined. Return to Orchestra.');fail(new Error('OAuth declined'));res.on('finish',close);return;
   }
   if(url.searchParams.getAll('code').length!==1||!value||value.length>2048||!/^[\x21-\x7e]+$/.test(value))return reject(400);
+  if(provider==='drive'){
+   if(url.searchParams.getAll('picked_file_ids').length!==1)return reject(400);
+   const ids=(url.searchParams.get('picked_file_ids')??'').split(',');
+   if(ids.length>50||ids.some(id=>!/^[A-Za-z0-9_-]{1,150}$/.test(id))||new Set(ids).size!==ids.length)return reject(400);
+   pickedFileIds=ids;
+  }
   settled=true;res.end('Authorization received. Return to Orchestra to check connection status.');
   complete(value);res.on('finish',close);
  });
@@ -40,8 +49,8 @@ export async function startOAuthCallback(input:{port:number;signal?:AbortSignal;
  await new Promise<void>((resolve,reject)=>{server.once('error',reject);server.listen(input.port,'127.0.0.1',()=>{server.removeListener('error',reject);resolve();});});
  const address=server.address();if(!address||typeof address==='string'){close();throw new Error('Callback unavailable');}
  // Slack treats localhost redirects as public-client redirects with PKCE.
- expectedHost=`localhost:${address.port}`;
+ expectedHost=`${provider==='drive'?'127.0.0.1':'localhost'}:${address.port}`;
  server.on('error',abort);timer=setTimeout(abort,timeoutMs);timer.unref();
  input.signal?.addEventListener('abort',abort,{once:true});if(input.signal?.aborted)abort();
- return {redirectUri:`http://${expectedHost}/oauth/slack/callback`,state,verifier,challenge,code,cancel:abort};
+ return {redirectUri:`http://${expectedHost}${callbackPath}`,state,verifier,challenge,code,pickedFileIds:()=>[...pickedFileIds],cancel:abort};
 }

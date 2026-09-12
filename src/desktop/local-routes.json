@@ -900,6 +900,11 @@
     "source": "src/modules/project-ops/routes.ts"
   },
   {
+    "method": "GET",
+    "path": "/v1/projects/:projectId/github/code-status",
+    "source": "src/modules/github/routes.ts"
+  },
+  {
     "method": "POST",
     "path": "/v1/projects/:projectId/integration-seams/manual",
     "source": "src/modules/engineering-evidence/routes.ts"

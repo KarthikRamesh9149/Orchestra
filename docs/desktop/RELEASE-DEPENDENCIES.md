@@ -11,11 +11,11 @@ No signing credentials, provider approvals, Windows test hardware or legal owner
 | Windows x64 machine and independent tester | Owner nominates tester | Explicitly deferred by the user; current development is Mac-only. Windows cannot be advertised or released until independently qualified |
 | Mac developer signing/notarization credentials | Owner | Not confirmed; blocks signed release; no purchase authorized |
 | Windows signing credentials | Owner | Not confirmed; blocks signed release; no purchase authorized |
-| GitHub native authorization registration | Owner/provider administrator | Not confirmed; Step 5 real credential-backed approval required |
-| Google Drive desktop OAuth registration and scopes | Owner/provider administrator | Not confirmed; Step 5 real credential-backed approval required |
-| Slack supported authorization or self-hostable bridge | Owner/provider administrator | Not confirmed; Step 5 architecture/provider verification required |
-| External AI test account and bounded usage | Owner supplies authorized configuration | Not configured here; no copied hosted secrets |
-| Codex, Claude, Cursor and VS Code qualification | Implementer + independent platform tester | Installed/client-account availability must be verified; configuration changes require consent |
+| GitHub native authorization registration | Owner/provider administrator | Separate desktop App verified with selected desktop repository and real lifecycle; public enrollment remains a release gate |
+| Google Drive desktop OAuth registration and scopes | Owner/provider administrator | Separate testing project and user-owned Desktop registration verified with selected synthetic file; public OAuth enrollment not certified |
+| Slack supported authorization or self-hostable bridge | Owner/provider administrator | Separate desktop App and authorized public-channel grant, synthetic ingestion and lifecycle verified; no callback bridge needed |
+| External AI test account and bounded usage | Owner supplies authorized configuration | Dedicated authorized desktop key and bounded real OpenAI checks verified; no copied hosted secret |
+| Codex and VS Code qualification | Implementer + independent platform tester | Real installed clients verified with disposable scoped settings. Claude/Cursor explicitly deferred |
 | Shared server/TLS/email and two-machine validation | Self-host operator + tester | Not provisioned; Step 6 responsibility, no existing production changes |
 | Support/recovery and publication approval | Karthik Ramesh or named delegate | Delegate not assigned; explicit Step 8 approval required |
 

@@ -23,6 +23,7 @@ import { renderReportMarkdown, renderReportPdf } from "./report-render.js";
 import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt, buildWebQueries } from "./prompts.js";
 import {
   deepResearchLlmSchema,
+  deepResearchStructuredSchema,
   deepResearchResultsSchema,
   type DeepResearchSource,
   type DeepResearchResults,
@@ -83,7 +84,7 @@ export class DeepResearchService {
     this.assertEnabled();
     await this.projectService.ensureProjectAccess(projectId, actor.userId);
 
-    if (this.env.RUNTIME_PROFILE === 'desktop-local') throw new AppError(409, 'Desktop research requires AI configuration and qualification in Step 5. No run was created or charged.', 'ai_not_configured');
+    if (this.env.RUNTIME_PROFILE === 'desktop-local' && !this.env.OPENAI_API_KEY) throw new AppError(409, 'Configure desktop AI before starting research. No run was created or charged. Offline document reading and search remain available.', 'ai_not_configured');
 
     const now = new Date();
     const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
@@ -296,7 +297,7 @@ export class DeepResearchService {
       const llm = await this.generationProvider.generateObject({
         systemPrompt: DEEP_RESEARCH_SYSTEM_PROMPT,
         prompt,
-        schema: deepResearchLlmSchema,
+        schema: this.env.RUNTIME_PROFILE === 'desktop-local' ? deepResearchStructuredSchema : deepResearchLlmSchema,
         model: model.model,
         maxOutputTokens: 4000,
         timeoutMs: 60_000,

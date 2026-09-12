@@ -2,8 +2,37 @@ import { createHash } from "node:crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { clearAggregateCachesForTests } from "../src/lib/dashboard/aggregate-cache.js";
 import { buildDocumentStorageKey, DocumentService } from "../src/modules/documents/service.js";
+import { AppError } from "../src/app/errors.js";
 
 describe("DocumentService", () => {
+  it('keeps a desktop original downloadable before optional semantic indexing succeeds', async()=>{
+    const access=vi.fn().mockResolvedValue({projectRole:'manager'});
+    const storage={getObjectStream:vi.fn().mockResolvedValue({stream:'saved-source',size:42})};
+    const prisma={document:{findFirstOrThrow:vi.fn().mockResolvedValue({id:'doc',title:'Synthetic',currentVersionId:'new'})},documentVersion:{findFirstOrThrow:vi.fn().mockResolvedValue({id:'new',status:'failed',fileKey:'private/key',mimeType:'text/plain',fileSize:42})}};
+    const service=new DocumentService(prisma as any,storage as any,{} as any,{} as any,{} as any,{ensureProjectAccess:access} as any,{} as any,{} as any,{RUNTIME_PROFILE:'desktop-local'} as any);
+    expect((await service.getOriginalFile('project','doc','actor')).stream).toBe('saved-source');
+    expect(access).toHaveBeenCalledWith('project','actor');
+    expect(prisma.documentVersion.findFirstOrThrow).toHaveBeenCalledWith({where:{id:'new',documentId:'doc',projectId:'project'}});
+    access.mockRejectedValueOnce(new Error('forbidden'));storage.getObjectStream.mockClear();
+    await expect(service.getOriginalFile('project','doc','other')).rejects.toThrow('forbidden');
+    expect(storage.getObjectStream).not.toHaveBeenCalled();
+  });
+
+  it.each(['ai_request_budget_exceeded','embedding_not_configured','ai_provider_failed','ai_revoked','ai_busy'])('retains lexical evidence on desktop embedding unavailability: %s',async code=>{
+    const prisma={project:{findUnique:vi.fn().mockResolvedValue(null)},document:{findMany:vi.fn().mockResolvedValue([])},documentVersion:{findUniqueOrThrow:vi.fn().mockResolvedValue({id:'v',projectId:'p',parseRevision:1}),updateMany:vi.fn()},documentChunk:{findMany:vi.fn().mockResolvedValue([{id:'c',content:'Synthetic evidence'}])},projectDriveFile:{updateMany:vi.fn()},socratesSuggestion:{deleteMany:vi.fn()},jobRun:{upsert:vi.fn()},$executeRawUnsafe:vi.fn()};
+    const service=new DocumentService(prisma as any,{} as any,{enqueue:vi.fn()} as any,{embedText:vi.fn().mockRejectedValue(new AppError(429,'Unavailable',code))} as any,{} as any,{} as any,{} as any,{} as any,{RUNTIME_PROFILE:'desktop-local',MVP_BETA_MODE:true} as any);
+    await expect(service.embedDocumentChunks('v',1)).resolves.toEqual({skipped:false});
+    expect(prisma.documentVersion.updateMany).toHaveBeenCalledWith({where:{id:'v',parseRevision:1},data:{status:'partial'}});
+    expect(prisma.$executeRawUnsafe).not.toHaveBeenCalled();
+    expect(prisma.projectDriveFile.updateMany).toHaveBeenCalledWith(expect.objectContaining({data:expect.objectContaining({indexStatus:'failed',lastIndexedAt:null})}));
+  });
+  it("isolates native source identities instead of merging same-title files", async () => {
+    const findFirst=vi.fn().mockRejectedValue(new Error('lookup sentinel'));
+    const service=new DocumentService({project:{findUniqueOrThrow:vi.fn().mockResolvedValue({id:'project'})},document:{findFirst}} as any,{} as any,{} as any,{} as any,{} as any,{ensureProjectMemberCanUploadContext:vi.fn()} as any,{} as any,{} as any);
+    await expect(service.uploadFile({projectId:'project',actorUserId:'actor',kind:'reference',title:'Same name',visibility:'internal',fileName:'evidence.txt',contentType:'text/plain',buffer:Buffer.from('Synthetic'),sourceDocumentId:'00000000-0000-4000-8000-000000000009'} as any)).rejects.toThrow('lookup sentinel');
+    expect(findFirst.mock.calls[0][0].where).toMatchObject({id:'00000000-0000-4000-8000-000000000009',projectId:'project'});
+    expect(findFirst.mock.calls[0][0].where).not.toHaveProperty('title');
+  });
   beforeEach(() => {
     clearAggregateCachesForTests();
   });
@@ -1759,6 +1788,7 @@ describe("DocumentService", () => {
     );
 
     const embedPrisma = {
+      projectDriveFile: { updateMany: vi.fn().mockResolvedValue({count:1}) },
       project: { findUnique: vi.fn().mockResolvedValue(null) },
       document: {
         findMany: vi.fn().mockResolvedValue([{ id: "doc-status", currentVersionId: "ver-status" }])
@@ -1795,7 +1825,9 @@ describe("DocumentService", () => {
       { increment: vi.fn(), observeDuration: vi.fn() } as any
     );
 
+    (embedService as any).env={RUNTIME_PROFILE:'desktop-local'};
     await embedService.embedDocumentChunks("ver-status", 1);
+    expect(embedPrisma.projectDriveFile.updateMany).toHaveBeenCalledWith(expect.objectContaining({where:expect.objectContaining({documentVersionId:'ver-status',metadataJson:{path:['desktop'],equals:true}}),data:expect.objectContaining({indexStatus:'indexed',lastError:null})}));
 
     expect(embedPrisma.documentVersion.updateMany).toHaveBeenCalledWith({
       where: { id: "ver-status", parseRevision: 1 },

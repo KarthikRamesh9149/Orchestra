@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DeepResearchModal } from "./DeepResearch";
 
 const mocks = vi.hoisted(() => ({
@@ -61,6 +61,15 @@ function renderModal() {
 }
 
 describe("[FIX-22] Deep Research truthful UI", () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it('lets the native backend validate configured AI instead of blocking every desktop request', async () => {
+    vi.stubGlobal('orchestra', {});
+    const user = userEvent.setup(); renderModal();
+    await user.type(screen.getByRole('textbox'), 'synthetic desktop research');
+    await user.click(screen.getByRole('button', {name: 'Run Research'}));
+    expect(mocks.startDeepResearch).toHaveBeenCalledWith('project-1', expect.objectContaining({researchFocus:'synthetic desktop research',webSearchEnabled:false}));
+    expect(await screen.findByText('Deep Research Complete')).toBeVisible();
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.getDeepResearchUsage.mockResolvedValue({ used: 0, limit: 20, resetLabel: "Sep 1" });

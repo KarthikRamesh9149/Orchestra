@@ -9600,6 +9600,13 @@
     },
     {
       "lock": "apps/desktop/package-lock.json",
+      "location": "node_modules/ignore",
+      "version": "7.0.5",
+      "license": "MIT",
+      "integrity": "sha512-Hs59xBNfUIunMFgWAbGX5cq6893IbWg4KnrjbYwX3tx0ztorVgTDA6B2sxf8ejHJ4wz8BqGUMYlnzNBer5NvGg=="
+    },
+    {
+      "lock": "apps/desktop/package-lock.json",
       "location": "node_modules/isbinaryfile",
       "version": "4.0.10",
       "license": "MIT",

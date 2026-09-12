@@ -1,7 +1,9 @@
-import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog,safeStorage,clipboard,shell} from 'electron';
+import {app,BrowserWindow,ipcMain,protocol,session,Menu,dialog,safeStorage,clipboard,shell,powerMonitor} from 'electron';
 import {openConfirmedExternal} from './external-link.js';
 import {copyPlainText} from './clipboard.js';
 import {join} from 'node:path';
+import {open} from 'node:fs/promises';
+import {constants} from 'node:fs';
 import {commandSchema,isTrustedFrame} from './contracts.js';
 import {assetResponse} from './assets.js';
 import {loadVault} from './vault.js';
@@ -14,8 +16,14 @@ import {localHttp} from './local-http.js';
 import {downloadDocument,downloadPreflight} from './document-download.js';
 import {runMcpRelay} from './mcp-relay.js';
 import {createDesktopPairing,revokeDesktopPairing,pairInputSchema,pairingSetup} from './mcp-pairing.js';
-import {connectSlack,refreshSlack,slackRequest} from './slack-oauth.js';
+import {connectSlack,refreshSlack,revokeSlack} from './slack-oauth.js';
 import {listSlackChannels,readSlackChannel} from './slack-sources.js';
+import {connectGitHub,refreshGitHub,listGitHubRepositories} from './github-oauth.js';
+import {readGitHubSnapshot} from './github-sources.js';
+import {connectDrive,refreshDrive,revokeDrive,DriveAuthorizationError,parseDriveClient} from './drive-oauth.js';
+import {readSelectedDriveFile} from './drive-sources.js';
+import {rememberSyncTarget,refreshSelectedSource} from './connector-sync.js';
+import {dueTarget,finishedTarget,type SyncTarget} from './connector-sync-state.js';
 import {z} from 'zod';
 
 app.setName('Orchestra Desktop Internal');
@@ -26,12 +34,14 @@ const single=app.requestSingleInstanceLock();
 let window:BrowserWindow|undefined;
 let closing=false;
 let slackAuthorization:AbortController|undefined;
+let githubAuthorization:AbortController|undefined;
+let driveAuthorization:AbortController|undefined;
 const host=new HostClient(delta=>{if(window&&!window.isDestroyed())window.webContents.send('orchestra:delta',delta);});
 const selections=new Selections();
 if(!single)app.quit();
 else {
  app.on('second-instance',()=>{window?.show();window?.focus();});
- app.on('before-quit',event=>{if(!closing){event.preventDefault();closing=true;slackAuthorization?.abort();void host.close().finally(()=>app.quit());}});
+ app.on('before-quit',event=>{if(!closing){event.preventDefault();closing=true;slackAuthorization?.abort();githubAuthorization?.abort();driveAuthorization?.abort();void host.close().finally(()=>app.quit());}});
  app.on('window-all-closed',()=>app.quit());
  void app.whenReady().then(async()=>{
   const resources=app.isPackaged?join(process.resourcesPath,'runtime'):join(app.getAppPath(),'../../.desktop/runtime');
@@ -52,6 +62,88 @@ else {
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
   const settings=new ProtectedSettingsStore(join(app.getPath('userData'),'local-runtime'),safeStorage);
   let configuringAi=false;
+  let syncController:AbortController|undefined;
+  const runRefresh=async(target:SyncTarget)=>{
+   syncController=new AbortController();const timer=setTimeout(()=>syncController?.abort(),60000);let ok=false;
+   try{return await refreshSelectedSource(target,settings,host,syncController.signal).then(result=>{ok=true;return result;});}
+   finally{clearTimeout(timer);syncController=undefined;const state=await settings.read();await settings.write({...state,syncTargets:state.syncTargets?.map(t=>t.id===target.id?finishedTarget(t,ok,Date.now()):t)});}
+  };
+  const pumpRefresh=async(wake=false)=>{
+   if(configuringAi||closing||host.status.state!=='ready')return;configuringAi=true;
+   try{const state=await settings.read();if(wake)await settings.write({...state,syncTargets:state.syncTargets?.map(t=>t.enabled?{...t,nextAt:0}:t)});
+    const current=await settings.read(),target=dueTarget(current.syncTargets??[],Date.now());if(target)await runRefresh(target);
+   }catch{/* The persisted target status is authoritative; no secret-bearing provider logs. */}finally{configuringAi=false;}
+  };
+  const syncTimer=setInterval(()=>void pumpRefresh(),15000);syncTimer.unref();
+  powerMonitor.on('resume',()=>void pumpRefresh(true));
+  app.on('before-quit',()=>{clearInterval(syncTimer);syncController?.abort();});
+  ipcMain.handle('orchestra:sync-inspect',async event=>{if(!trusted(event))throw new Error('Unauthorized frame');try{return {ok:true,data:{targets:(await settings.read()).syncTargets??[],running:!!syncController}};}catch{return {ok:false,error:{code:'sync_status_unavailable',message:'Source refresh status could not be read.'}};}});
+  ipcMain.handle('orchestra:sync-cancel',event=>{if(!trusted(event))throw new Error('Unauthorized frame');syncController?.abort();return {ok:true,data:{cancelled:true}};});
+  ipcMain.handle('orchestra:sync-update',async(event,value:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');const input=z.object({id:z.string().uuid(),action:z.enum(['enable','pause','remove','refresh'])}).strict().safeParse(value);
+   if(!input.success)return {ok:false,error:{code:'invalid_sync_selection',message:'Choose a saved source selection.'}};
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'A native operation is active. Cancel refresh or retry when it finishes.'}};configuringAi=true;
+   try{const state=await settings.read(),target=state.syncTargets?.find(t=>t.id===input.data.id);if(!target)throw new Error('Selection missing');
+    if(input.data.action==='refresh')return {ok:true,data:await runRefresh(target)};
+    if(input.data.action==='enable'){const consent=await dialog.showMessageBox(window!,{type:'question',message:'Enable background refresh for this selected source?',detail:`Only the saved ${target.provider} selection in its original local workspace will be refreshed. While Orchestra is open, changes are checked approximately every five minutes and after wake. Existing size and history bounds remain; failures are shown here. Newly imported content may be sent to your configured AI for indexing. Pause or remove this selection at any time.`,buttons:['Cancel','Enable refresh'],defaultId:0,cancelId:0});if(consent.response!==1)return {ok:true,data:{cancelled:true}};}
+    await settings.write({...state,syncTargets:input.data.action==='remove'?state.syncTargets!.filter(t=>t.id!==target.id):state.syncTargets!.map(t=>t.id===target.id?{...t,enabled:input.data.action==='enable',nextAt:0}:t)});return {ok:true,data:{updated:true}};
+   }catch{return {ok:false,error:{code:'source_refresh_failed',message:'Source refresh was not confirmed. Check its connection, permissions and snapshot limits, then retry.'}};}finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:github-inspect',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   try{return {ok:true,data:{configured:!!(await settings.read()).github,authorizing:!!githubAuthorization}};}
+   catch{return {ok:false,error:{code:'github_settings_unavailable',message:'Protected GitHub settings could not be read.'}};}
+  });
+  ipcMain.handle('orchestra:github-cancel',async event=>{if(!trusted(event))throw new Error('Unauthorized frame');githubAuthorization?.abort();return {ok:true,data:{cancelled:true}};});
+  ipcMain.handle('orchestra:github-connect',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;githubAuthorization=new AbortController();
+   try{
+    if((await settings.read()).github)throw new Error('Already configured');
+    const credential=await connectGitHub(async code=>{
+     const consent=await dialog.showMessageBox(window!,{type:'question',message:'Connect Orchestra Desktop to GitHub?',detail:`Your device code is ${code}. Only enter this code at github.com/login/device. The app requests read-only access to repositories you installed it on. No repository content is imported by sign-in.`,buttons:['Cancel','Copy code and open GitHub'],defaultId:0,cancelId:0});
+     if(consent.response!==1)throw new Error('Cancelled');
+     clipboard.writeText(code);await shell.openExternal('https://github.com/login/device');
+    },githubAuthorization.signal);
+    await settings.write({...await settings.read(),github:credential});
+    return {ok:true,data:{configured:true}};
+   }catch{return {ok:false,error:{code:'github_connect_failed',message:'GitHub sign-in was not saved. It may have been cancelled, expired or rejected. Retry from Orchestra.'}};}
+   finally{githubAuthorization=undefined;configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:github-repositories',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;
+   try{const state=await settings.read();if(!state.github)throw new Error('Not configured');const credential=await refreshGitHub(state.github);await settings.write({...state,github:credential});return {ok:true,data:await listGitHubRepositories(credential)};}
+   catch{return {ok:false,error:{code:'github_repositories_failed',message:'GitHub repositories could not be verified. Check connectivity, read-only installation permissions and account access.'}};}
+   finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:github-disconnect',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;
+   try{const consent=await dialog.showMessageBox(window!,{type:'question',message:'Remove GitHub credentials from this Mac?',detail:'This removes local credentials only. To revoke remote access, remove Orchestra Desktop under GitHub Settings → Applications → Authorized GitHub Apps. Existing evidence is retained.',buttons:['Cancel','Remove local credentials'],defaultId:0,cancelId:0});if(consent.response!==1)return {ok:true,data:{cancelled:true}};await settings.write({...await settings.read(),github:null});return {ok:true,data:{configured:false,remoteRevocationConfirmed:false}};}
+   catch{return {ok:false,error:{code:'github_disconnect_failed',message:'Local removal could not be confirmed.'}};}
+   finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:github-import',async(event,value:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   const input=z.object({projectId:z.string().uuid(),repositoryId:z.number().int().positive()}).strict().safeParse(value);
+   if(!input.success)return {ok:false,error:{code:'invalid_github_selection',message:'Choose a workspace and authorized repository.'}};
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;
+   try{
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Import selected GitHub repository evidence?',detail:'Read-only snapshot of pull-request descriptions and commit messages, up to 200 of each. Text excerpts are limited to 4,000 characters with credential-pattern redaction. No source files or provider writes. Saved evidence may be sent to your configured AI when you ask a question. It is not accepted product truth.',buttons:['Cancel','Import evidence'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    const state=await settings.read();if(!state.github)throw new Error('GitHub not connected');
+    const credential=await refreshGitHub(state.github);await settings.write({...state,github:credential});
+    const snapshot=await readGitHubSnapshot(credential,input.data.repositoryId);
+    const imported=await host.request({operation:'desktop.github.ingest',projectId:input.data.projectId,...snapshot});
+    if(imported.ok)await rememberSyncTarget(settings,{provider:'github',projectId:input.data.projectId,resourceIds:[String(input.data.repositoryId)]});return imported;
+   }catch{return {ok:false,error:{code:'github_import_failed',message:'GitHub import was not confirmed. Check workspace access, connectivity and repository permissions. Snapshots exceeding 200 pull requests or 200 commits fail rather than silently dropping evidence.'}};}
+   finally{configuringAi=false;}
+  });
   const reconcileSlackRevocation=async()=>{const state=await settings.read();if(!state.slackRevokedTeamId)return;const result=await host.request({operation:'desktop.slack.disconnect',teamId:state.slackRevokedTeamId});if(!result.ok)throw new Error('Local revocation pending');const {slackRevokedTeamId:_,...rest}=state;await settings.write(rest);};
   ipcMain.handle('orchestra:slack-channels',async event=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
@@ -72,7 +164,8 @@ else {
     const consent=await dialog.showMessageBox(window!,{type:'question',message:`Import #${channel.name} into the selected local project?`,detail:'Read up to 200 messages and thread replies from the past 30 days. Messages become local evidence, not accepted truth. Configured AI may process the imported evidence. No other channels or direct messages are read.',buttons:['Cancel','Import selected channel'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
     const messages=await readSlackChannel(credential,channel);
-    return await host.request({operation:'desktop.slack.ingest',projectId:input.data.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,messages});
+    const imported=await host.request({operation:'desktop.slack.ingest',projectId:input.data.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,messages});
+    if(imported.ok)await rememberSyncTarget(settings,{provider:'slack',projectId:input.data.projectId,resourceIds:[channel.id],teamId:credential.teamId});return imported;
    }catch{return {ok:false,error:{code:'slack_import_failed',message:'Slack import was not confirmed. Check Memory before retrying. The snapshot is limited to 200 messages and 20 API pages; rate limits and unavailable channels are reported as failures, not empty imports.'}};}finally{configuringAi=false;}
   });
   ipcMain.handle('orchestra:slack-inspect',async event=>{
@@ -105,13 +198,78 @@ else {
     const stored=await settings.read();if(!stored.slack)return {ok:true,data:{connected:false}};
     const consent=await dialog.showMessageBox(window!,{type:'question',message:'Disconnect desktop Slack?',detail:'Revoke this installation’s Slack token. Existing imported evidence is retained. Other Orchestra apps are not changed.',buttons:['Cancel','Disconnect'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
-    const credential=await refreshSlack(stored.slack);
-    // Persist replacement refresh token before any subsequent provider request.
-    await settings.write({...stored,slack:credential});
-    await slackRequest('auth.revoke',new URLSearchParams(),credential.accessToken);
+    const credential=stored.slack;
+    await revokeSlack(credential);
     await settings.write({...await settings.read(),slack:null,slackRevokedTeamId:credential.teamId});await reconcileSlackRevocation();return {ok:true,data:{connected:false}};
    }catch{return {ok:false,error:{code:'slack_revoke_failed',message:'Slack revocation is not confirmed. Check your connection or revoke Orchestra Desktop in Slack, then retry.'}};}
    finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:drive-inspect',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   try{const {drive,driveClient}=await settings.read();return {ok:true,data:{connected:!!drive,clientConfigured:!!driveClient,selectedFileCount:drive?.fileIds.length??0}};}
+   catch{return {ok:false,error:{code:'drive_settings_unavailable',message:'Protected Google Drive settings could not be read.'}};}
+  });
+  ipcMain.handle('orchestra:drive-cancel',event=>{if(!trusted(event))throw new Error('Unauthorized frame');driveAuthorization?.abort();return {ok:true};});
+  ipcMain.handle('orchestra:drive-configure',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native settings operation.'}};
+   configuringAi=true;
+   try{
+    const state=await settings.read();if(state.drive)throw new Error('Revoke the existing Drive connection before replacing its client.');
+    const selected=await dialog.showOpenDialog(window!,{title:'Import your Google Desktop OAuth client JSON',properties:['openFile'],filters:[{name:'Google Desktop client',extensions:['json']}]});
+    if(selected.canceled)return {ok:true,data:{cancelled:true}};
+    const file=await open(selected.filePaths[0]!,constants.O_RDONLY|constants.O_NOFOLLOW);
+    let client;
+    try{const stat=await file.stat();if(!stat.isFile()||stat.size>32768)throw new Error('Invalid client file');const bytes=Buffer.alloc(32769);const read=await file.read(bytes,0,bytes.length,0);if(read.bytesRead>32768)throw new Error('Client file too large');client=parseDriveClient(bytes.subarray(0,read.bytesRead).toString('utf8'));}
+    finally{await file.close();}
+    await settings.write({...state,driveClient:client});return {ok:true,data:{clientConfigured:true}};
+   }catch{return {ok:false,error:{code:'drive_configuration_failed',message:'Import a valid Google Desktop client JSON file. Web clients are not supported. Revoke any existing Drive connection before replacing its client.'}};}
+   finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:drive-connect',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native settings operation.'}};
+   configuringAi=true;driveAuthorization=new AbortController();
+   try{
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Select Google Drive files for Orchestra?',detail:'Google opens in your browser. Only files you select are authorized. Google’s selected-file scope also permits editing those files, but Orchestra uses read operations only. Credentials are encrypted on this Mac. Selecting files does not import their content.',buttons:['Cancel','Open Google file selection'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    const client=(await settings.read()).driveClient;if(!client)throw new DriveAuthorizationError('configuration');
+    const credential=await connectDrive(url=>shell.openExternal(url),driveAuthorization.signal,fetch,client);
+    await settings.write({...await settings.read(),drive:credential});return {ok:true,data:{connected:true,selectedFileCount:credential.fileIds.length}};
+   }catch(error){return {ok:false,error:{code:error instanceof DriveAuthorizationError?`drive_${error.reason}_failed`:'drive_authorization_failed',message:error instanceof DriveAuthorizationError?error.message:'Google Drive authorization was not confirmed. Check the browser, selected files and desktop OAuth configuration, then retry.'}};}
+   finally{driveAuthorization=undefined;configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:drive-revoke',async event=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native settings operation.'}};
+   configuringAi=true;
+   try{
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Revoke Orchestra Desktop’s Google Drive access?',detail:'This revokes the desktop Google grant and removes this Mac’s saved token. Existing imported evidence is retained. Other installations using this desktop grant may need to reconnect.',buttons:['Cancel','Revoke Drive access'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    const state=await settings.read();if(state.drive)await revokeDrive(state.drive);await settings.write({...state,drive:null});return {ok:true,data:{connected:false,selectedFileCount:0}};
+   }catch{return {ok:false,error:{code:'drive_revoke_failed',message:'Google Drive revocation was not confirmed. Reconnect to the network and retry.'}};}
+   finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:drive-import',async(event,value:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   const project=z.string().uuid().safeParse(value);if(!project.success)return {ok:false,error:{code:'invalid_workspace',message:'Choose a workspace before importing.'}};
+   if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;driveAuthorization=new AbortController();let saved=0;
+   try{
+    const workspaces=await host.request({operation:'workspace.list'});
+    if(!workspaces.ok||!Array.isArray(workspaces.data)||!workspaces.data.some(p=>p.id===project.data))throw new Error('Unauthorized workspace');
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Import selected Drive files into this workspace?',detail:'Reads only files explicitly selected in Google Picker. Supported documents are limited to 10 MB each. Files are saved privately on this Mac and processed into Memory, not approved product truth. Their content may be sent to your configured AI provider for indexing and answers. Cancelling stops remaining downloads; already saved files are retained.',buttons:['Cancel','Import selected files'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    let state=await settings.read();if(!state.drive)throw new Error('Drive not connected');
+    const files=[];
+    for(const fileId of state.drive.fileIds){
+     driveAuthorization.signal.throwIfAborted();
+     const credential=await refreshDrive(state.drive!);state={...state,drive:credential};await settings.write(state);
+     const file=await readSelectedDriveFile(credential,fileId,driveAuthorization.signal);
+     driveAuthorization.signal.throwIfAborted();
+     const result=await host.request({operation:'desktop.drive.ingest',projectId:project.data,fileId:file.fileId,name:file.name,mimeType:file.mimeType,modifiedTime:file.modifiedTime,version:file.version,contentType:file.contentType as 'text/plain',fileName:file.fileName,base64:file.bytes.toString('base64')});
+     if(!result.ok)throw new Error('Persistence not confirmed');files.push(result.data);saved++;
+    }
+    await rememberSyncTarget(settings,{provider:'drive',projectId:project.data,resourceIds:state.drive!.fileIds});return {ok:true,data:{saved,files}};
+   }catch{return {ok:false,error:{code:'drive_import_failed',message:`Drive import stopped; ${saved} file(s) were confirmed saved. Check connectivity, selected-file access and supported file types, then retry. Already saved files are retained and retries do not create duplicate documents.`}};}
+   finally{driveAuthorization=undefined;configuringAi=false;}
   });
   ipcMain.handle('orchestra:mcp-inspect',async event=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
@@ -208,19 +366,21 @@ else {
    return host.request(command.data);
   });
   let selectingFolder=false;
-  ipcMain.handle('orchestra:choose-folder',async event=>{
+  const chooseSourceFolder=async(event:Electron.IpcMainInvokeEvent,repository:boolean)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
    if(selectingFolder)return {ok:false,error:{code:'selection_busy',message:'Finish the current folder selection.'}};
    selectingFolder=true;
    try{
-    const result=await dialog.showOpenDialog(window!,{title:'Choose a folder of project documents',properties:['openDirectory']});
+    const result=await dialog.showOpenDialog(window!,{title:repository?'Choose a Git working tree to preview':'Choose a folder of project documents',properties:['openDirectory']});
     if(result.canceled)return {ok:true,data:{cancelled:true}};
-    const scanned=await scanSourceFolder(result.filePaths[0]!);
-    const files=[];for(const file of scanned.files)files.push({...await selections.add(file.path),name:file.name});
+    const scanned=await scanSourceFolder(result.filePaths[0]!,repository);
+    const files=[];for(const file of scanned.files)files.push({...await selections.add(file.path,repository),name:file.name});
     return {ok:true,data:{files,skipped:scanned.skipped,totalBytes:scanned.totalBytes}};
    }catch{return {ok:false,error:{code:'folder_selection_failed',message:'Choose a smaller, readable folder: at most 100 supported documents, 50 MiB total and eight levels. Symbolic links are not supported.'}};}
    finally{selectingFolder=false;}
-  });
+  };
+  ipcMain.handle('orchestra:choose-folder',event=>chooseSourceFolder(event,false));
+  ipcMain.handle('orchestra:choose-repository',event=>chooseSourceFolder(event,true));
   ipcMain.handle('orchestra:choose-evidence',async event=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
    const result=await dialog.showOpenDialog(window!,{properties:['openFile'],filters:[{name:'Evidence',extensions:['pdf','docx','txt','md','csv','xlsx']}]});

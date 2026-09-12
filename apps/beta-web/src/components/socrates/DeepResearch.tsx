@@ -5,7 +5,6 @@ import { TbBrain, TbDownload, TbLock } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAccessibleDialog } from "../../hooks/useAccessibleDialog";
 import { safeMarkdownUrl } from "../../lib/socratesPresentation";
-import {isDesktop} from '../../lib/desktop';
 import {
   addDeepResearchToMemory,
   downloadDeepResearchReport,
@@ -357,7 +356,6 @@ export function DeepResearchModal({
   }, [phase, runId, projectId]);
 
   const runResearch = async () => {
-    if (isDesktop()) {setConfigError('Research generation requires AI configuration, qualified in desktop Step 5. Offline document reading and search remain available.');return;}
     if (startInFlightRef.current) return;
     setErrorMsg(null);
     setConfigError(null);
@@ -586,11 +584,11 @@ export function DeepResearchModal({
                   <button
                     type="button"
                     onClick={runResearch}
-                    disabled={limitReached || starting || isDesktop()}
+                    disabled={limitReached || starting}
                     className="rounded-full px-5 py-2.5 font-sans text-[14px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-55"
                     style={{ background: "var(--teal)" }}
                   >
-                    {isDesktop() ? "AI setup required" : starting ? "Starting…" : "Run Research"}
+                    {starting ? "Starting…" : "Run Research"}
                   </button>
                 </div>
               </div>

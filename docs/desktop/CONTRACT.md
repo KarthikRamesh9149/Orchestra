@@ -17,7 +17,7 @@ Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit
 
 ## Product rules
 
-- Scope revision: the user authorized Mac-only development until Windows hardware is available, and explicitly authorized finishing Step 3 followed by Step 4 in the same request. This does not authorize Step 5 or publication. Windows rows remain deferred, not passed.
+- Scope revision: the user authorized Mac-only development until Windows hardware is available, and explicitly authorized finishing Step 3 followed by Step 4 in the same request. The user subsequently authorized completing Step 5, with Codex and VS Code qualification only, then completing Step 6 after Step 5 passes. This does not authorize publication or any production change. Windows rows remain deferred, not passed. Step 6 still requires actual two-machine qualification; two processes on this Mac do not satisfy that gate.
 
 - Existing visible product functionality is assigned in the feature inventory, not silently removed. Local-only presentation controls remain local; shared mutations require live server authorization.
 - Local mode needs no hosted signup and does not claim fake email verification. Shared identity remains server-owned.

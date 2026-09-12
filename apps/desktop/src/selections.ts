@@ -1,18 +1,20 @@
 import {open,realpath} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {basename,extname} from 'node:path';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
+import {sourceCodeExtensions} from './source-folder.js';
 const types:Record<string,string>={'.txt':'text/plain','.md':'text/markdown','.pdf':'application/pdf','.docx':'application/vnd.openxmlformats-officedocument.wordprocessingml.document','.csv':'text/csv','.xlsx':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'};
 const limit=50*1024*1024;
 export class Selections {
- private entries=new Map<string,{path:string;size:number;mtimeMs:number;ino:number;expires:number}>();
- async add(path:string){
+ private entries=new Map<string,{path:string;size:number;mtimeMs:number;ino:number;expires:number;code:boolean}>();
+ async add(path:string,allowCode=false){
   for(const [id,value] of this.entries)if(value.expires<Date.now())this.entries.delete(id);
-  if(this.entries.size>=116||!types[extname(path).toLowerCase()])throw new Error('Unsupported selection');
+  const code=allowCode&&sourceCodeExtensions.has(extname(path).toLowerCase());
+  if(this.entries.size>=116||(!types[extname(path).toLowerCase()]&&!code))throw new Error('Unsupported selection');
   if(await realpath(path)!==path)throw new Error('Symbolic links are not supported');
   const file=await open(path,constants.O_RDONLY|constants.O_NOFOLLOW);
   try{const stat=await file.stat();if(!stat.isFile()||stat.size>limit)throw new Error('Select a regular file smaller than 50 MiB');
-   const id=randomUUID();this.entries.set(id,{path,size:stat.size,mtimeMs:stat.mtimeMs,ino:stat.ino,expires:Date.now()+300000});return {selectionId:id,name:basename(path),size:stat.size};
+   const id=randomUUID();this.entries.set(id,{path,size:stat.size,mtimeMs:stat.mtimeMs,ino:stat.ino,expires:Date.now()+300000,code});return {selectionId:id,name:basename(path),size:stat.size};
   }finally{await file.close();}
  }
  async consume(id:string){
@@ -25,7 +27,8 @@ export class Selections {
    const buffer=Buffer.alloc(entry.size);let offset=0;
    while(offset<buffer.length){const {bytesRead}=await file.read(buffer,offset,buffer.length-offset,offset);if(!bytesRead)throw new Error('Selected file changed');offset+=bytesRead;}
    const after=await file.stat();if(after.size!==stat.size||after.mtimeMs!==stat.mtimeMs)throw new Error('Selected file changed');
-   return {fileName:basename(entry.path),contentType:types[extname(entry.path).toLowerCase()]!,base64:buffer.toString('base64')};
+   if(entry.code&&(buffer.includes(0)||!Buffer.from(buffer.toString('utf8'),'utf8').equals(buffer)))throw new Error('Source code must be UTF-8 text');
+   return {fileName:basename(entry.path)+(entry.code?'.txt':''),contentType:entry.code?'text/plain':types[extname(entry.path).toLowerCase()]!,base64:buffer.toString('base64'),sourceKey:createHash('sha256').update(entry.path).digest('hex')};
   }finally{await file.close();}
  }
 }

@@ -14,6 +14,9 @@ for(const domain of [...domains,...readOnlyDomains]){const source=`src/modules/$
  }
  ts.forEachChild(node,visit);
 }visit(ast);}
+// Step 5 native import uses this existing authorized read contract. Do not
+// automatically admit hosted installation, linking, OAuth or sync endpoints.
+routes.push({method:'GET',path:'/v1/projects/:projectId/github/code-status',source:'src/modules/github/routes.ts'});
 const result=JSON.stringify(routes.sort((a,b)=>(a.path+a.method).localeCompare(b.path+b.method)),null,2)+'\n';
 const file='src/desktop/local-routes.json';if(process.argv.includes('--check')){if(fs.readFileSync(file,'utf8')!==result)throw new Error('Local API inventory drift requires review');}else fs.writeFileSync(file,result);
 console.log(`${routes.length} explicit local API routes`);

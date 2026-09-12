@@ -12,6 +12,8 @@ import {authorizeActiveOrganization} from '../lib/auth/authorization.js';
 import {desktopAiSchema} from './ai-provider.js';
 import {startMcpSocket} from './mcp-socket.js';
 import {ingestDesktopSlack} from './slack-ingest.js';
+import {ingestDesktopGitHub} from './github-ingest.js';
+import {ingestDesktopDrive,driveIdentity} from './drive-ingest.js';
 import {desktopSlackDisconnectSchema} from './slack-contract.js';
 
 const secret=z.string().regex(/^[a-f0-9]{64}$/);
@@ -140,6 +142,8 @@ async function command(value:unknown,selection?:unknown){
    return {disconnected:true};
   }
   case 'desktop.slack.ingest':return ingestDesktopSlack(engine.context.prisma,owner,value);
+  case 'desktop.github.ingest':return ingestDesktopGitHub(engine.context.prisma,owner,value);
+  case 'desktop.drive.ingest':return ingestDesktopDrive(engine.context.prisma,owner,value,services.documentService);
   case 'local.bootstrap':z.object({operation:z.literal('local.bootstrap')}).strict().parse(value);return bootstrap();
   case 'local.onboard':{z.object({operation:z.literal('local.onboard')}).strict().parse(value);await saveLocalState(installationRoot,undefined,true);return bootstrap();}
   case 'workspace.list':z.object({operation:z.literal('workspace.list')}).strict().parse(value);return services.projectService.listProjects(owner.id,owner.orgId);
@@ -147,9 +151,9 @@ async function command(value:unknown,selection?:unknown){
   case 'workspace.select':{const input=z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict().parse(value);const available=await services.projectService.listProjects(owner.id,owner.orgId);const selected=available.find(project=>project.id===input.projectId);if(!selected)throw new Error('Unauthorized workspace');await saveLocalState(installationRoot,input.projectId);const result=await bootstrap();return {...result,workspace:result.workspaces.find(project=>project.projectId===input.projectId)};}
   case 'evidence.upload':{
    const input=z.object({operation:z.literal('evidence.upload'),projectId:z.string().uuid(),selectionId:z.string().uuid()}).strict().parse(value);
-   const file=z.object({fileName:z.string().max(255),contentType:z.string().max(150),base64:z.string().max(70*1024*1024)}).strict().parse(selection);
+   const file=z.object({fileName:z.string().max(255),contentType:z.string().max(150),base64:z.string().max(70*1024*1024),sourceKey:z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict().parse(selection);
    const buffer=Buffer.from(file.base64,'base64');if(buffer.length>50*1024*1024)throw new Error('File too large');
-   return services.documentService.uploadFile({projectId:input.projectId,actorUserId:owner.id,kind:'reference',title:file.fileName,visibility:'internal',fileName:file.fileName,contentType:file.contentType,buffer});
+   return services.documentService.uploadFile({projectId:input.projectId,actorUserId:owner.id,...(file.sourceKey?{sourceDocumentId:driveIdentity('local-source',input.projectId,file.sourceKey)}:{}),kind:'reference',title:file.fileName,visibility:'internal',fileName:file.fileName,contentType:file.contentType,buffer});
   }
   case 'socrates.ask':{
    const input=z.object({operation:z.literal('socrates.ask'),projectId:z.string().uuid(),requestId:z.string().uuid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().uuid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict().parse(value);

@@ -20,6 +20,9 @@ try{
  const repeated=await page.evaluate(input=>window.orchestra.slack.importChannel(input),{projectId,channelId:'C0C1344HCLV'});assert(repeated.ok,JSON.stringify(repeated));
  evidence.reimport=repeated.data;
  assert.equal(repeated.data.result.createdMessageCount,0);assert.equal(repeated.data.result.updatedRevisionCount,0);
+ const selections=await page.evaluate(()=>window.orchestra.sync.inspect());assert(selections.ok);const target=selections.data.targets.find(t=>t.provider==='slack'&&t.projectId===projectId);assert(target&&!target.enabled&&target.resourceIds.length===1&&target.resourceIds[0]==='C0C1344HCLV');
+ const refreshed=await page.evaluate(id=>window.orchestra.sync.update({id,action:'refresh'}),target.id);assert(refreshed.ok);assert.equal(refreshed.data.result.createdMessageCount,0);assert.equal(refreshed.data.result.updatedRevisionCount,0);
+ evidence.passed.push('saved Slack selection refresh uses only the approved channel and does not duplicate evidence');
  await page.reload();
  const threads=await page.evaluate(async id=>{const response=await fetch(`/v1/projects/${id}/threads?provider=slack`);if(!response.ok)throw new Error('Thread read failed');return response.json();},projectId);
  const serialized=JSON.stringify(threads);assert(serialized.includes('slack'));assert(serialized.includes('C0C1344HCLV'));

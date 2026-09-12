@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 784,
+  "unchangedImportedFiles": 782,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -21,10 +21,10 @@
       "reason": "Step 4 use the existing accessible terracotta text token for selected navigation."
     },
     {
-      "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
-      "importedSha256": "0f4344bf1473a42c4a1e7cd0bf5b2172458d366c7089f5c38cb9d655b0650a06",
-      "reason": "Step 4 explicitly prevent unconfigured desktop research generation; qualification remains Step 5."
+      "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
+      "sourceSha256": "142cb4169d9a8500a9b9e4f7bbffaf3c4b70fc6965e52a77cef79b09df86d9e4",
+      "importedSha256": "ba68344646a23ec9a955ebd870a63f7d3fd888626dd88e8230d00c689387af68",
+      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered."
     },
     {
       "path": "apps/beta-web/src/lib/api/client.ts",
@@ -83,8 +83,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "3f2e854c0dfa7db730e64f9deba3e5a6af479bc2d5ba81b4c79b25897fccfbb7",
-      "reason": "Steps 4/5 unavailable local invitations plus lazy desktop-only protected AI, explicit folder sources and native Slack controls; preserve shared workflow and styling."
+      "importedSha256": "7f929c309efadeef60c2d0f007c1e17161ca9ccab1ed1f2f36d8765d8fbdf703",
+      "reason": "Steps 4/5 unavailable local invitations plus lazy desktop-only protected AI, explicit folder sources and native Slack, GitHub and Drive controls; preserve shared workflow and styling."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -159,16 +159,22 @@
       "reason": "Step 5 retain honest lexical communication evidence when desktop embedding configuration or request allowance is unavailable; no mock vectors, semantic completion remains explicit."
     },
     {
+      "path": "src/modules/deep-research/schemas.ts",
+      "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
+      "importedSha256": "a0a9b4e1837748146a95d99db416d4baa1eae99781c03e58eacc25259795c4f3",
+      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization."
+    },
+    {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "c8a14efbb51253ffeedcd813664ca29f8d46d9552eac1e20631de52ab55d12f5",
-      "reason": "Step 4 reject unconfigured local generation before job creation or quota allocation."
+      "importedSha256": "dd02784cd561b4dac639932a45f6aa3325ca845b8150ea4a60fe5ef81cd05319",
+      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts."
     },
     {
       "path": "src/modules/documents/service.ts",
       "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
-      "importedSha256": "6d8ce92af233791f5093d69d0f61e56065e1608aab5f657001b6c376c0c5ae82",
-      "reason": "Steps 2/4 preserve offline lexical chunks and honest partial status; enqueue deterministic source projections after desktop uploads without changing the hosted beta shortcut."
+      "importedSha256": "b77e8ad4d462b369e202296d832413c0c55051b40da7b87d6d94da6f4e34fbe3",
+      "reason": "Steps 2/4 preserve offline lexical chunks and honest partial status. Step 5 adds private native source-document identity, idempotent version recovery and desktop-only Drive indexing state; public upload schemas and hosted approval semantics remain unchanged."
     },
     {
       "path": "src/modules/integrations/integrations.service.ts",
@@ -187,6 +193,12 @@
       "sourceSha256": "8055efed3c49fab765ae20df13aada5151926de44f357a8b8558b363e21471f6",
       "importedSha256": "532e5ae2700b245ebc1421228c6568b63343288441b9ae885d3e81798dd59ee2",
       "reason": "Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected."
+    },
+    {
+      "path": "tests/document-service.test.ts",
+      "sourceSha256": "805cfbd1afc7a08bba2c823758f2499a9cb46ff6b907ded01262ed768457582f",
+      "importedSha256": "7058480945442f57f673976af848e46cb6ea69aace6b23389459df047a239f5e",
+      "reason": "Step 5 regression coverage for native source identity and authoritative desktop Drive indexing completion; inherited document tests retained."
     }
   ]
 }

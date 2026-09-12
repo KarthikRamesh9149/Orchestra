@@ -7,7 +7,9 @@ export const pairInputSchema=z.object({projectId:z.string().uuid(),packId:z.stri
 export function pairingSetup(id:string,client:string,executable:string,userData:string){
  const name=`orchestra-desktop-${id.slice(0,8)}`,args=[`--orchestra-mcp=${id}`,`--user-data-dir=${userData}`];
  if(client==='codex')return `[mcp_servers.${name}]\ncommand = ${JSON.stringify(executable)}\nargs = ${JSON.stringify(args)}\n`;
- return JSON.stringify(client==='vscode'?{servers:{[name]:{type:'stdio',command:executable,args}}}:{mcpServers:{[name]:{command:executable,args}}},null,2);
+ // VS Code's extension host inherits Node-mode flags. Its MCP env null values
+ // remove those flags so the packaged Electron entry point starts as Electron.
+ return JSON.stringify(client==='vscode'?{servers:{[name]:{type:'stdio',command:executable,args,env:{ELECTRON_RUN_AS_NODE:null,NODE_OPTIONS:null,VSCODE_INSPECTOR_OPTIONS:null}}}}:{mcpServers:{[name]:{command:executable,args}}},null,2);
 }
 export async function createDesktopPairing(input:unknown,host:HostClient,settings:ProtectedSettingsStore){
  const parsed=pairInputSchema.parse(input);const current=await settings.read();

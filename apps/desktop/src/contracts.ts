@@ -14,6 +14,9 @@ export type Command=z.infer<typeof commandSchema>;
 export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string};
 export type OperationResult={ok:true;data:unknown}|{ok:false;error:{code:string;message:string}};
 export interface DesktopBridge {
+ sync:{inspect():Promise<OperationResult>;update(input:{id:string;action:'enable'|'pause'|'remove'|'refresh'}):Promise<OperationResult>;cancel():Promise<OperationResult>};
+ drive:{inspect():Promise<OperationResult>;configure():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;revoke():Promise<OperationResult>;importFiles(projectId:string):Promise<OperationResult>};
+ github:{inspect():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;repositories():Promise<OperationResult>;disconnect():Promise<OperationResult>;importRepository(input:{projectId:string;repositoryId:number}):Promise<OperationResult>};
  slack:{inspect():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;revoke():Promise<OperationResult>;channels():Promise<OperationResult>;importChannel(input:{projectId:string;channelId:string}):Promise<OperationResult>};
  mcp:{inspect():Promise<OperationResult>;pair(input:unknown):Promise<OperationResult>;revoke(id:string):Promise<OperationResult>};
  ai:{inspect():Promise<OperationResult>;configure(preferences:unknown):Promise<OperationResult>;revoke():Promise<OperationResult>};
@@ -26,6 +29,7 @@ export interface DesktopBridge {
  workspaces:{list():Promise<OperationResult>;create(name:string):Promise<OperationResult>;select(projectId:string):Promise<OperationResult>};
  chooseEvidence():Promise<OperationResult>;
  chooseFolder():Promise<OperationResult>;
+ chooseRepository():Promise<OperationResult>;
  uploadEvidence(projectId:string,selectionId:string):Promise<OperationResult>;
  ask(input:{requestId:string;projectId:string;question:string;sessionId?:string;selectedSources?:string[]}):Promise<OperationResult>;
  cancel(requestId:string):Promise<OperationResult>;

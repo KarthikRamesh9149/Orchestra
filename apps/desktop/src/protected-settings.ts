@@ -5,6 +5,9 @@ import {randomUUID} from 'node:crypto';
 import {z} from 'zod';
 import type {CredentialProtection} from './vault.js';
 import {slackCredentialSchema} from './slack-oauth.js';
+import {githubCredentialSchema} from './github-oauth.js';
+import {driveCredentialSchema,driveClientSchema} from './drive-oauth.js';
+import {syncTargetSchema} from './connector-sync-state.js';
 
 const model=z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/);
 export const aiPreferencesSchema=z.object({
@@ -16,7 +19,7 @@ export const aiPreferencesSchema=z.object({
  maxOutputTokens:z.number().int().min(128).max(8192)
 }).strict();
 export const mcpPairingSchema=z.object({id:z.string().uuid(),projectId:z.string().uuid(),packId:z.string().uuid(),tokenId:z.string().uuid(),token:z.string().regex(/^mcp_[A-Za-z0-9_-]{43}$/),client:z.enum(['codex','claude','cursor','vscode']),expiresAt:z.string().datetime()}).strict();
-export const protectedSettingsSchema=z.object({version:z.literal(1),slackRevokedTeamId:z.string().regex(/^T[A-Z0-9]+$/).optional(),slack:slackCredentialSchema.nullable().optional(),mcp:z.array(mcpPairingSchema).max(8).optional(),ai:z.object({
+export const protectedSettingsSchema=z.object({version:z.literal(1),syncTargets:z.array(syncTargetSchema).max(16).optional(),driveClient:driveClientSchema.optional(),drive:driveCredentialSchema.nullable().optional(),github:githubCredentialSchema.nullable().optional(),slackRevokedTeamId:z.string().regex(/^T[A-Z0-9]+$/).optional(),slack:slackCredentialSchema.nullable().optional(),mcp:z.array(mcpPairingSchema).max(8).optional(),ai:z.object({
  preferences:aiPreferencesSchema,
  apiKey:z.string().min(20).max(512).regex(/^[\x21-\x7e]+$/)
 }).strict().nullable()}).strict();

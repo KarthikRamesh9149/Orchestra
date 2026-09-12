@@ -16,6 +16,7 @@ try{
  await page.getByRole('heading',{name:'Desktop Slack',exact:true}).waitFor({timeout:30000});
  // Native consent only. Real browser authorization and token exchange remain intact.
  await app.evaluate(({dialog})=>{dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});});
+ if(process.argv.includes('--reconnect')){const revoked=await page.evaluate(()=>window.orchestra.slack.revoke());assert(revoked.ok);await page.reload();await page.getByRole('heading',{name:'Desktop Slack',exact:true}).waitFor();}
  const initial=await page.evaluate(()=>window.orchestra.slack.inspect());assert(initial.ok);
  if(!initial.data.connected){await page.getByRole('button',{name:'Connect desktop Slack',exact:true}).click();console.log('Waiting for real Slack consent in browser.');}
  await page.getByRole('button',{name:'Disconnect desktop Slack',exact:true}).waitFor({timeout:210000});

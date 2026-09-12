@@ -6,23 +6,25 @@ import assert from 'node:assert/strict';
 const profile=process.argv[2];assert(/^\/private\/tmp\/orchestra-step4-acceptance-[A-Za-z0-9]+$/.test(profile??''));
 assert.equal(JSON.parse(await readFile(join(profile,'result.json'),'utf8')).profile,profile);
 const packageRoot=(await readFile(join(resolve(import.meta.dirname,'../..'),'.desktop/latest-package.txt'),'utf8')).trim();
+const drive=process.argv.includes('--drive');
 let app;const proof={packageRoot,passed:[]};
 try{
  app=await _electron.launch({executablePath:join(packageRoot,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{PATH:'',TMPDIR:process.env.TMPDIR??'',HOME:process.env.HOME},timeout:60000});
  const page=await app.firstWindow();await page.waitForURL('**/memory',{timeout:180000});
- const observed=await page.evaluate(async()=>{
+ const observed=await page.evaluate(async drive=>{
   const boot=await window.orchestra.bootstrap();if(!boot.ok||!boot.data.aiConfigured)throw new Error('Configured runtime required');
   const projectId=(boot.data.workspaces.find(w=>w.current)??boot.data.workspaces[0]).projectId;
   const configured=await window.orchestra.ai.inspect();if(!configured.ok)throw new Error('AI settings unavailable');
   const requestId=crypto.randomUUID(),start=performance.now();let firstTextMs,deltas=0;
   const stop=window.orchestra.onDelta(event=>{if(event.requestId===requestId){firstTextMs??=Math.round(performance.now()-start);deltas++;}});
-  try{const response=await window.orchestra.ask({projectId,requestId,question:'According to Orchestra Desktop Pilot Requirements, when is the pilot launch date and what does local acceptance require? Cite that document.'});return {response,selectedModel:configured.data.preferences.generationModel,firstTextMs,deltas,completionMs:Math.round(performance.now()-start)};}finally{stop();}
- });
+  try{const response=await window.orchestra.ask({projectId,requestId,...(drive?{selectedSources:['google_drive']}:{}),question:drive?'According to Orchestra Desktop Synthetic Drive Qualification, how many reviewers does the fictional Copper Finch pilot support, and what is its acceptance criterion? Cite the selected Drive document.':'According to Orchestra Desktop Pilot Requirements, when is the pilot launch date and what does local acceptance require? Cite that document.'});return {response,selectedModel:configured.data.preferences.generationModel,firstTextMs,deltas,completionMs:Math.round(performance.now()-start)};}finally{stop();}
+ },drive);
  proof.observed=observed;assert(observed.response.ok);const answer=observed.response.data;
  assert.equal(answer.modelMetadata.provider,'openai');assert.equal(answer.modelMetadata.degraded,false);assert.equal(answer.modelMetadata.model,observed.selectedModel);
- assert(/21 October 2026|October 21,? 2026|2026-10-21/i.test(answer.answer_md));
+ assert((drive?/\bseven\b|\b7\b/i:/21 October 2026|October 21,? 2026|2026-10-21/i).test(answer.answer_md));
+ if(drive){assert(/source link/i.test(answer.answer_md));assert(answer.retrievalSummary.sourceCounts.google_drive>0);assert(answer.open_targets.some(t=>t.sourceType==='google_drive_document'&&t.targetType==='document_section'&&t.targetRef?.driveFileId&&t.targetRef?.documentId));}
  assert(answer.citations?.length>0);assert(observed.deltas>0);
  proof.passed.push('packaged named-document retrieval uses real OpenAI, returns expected date with citations and streamed text');
  console.log(JSON.stringify({passed:proof.passed,firstTextMs:observed.firstTextMs,completionMs:observed.completionMs,modelMetadata:answer.modelMetadata,retrieval:answer.retrievalSummary?.performance}));
 }catch(error){proof.failure=error.message;console.error('Packaged evidence gate failed:',error.message);process.exitCode=1;}
-finally{await app?.close();await writeFile(join(profile,'step5-ai-evidence.json'),JSON.stringify(proof,null,2));}
+finally{await app?.close();await writeFile(join(profile,drive?'step5-drive-answer.json':'step5-ai-evidence.json'),JSON.stringify(proof,null,2));}

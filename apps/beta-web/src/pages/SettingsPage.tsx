@@ -71,6 +71,9 @@ const CARD = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)]"
 const DesktopAiSettings=lazy(()=>import('../components/settings/DesktopAiSettings'));
 const DesktopSources=lazy(()=>import('../components/settings/DesktopSources'));
 const DesktopSlackSettings=lazy(()=>import('../components/settings/DesktopSlackSettings'));
+const DesktopGitHubSettings=lazy(()=>import('../components/settings/DesktopGitHubSettings'));
+const DesktopDriveSettings=lazy(()=>import('../components/settings/DesktopDriveSettings'));
+const DesktopSyncSettings=lazy(()=>import('../components/settings/DesktopSyncSettings'));
 const EYEBROW = "font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]";
 const EYEBROW_MUTED = "font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-muted)]";
 
@@ -920,6 +923,9 @@ export function SettingsPage() {
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop AI settings…</p>}><DesktopAiSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading local sources…</p>}><DesktopSources/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop Slack…</p>}><DesktopSlackSettings/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop GitHub…</p>}><DesktopGitHubSettings/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop Drive…</p>}><DesktopDriveSettings/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading selected-source refresh…</p>}><DesktopSyncSettings/></Suspense>}
           <IntegrationsSection />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <WorkspaceSection />

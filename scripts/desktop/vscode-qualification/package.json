@@ -1,0 +1,1 @@
+{"name":"orchestra-desktop-qualification","version":"0.0.0","private":true,"publisher":"orchestra-internal","engines":{"vscode":"^1.99.0"},"main":"./extension.cjs","activationEvents":["onStartupFinished"]}

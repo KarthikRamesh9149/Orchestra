@@ -39,7 +39,7 @@ export async function localHttp(request:Request,host:HostClient,nativeCredential
  if(request.body){const chunks:Uint8Array[]=[];let size=0;const reader=request.body.getReader();for(;;){const {value,done}=await reader.read();if(done)break;size+=value.byteLength;if(size>55*1024*1024){await reader.cancel();return failure(413,'upload_too_large','Maximum upload size exceeded');}chunks.push(value);}body=new Uint8Array(size);let offset=0;for(const chunk of chunks){body.set(chunk,offset);offset+=chunk.length;}}
  try{
   const response=await fetch(`http://127.0.0.1:${authority.port}${url.pathname}${url.search}`,{method:request.method,headers,body:body as NonNullable<Parameters<typeof fetch>[1]>['body'],redirect:'error',signal:AbortSignal.any([request.signal,AbortSignal.timeout(180000)])});
-  const outgoing=new Headers();for(const name of ['content-type','content-disposition','cache-control','retry-after']){const value=response.headers.get(name);if(value)outgoing.set(name,value);}
+ const outgoing=new Headers({'cache-control':'no-store'});for(const name of ['content-type','content-disposition','retry-after']){const value=response.headers.get(name);if(value)outgoing.set(name,value);}
   // Preserve the real response stream and backend status; never forward cookies.
   return new Response(response.body,{status:response.status,headers:outgoing});
  }catch{return failure(503,'local_request_failed','The local request failed or was cancelled. Check its saved state before retrying.');}

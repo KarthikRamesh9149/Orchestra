@@ -33,6 +33,8 @@ type UploadInput = {
   contentType: string;
   buffer: Buffer;
   operationId?: string;
+  /** Internal connector identity only; never accepted by public upload routes. */
+  sourceDocumentId?: string;
 };
 
 const documentUploadAllowedExtensions = new Set([".pdf", ".docx", ".txt", ".md", ".markdown", ".csv", ".xlsx"]);
@@ -403,7 +405,7 @@ export class DocumentService {
       where: {
         projectId: input.projectId,
         kind: input.kind,
-        title: input.title,
+        ...(input.sourceDocumentId ? { id: input.sourceDocumentId } : { title: input.title }),
         visibility: input.visibility,
         archivedAt: null
       },
@@ -421,7 +423,7 @@ export class DocumentService {
     });
 
     const duplicateVersion = existingDocument?.versions[0];
-    if (duplicateVersion) {
+    if (duplicateVersion && (!input.sourceDocumentId || duplicateVersion.id === existingDocument?.currentVersionId)) {
       await this.auditService.record({
         orgId: project.orgId,
         projectId: input.projectId,
@@ -503,6 +505,7 @@ export class DocumentService {
 
       const document = await tx.document.create({
         data: {
+          ...(input.sourceDocumentId ? { id: input.sourceDocumentId } : {}),
           projectId: input.projectId,
           kind: input.kind,
           title: input.title,
@@ -611,9 +614,10 @@ export class DocumentService {
     contentType: string
   ) {
     const matchingInput = version.projectId === input.projectId
+      && (!input.sourceDocumentId || version.documentId === input.sourceDocumentId)
       && version.document?.projectId === input.projectId
       && version.document?.kind === input.kind
-      && version.document?.title === input.title
+      && (input.sourceDocumentId ? version.document?.id === input.sourceDocumentId : version.document?.title === input.title)
       && version.document?.visibility === input.visibility
       && version.checksumSha256 === checksumSha256
       && version.mimeType === contentType
@@ -981,7 +985,9 @@ export class DocumentService {
   async getOriginalFile(projectId: string, documentId: string, actorUserId: string) {
     const member = await this.projectService.ensureProjectAccess(projectId, actorUserId);
     const document = await this.ensureAccessibleDocument(projectId, documentId, member.projectRole);
-    const version = await this.resolveDocumentVersion(projectId, document, undefined, true);
+    // Native originals were validated and stored before parsing. A failed
+    // optional model call must not make the user's source bytes inaccessible.
+    const version = await this.resolveDocumentVersion(projectId, document, undefined, this.env?.RUNTIME_PROFILE !== 'desktop-local');
     const stored = await this.storage.getObjectStream(version.fileKey);
     return {
       stream: stored.stream,
@@ -1802,9 +1808,20 @@ export class DocumentService {
         throw new AppError(422, "No chunks available to embed", "missing_chunks_for_embedding");
       }
 
+      let lexicalOnly = Boolean(this.embeddings.unavailable);
       for (const chunk of chunks) {
-        if (this.embeddings.unavailable) continue;
-        const embedding = await this.embeddings.embedText(chunk.contextualContent ?? chunk.content);
+        if (lexicalOnly) break;
+        let embedding: number[];
+        try {
+          embedding = await this.embeddings.embedText(chunk.contextualContent ?? chunk.content);
+        } catch (error) {
+          // Commit already parsed lexical evidence rather than rolling it back
+          // with the desktop worker's effect transaction. Never invent vectors.
+          if (this.env?.RUNTIME_PROFILE !== 'desktop-local' || !(error instanceof AppError) ||
+              !['ai_request_budget_exceeded','embedding_not_configured','ai_provider_failed','ai_revoked','ai_busy'].includes(error.code)) throw error;
+          lexicalOnly = true;
+          break;
+        }
         const vectorLiteral = `[${embedding.join(",")}]`;
         await this.prisma.$executeRawUnsafe(
           "UPDATE document_chunks SET embedding = CAST($1 AS extensions.vector) WHERE id = CAST($2 AS uuid)",
@@ -1818,7 +1835,7 @@ export class DocumentService {
           id: documentVersionId,
           parseRevision: targetParseRevision
         },
-        data: { status: this.embeddings.unavailable ? "partial" : "ready" }
+        data: { status: lexicalOnly ? "partial" : "ready" }
       });
 
       // Invalidate stale Socrates suggestions immediately. The brain pipeline
@@ -1827,6 +1844,14 @@ export class DocumentService {
       await this.prisma.socratesSuggestion.deleteMany({
         where: { session: { projectId: version.projectId } }
       });
+      if (this.env?.RUNTIME_PROFILE === 'desktop-local' && this.prisma.projectDriveFile) {
+        await this.prisma.projectDriveFile.updateMany({
+          where: { documentVersionId, metadataJson: { path: ['desktop'], equals: true }, documentVersion: { parseRevision: targetParseRevision } },
+          data: lexicalOnly
+            ? { indexStatus: 'failed', lastIndexedAt: null, lastError: 'Semantic indexing is unavailable; parsed text remains readable.' }
+            : { indexStatus: 'indexed', lastIndexedAt: new Date(), lastError: null }
+        });
+      }
 
       await this.finishJob(JobNames.embedDocumentChunks, embedKey);
       // Desktop owns a durable offline projection worker. The hosted beta

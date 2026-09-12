@@ -12,6 +12,16 @@ async function request(callback:Awaited<ReturnType<typeof startOAuthCallback>>,q
  });
 }
 describe('native OAuth callback',()=>{
+ it('isolates Drive callbacks and accepts only bounded unique Picker IDs',async()=>{
+  const callback=await startOAuthCallback({port:0,provider:'drive'});try{
+   expect(new URL(callback.redirectUri).hostname).toBe('127.0.0.1');
+   expect(new URL(callback.redirectUri).pathname).toBe('/oauth/drive/callback');
+   expect((await request(callback,`state=${callback.state}&code=test&picked_file_ids=abc,abc`)).status).toBe(400);
+   expect((await request(callback,`state=${callback.state}&code=test&picked_file_ids=../secret`)).status).toBe(400);
+   expect((await request(callback,`state=${callback.state}&code=test&picked_file_ids=synthetic-1,synthetic_2`)).status).toBe(200);
+   await callback.code;expect(callback.pickedFileIds()).toEqual(['synthetic-1','synthetic_2']);
+  }finally{callback.cancel();}
+ });
  it('uses S256, rejects wrong state and accepts one valid callback',async()=>{
   const callback=await startOAuthCallback({port:0});try{
    expect(callback.challenge).toBe(createHash('sha256').update(callback.verifier).digest('base64url'));

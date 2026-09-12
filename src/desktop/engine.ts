@@ -38,7 +38,7 @@ export async function createLocalEngine(input:{databaseUrl:string; installationR
     CLIENT_SHARE_TOKEN_SECRET:secrets.clientShare,CONNECTOR_OAUTH_STATE_SECRET:secrets.oauthState,
     CONNECTOR_CREDENTIAL_ENCRYPTION_KEY:secrets.connectorEncryption,
     VSCODE_CONNECTOR_TOKEN_SECRET:createHmac('sha256',secrets.oauthState).update('desktop-vscode-token-v1').digest('hex'),
-    SIGNUP_MODE:'disabled',LOG_LEVEL:'error',MCP_ENABLED:'true',MCP_MODE:'local_dev',MCP_ALLOW_CONTROLLED_WRITES:'true',
+    SIGNUP_MODE:'disabled',LOG_LEVEL:'error',MCP_ENABLED:'true',MCP_MODE:'local_dev',MCP_ALLOW_CONTROLLED_WRITES:'true',BETA_DEEP_RESEARCH_ENABLED:'true',
     ...(ai?desktopAiEnvironment(ai):{})
   });
   const prisma=new PrismaClient({datasources:{db:{url:profile.databaseUrl}}});
