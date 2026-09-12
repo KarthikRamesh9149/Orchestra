@@ -18,7 +18,7 @@ for(const file of files.sort()){
    const handlers=attrs.filter(a=>/^(on[A-Z]|href|to)$/.test(a.name.getText(source))||/^on[A-Z]/.test(a.name.getText(source)));
    if(handlers.length||['button','input','select','textarea','form','a','Link','NavLink'].includes(tag)){
     const line=source.getLineAndCharacterOfPosition(node.getStart(source)).line+1;
-    const sharedOnly=/LoginPage|WorkspacesPage|ClientWorkspacePage/.test(file);
+    const sharedOnly=/LoginPage|WorkspacesPage|ClientWorkspacePage|DesktopSharedSettings|SharedServerBanner/.test(file);
     const ownerStep=/McpAgentSetup|DesktopMcpSetup|DesktopAiSettings|DesktopSources|DesktopSlackSettings|DesktopDriveSettings|DesktopGitHubSettings|DesktopSyncSettings/.test(file)?5:sharedOnly?6:4;
     const siblingTest=file.replace(/\.tsx$/,'.test.tsx');
     const label=attrs.find(a=>['aria-label','title','placeholder'].includes(a.name.getText(source)))?.initializer?.getText(source)

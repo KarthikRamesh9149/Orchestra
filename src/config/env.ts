@@ -167,6 +167,8 @@ function csvListPreserveCase(defaultValue: string) {
 
 const envSchema = z.object({
   RUNTIME_PROFILE: z.enum(["desktop-local", "self-hosted", "managed"]).default("managed"),
+  DESKTOP_SHARED_SERVER_ID: optionalBlankString(z.string().uuid()),
+  SELF_HOST_DATA_ROOT: optionalBlankString(z.string()),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DEPLOYMENT_ENV: z.enum(["development", "test", "staging", "production"]).optional(),
   PORT: z.coerce.number().int().positive().default(3000),
@@ -673,6 +675,7 @@ const envSchema = z.object({
 }).superRefine((value, context) => {
   const deploymentEnv = value.DEPLOYMENT_ENV ?? value.NODE_ENV;
   const desktop = value.RUNTIME_PROFILE === "desktop-local";
+  const selfHosted = value.RUNTIME_PROFILE === "self-hosted";
   const isProductionLikeDeployment = !desktop && (deploymentEnv === "staging" || deploymentEnv === "production");
   const isProductionDeployment = !desktop && deploymentEnv === "production";
   if (desktop) {
@@ -690,6 +693,21 @@ const envSchema = z.object({
       try { if(!['localhost','127.0.0.1','[::1]'].includes(new URL(origin.trim()).hostname))fail('CORS_ALLOWED_ORIGINS','Desktop origins must be loopback'); } catch { fail('CORS_ALLOWED_ORIGINS','Invalid desktop origin'); }
     }
   } else if(value.QUEUE_MODE==='postgres') context.addIssue({code:z.ZodIssueCode.custom,path:['QUEUE_MODE'],message:'PostgreSQL queue requires explicit desktop-local profile'});
+  if(selfHosted){
+    const fail=(field:string,message:string)=>context.addIssue({code:z.ZodIssueCode.custom,path:[field],message});
+    if(!value.DESKTOP_SHARED_SERVER_ID)fail('DESKTOP_SHARED_SERVER_ID','Self-hosting requires a persistent, installation-specific server UUID');
+    const root=value.SELF_HOST_DATA_ROOT;
+    if(!root||!path.isAbsolute(root)||path.resolve(root)===path.parse(root).root)fail('SELF_HOST_DATA_ROOT','Declare a dedicated persistent self-hosting data directory, not the filesystem root');
+    if(!isPathInside(root,value.STORAGE_LOCAL_ROOT)||value.STORAGE_DRIVER!=='local')fail('STORAGE_LOCAL_ROOT','This self-hosting version requires private local storage inside the declared persistent data directory');
+    if(value.CONNECTOR_CREDENTIAL_VAULT_MODE!=='encrypted_file')fail('CONNECTOR_CREDENTIAL_VAULT_MODE','Self-hosting requires its operator-owned encrypted credential vault');
+    if(value.QUEUE_MODE!=='bullmq'||!value.REDIS_URL)fail('QUEUE_MODE','Self-hosting requires the durable server worker and Redis queue');
+    if(value.MVP_BETA_FREE_TIER_MODE)fail('MVP_BETA_FREE_TIER_MODE','Self-hosting cannot use a managed free-tier bypass');
+    if(isProductionLikeDeployment){
+      for(const origin of [value.APP_BASE_URL,value.FRONTEND_BASE_URL,...value.CORS_ALLOWED_ORIGINS.split(',')].filter(Boolean)){
+        try{const url=new URL(origin!.trim());if(url.protocol!=='https:'||url.username||url.password)fail('APP_BASE_URL','Shared production origins require HTTPS without URL credentials');}catch{fail('APP_BASE_URL','Invalid shared production origin');}
+      }
+    }
+  }
   const isFreeTierBetaProduction =
     isProductionDeployment &&
     value.MVP_BETA_FREE_TIER_MODE &&
@@ -1148,6 +1166,7 @@ const envSchema = z.object({
 
     if (
       isProductionDeployment &&
+      !selfHosted &&
       (value.ORCHESTRA_PROFILE === "mvp_beta" || value.MVP_BETA_MODE) &&
       !value.OPENAI_API_KEY
     ) {
@@ -1221,7 +1240,7 @@ const envSchema = z.object({
       context.addIssue({ code: z.ZodIssueCode.custom, path: ["CONNECTOR_CREDENTIAL_VAULT_MODE"],
         message: "Managed credential resolution is not implemented. This deployment profile is unavailable; use the explicitly supported volume-backed free-tier beta profile or implement a managed adapter before deployment." });
     }
-    if (value.STORAGE_DRIVER === "local" && !(isFreeTierBetaProduction && hasPersistentVolumeStorage)) {
+    if (value.STORAGE_DRIVER === "local" && !selfHosted && !(isFreeTierBetaProduction && hasPersistentVolumeStorage)) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["STORAGE_DRIVER"],
@@ -1233,6 +1252,7 @@ const envSchema = z.object({
 
     if (
       value.CONNECTOR_CREDENTIAL_VAULT_MODE !== "managed_reference" &&
+      !selfHosted &&
       !(
         isFreeTierBetaProduction &&
         value.CONNECTOR_CREDENTIAL_VAULT_MODE === "encrypted_file" &&
@@ -1256,7 +1276,7 @@ const envSchema = z.object({
       });
     }
 
-    if (!value.TRACE_EXPORTER_OTLP_ENDPOINT && !isFreeTierBetaProduction) {
+    if (!value.TRACE_EXPORTER_OTLP_ENDPOINT && !isFreeTierBetaProduction && !selfHosted) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["TRACE_EXPORTER_OTLP_ENDPOINT"],
@@ -1264,7 +1284,7 @@ const envSchema = z.object({
       });
     }
 
-    if (!value.ERROR_AGGREGATION_DSN && !isFreeTierBetaProduction) {
+    if (!value.ERROR_AGGREGATION_DSN && !isFreeTierBetaProduction && !selfHosted) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["ERROR_AGGREGATION_DSN"],
@@ -1272,7 +1292,7 @@ const envSchema = z.object({
       });
     }
 
-    if (!value.UPTIME_CHECK_URLS.trim() && !isFreeTierBetaProduction) {
+    if (!value.UPTIME_CHECK_URLS.trim() && !isFreeTierBetaProduction && !selfHosted) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
         path: ["UPTIME_CHECK_URLS"],
@@ -1289,7 +1309,7 @@ const envSchema = z.object({
       "SOCRATES_MODEL_FALLBACK_OUTPUT_COST_PER_1M",
       "SOCRATES_EMBEDDING_COST_PER_1M"
     ] as const) {
-      if (value[field] <= 0) {
+      if (value[field] <= 0 && !(selfHosted && !value.OPENAI_API_KEY)) {
         context.addIssue({
           code: z.ZodIssueCode.custom,
           path: [field],

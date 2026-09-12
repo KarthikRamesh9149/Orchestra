@@ -52,6 +52,7 @@ import { registerIntegrationManagementRoutes } from "../modules/integrations/int
 import { registerTruthInboxRoutes } from "../modules/truth-inbox/truth-inbox.routes.js";
 import { registerDeliveryRoutes } from "../modules/delivery/routes.js";
 import { isMvpBetaMode } from "../lib/beta/policy.js";
+import { registerSharedDesktopRoutes } from "../desktop/shared-routes.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -180,6 +181,7 @@ export async function buildApp(context: AppContext) {
   }
 
   await app.register(registerAuthRoutes, { prefix: "/v1/auth" });
+  await app.register(registerSharedDesktopRoutes, { prefix: "/v1/desktop" });
   await app.register(registerProjectRoutes, { prefix: "/v1" });
   await app.register(registerProjectResponsibilityRoutes, { prefix: "/v1" });
   await app.register(registerProjectContextRoutes, { prefix: "/v1" });
@@ -226,6 +228,8 @@ export function isAllowedBetaRoute(
   method: string,
   rawUrl: string,
   env: {
+    RUNTIME_PROFILE?: string;
+    DESKTOP_SHARED_SERVER_ID?: string;
     BETA_SLACK_WEBHOOKS_ENABLED?: boolean;
     SLACK_WEBHOOKS_ENABLED?: boolean;
     BETA_GMAIL_INVITE_SENDER_ENABLED?: boolean;
@@ -246,6 +250,7 @@ export function isAllowedBetaRoute(
   }
 ) {
   const path = rawUrl.split("?")[0] ?? rawUrl;
+  if (env.RUNTIME_PROFILE === "self-hosted" && env.DESKTOP_SHARED_SERVER_ID && method === "GET" && ["/v1/desktop/manifest", "/v1/desktop/session/bootstrap"].includes(path)) return true;
   if (path === "/health" || path === "/metrics") return true;
   if (path.startsWith("/v1/auth")) return true;
   if (method === "GET" && path === "/v1/mcp/readiness") return true;

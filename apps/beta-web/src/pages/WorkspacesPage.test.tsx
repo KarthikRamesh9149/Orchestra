@@ -61,6 +61,14 @@ describe("WorkspacesPage performance", () => {
     selection.resolve(auth.projects[0]);
   });
 
+  it('shows a failed sign-out without abandoning the workspace chooser',async()=>{
+    auth.signOut.mockRejectedValue(new Error('Sign-out was not confirmed'));
+    renderPage();
+    await userEvent.click(screen.getByRole('button',{name:'Log out'}));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Sign-out was not confirmed');
+    expect(screen.getByRole('heading',{name:'Choose a workspace'})).toBeInTheDocument();
+  });
+
   it("waits for server confirmation when switching organizations", async () => {
     const selection = deferred<(typeof auth.projects)[number]>();
     auth.projects[0].organizationId = "org-2";

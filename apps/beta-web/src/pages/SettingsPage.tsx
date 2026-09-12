@@ -69,6 +69,7 @@ import { useToastStore } from "../components/ui/Toaster";
 
 const CARD = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)]";
 const DesktopAiSettings=lazy(()=>import('../components/settings/DesktopAiSettings'));
+const DesktopSharedSettings=lazy(()=>import('../components/settings/DesktopSharedSettings'));
 const DesktopSources=lazy(()=>import('../components/settings/DesktopSources'));
 const DesktopSlackSettings=lazy(()=>import('../components/settings/DesktopSlackSettings'));
 const DesktopGitHubSettings=lazy(()=>import('../components/settings/DesktopGitHubSettings'));
@@ -921,6 +922,7 @@ export function SettingsPage() {
 
         <div className="flex flex-col gap-10">
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop AI settings…</p>}><DesktopAiSettings/></Suspense>}
+          {isDesktop()&&<Suspense fallback={<p role="status">Loading shared servers…</p>}><DesktopSharedSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading local sources…</p>}><DesktopSources/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop Slack…</p>}><DesktopSlackSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop GitHub…</p>}><DesktopGitHubSettings/></Suspense>}

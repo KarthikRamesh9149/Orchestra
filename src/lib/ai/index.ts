@@ -3,13 +3,14 @@ import { MockEmbeddingProvider, MockGenerationProvider, MockTranscriptionProvide
 import { OpenAiEmbeddingProvider } from "./openai-embeddings.js";
 import { OpenAiGenerationProvider } from "./openai-generation.js";
 import { OpenAiTranscriptionProvider } from "./openai-transcription.js";
+import { OfflineGenerationProvider, OfflineEmbeddingProvider, OfflineTranscriptionProvider } from "./offline.js";
 
 export function createGenerationProvider(env: AppEnv) {
   if (env.OPENAI_API_KEY) {
     return new OpenAiGenerationProvider(env);
   }
 
-  return new MockGenerationProvider();
+  return env.RUNTIME_PROFILE === 'self-hosted' ? new OfflineGenerationProvider() : new MockGenerationProvider();
 }
 
 export function createEmbeddingProvider(env: AppEnv) {
@@ -17,7 +18,7 @@ export function createEmbeddingProvider(env: AppEnv) {
     return new OpenAiEmbeddingProvider(env);
   }
 
-  return new MockEmbeddingProvider();
+  return env.RUNTIME_PROFILE === 'self-hosted' ? new OfflineEmbeddingProvider() : new MockEmbeddingProvider();
 }
 
 export function createTranscriptionProvider(env: AppEnv) {
@@ -25,5 +26,5 @@ export function createTranscriptionProvider(env: AppEnv) {
     return new OpenAiTranscriptionProvider(env);
   }
 
-  return new MockTranscriptionProvider();
+  return env.RUNTIME_PROFILE === 'self-hosted' ? new OfflineTranscriptionProvider() : new MockTranscriptionProvider();
 }

@@ -1,18 +1,24 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 782,
+  "unchangedImportedFiles": 774,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
       "sourceSha256": "335aa4d5e5cecef1a7a1463c2a395a9756eb36bf17b2858fa72be9e23885e144",
-      "importedSha256": "47d8e51d808cd65ad82d85f54120aca1ba42f4e8c7a79a04557885967be68016",
-      "reason": "Step 4 local first-run routes; preserve hosted routes and styling."
+      "importedSha256": "5fd5173b9eb6bc26a7fe6250c727e4d34b152569125180f314d1c0876c0d1678",
+      "reason": "Step 4 local first-run routes; Step 6 shows the selected server in isolated shared windows without changing hosted routes or styling."
     },
     {
       "path": "apps/beta-web/src/components/delivery/McpAgentSetup.tsx",
       "sourceSha256": "08dff045c450a459b01c8c9360ba6467bb41ea48f240e7beae42b9dd9a6b1a89",
       "importedSha256": "8088f2acadc4811131c2fab9e75aebaf408b92386c39e69b95135e0d2a71c815",
       "reason": "Step 5 dispatch desktop pairing through the protected native bridge while retaining the hosted implementation."
+    },
+    {
+      "path": "apps/beta-web/src/components/shell/AppShell.tsx",
+      "sourceSha256": "e9d3ce52845896b1954586bb4d3fcba8b6daf40de7a575fae8cddf7d6ec740a4",
+      "importedSha256": "8767b7e28ddcae94e70add5bf01c7559ca1268266bfbea4ba8969f3b924b787c",
+      "reason": "Step 6 reserves space only in shared desktop windows for the persistent authoritative-server banner; existing styles retained."
     },
     {
       "path": "apps/beta-web/src/components/shell/NavRail.tsx",
@@ -27,16 +33,34 @@
       "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered."
     },
     {
+      "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
+      "sourceSha256": "6d4616c2261d590f0da972d0987304495f8555448e2445f5e457b978dc86ac8c",
+      "importedSha256": "3918d24303294280af94f97cdb18c1a51d0f17f0a567740e5e6d5e0a4dfc168f",
+      "reason": "Step 6 shared logout failure regression alongside stale bootstrap protection."
+    },
+    {
+      "path": "apps/beta-web/src/context/AuthContext.tsx",
+      "sourceSha256": "73c5ba6d49777ca3db6f5576f3a04414d5f06776db1f2259c8667c334a66b890",
+      "importedSha256": "2a2b92af6550781c071d8ea765c7ed91ea43efa3269a04de2feabe37b6ca5432",
+      "reason": "Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged."
+    },
+    {
       "path": "apps/beta-web/src/lib/api/client.ts",
       "sourceSha256": "ba5e5737fdb4a7c3a412336505eddbd3070c3e7dc48a6c1dd273aef8eb8d9361",
-      "importedSha256": "798b0247331f9737180149c2fb65cbba67a8f03cb43657844b85e6e58c7127b2",
-      "reason": "Step 4 local bootstrap uses the credential-free desktop bridge; hosted browser sessions unchanged."
+      "importedSha256": "348b5e39386f4028c34d19fb5fb91db63feb3a5de337b4ea3fb7bca434117136",
+      "reason": "Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior."
+    },
+    {
+      "path": "apps/beta-web/src/lib/api.auth.test.ts",
+      "sourceSha256": "34d7830a9ef8b526b48f42217051218e064c40044ac750254f490b8359ade045",
+      "importedSha256": "101cd8231b1379bc2f6a70d0eb5ac248098212508598dda4dc095aec8d82b4a1",
+      "reason": "Step 6 regression for unconfirmed shared-desktop logout; existing browser cookie contracts retained."
     },
     {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "9f1aa21e5900b91e2813da867e5ab0d623ed5cb8381003a32cb32b862e99fed8",
-      "reason": "Step 4 partial document state must not display as endlessly processing."
+      "importedSha256": "342ee585ca3e77d7700c1022293b5c73f679a2a603f3bfffde367fe13c6e6f09",
+      "reason": "Step 4 partial document state must not display as endlessly processing; Step 6 preserves shared login state when server logout is unconfirmed."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -83,8 +107,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "7f929c309efadeef60c2d0f007c1e17161ca9ccab1ed1f2f36d8765d8fbdf703",
-      "reason": "Steps 4/5 unavailable local invitations plus lazy desktop-only protected AI, explicit folder sources and native Slack, GitHub and Drive controls; preserve shared workflow and styling."
+      "importedSha256": "914faa89102a02e87001ba93aa41abf3c108517f8fe28e6064ac38013f9f29aa",
+      "reason": "Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection settings, preserving existing shared behavior and styling."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -99,10 +123,16 @@
       "reason": "Step 4 explicit filter names for reliable keyboard and assistive-technology operation; no styling changes."
     },
     {
+      "path": "apps/beta-web/src/pages/WorkspacesPage.test.tsx",
+      "sourceSha256": "3741a89a4e434afd5439c868edef86c3691e7986291eb259862234b08abb2043",
+      "importedSha256": "9f7330b743c39268700cc7047597b738a89d770a289804ed9a9d20b4875065d7",
+      "reason": "Step 6 failed sign-out regression with existing workspace performance tests retained."
+    },
+    {
       "path": "apps/beta-web/src/pages/WorkspacesPage.tsx",
       "sourceSha256": "b9ecae8f8e36b48a97a4b8c8d5e7d7b7795e3dfa64feef8881587a6e930c9020",
-      "importedSha256": "11dcdd1814d324f8195c2bd58c2edf6d0dc8e4d2223864ffcc738cbd9b39dbbf",
-      "reason": "Step 4 truthful local workspace identity and setup navigation, retaining original style."
+      "importedSha256": "f2e6c481d7be4507577f254fa210ef2abb709d1a0607097cf1ad1555ee04d1cb",
+      "reason": "Step 4 truthful local workspace identity and setup navigation; Step 6 reports unconfirmed sign-out using the existing error surface without restyling."
     },
     {
       "path": "apps/beta-web/src/store/chatStore.ts",
@@ -141,16 +171,34 @@
       "reason": "Replace hosted production smoke defaults with localhost; application source unchanged."
     },
     {
+      "path": "src/app/build-app.ts",
+      "sourceSha256": "54aed4e557c43ada64ff6136a3ebb8b6dce8bcfed1270a2c67f4655b2b4041c6",
+      "importedSha256": "b5b5c02f055aa0a6a317f4418013d94eb20945b35a6950e780a869f568b5fd1e",
+      "reason": "Step 6 opt-in self-hosted desktop manifest and bearer bootstrap; managed route exposure is unchanged."
+    },
+    {
       "path": "src/config/env.ts",
       "sourceSha256": "602cc1c4412cd1be30a9831d4ce4e1d188459c362cbd883fc6e2a8e286b2c995",
-      "importedSha256": "2959b9d224d3abd62c8b8938099ec5d54f30b6c34d53abcf488ea8aa0760cbc1",
-      "reason": "Step 2 explicit local runtime validation; retain managed production controls."
+      "importedSha256": "64e40dade06ac00494645f439defcc8e382c05d1259ed1f0071ab43183fefa55",
+      "reason": "Step 2 explicit local validation; Step 6 explicit self-hosted HTTPS, stable identity, persistent private storage, offline AI and server-worker controls. Managed production restrictions remain enforced."
+    },
+    {
+      "path": "src/lib/ai/index.ts",
+      "sourceSha256": "67f18a5c7bd571967303e5099c5cb950ac460cd377321991952ab8bc0c7365ee",
+      "importedSha256": "9f8b3d16d5a721609a93867278822c428db92f819de9b99a3a3c6bac1b1b1ced",
+      "reason": "Step 6 self-hosting without an operator key uses explicit offline providers rather than simulated generation, vectors or transcription."
     },
     {
       "path": "src/lib/ai/provider.ts",
       "sourceSha256": "29e0e70c39cbc4182b637ea8cf282dd24a01a023d723ab3c1d642871c2b301e6",
       "importedSha256": "775cc1fd11619c61b75ce544448934ec17238b0cb5fcbd8a1f52d0b39c10cbc7",
       "reason": "Step 2 explicit unavailable embedding capability; no mock vectors in offline mode."
+    },
+    {
+      "path": "src/lib/storage/index.ts",
+      "sourceSha256": "a39aeb6379062257602742ec38f0f19e0bb24c020fe77806abfe90cc2fbbffc0",
+      "importedSha256": "b7a49d8a1ed117d930c6e721e72320e5fec76deef760af25e2b87858c1834bb3",
+      "reason": "Step 6 self-hosted local storage uses the private bounded driver; hosted storage behavior remains unchanged."
     },
     {
       "path": "src/modules/communications/message-indexing.service.ts",

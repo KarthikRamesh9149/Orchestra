@@ -25,6 +25,8 @@ import {readSelectedDriveFile} from './drive-sources.js';
 import {rememberSyncTarget,refreshSelectedSource} from './connector-sync.js';
 import {dueTarget,finishedTarget,type SyncTarget} from './connector-sync-state.js';
 import {z} from 'zod';
+import {SharedConnectionStore} from './shared-store.js';
+import {registerSharedWindows} from './shared-windows.js';
 
 app.setName('Orchestra Desktop Internal');
 const relay=process.argv.find(arg=>arg.startsWith('--orchestra-mcp='));
@@ -61,6 +63,8 @@ else {
   window.webContents.on('will-attach-webview',event=>event.preventDefault());
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
   const settings=new ProtectedSettingsStore(join(app.getPath('userData'),'local-runtime'),safeStorage);
+  const closeShared=registerSharedWindows({local:window,resources,preload:join(__dirname,'shared-preload.cjs'),store:new SharedConnectionStore(join(app.getPath('userData'),'shared-connections'),safeStorage),packaged:app.isPackaged});
+  app.on('before-quit',closeShared);
   let configuringAi=false;
   let syncController:AbortController|undefined;
   const runRefresh=async(target:SyncTarget)=>{

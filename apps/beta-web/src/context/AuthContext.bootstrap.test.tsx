@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, expect, it } from "vitest";
+import { afterEach, beforeEach, expect, it } from "vitest";
 import { http, HttpResponse } from "msw";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { clearAuth } from "../lib/api/auth";
@@ -10,6 +10,20 @@ const user = { id: "new-user", orgId: "new-org", displayName: "New user", email:
 let auth: ReturnType<typeof useAuth>;
 function Consumer() { auth = useAuth(); return <div>{auth.status}:{auth.user?.id}</div>; }
 beforeEach(() => clearAuth());
+afterEach(()=>{delete window.orchestraShared;});
+
+it('keeps the shared authenticated view when logout was not confirmed',async()=>{
+ window.orchestraShared={connection:{id:'test',name:'Test server',origin:'https://test.invalid',serverId:'test'},close:async()=>{},copyText:async()=>({ok:true})};
+ server.use(
+  http.get(`${base}/v1/auth/csrf`,()=>HttpResponse.json({data:{csrfToken:'csrf'}})),
+  http.post(`${base}/v1/auth/bootstrap`,()=>HttpResponse.json({data:{user,workspaces:[]}})),
+  http.post(`${base}/v1/auth/logout`,()=>HttpResponse.json({error:{code:'shared_request_failed',message:'Sign-out was not confirmed'}},{status:503}))
+ );
+ render(<AuthProvider><Consumer/></AuthProvider>);
+ await screen.findByText('authenticated:new-user');
+ await act(async()=>{await expect(auth.signOut()).rejects.toThrow('Sign-out was not confirmed');});
+ expect(screen.getByText('authenticated:new-user')).toBeInTheDocument();
+});
 
 it.each([200, 503])("ignores old startup %s after logout and a newer sign-in", async (status) => {
   let started!: () => void;

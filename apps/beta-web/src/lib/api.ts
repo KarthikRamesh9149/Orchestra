@@ -1,5 +1,6 @@
 import { useWorkspaceStore } from "../store/workspaceStore";
 import { useChatStore } from "../store/chatStore";
+import { isSharedDesktop } from "./desktop";
 import type { AnchorProvenance, Doc, DocViewerPayload, IntegrationStatus, UserRole } from "./types";
 import type { TimelineEvent } from "./types/timeline";
 import type { LinkedAccount, Session, User } from "./types/profile";
@@ -191,14 +192,17 @@ export async function getMe() {
 }
 
 export async function logout() {
+  let confirmed=false;
   try {
     const token = await ensureCsrfToken();
     await rawJson("/v1/auth/logout", {
       method: "POST",
       headers: { "X-CSRF-Token": token }
     });
+    confirmed=true;
   } finally {
-    clearAuth();
+    // Native shared grants live in main; do not imply sign-out while one remains active.
+    if(confirmed||!isSharedDesktop())clearAuth();
   }
 }
 

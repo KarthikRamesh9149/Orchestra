@@ -17,6 +17,7 @@ import {
 import { useWorkspaceStore } from "../store/workspaceStore";
 import { useChatStore } from "../store/chatStore";
 import { ApiError } from "../lib/api/client";
+import { isSharedDesktop } from "../lib/desktop";
 
 type AuthStatus = "loading" | "anonymous" | "authenticated" | "unavailable";
 
@@ -192,13 +193,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(async () => {
-    try { await logout(); } finally {
+    let confirmed=false;
+    try { await logout(); confirmed=true; } finally {
+    if(confirmed||!isSharedDesktop()){
     useWorkspaceStore.getState().clearActiveProject();
     useChatStore.getState().resetContinuity();
     setUser(null);
     setActiveProject(null);
     setProjects([]);
     setStatus("anonymous");
+    }
     }
   }, []);
 

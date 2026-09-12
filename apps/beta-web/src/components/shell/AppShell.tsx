@@ -7,7 +7,7 @@ export function AppShell() {
   const prefersReducedMotion = useReducedMotion();
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg-page)] text-[var(--text-default)]">
+    <div className="flex h-screen overflow-hidden bg-[var(--bg-page)] text-[var(--text-default)]" style={window.orchestraShared?{height:'calc(100dvh - 2.25rem)'}:undefined}>
       <NavRail />
 
       <main className="min-h-0 min-w-0 flex-1 overflow-hidden bg-[var(--bg-page)]">

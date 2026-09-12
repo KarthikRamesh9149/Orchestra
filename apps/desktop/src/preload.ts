@@ -2,6 +2,7 @@ import {contextBridge,ipcRenderer} from 'electron';
 import type {DesktopBridge,OperationResult,RuntimeStatus} from './contracts.js';
 const invoke=(input:unknown)=>ipcRenderer.invoke('orchestra:command',input) as Promise<OperationResult>;
 const bridge:DesktopBridge={
+ shared:{list:()=>ipcRenderer.invoke('orchestra:shared-list'),connect:input=>ipcRenderer.invoke('orchestra:shared-connect',input),open:id=>ipcRenderer.invoke('orchestra:shared-open',id),remove:id=>ipcRenderer.invoke('orchestra:shared-remove',id)},
  sync:{inspect:()=>ipcRenderer.invoke('orchestra:sync-inspect'),update:input=>ipcRenderer.invoke('orchestra:sync-update',input),cancel:()=>ipcRenderer.invoke('orchestra:sync-cancel')},
  drive:{inspect:()=>ipcRenderer.invoke('orchestra:drive-inspect'),configure:()=>ipcRenderer.invoke('orchestra:drive-configure'),connect:()=>ipcRenderer.invoke('orchestra:drive-connect'),cancel:()=>ipcRenderer.invoke('orchestra:drive-cancel'),revoke:()=>ipcRenderer.invoke('orchestra:drive-revoke'),importFiles:projectId=>ipcRenderer.invoke('orchestra:drive-import',projectId)},
  github:{inspect:()=>ipcRenderer.invoke('orchestra:github-inspect'),connect:()=>ipcRenderer.invoke('orchestra:github-connect'),cancel:()=>ipcRenderer.invoke('orchestra:github-cancel'),repositories:()=>ipcRenderer.invoke('orchestra:github-repositories'),disconnect:()=>ipcRenderer.invoke('orchestra:github-disconnect'),importRepository:input=>ipcRenderer.invoke('orchestra:github-import',input)},

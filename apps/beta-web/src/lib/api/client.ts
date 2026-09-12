@@ -1,4 +1,4 @@
-import {isDesktop,desktopBootstrap} from '../desktop';
+import {isDesktop,isSharedDesktop,desktopBootstrap} from '../desktop';
 export function resolveApiBaseUrl(input: { production: boolean; configuredUrl?: string }) {
   const configuredUrl = input.configuredUrl?.trim();
   // Hosted browsers use the beta-web reverse proxy so session and CSRF cookies
@@ -91,6 +91,8 @@ export function resetApiSession() {
 }
 
 function isRouteReadCacheable(path: string) {
+  // Shared authorization must be current. No cross-request offline read cache.
+  if (isSharedDesktop()) return false;
   if (new URLSearchParams(path.split("?")[1]).get("refresh") === "true") return false;
   return [
     /^\/v1\/projects\/[^/]+\/mission-control(?:\?|$)/,

@@ -98,7 +98,7 @@ export function WorkspacesPage() {
           </div>
           <button
             type="button"
-            onClick={() => isDesktop()?navigate('/onboarding'):void signOut()}
+            onClick={() => isDesktop()?navigate('/onboarding'):void signOut().catch(caught=>setError(caught instanceof Error?caught.message:'Sign-out was not confirmed. Please retry.'))}
             className="rounded-xl border border-[rgba(26,22,18,0.08)] bg-[var(--bg-card)] px-4 py-2.5 font-sans text-[13px] text-[var(--text-muted)] transition-colors hover:border-[#B8543D]/40 hover:text-[var(--text-default)]"
           >
             {isDesktop()?'Privacy and setup':'Log out'}

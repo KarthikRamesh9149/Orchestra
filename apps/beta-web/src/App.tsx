@@ -3,6 +3,7 @@ import { Navigate, Outlet, Route, Routes, useLocation, useParams } from "react-r
 import { useAuth } from "./context/AuthContext";
 import { useChatStore } from "./store/chatStore";
 import {isDesktop} from './lib/desktop';
+import {SharedServerBanner} from './components/shell/SharedServerBanner';
 const DesktopOnboardingPage=lazy(()=>import('./pages/DesktopOnboardingPage').then(module=>({default:module.DesktopOnboardingPage})));
 
 const AppShell = lazy(() => import("./components/shell/AppShell").then((module) => ({ default: module.AppShell })));
@@ -85,6 +86,7 @@ function SocratesRedirect() {
 
 export default function App() {
   return (
+    <><SharedServerBanner/>
     <Routes>
       {/* ── Auth ── */}
       <Route path="/" element={<Deferred>{isDesktop()?<DesktopOnboardingPage/>:<LoginPage />}</Deferred>} />
@@ -158,6 +160,6 @@ export default function App() {
       <Route path="/projects/:id/*" element={<Navigate to="/memory" replace />} />
       <Route path="/requests" element={<Navigate to="/memory" replace />} />
       <Route path="*" element={<Navigate to="/workspaces" replace />} />
-    </Routes>
+    </Routes></>
   );
 }

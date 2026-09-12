@@ -1,0 +1,94 @@
+name: orchestra-shared-v1
+x-app: &app
+  image: orchestra-self-host:v1
+  build:
+    context: ../../..
+    dockerfile: infra/self-host/v1/Dockerfile
+  init: true
+  restart: unless-stopped
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  secrets: [application, runtime_password]
+  volumes: [shared-files:/var/lib/orchestra]
+  logging:
+    driver: json-file
+    options: {max-size: 10m, max-file: "3"}
+services:
+  tls:
+    image: node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03
+    profiles: [tls]
+    user: node
+    init: true
+    restart: unless-stopped
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    environment: {ORCHESTRA_HTTPS_ORIGIN: "${ORCHESTRA_HTTPS_ORIGIN:?Set the exact HTTPS origin}"}
+    secrets: [tls_key, tls_certificate]
+    volumes: [./tls-proxy.mjs:/app/tls-proxy.mjs:ro]
+    command: [node, /app/tls-proxy.mjs]
+    ports: ["${SELF_HOST_BIND_HOST:-127.0.0.1}:${SELF_HOST_TLS_PORT:-4446}:4443"]
+    depends_on: [web]
+  postgres:
+    image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+    restart: unless-stopped
+    environment: {POSTGRES_USER: orchestra_migrator, POSTGRES_DB: orchestra_shared, POSTGRES_PASSWORD_FILE: /run/secrets/migrator_password}
+    secrets: [migrator_password]
+    volumes: [shared-postgres:/var/lib/postgresql/data, ./bootstrap.sql:/docker-entrypoint-initdb.d/010-orchestra.sql:ro]
+    healthcheck: {test: [CMD-SHELL, "pg_isready -U orchestra_migrator -d orchestra_shared"], interval: 2s, timeout: 2s, retries: 30}
+  redis:
+    image: redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952
+    command: [redis-server, --appendonly, "yes", --appendfsync, everysec]
+    restart: unless-stopped
+    volumes: [shared-redis:/data]
+    healthcheck: {test: [CMD, redis-cli, ping], interval: 2s, timeout: 2s, retries: 30}
+  migrate:
+    <<: *app
+    image: orchestra-self-host-migrations:v1
+    build:
+      context: ../../..
+      dockerfile: infra/self-host/v1/Dockerfile
+      target: migrations
+    user: root
+    restart: "no"
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER]
+    command: [migrate]
+    secrets: [application, migrator_password, runtime_password]
+    depends_on: {postgres: {condition: service_healthy}}
+  api:
+    <<: *app
+    command: [api]
+    depends_on: {migrate: {condition: service_completed_successfully}, redis: {condition: service_healthy}}
+    healthcheck: {test: [CMD, node, -e, "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"], interval: 5s, timeout: 4s, retries: 20}
+  worker:
+    <<: *app
+    command: [worker]
+    depends_on: {api: {condition: service_healthy}}
+  web:
+    <<: *app
+    command: [web]
+    secrets: [web_config]
+    volumes: []
+    ports: ["127.0.0.1:${SELF_HOST_WEB_PORT:-4186}:4173"]
+    depends_on: {api: {condition: service_healthy}}
+  bootstrap:
+    <<: *app
+    profiles: [setup]
+    restart: "no"
+    command: [bootstrap]
+    secrets: [application, runtime_password, bootstrap_account]
+    depends_on: {api: {condition: service_healthy}}
+volumes:
+  shared-files:
+  shared-postgres:
+  shared-redis:
+secrets:
+  tls_key: {file: "${SELF_HOST_CONFIG_DIR}/tls-key.pem"}
+  tls_certificate: {file: "${SELF_HOST_CONFIG_DIR}/tls-certificate.pem"}
+  web_config: {file: "${SELF_HOST_CONFIG_DIR}/web.json"}
+  application: {file: "${SELF_HOST_CONFIG_DIR:?Set the private configuration directory}/application.json"}
+  migrator_password: {file: "${SELF_HOST_CONFIG_DIR}/migrator-password"}
+  runtime_password: {file: "${SELF_HOST_CONFIG_DIR}/runtime-password"}
+  bootstrap_account: {file: "${SELF_HOST_CONFIG_DIR}/bootstrap-account.json"}

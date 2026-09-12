@@ -1,10 +1,11 @@
 import { http, HttpResponse } from "msw";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clearAuth, createProject, getMe, getProfile, loadActiveProject, login, logout, switchWorkspace } from "./api";
 import { server } from "../test/server";
 import { useWorkspaceStore } from "../store/workspaceStore";
 
 const api = "http://localhost:3000";
+afterEach(()=>{delete window.orchestraShared;});
 
 describe("browser cookie authentication", () => {
   beforeEach(() => {
@@ -89,6 +90,17 @@ describe("browser cookie authentication", () => {
 
     await logout();
     expect(called).toBe(true);
+  });
+
+  it("preserves shared login state when the server cannot confirm logout", async () => {
+    window.orchestraShared={connection:{id:'test',name:'Test',origin:'https://test.invalid',serverId:'test'},close:async()=>{},copyText:async()=>({ok:true,data:{copied:true}})};
+    useWorkspaceStore.getState().setProfile('Test user','test@example.invalid');
+    server.use(
+      http.get(`${api}/v1/auth/csrf`,()=>HttpResponse.json({data:{csrfToken:'native-shared-no-cookie'}})),
+      http.post(`${api}/v1/auth/logout`,()=>HttpResponse.json({error:{code:'shared_request_failed',message:'Sign-out was not confirmed'}},{status:503}))
+    );
+    await expect(logout()).rejects.toThrow('Sign-out was not confirmed');
+    expect(useWorkspaceStore.getState().profileEmail).toBe('test@example.invalid');
   });
 
   it("recovers a reloaded session by rotating the HttpOnly refresh cookie and retrying authoritative user state", async () => {
