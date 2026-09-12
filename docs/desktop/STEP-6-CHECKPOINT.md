@@ -7,7 +7,8 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 - ADR-005 defines separate local/remote identity, encrypted grants, exact-origin transport, packaged UI and cache boundaries.
 - Added strict HTTPS connection descriptors that reject credentials and ambiguous API URLs.
 - Added protocol-range and persistent server-ID compatibility validation, to be wired before credentials are sent.
-- Added disabled-by-default bounded read-only cache policy contract. No shared cache or remote capability is enabled by this foundation alone.
+- Added disabled-by-default bounded read-only cache policy; the follow-up below
+  implements its narrow document-metadata path.
 - Main-process shared transport now validates the server, owns encrypted grants,
   forces bearer sessions, strips tokens/cookies from renderer responses and
   supports streaming without a generic network proxy.
@@ -58,9 +59,51 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 
 ## Remaining implementation
 
+### Read-only cache follow-up, 12 September 2026
+
+- Implemented opt-in, per-window RAM-only caching for authorised document list
+  and metadata GETs. Defaults off; bounded TTL/UTF-8 bytes/entry count, no cached
+  grants, private chats, viewer files or accepted-truth decisions.
+- Offline snapshots carry a native read-only notice. Writes are rejected, not
+  queued. Policy/session changes, detected 401/403, expiry and native wake purge
+  entries; displayed snapshots trigger renderer reload. Reconnect uses a fresh
+  compatibility handshake and live authorization. Default-disabled traffic and
+  streaming are not buffered by the cache.
+- Packaged testing caught a missing server banner/return-to-local action on the
+  unavailable bootstrap screen. Added that existing component to the error
+  screen without restyling the app, with a failing-then-passing regression.
+- Checks: 1,562 backend tests passed, 13 skipped; 226 frontend tests passed.
+  Backend/native typechecks, frontend build/native package, reviewed import hash,
+  action inventory and local security scan passed. The initial full-suite failure
+  was an outdated reviewed import hash, not an application assertion; the final
+  suite passed after the explicit provenance update.
+- Mac ARM internal package `95e81595-cd24-433e-b211-a8b43edd2af2` passed six
+  cache journeys at 1280x850: real shared login/document list, exact offline
+  response with notice, blocked write, expiry, reconnect, and native wake purge.
+  The server at `https://localhost:4446` was the isolated synthetic fixture.
+  Manifest opt-in, network outage, native confirmation and the wake event were
+  simulated; login, authorization and document data came from the real server.
+  The final populated run uploaded `Cache-Evidence.pdf` before the outage and
+  verified its cached metadata byte-for-byte. Local evidence:
+  `/private/tmp/orchestra-step6-cache-ui-c3anEO/evidence.json` and
+  `/private/tmp/orchestra-step6-cache-ui-c3anEO/offline-read-only.png`.
+  Server policy output/bounds also have Fastify/config tests. A deployed server
+  operator-policy change and actual physical sleep/wake are not yet qualified.
+- QA: page identity, nonblank content, no framework overlay, no page exceptions,
+  screenshot and interaction checks passed. React guidance kept the notice on one
+  native subscription without polling. Playwright Electron was used because this
+  is a native-window/transport test; existing CUA browser controls are available
+  and no browser plugin installation was necessary.
+- Cache scope remains document metadata only, not a complete offline shared
+  workspace. Cold offline launch, two-computer testing, other viewports and the
+  remaining shared workflows are not certified by these checks.
+
+### Outstanding work
+
 1. Packaged shared-window qualification and remaining session revocation/offline
    state-purge checks, including native download/cancel behaviour.
-2. Optional administrator-enabled bounded read-only caching; currently always off.
+2. Further offline/shared workflow qualification. Optional document-metadata
+   caching is implemented; full offline shared workspaces are not supported.
 3. Operator email/provider configuration and real self-hosted provider qualification.
 4. Authorized export/import with source hashes, provenance, accepted decisions and explicit identity mapping; exclude credentials and unauthorized private chats.
 5. Remaining packaged normal/failure/offline journeys, cross-tenant isolation,

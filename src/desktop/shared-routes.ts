@@ -9,7 +9,9 @@ export const registerSharedDesktopRoutes:FastifyPluginAsync=async app=>{
  app.get('/manifest',async(_request,reply)=>{
   reply.header('Cache-Control','no-store');
   return {data:{product:'orchestra',protocol:SHARED_DESKTOP_PROTOCOL,minClientProtocol:1,maxClientProtocol:1,
-   serverId:env.DESKTOP_SHARED_SERVER_ID,mode:'self-hosted',capabilities:['bearer-sessions-v1'],offlineCache:{enabled:false}},meta:null,error:null};
+   serverId:env.DESKTOP_SHARED_SERVER_ID,mode:'self-hosted',capabilities:['bearer-sessions-v1'],offlineCache:env.DESKTOP_SHARED_CACHE_ENABLED
+    ?{enabled:true,readOnly:true,ttlSeconds:env.DESKTOP_SHARED_CACHE_TTL_SECONDS,maxBytes:env.DESKTOP_SHARED_CACHE_MAX_BYTES}
+    :{enabled:false}},meta:null,error:null};
  });
  app.get('/session/bootstrap',authGuard(async(request,reply)=>{
   reply.header('Cache-Control','no-store');

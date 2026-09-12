@@ -37,7 +37,7 @@ const adjustments={
  'apps/beta-web/src/pages/WorkspacesPage.tsx':'Step 4 truthful local workspace identity and setup navigation; Step 6 reports unconfirmed sign-out using the existing error surface without restyling.',
  'apps/beta-web/src/pages/WorkspacesPage.test.tsx':'Step 6 failed sign-out regression with existing workspace performance tests retained.',
  'apps/beta-web/src/App.tsx':'Step 4 local first-run routes; Step 6 shows the selected server in isolated shared windows without changing hosted routes or styling.',
- 'src/config/env.ts':'Step 2 explicit local validation; Step 6 explicit self-hosted HTTPS, stable identity, persistent private storage, offline AI and server-worker controls. Managed production restrictions remain enforced.',
+ 'src/config/env.ts':'Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced.',
  'src/setup-context.ts':'Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected.',
  'src/lib/ai/provider.ts':'Step 2 explicit unavailable embedding capability; no mock vectors in offline mode.',
  'src/modules/documents/service.ts':'Steps 2/4 preserve offline lexical chunks and honest partial status. Step 5 adds private native source-document identity, idempotent version recovery and desktop-only Drive indexing state; public upload schemas and hosted approval semantics remain unchanged.',

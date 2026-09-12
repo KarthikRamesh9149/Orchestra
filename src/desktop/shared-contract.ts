@@ -14,7 +14,7 @@ export const sharedOriginSchema=z.string().trim().max(2048).transform((input,ctx
 export const sharedConnectionSchema=z.object({id:z.string().uuid(),name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
 export type SharedConnection=z.infer<typeof sharedConnectionSchema>;
 
-/** Policy contract only: no shared cache is implemented or enabled by this module. */
+/** Explicit server-operator opt-in; desktop enforcement lives in the main process. */
 export const sharedCachePolicySchema=z.discriminatedUnion('enabled',[
  z.object({enabled:z.literal(false)}).strict(),
  z.object({enabled:z.literal(true),readOnly:z.literal(true),ttlSeconds:z.number().int().min(60).max(86400),maxBytes:z.number().int().min(1024).max(50*1024*1024)}).strict()

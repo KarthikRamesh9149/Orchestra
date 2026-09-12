@@ -1,6 +1,8 @@
 import {z} from 'zod';
 import {assertSharedCompatibility,sharedConnectionSchema} from '../../../src/desktop/shared-contract.js';
 import {isLocalRoute} from './local-http.js';
+import {createHash} from 'node:crypto';
+import {SharedReadCache} from './shared-cache.js';
 
 export const sharedGrantSchema=z.object({accessToken:z.string().min(1).max(16384),refreshToken:z.string().min(1).max(16384)}).strict();
 export type SharedGrant=z.infer<typeof sharedGrantSchema>;
@@ -8,6 +10,8 @@ export const savedConnectionSchema=sharedConnectionSchema.extend({serverId:z.str
 export type SavedConnection=z.infer<typeof savedConnectionSchema>;
 type GrantStore={read():Promise<SharedGrant|null>;write(value:SharedGrant|null):Promise<void>};
 type Network=(url:string,init:RequestInit)=>Promise<Response>;
+class SharedNetworkUnavailable extends Error{}
+type CacheEvents={invalidateView():void;onOffline(value:boolean):void};
 const failure=(status:number,code:string,message:string)=>Response.json({data:null,error:{code,message}},{status,headers:{'cache-control':'no-store'}});
 const json=(value:unknown,status=200)=>Response.json(value,{status,headers:{'cache-control':'no-store'}});
 const loginPaths=new Set(['/v1/auth/login','/v1/auth/signup','/v1/auth/invitations/redeem','/v1/auth/join-workspace']);
@@ -40,7 +44,7 @@ async function responseJson(response:Response){return JSON.parse(new TextDecoder
 
 export async function inspectSharedServer(origin:string,network:Network=fetch){
  const safe=sharedConnectionSchema.shape.origin.parse(origin);
- const result=await network(safe+'/v1/desktop/manifest',{method:'GET',headers:{accept:'application/json'},redirect:'error',credentials:'omit',signal:AbortSignal.timeout(10000)});
+ const result=await network(safe+'/v1/desktop/manifest',{method:'GET',headers:{accept:'application/json'},redirect:'error',credentials:'omit',signal:AbortSignal.timeout(10000)}).catch(()=>{throw new SharedNetworkUnavailable();});
  if(!result.ok)throw new Error('Server compatibility could not be confirmed');
  return assertSharedCompatibility((await responseJson(result)).data);
 }
@@ -52,19 +56,28 @@ export class SharedHttp{
  private generation=0;
  private requests=new AbortController();
  private closed=false;
+ private offline=false;
+ private readonly cache:SharedReadCache;
  private readonly connection:SavedConnection;
- constructor(connection:SavedConnection,private readonly grants:GrantStore,private readonly network:Network=fetch){this.connection=savedConnectionSchema.parse(connection);}
- close(){this.closed=true;this.generation++;this.requests.abort();}
+ constructor(connection:SavedConnection,private readonly grants:GrantStore,private readonly network:Network=fetch,private readonly cacheEvents?:CacheEvents){
+  this.connection=savedConnectionSchema.parse(connection);
+  this.cache=new SharedReadCache(()=>{this.offline=false;this.cacheEvents?.onOffline(false);if(!this.closed)this.cacheEvents?.invalidateView();});
+ }
+ close(){this.closed=true;this.generation++;this.requests.abort();this.cache.close();}
+ revalidate(){this.generation++;this.requests.abort();this.requests=new AbortController();this.handshake=undefined;this.cache.clear();}
  private async ready(){
   if(this.closed)throw new Error('Shared window closed');
-  if(!this.handshake)this.handshake=inspectSharedServer(this.connection.origin,this.network).then(value=>assertSharedCompatibility(value,this.connection.serverId)).catch(error=>{this.handshake=undefined;throw error;});
+  if(!this.handshake)this.handshake=inspectSharedServer(this.connection.origin,this.network).then(value=>{
+   const manifest=assertSharedCompatibility(value,this.connection.serverId);
+   this.cache.configure(this.cacheEvents?manifest.offlineCache:{enabled:false});return manifest;
+  }).catch(error=>{this.handshake=undefined;throw error;});
   await this.handshake;
  }
  private async send(path:string,method:string,body:Uint8Array|string|undefined,source:Request,grant:SharedGrant|null,signal:AbortSignal){
   const headers=new Headers({accept:source.headers.get('accept')??'application/json','user-agent':'Orchestra-Desktop/1'});
   for(const name of ['content-type','x-idempotency-key']){const value=source.headers.get(name);if(value)headers.set(name,value);}
   if(grant)headers.set('authorization','Bearer '+grant.accessToken);
-  return this.network(this.connection.origin+path,{method,headers,body:body as RequestInit['body'],credentials:'omit',redirect:'error',signal:AbortSignal.any([source.signal,signal,AbortSignal.timeout(180000)])});
+  return this.network(this.connection.origin+path,{method,headers,body:body as RequestInit['body'],credentials:'omit',redirect:'error',signal:AbortSignal.any([source.signal,signal,AbortSignal.timeout(180000)])}).catch(()=>{throw new SharedNetworkUnavailable();});
  }
  async handle(request:Request):Promise<Response>{
   const url=new URL(request.url),path=url.pathname;
@@ -77,7 +90,12 @@ export class SharedHttp{
   const pending=this.authorityTail.catch(()=>{}).then(run);this.authorityTail=pending;return pending;
  }
  private async perform(request:Request,url:URL,authority:boolean):Promise<Response>{
+  const startedGeneration=this.generation;
+  if(this.offline&&request.method!=='GET'&&url.pathname!=='/v1/auth/bootstrap')return failure(503,'shared_offline_read_only','Cached evidence is read-only. Reconnect and reload before making changes.');
   try{
+   const currentGrant=await this.grants.read();
+   this.cache.bind(currentGrant?createHash('sha256').update(currentGrant.accessToken).digest('hex'):null);
+   if(authority)this.cache.clear();
    await this.ready();
    if(authority){this.generation++;this.requests.abort();this.requests=new AbortController();}
    const generation=this.generation,signal=this.requests.signal,path=url.pathname;
@@ -103,6 +121,12 @@ export class SharedHttp{
      :await this.send('/v1/auth/logout','POST',JSON.stringify({refreshToken:refreshed.refreshToken}),request,refreshed,signal);
    }
    if(this.closed||generation!==this.generation){await response.body?.cancel();return failure(409,'shared_session_changed','Workspace or session changed. Reload the current view.');}
+   if([401,403].includes(response.status))this.cache.clear();
+   if(this.offline&&response.ok){
+    // Do not mix an offline snapshot with reconnected data. Reload after live authorization.
+    await response.body?.cancel();this.cache.clear();
+    return failure(409,'shared_reconnected','Connection restored. Reloading authorised server data.');
+   }
    if(authority){
     const payload=await responseJson(response);
     if(this.closed||generation!==this.generation)return failure(409,'shared_session_changed','Workspace or session changed. Reload the current view.');
@@ -114,9 +138,21 @@ export class SharedHttp{
     return json(payload,response.status);
    }
    const headers=new Headers({'cache-control':'no-store'});for(const name of ['content-type','content-disposition','retry-after']){const value=response.headers.get(name);if(value)headers.set(name,value);}
+   if(response.ok&&request.method!=='GET'&&!['/v1/auth/bootstrap','/v1/me/web-vitals'].includes(path))this.cache.clear();
+   const length=Number(response.headers.get('content-length'));
+   if(request.method==='GET'&&response.status===200&&this.cache.canStore(path+url.search)&&response.headers.get('content-type')?.startsWith('application/json')&&length>0&&length<=1024*1024){
+    const bytes=await boundedBody(response.body,1024*1024);
+    if(this.closed||generation!==this.generation)return failure(409,'shared_session_changed','Session changed. Reload the current view.');
+    const text=new TextDecoder().decode(bytes);this.cache.put(path+url.search,text);
+    return new Response(text,{status:200,headers});
+   }
    return new Response(response.body,{status:response.status,headers});
-  }catch{
+  }catch(error){
    this.handshake=undefined;
+   if(error instanceof SharedNetworkUnavailable&&!this.closed&&!request.signal.aborted&&startedGeneration===this.generation&&request.method==='GET'){
+    const cached=this.cache.get(url.pathname+url.search);
+    if(cached){this.offline=true;this.cacheEvents?.onOffline(true);return new Response(cached.body,{headers:{'content-type':'application/json','cache-control':'no-store','x-orchestra-offline':'read-only'}});}
+   }else if(!(error instanceof SharedNetworkUnavailable))this.cache.clear();
    return failure(503,'shared_request_failed','The team server request was not confirmed. Check the connection and saved state before retrying.');
   }
  }

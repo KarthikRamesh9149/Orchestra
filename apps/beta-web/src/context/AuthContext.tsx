@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {SharedServerBanner} from '../components/shell/SharedServerBanner';
 import {
   createProject,
   clearAuth,
@@ -226,10 +227,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   return <AuthContext.Provider value={value}>{status === "unavailable" ? (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg px-6 py-10">
+    <><SharedServerBanner/>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg px-6 py-10" style={isSharedDesktop()?{minHeight:'calc(100dvh - 2.25rem)'}:undefined}>
       <p role="alert">{error || "Orchestra is temporarily unavailable. Your session has not been cleared."}</p>
       <button type="button" onClick={() => { setStatus("loading"); void bootstrap(); }}>Retry connection</button>
-    </main>
+    </main></>
   ) : children}</AuthContext.Provider>;
 }
 

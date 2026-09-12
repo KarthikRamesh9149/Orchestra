@@ -16,6 +16,49 @@ function setup(initial:SharedGrant|null=null){
 }
 const request=(path:string,method='GET',body?:unknown,headers?:Record<string,string>)=>new Request('orchestra://app'+path,{method,headers:body?{'content-type':'application/json',...headers}:headers,body:body?JSON.stringify(body):undefined});
 describe('shared main-process session boundary',()=>{
+ it('serves only opted-in, same-session document snapshots on connection loss, then purges on reconnect',async()=>{
+  let offline=false;const invalidated=vi.fn(),state=vi.fn();
+  const network=vi.fn(async(url:string)=>{
+   if(offline)throw new Error('offline');
+   if(url.endsWith('/manifest'))return Response.json({data:{...manifest,offlineCache:{enabled:true,readOnly:true,ttlSeconds:60,maxBytes:4096}}});
+   const body=JSON.stringify({data:[{id,title:'Synthetic evidence'}]});return new Response(body,{headers:{'content-type':'application/json','content-length':String(Buffer.byteLength(body))}});
+  });
+  const transport=new SharedHttp(connection,{read:async()=>({accessToken:'a',refreshToken:'r'}),write:async()=>{}},network,{invalidateView:invalidated,onOffline:state});
+  const path=`/v1/projects/${id}/documents`;
+  expect((await transport.handle(request(path))).status).toBe(200);offline=true;
+  const cached=await transport.handle(request(path));expect(cached.status).toBe(200);expect(cached.headers.get('x-orchestra-offline')).toBe('read-only');expect(await cached.json()).toMatchObject({data:[{title:'Synthetic evidence'}]});expect(state).toHaveBeenCalledWith(true);
+  expect((await transport.handle(request('/v1/auth/bootstrap','POST',{}))).status).toBe(503);
+  expect((await transport.handle(request(path,'POST',{}))).status).toBe(403);
+  offline=false;expect((await transport.handle(request(path))).status).toBe(409);expect(invalidated).toHaveBeenCalledOnce();
+  expect((await transport.handle(request(path))).status).toBe(200);transport.close();
+ });
+ it('never caches a disabled policy',async()=>{
+  const s=setup({accessToken:'a',refreshToken:'r'});const path=`/v1/projects/${id}/documents`;
+  await s.transport.handle(request(path));s.response.mockRejectedValue(new Error('offline'));
+  expect((await s.transport.handle(request(path))).status).toBe(503);s.transport.close();
+ });
+ it('drops snapshots and requires another handshake after native wake/revalidation',async()=>{
+  let offline=false;const network=vi.fn(async(url:string)=>{
+   if(offline)throw new Error('offline');
+   if(url.endsWith('/manifest'))return Response.json({data:{...manifest,offlineCache:{enabled:true,readOnly:true,ttlSeconds:60,maxBytes:4096}}});
+   return new Response('{"data":[]}',{headers:{'content-type':'application/json','content-length':'11'}});
+  });
+  const invalidateView=vi.fn();const transport=new SharedHttp(connection,{read:async()=>({accessToken:'a',refreshToken:'r'}),write:async()=>{}},network,{invalidateView,onOffline:()=>{}});
+  const path=`/v1/projects/${id}/documents`;await transport.handle(request(path));offline=true;expect((await transport.handle(request(path))).status).toBe(200);
+  transport.revalidate();expect(invalidateView).toHaveBeenCalledOnce();expect((await transport.handle(request(path))).status).toBe(503);
+  offline=false;expect((await transport.handle(request(path))).status).toBe(200);transport.close();
+ });
+ it.each([401,403])('purges on a live %s, including after an offline snapshot was displayed',async status=>{
+  let mode='live';const invalidateView=vi.fn();
+  const transport=new SharedHttp(connection,{read:async()=>({accessToken:'a',refreshToken:'r'}),write:async()=>{}},async url=>{
+   if(mode==='offline')throw new Error('offline');
+   if(url.endsWith('/manifest'))return Response.json({data:{...manifest,offlineCache:{enabled:true,readOnly:true,ttlSeconds:60,maxBytes:4096}}});
+   return new Response('{"data":[]}',{status:mode==='denied'?status:200,headers:{'content-type':'application/json','content-length':'11'}});
+  },{invalidateView,onOffline:()=>{}});
+  const path=`/v1/projects/${id}/documents`;await transport.handle(request(path));mode='offline';expect((await transport.handle(request(path))).status).toBe(200);
+  mode='denied';expect((await transport.handle(request(path))).status).toBe(status);expect(invalidateView).toHaveBeenCalledOnce();
+  mode='offline';expect((await transport.handle(request(path))).status).toBe(503);transport.close();
+ });
  it('handshakes before login, forces bearer and removes grants and cookies from renderer responses',async()=>{
   const s=setup();const result=await s.transport.handle(request('/v1/auth/login','POST',{email:'test@example.invalid',password:'synthetic-test-password',sessionMode:'browser'},{cookie:'local=secret',authorization:'Bearer local-owner','x-orchestra-local-token':'local-token'}));
   expect(result.status).toBe(200);expect(await result.json()).toEqual({data:{user:{id}},error:null});

@@ -106,7 +106,36 @@ cache is not implemented or advertised as available. Server removal attempts
 confirmed remote sign-out first; an outage is reported, not silently treated as
 successful revocation.
 
-## Recovery and updates: remaining qualification
+## Optional shared read-only cache
+
+Caching is disabled by default. An operator may set these string values in the
+protected `application.json`, then recreate the API service:
+
+```json
+{
+  "DESKTOP_SHARED_CACHE_ENABLED": "true",
+  "DESKTOP_SHARED_CACHE_TTL_SECONDS": "300",
+  "DESKTOP_SHARED_CACHE_MAX_BYTES": "5242880"
+}
+```
+
+TTL must be 60–86400 seconds; the total budget must be 1 KiB–50 MiB. The desktop
+also limits individual JSON responses to 1 MiB and entries to 128. Only previously
+authorised document lists and document metadata are eligible. File downloads,
+viewer content, private chats, auth/bootstrap and approval/readiness results are
+not cached. This is a narrow document-metadata convenience, not a fully offline
+shared workspace. Opening a new shared window still requires the server.
+
+Snapshots stay in that window's memory, never on disk. Offline responses are
+labelled **Cached evidence · read-only**; mutations are rejected, not queued.
+Expiry, a session/policy change, detected authorization rejection, or Mac wake
+purges snapshots. If a cached response was displayed, the renderer reloads to
+remove stale content. Reconnection validates the server and live authorization
+before loading authoritative data. An undetectable remote revocation while
+offline cannot be known immediately; the configured TTL bounds that exposure.
+Keep caching disabled when even that temporary exposure is unacceptable.
+
+## Recovery and update evidence
 
 The three named volumes hold PostgreSQL, private application files and Redis
 queue state. Configuration and vault encryption keys must be protected and

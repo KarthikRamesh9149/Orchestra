@@ -11,6 +11,13 @@ let auth: ReturnType<typeof useAuth>;
 function Consumer() { auth = useAuth(); return <div>{auth.status}:{auth.user?.id}</div>; }
 beforeEach(() => clearAuth());
 afterEach(()=>{delete window.orchestraShared;});
+it('keeps the authoritative server and return-to-local action visible when bootstrap is unavailable',async()=>{
+ window.orchestraShared={connection:{id:'test',name:'Synthetic team',origin:'https://test.invalid',serverId:'test'},close:async()=>{},copyText:async()=>({ok:true})};
+ server.use(http.get(`${base}/v1/auth/csrf`,()=>HttpResponse.json({data:{csrfToken:'csrf'}})),http.post(`${base}/v1/auth/bootstrap`,()=>HttpResponse.json({error:{code:'shared_request_failed',message:'Server offline'}},{status:503})));
+ render(<AuthProvider><Consumer/></AuthProvider>);await screen.findByRole('alert');
+ expect(screen.getByRole('complementary',{name:'Connected team server'})).toHaveTextContent('https://test.invalid');
+ expect(screen.getByRole('button',{name:'Return to local'})).toBeInTheDocument();
+});
 
 it('keeps the shared authenticated view when logout was not confirmed',async()=>{
  window.orchestraShared={connection:{id:'test',name:'Test server',origin:'https://test.invalid',serverId:'test'},close:async()=>{},copyText:async()=>({ok:true})};

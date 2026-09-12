@@ -1925,11 +1925,11 @@
     {
       "id": "UI-0086",
       "source": "apps/beta-web/src/components/shell/SharedServerBanner.tsx",
-      "line": 5,
+      "line": 10,
       "component": "button",
       "label": "Return to local",
       "existingTestFile": null,
-      "desktopTestId": "desktop-SharedServerBanner-5",
+      "desktopTestId": "desktop-SharedServerBanner-10",
       "bindings": [
         {
           "property": "onClick",
@@ -1940,7 +1940,7 @@
       "owner": "Step 6 implementer",
       "ownerStep": 6,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/shell/SharedServerBanner.tsx:5: exercise Return to local in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/shell/SharedServerBanner.tsx:10: exercise Return to local in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0087",
@@ -2489,11 +2489,11 @@
     {
       "id": "UI-0113",
       "source": "apps/beta-web/src/context/AuthContext.tsx",
-      "line": 231,
+      "line": 233,
       "component": "button",
       "label": "Retry connection",
       "existingTestFile": null,
-      "desktopTestId": "desktop-AuthContext-231",
+      "desktopTestId": "desktop-AuthContext-233",
       "bindings": [
         {
           "property": "onClick",
@@ -2504,7 +2504,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/context/AuthContext.tsx:231: exercise Retry connection in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/context/AuthContext.tsx:233: exercise Retry connection in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0114",

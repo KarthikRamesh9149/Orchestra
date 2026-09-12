@@ -1,4 +1,4 @@
-import {render,screen} from '@testing-library/react';
+import {act,render,screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {afterEach,it,expect,vi} from 'vitest';
 import DesktopSharedSettings from './DesktopSharedSettings';
@@ -10,3 +10,10 @@ function setup(){const bridge={list:vi.fn().mockResolvedValue({ok:true,data:[con
 it('loads saved descriptors without auto-connecting and requires an explicit connect action',async()=>{const bridge=setup();render(<DesktopSharedSettings/>);await screen.findByRole('button',{name:'Open Synthetic team'});expect(bridge.connect).not.toHaveBeenCalled();expect(bridge.open).not.toHaveBeenCalled();await userEvent.type(screen.getByLabelText('Server name'),'Another server');await userEvent.type(screen.getByLabelText('Server HTTPS address'),'https://another.invalid');await userEvent.click(screen.getByRole('button',{name:'Connect team server'}));expect(bridge.connect).toHaveBeenCalledWith({name:'Another server',origin:'https://another.invalid'});});
 it('preserves a server row when sign-out or removal is not confirmed',async()=>{const bridge=setup();render(<DesktopSharedSettings/>);await userEvent.click(await screen.findByRole('button',{name:'Sign out and remove'}));expect(bridge.remove).toHaveBeenCalledWith(connection.id);expect(await screen.findByRole('alert')).toHaveTextContent('Sign-out not confirmed');expect(screen.getByRole('button',{name:'Open Synthetic team'})).toBeInTheDocument();});
 it('separates shared identity from local-owner mode and identifies the authoritative origin',async()=>{const close=vi.fn();window.orchestraShared={connection,close,copyText:vi.fn()};expect(isSharedDesktop()).toBe(true);expect(isDesktop()).toBe(false);render(<SharedServerBanner/>);expect(screen.getByRole('complementary',{name:'Connected team server'})).toHaveTextContent(connection.origin);await userEvent.click(screen.getByRole('button',{name:'Return to local'}));expect(close).toHaveBeenCalledOnce();});
+it('labels cached evidence read-only and unsubscribes its native listener',()=>{
+ let offline=false,notify=()=>{};const unsubscribe=vi.fn();
+ window.orchestraShared={connection,close:vi.fn(),copyText:vi.fn(),isOffline:()=>offline,onOfflineChange:callback=>{notify=callback;return unsubscribe;}};
+ const view=render(<SharedServerBanner/>);expect(screen.queryByText(/Cached evidence/)).toBeNull();
+ act(()=>{offline=true;notify();});expect(screen.getByRole('status')).toHaveTextContent('Cached evidence · read-only');
+ view.unmount();expect(unsubscribe).toHaveBeenCalledOnce();
+});

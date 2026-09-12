@@ -35,13 +35,13 @@
     {
       "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
       "sourceSha256": "6d4616c2261d590f0da972d0987304495f8555448e2445f5e457b978dc86ac8c",
-      "importedSha256": "3918d24303294280af94f97cdb18c1a51d0f17f0a567740e5e6d5e0a4dfc168f",
+      "importedSha256": "41c9f6e53c9a8c84fcca863ee4f559d83bc2f1f33b33d7c2821f7c4e5adac1b1",
       "reason": "Step 6 shared logout failure regression alongside stale bootstrap protection."
     },
     {
       "path": "apps/beta-web/src/context/AuthContext.tsx",
       "sourceSha256": "73c5ba6d49777ca3db6f5576f3a04414d5f06776db1f2259c8667c334a66b890",
-      "importedSha256": "2a2b92af6550781c071d8ea765c7ed91ea43efa3269a04de2feabe37b6ca5432",
+      "importedSha256": "6e2f200ed5507ecfa83ae55ff50c9ab513f6e569054a5858a2d66bcc2d72262e",
       "reason": "Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged."
     },
     {
@@ -179,8 +179,8 @@
     {
       "path": "src/config/env.ts",
       "sourceSha256": "602cc1c4412cd1be30a9831d4ce4e1d188459c362cbd883fc6e2a8e286b2c995",
-      "importedSha256": "64e40dade06ac00494645f439defcc8e382c05d1259ed1f0071ab43183fefa55",
-      "reason": "Step 2 explicit local validation; Step 6 explicit self-hosted HTTPS, stable identity, persistent private storage, offline AI and server-worker controls. Managed production restrictions remain enforced."
+      "importedSha256": "e278b784d903f64f2166d890c550c5a94a006420daaac62189f2e1b5a6cb0f3d",
+      "reason": "Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced."
     },
     {
       "path": "src/lib/ai/index.ts",

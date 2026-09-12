@@ -168,6 +168,9 @@ function csvListPreserveCase(defaultValue: string) {
 const envSchema = z.object({
   RUNTIME_PROFILE: z.enum(["desktop-local", "self-hosted", "managed"]).default("managed"),
   DESKTOP_SHARED_SERVER_ID: optionalBlankString(z.string().uuid()),
+  DESKTOP_SHARED_CACHE_ENABLED: booleanString("false"),
+  DESKTOP_SHARED_CACHE_TTL_SECONDS: z.coerce.number().int().min(60).max(86400).default(300),
+  DESKTOP_SHARED_CACHE_MAX_BYTES: z.coerce.number().int().min(1024).max(50*1024*1024).default(5*1024*1024),
   SELF_HOST_DATA_ROOT: optionalBlankString(z.string()),
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   DEPLOYMENT_ENV: z.enum(["development", "test", "staging", "production"]).optional(),

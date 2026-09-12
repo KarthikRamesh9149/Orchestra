@@ -1,4 +1,4 @@
-import {BrowserWindow,session,ipcMain,dialog,shell,clipboard} from 'electron';
+import {BrowserWindow,session,ipcMain,dialog,shell,clipboard,powerMonitor} from 'electron';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {z} from 'zod';
@@ -14,6 +14,8 @@ import {authorizeSharedDownload} from './shared-download.js';
 const connectSchema=z.object({name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
 export function registerSharedWindows(options:{local:BrowserWindow;resources:string;preload:string;store:SharedConnectionStore;packaged:boolean}){
  const windows=new Map<string,{window:BrowserWindow;transport:SharedHttp}>();
+ const resumed=()=>{for(const row of windows.values())row.transport.revalidate();};
+ powerMonitor.on('resume',resumed);
  const trustedLocal=(event:Electron.IpcMainInvokeEvent)=>event.sender===options.local.webContents&&event.senderFrame===options.local.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
  const trustedShared=(event:Electron.IpcMainInvokeEvent)=>[...windows.values()].find(row=>row.window.webContents===event.sender&&event.senderFrame===row.window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true));
  let changing=false;
@@ -22,7 +24,10 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
   // No persist: prefix: cookies, localStorage, HTTP caches and drafts remain memory-only.
   const isolated=session.fromPartition('orchestra-shared-'+connection.id+'-'+randomUUID(),{cache:false});
   isolated.setPermissionRequestHandler((_contents,_permission,callback)=>callback(false));isolated.setPermissionCheckHandler(()=>false);
-  const transport=new SharedHttp(connection,options.store.grants(connection.id));
+  const transport=new SharedHttp(connection,options.store.grants(connection.id),fetch,{
+   onOffline:value=>{if(!window.isDestroyed())window.webContents.send('orchestra:shared-offline',value);},
+   invalidateView:()=>{if(!window.isDestroyed())window.webContents.reload();}
+  });
   isolated.protocol.handle('orchestra',request=>new URL(request.url).pathname.startsWith('/v1/')?transport.handle(request):assetResponse(join(options.resources,'ui'),request.url,request.method));
   const title=`Orchestra · ${connection.name} · ${connection.origin}`;
   const window=new BrowserWindow({title,width:1280,height:850,show:false,webPreferences:{session:isolated,preload:options.preload,sandbox:true,contextIsolation:true,nodeIntegration:false,webSecurity:true,devTools:!options.packaged,additionalArguments:['--orchestra-shared='+encodeURIComponent(JSON.stringify(connection))]}});
@@ -43,7 +48,7 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
   if(!parsed.success)return {ok:false,error:{code:'invalid_server',message:'Enter a name and the server HTTPS origin, without a path or credentials.'}};
   if(changing)return {ok:false,error:{code:'shared_busy',message:'Finish the current server operation.'}};changing=true;
   try{
-   const decision=await dialog.showMessageBox(options.local,{type:'question',message:'Connect to this team server?',detail:`${parsed.data.name}\n${parsed.data.origin}\n\nThis server owns shared accounts, files and approvals. Sign in with an account for this server. Your local workspace and provider credentials will not be sent. Shared offline caching is disabled.`,buttons:['Cancel','Check server and connect'],defaultId:0,cancelId:0});
+   const decision=await dialog.showMessageBox(options.local,{type:'question',message:'Connect to this team server?',detail:`${parsed.data.name}\n${parsed.data.origin}\n\nThis server owns shared accounts, files and approvals. Sign in with an account for this server. Your local workspace and provider credentials will not be sent. Offline caching is off by default. Your server operator may allow a bounded, expiring read-only copy of document metadata in this window's memory.`,buttons:['Cancel','Check server and connect'],defaultId:0,cancelId:0});
    if(decision.response!==1)return {ok:true,data:{cancelled:true}};
    const manifest=await inspectSharedServer(parsed.data.origin),connection={...parsed.data,id:randomUUID(),serverId:manifest.serverId};
    await options.store.add(connection);await open(connection);return {ok:true,data:{connected:true}};
@@ -68,5 +73,5 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
  });
  ipcMain.handle('orchestra:shared-close',event=>{const row=trustedShared(event);if(!row)throw new Error('Unauthorized frame');options.local.show();options.local.focus();row.window.close();});
  ipcMain.handle('orchestra:shared-copy',async(event,value:unknown)=>{if(!trustedShared(event))throw new Error('Unauthorized frame');try{copyPlainText(value,text=>clipboard.writeText(text));return {ok:true,data:{copied:true}};}catch{return {ok:false,error:{message:'Text could not be copied.'}};}});
- return ()=>{for(const row of windows.values()){row.transport.close();row.window.close();}};
+ return ()=>{powerMonitor.removeListener('resume',resumed);for(const row of windows.values()){row.transport.close();row.window.close();}};
 }
