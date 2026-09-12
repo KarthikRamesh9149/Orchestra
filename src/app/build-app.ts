@@ -53,6 +53,7 @@ import { registerTruthInboxRoutes } from "../modules/truth-inbox/truth-inbox.rou
 import { registerDeliveryRoutes } from "../modules/delivery/routes.js";
 import { isMvpBetaMode } from "../lib/beta/policy.js";
 import { registerSharedDesktopRoutes } from "../desktop/shared-routes.js";
+import { isNativeTransferRoute } from "../desktop/transfer-contract.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -250,6 +251,7 @@ export function isAllowedBetaRoute(
   }
 ) {
   const path = rawUrl.split("?")[0] ?? rawUrl;
+  if ((env.RUNTIME_PROFILE === "desktop-local" || (env.RUNTIME_PROFILE === "self-hosted" && env.DESKTOP_SHARED_SERVER_ID)) && isNativeTransferRoute(method,path)) return true;
   if (env.RUNTIME_PROFILE === "self-hosted" && env.DESKTOP_SHARED_SERVER_ID && method === "GET" && ["/v1/desktop/manifest", "/v1/desktop/session/bootstrap"].includes(path)) return true;
   if (path === "/health" || path === "/metrics") return true;
   if (path.startsWith("/v1/auth")) return true;

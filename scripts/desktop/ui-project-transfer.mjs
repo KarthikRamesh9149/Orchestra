@@ -1,0 +1,71 @@
+// Synthetic packaged local -> isolated self-host transfer. Native dialogs/clipboard
+// are substituted; file IO, encryption, API authorization, DB and renderer are real.
+import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
+import PDFDocument from 'pdfkit';
+import {readFile,mkdtemp,writeFile} from 'node:fs/promises';
+import {join,resolve} from 'node:path';
+import assert from 'node:assert/strict';
+const repo=resolve(import.meta.dirname,'../..'),packaged=(await readFile(join(repo,'.desktop/latest-package.txt'),'utf8')).trim();
+const profile=await mkdtemp('/private/tmp/orchestra-transfer-ui-'),archive=join(profile,'core.orchestra-transfer');
+const account=JSON.parse(await readFile(join(repo,'.desktop/self-host-v1-qualification/bootstrap-account.json'),'utf8'));assert.equal(account.email,'owner@qualification.invalid');
+const proof={package:packaged,profile,passed:[],errors:[],simulated:['native confirmation/file selection','private synthetic clipboard, never system clipboard'],scope:'one Mac, two independent runtimes; not two computers'};
+const pdf=await new Promise(resolve=>{const parts=[],doc=new PDFDocument();doc.on('data',part=>parts.push(part));doc.on('end',()=>resolve(Buffer.concat(parts)));doc.text('Synthetic transfer requirement: approval requires three reviewers.');doc.end();});
+const previous=join(repo,'.desktop/packages/95e81595-cd24-433e-b211-a8b43edd2af2/Orchestra Desktop Internal-darwin-arm64');
+const launch=directory=>_electron.launch({executablePath:join(directory,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{HOME:process.env.HOME,PATH:'',TMPDIR:process.env.TMPDIR,NODE_EXTRA_CA_CERTS:join(repo,'.desktop/self-host-v1-qualification/tls-certificate.pem')},timeout:60000});
+let app=await launch(previous);
+let page=await app.firstWindow(),sharedProjectId;const pass=name=>{proof.passed.push(name);console.log('PASS',name);};
+try{
+ page.on('pageerror',e=>proof.errors.push(e.message));
+ assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.3');proof.previousPackage=previous;
+ await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Continue locally'}).click({timeout:180000});
+ await page.getByLabel('New workspace name').fill('Synthetic transfer source');await page.getByRole('button',{name:'Create workspace',exact:true}).click();await page.waitForURL('**/memory');
+ await page.locator('input[type=file]').first().setInputFiles({name:'Transfer-Requirement.pdf',mimeType:'application/pdf',buffer:pdf});await page.getByRole('button',{name:'Upload',exact:true}).click();
+ await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor({timeout:60000});
+ await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();await page.waitForURL('**/view');
+ await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor({timeout:60000});pass('local packaged upload and parsed viewer');
+ await app.close();app=await launch(packaged);page=await app.firstWindow();page.on('pageerror',e=>proof.errors.push(e.message));
+ assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.4');
+ await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
+ pass('populated 0.0.3 to 0.0.4 application upgrade preserves local workspace and document; schema unchanged');
+ await app.evaluate(({dialog,clipboard},archive)=>{
+  globalThis.syntheticClip='';globalThis.savedPassphrase='';
+  clipboard.readText=()=>globalThis.syntheticClip;clipboard.writeText=value=>{globalThis.syntheticClip=value;globalThis.savedPassphrase=value;};clipboard.clear=()=>{globalThis.syntheticClip='';};
+  dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});
+  dialog.showSaveDialog=async()=>({canceled:false,filePath:archive});
+  dialog.showOpenDialog=async()=>({canceled:false,filePaths:[archive]});
+ },archive);
+ await page.goto('orchestra://app/settings');await page.getByRole('button',{name:'Export project core'}).click();
+ await page.getByText(/Encrypted archive saved/).waitFor({timeout:60000});assert((await readFile(archive)).length>100);pass('native encrypted export saved without revealing passphrase to page');
+ await page.getByLabel('Server name',{exact:true}).fill('Transfer qualification');await page.getByLabel('Server HTTPS address').fill('https://localhost:4446');
+ const sharedWindow=app.waitForEvent('window');await page.getByRole('button',{name:'Connect team server',exact:true}).click();page=await sharedWindow;page.on('pageerror',e=>proof.errors.push(e.message));
+ page.on('response',response=>{const path=new URL(response.url()).pathname;const match=path.match(/^\/v1\/projects\/([a-f0-9-]{36})\/documents/);if(match&&response.ok())sharedProjectId=match[1];if(response.status()>=400)console.log('Synthetic HTTP failure',response.request().method(),path,response.status());});
+ await page.getByLabel('Email',{exact:true}).fill(account.email);await page.getByLabel('Password',{exact:true}).fill(account.password);await page.getByRole('button',{name:'Open beta',exact:true}).click();await page.getByRole('heading',{name:'Choose a workspace'}).waitFor();
+ await page.getByLabel('New workspace name').fill('Synthetic transferred destination');await page.getByRole('button',{name:'Create workspace',exact:true}).click();await page.waitForURL('**/memory');
+ await page.goto('orchestra://app/settings');await app.evaluate(()=>{globalThis.syntheticClip=globalThis.savedPassphrase;});
+ await page.getByRole('button',{name:'Choose archive to review'}).click();
+ const importButton=page.getByRole('button',{name:'Import reviewed core'});await importButton.waitFor({timeout:60000});assert(await importButton.isDisabled());
+ const mapping=page.getByRole('combobox',{name:/^Map /});assert.equal(await mapping.count(),1);
+ const member=await mapping.locator('option').nth(1).getAttribute('value');await mapping.selectOption(member);
+ await page.getByRole('checkbox',{name:/I reviewed the mappings/}).check();await importButton.click();
+ await page.getByText(/Core import confirmed by the server/).waitFor({timeout:60000});pass('explicit mapping and native confirmation import into real shared server');
+ await page.goto('orchestra://app/memory');await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();await page.reload();await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();await page.waitForURL('**/view');await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor();pass('shared imported viewer survives reload');
+ await page.screenshot({path:join(profile,'imported-viewer.png')});
+ const viewer=page.url();
+ const projectId=sharedProjectId;
+ assert.match(projectId,/^[a-f0-9-]{36}$/);
+ const data=async(path,method='GET',body)=>page.evaluate(async({path,method,body})=>{const r=await fetch(path,{method,headers:{'content-type':'application/json'},body:body?JSON.stringify(body):undefined});if(!r.ok)throw Error('Synthetic API rejected: '+r.status);return (await r.json()).data;},{path,method,body});
+ const base=`/v1/projects/${projectId}`,graph=await data(base+'/brain/graph/current');
+ const node=graph.nodes.find(n=>graph.sectionLinks.some(l=>l.brainNodeId===n.id));assert(node);
+ const section=graph.sectionLinks.find(l=>l.brainNodeId===node.id),title='Synthetic shared approval '+Date.now();
+ const proposal=await data(base+'/change-proposals','POST',{title,summary:'Human-reviewed synthetic transfer: release requires four reviewers.',proposalType:'clarification',newUnderstanding:{text:'Release approval requires exactly four reviewers.'},affectedDocumentSectionIds:[section.documentSectionId],affectedBrainNodeIds:[node.id],communicationMessageIds:[],externalEvidenceRefs:['synthetic-transfer-qualification']});
+ await page.goto('orchestra://app/truth-inbox');const card=page.locator('article').filter({has:page.getByRole('heading',{name:title,exact:true})});await card.getByRole('link',{name:'Open change packet'}).click();
+ await page.getByRole('button',{name:'Accept change',exact:true}).click();await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL('**/truth-inbox');
+ let accepted=false;for(let i=0;i<60;i++){if((await data(base+'/change-proposals/'+proposal.id)).acceptedBrainVersionId){accepted=true;break;}await new Promise(r=>setTimeout(r,1000));}assert(accepted);
+ assert(JSON.stringify(await data(base+'/live-doc/current')).includes('four reviewers'));pass('imported source supports real shared proposal approval and durable Live Doc update');
+ await app.close();app=await launch(packaged);page=await app.firstWindow();await page.waitForURL('**/memory',{timeout:180000});await page.goto('orchestra://app/settings');
+ const restored=app.waitForEvent('window');await page.getByRole('button',{name:'Open Transfer qualification',exact:true}).click();page=await restored;page.on('pageerror',e=>proof.errors.push(e.message));
+ await page.getByRole('button',{name:'Return to local'}).waitFor();await page.goto(viewer);await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor({timeout:30000});
+ assert.equal((await data(base+'/change-proposals/'+proposal.id)).status,'accepted');assert(JSON.stringify(await data(base+'/live-doc/current')).includes('four reviewers'));pass('protected shared login, imported source and accepted truth survive whole-app restart');
+ assert.deepEqual(proof.errors,[]);
+}catch(error){proof.failure=String(error);await page.screenshot({path:join(profile,'failure.png')}).catch(()=>{});throw error;}
+finally{await writeFile(join(profile,'evidence.json'),JSON.stringify(proof,null,2));console.log('Evidence',join(profile,'evidence.json'));await app.close();}

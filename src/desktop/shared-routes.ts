@@ -1,10 +1,12 @@
 import type {FastifyPluginAsync} from 'fastify';
 import {authGuard} from '../app/auth.js';
 import {SHARED_DESKTOP_PROTOCOL} from './shared-contract.js';
+import {registerTransferRoutes} from './transfer-routes.js';
 
 /** Explicitly opted-in self-hosted servers only. No change to managed exposure. */
 export const registerSharedDesktopRoutes:FastifyPluginAsync=async app=>{
  const env=app.appContext.env;
+ await app.register(registerTransferRoutes);
  if(env.RUNTIME_PROFILE!=='self-hosted'||!env.DESKTOP_SHARED_SERVER_ID)return;
  app.get('/manifest',async(_request,reply)=>{
   reply.header('Cache-Control','no-store');

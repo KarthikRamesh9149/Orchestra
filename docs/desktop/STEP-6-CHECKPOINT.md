@@ -137,16 +137,61 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 
 ### Remaining gate
 
+### Native transfer and populated upgrade, 13 September 2026
+
+- Added native export, archive selection, explicit identity mapping and final
+  import confirmation to the existing Settings surface in local/shared windows.
+  The page receives an opaque five-minute preview ID, not archive bytes, paths
+  or passphrases. Passphrase creation/import requires native clipboard consent;
+  clipboard contents are cleared after use. New export files are private and
+  existing files are not overwritten. Native errors do not expose filesystem paths.
+- The native UI limit is 16 MiB per encrypted archive. Core-only exclusions remain
+  explicit. The underlying format is not advertised as a full-workspace backup.
+  Managed servers do not mount the new routes. Ordinary renderer fetch cannot
+  invoke them; native transport still requires live backend manager authority.
+- Package versions now follow package.json; the internal candidate is 0.0.4.
+  `ui-project-transfer.mjs` populated the preserved 0.0.3 package, then launched
+  0.0.4 on the same private profile and verified the document remained usable.
+  This is an actual application-version upgrade with unchanged schema, not proof
+  of a schema-changing upgrade, signed updater or interrupted update recovery.
+- Final package `d60a0cd2-3fb3-4d45-91ea-4e9c8fd89ae8` passed seven checks:
+  local upload/viewer; populated version upgrade; encrypted native export;
+  identity-mapped local-to-shared import; viewer reload; real shared proposal
+  approval and durable Live Doc update; whole-app restart preserving the protected
+  shared session, source and accepted decision. Evidence is local:
+  `/private/tmp/orchestra-transfer-ui-Dsvjg4/evidence.json`.
+  Native dialogs and clipboard were substituted for synthetic automation, while
+  renderer, file IO, encryption, authorization, database and worker were real.
+  Expected unauthenticated bootstrap 401 did not prevent subsequent login.
+- This journey reproduced a shared transport bug: encoded typed Inbox IDs were
+  rejected for packet and delivery-trace routes. Added failing-then-passing tests
+  and allowed only encoded colons in the existing reviewed typed-ID route set.
+  Encoded separators, double encoding and credential-management paths stay denied.
+- Checks: 1,580 backend tests pass (13 skipped), 228 frontend tests pass;
+  backend/native TypeScript, frontend/native builds, import provenance, inventory
+  and static security scan pass. No hosted runtime or styling redesign changed.
+- The Docker image rebuild **did not pass** in the current 2 GiB Docker VM.
+  The compiler exhausted memory even after stopping the synthetic app services;
+  a smaller heap also failed and was reverted. The successful shared test used
+  the previously built runtime image plus read-only locally compiled backend JS
+  via ignored `.desktop/transfer-qualification.yaml`. This verifies integration,
+  not clean-image reproducibility. The synthetic stack was restarted and is healthy.
+
+### Outstanding gate after this follow-up
+
 1. Packaged shared-window qualification and remaining session revocation/offline
    state-purge checks, including native download/cancel behaviour.
 2. Further offline/shared workflow qualification. Optional document-metadata
    caching is implemented; full offline shared workspaces are not supported.
 3. Operator email/provider configuration and real self-hosted provider qualification.
-4. Authorized export/import with source hashes, provenance, accepted decisions and explicit identity mapping; exclude credentials and unauthorized private chats.
+4. Further transfer failure/cancellation/expiry and orphan-file reconciliation
+   qualification. The native core transfer, identity mapping and accepted-truth
+   journey above now passes; broader workspace export is not implemented.
 5. Remaining packaged normal/failure/offline journeys, cross-tenant isolation,
    broader crash/recovery scenarios, complete operator backup tooling and
-   actual populated version upgrades. Synthetic queue/application restore now
-   passes; existing private-chat proof is one-server/two-account evidence.
+   schema-changing/interrupted upgrades and the clean container-image build.
+   A populated 0.0.3-to-0.0.4 application upgrade now passes. Synthetic queue/
+   application restore passes; private-chat proof is one-server/two-account evidence.
 6. Actual two-computer role/authority qualification.
 
 The user confirmed on 12 September that only one Mac is available. Two isolated profiles/processes on that Mac can supply development evidence, but do not satisfy item 6. This hardware limitation does not block the remaining implementation and is not permission to weaken the gate. Step 6 is not complete and must not be merged into private main yet.

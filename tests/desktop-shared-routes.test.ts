@@ -18,6 +18,13 @@ async function setup(profile='self-hosted',serverId:string|undefined=id){
 }
 afterEach(async()=>{await Promise.all(apps.splice(0).map(app=>app.close()));});
 describe('opted-in shared desktop server routes',()=>{
+ it('keeps transfer routes out of managed servers and requires bearer authority',async()=>{
+  const url=`/v1/desktop/projects/${id}/transfer/export`,payload={passphrase:'synthetic-transfer-passphrase'};
+  const managed=await setup('managed');expect((await managed.app.inject({url,method:'POST',payload})).statusCode).toBe(404);
+  const shared=await setup();expect((await shared.app.inject({url,method:'POST',payload})).statusCode).toBe(401);
+  expect(isAllowedBetaRoute('POST',url,{RUNTIME_PROFILE:'managed',DESKTOP_SHARED_SERVER_ID:id})).toBe(false);
+  expect(isAllowedBetaRoute('POST',url,{RUNTIME_PROFILE:'self-hosted',DESKTOP_SHARED_SERVER_ID:id})).toBe(true);
+ });
  it('reports only the operator-enabled bounded read-only policy',async()=>{
   const {app}=await setup();Object.assign(app.appContext.env,{DESKTOP_SHARED_CACHE_ENABLED:true,DESKTOP_SHARED_CACHE_TTL_SECONDS:60,DESKTOP_SHARED_CACHE_MAX_BYTES:4096});
   expect((await app.inject('/v1/desktop/manifest')).json().data.offlineCache).toEqual({enabled:true,readOnly:true,ttlSeconds:60,maxBytes:4096});

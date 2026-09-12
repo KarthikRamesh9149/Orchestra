@@ -1,6 +1,7 @@
 import routes from '../../../src/desktop/local-routes.json' with {type:'json'};
 import type {HostClient} from './host-client.js';
 import {z} from 'zod';
+import {isNativeTransferRoute} from '../../../src/desktop/transfer-contract.js';
 const uuid=/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 const patterns=routes.map(route=>({method:route.method,segments:route.path.split('/')}));
 function validParameter(key:string,value:string){
@@ -31,7 +32,7 @@ export async function localHttp(request:Request,host:HostClient,nativeCredential
   return Response.json({data:url.pathname==='/v1/auth/me'?data.user:url.pathname==='/v1/me/workspaces'?data.workspaces:data,error:null});
  }
  const nativePairingRoute=nativeCredentials&&request.method==='POST'&&(url.pathname==='/v1/mcp/tokens'||/^\/v1\/mcp\/tokens\/[0-9a-fA-F-]{36}\/revoke$/.test(url.pathname));
- if(!nativePairingRoute&&!isLocalRoute(request.method,url.pathname))return failure(403,'desktop_scope_unavailable','This action requires a shared workspace or a provider configured in a later desktop step.');
+ if(!(nativeCredentials&&isNativeTransferRoute(request.method,url.pathname))&&!nativePairingRoute&&!isLocalRoute(request.method,url.pathname))return failure(403,'desktop_scope_unavailable','This action requires a shared workspace or a provider configured in a later desktop step.');
  const authority=host.credentials();if(!authority)return failure(503,'runtime_unavailable','The local engine is starting or unavailable.');
  const headers=new Headers({'Authorization':'Bearer '+authority.bearer,'X-Orchestra-Local-Token':authority.token});
  for(const name of ['content-type','x-idempotency-key','accept']){const value=request.headers.get(name);if(value)headers.set(name,value);}

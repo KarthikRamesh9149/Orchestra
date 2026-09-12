@@ -107,8 +107,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "914faa89102a02e87001ba93aa41abf3c108517f8fe28e6064ac38013f9f29aa",
-      "reason": "Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection settings, preserving existing shared behavior and styling."
+      "importedSha256": "ee0b85122217a5ad2731d825f558197eb3b8183e7b68b5360445c88a6c21d978",
+      "reason": "Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection and native encrypted core transfer settings, preserving existing styling and hosted browser behavior."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -173,8 +173,8 @@
     {
       "path": "src/app/build-app.ts",
       "sourceSha256": "54aed4e557c43ada64ff6136a3ebb8b6dce8bcfed1270a2c67f4655b2b4041c6",
-      "importedSha256": "b5b5c02f055aa0a6a317f4418013d94eb20945b35a6950e780a869f568b5fd1e",
-      "reason": "Step 6 opt-in self-hosted desktop manifest and bearer bootstrap; managed route exposure is unchanged."
+      "importedSha256": "d1ca21b6d72f9aec1418231a42c4b24a7a605f750465146e255e7867408f99ad",
+      "reason": "Step 6 opt-in self-hosted manifest/bearer bootstrap and native-only core transfer routes for desktop-local or opted-in self-hosted servers; managed route exposure is unchanged."
     },
     {
       "path": "src/config/env.ts",

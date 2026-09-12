@@ -2,6 +2,7 @@ import {contextBridge,ipcRenderer} from 'electron';
 import type {DesktopBridge,OperationResult,RuntimeStatus} from './contracts.js';
 const invoke=(input:unknown)=>ipcRenderer.invoke('orchestra:command',input) as Promise<OperationResult>;
 const bridge:DesktopBridge={
+ transfer:{export:projectId=>ipcRenderer.invoke('orchestra:local-transfer:export',projectId),preview:projectId=>ipcRenderer.invoke('orchestra:local-transfer:preview',projectId),commit:input=>ipcRenderer.invoke('orchestra:local-transfer:commit',input)},
  shared:{list:()=>ipcRenderer.invoke('orchestra:shared-list'),connect:input=>ipcRenderer.invoke('orchestra:shared-connect',input),open:id=>ipcRenderer.invoke('orchestra:shared-open',id),remove:id=>ipcRenderer.invoke('orchestra:shared-remove',id)},
  sync:{inspect:()=>ipcRenderer.invoke('orchestra:sync-inspect'),update:input=>ipcRenderer.invoke('orchestra:sync-update',input),cancel:()=>ipcRenderer.invoke('orchestra:sync-cancel')},
  drive:{inspect:()=>ipcRenderer.invoke('orchestra:drive-inspect'),configure:()=>ipcRenderer.invoke('orchestra:drive-configure'),connect:()=>ipcRenderer.invoke('orchestra:drive-connect'),cancel:()=>ipcRenderer.invoke('orchestra:drive-cancel'),revoke:()=>ipcRenderer.invoke('orchestra:drive-revoke'),importFiles:projectId=>ipcRenderer.invoke('orchestra:drive-import',projectId)},

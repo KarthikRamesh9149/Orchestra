@@ -11,6 +11,7 @@ ipcRenderer.on('orchestra:shared-offline',(_event,value:unknown)=>{
 });
 contextBridge.exposeInMainWorld('orchestraShared',Object.freeze({
  connection:Object.freeze(connection),close:()=>ipcRenderer.invoke('orchestra:shared-close'),
+ transfer:{export:(projectId:string)=>ipcRenderer.invoke('orchestra:shared-transfer:export',projectId),preview:(projectId:string)=>ipcRenderer.invoke('orchestra:shared-transfer:preview',projectId),commit:(input:unknown)=>ipcRenderer.invoke('orchestra:shared-transfer:commit',input)},
  copyText:(text:string)=>ipcRenderer.invoke('orchestra:shared-copy',text),
  isOffline:()=>offline,
  onOfflineChange:(notify:()=>void)=>{if(typeof notify!=='function')throw new Error('Invalid listener');listeners.add(notify);return ()=>{listeners.delete(notify);};}

@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
- 'src/app/build-app.ts':'Step 6 opt-in self-hosted desktop manifest and bearer bootstrap; managed route exposure is unchanged.',
+ 'src/app/build-app.ts':'Step 6 opt-in self-hosted manifest/bearer bootstrap and native-only core transfer routes for desktop-local or opted-in self-hosted servers; managed route exposure is unchanged.',
  'src/lib/ai/index.ts':'Step 6 self-hosting without an operator key uses explicit offline providers rather than simulated generation, vectors or transcription.',
  'src/lib/storage/index.ts':'Step 6 self-hosted local storage uses the private bounded driver; hosted storage behavior remains unchanged.',
  'apps/beta-web/src/components/shell/AppShell.tsx':'Step 6 reserves space only in shared desktop windows for the persistent authoritative-server banner; existing styles retained.',
@@ -31,7 +31,7 @@ const adjustments={
  'apps/beta-web/src/pages/ChatPage.tsx':'Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions.',
  'apps/beta-web/src/pages/ChatPage.test.tsx':'Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection.',
  'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 truthful partial-processing status and authorized native clipboard feedback without redesign.',
- 'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection settings, preserving existing shared behavior and styling.',
+ 'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection and native encrypted core transfer settings, preserving existing styling and hosted browser behavior.',
  'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
  'apps/beta-web/src/lib/api/client.ts':'Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior.',
  'apps/beta-web/src/pages/WorkspacesPage.tsx':'Step 4 truthful local workspace identity and setup navigation; Step 6 reports unconfirmed sign-out using the existing error surface without restyling.',

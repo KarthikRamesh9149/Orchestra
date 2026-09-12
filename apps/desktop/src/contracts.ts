@@ -14,6 +14,7 @@ export type Command=z.infer<typeof commandSchema>;
 export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string};
 export type OperationResult={ok:true;data:unknown}|{ok:false;error:{code:string;message:string}};
 export interface DesktopBridge {
+ transfer:{export(projectId:string):Promise<OperationResult>;preview(projectId:string):Promise<OperationResult>;commit(input:unknown):Promise<OperationResult>};
  shared:{list():Promise<OperationResult>;connect(input:{name:string;origin:string}):Promise<OperationResult>;open(id:string):Promise<OperationResult>;remove(id:string):Promise<OperationResult>};
  sync:{inspect():Promise<OperationResult>;update(input:{id:string;action:'enable'|'pause'|'remove'|'refresh'}):Promise<OperationResult>;cancel():Promise<OperationResult>};
  drive:{inspect():Promise<OperationResult>;configure():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;revoke():Promise<OperationResult>;importFiles(projectId:string):Promise<OperationResult>};

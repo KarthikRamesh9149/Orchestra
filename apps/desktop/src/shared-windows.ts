@@ -10,6 +10,7 @@ import {isTrustedFrame} from './contracts.js';
 import {openConfirmedExternal} from './external-link.js';
 import {copyPlainText} from './clipboard.js';
 import {authorizeSharedDownload} from './shared-download.js';
+import {registerProjectTransferUI} from './project-transfer-ui.js';
 
 const connectSchema=z.object({name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
 export function registerSharedWindows(options:{local:BrowserWindow;resources:string;preload:string;store:SharedConnectionStore;packaged:boolean}){
@@ -18,6 +19,7 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
  powerMonitor.on('resume',resumed);
  const trustedLocal=(event:Electron.IpcMainInvokeEvent)=>event.sender===options.local.webContents&&event.senderFrame===options.local.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
  const trustedShared=(event:Electron.IpcMainInvokeEvent)=>[...windows.values()].find(row=>row.window.webContents===event.sender&&event.senderFrame===row.window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true));
+ registerProjectTransferUI('orchestra:shared-transfer',event=>{const row=trustedShared(event);return row?{window:row.window,send:request=>row.transport.handle(request,true)}:undefined;});
  let changing=false;
  async function open(connection:SavedConnection){
   const existing=windows.get(connection.id);if(existing&&!existing.window.isDestroyed()){existing.window.show();existing.window.focus();return;}

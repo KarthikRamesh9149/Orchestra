@@ -27,6 +27,7 @@ import {dueTarget,finishedTarget,type SyncTarget} from './connector-sync-state.j
 import {z} from 'zod';
 import {SharedConnectionStore} from './shared-store.js';
 import {registerSharedWindows} from './shared-windows.js';
+import {registerProjectTransferUI} from './project-transfer-ui.js';
 
 app.setName('Orchestra Desktop Internal');
 const relay=process.argv.find(arg=>arg.startsWith('--orchestra-mcp='));
@@ -62,6 +63,7 @@ else {
   window.webContents.on('will-navigate',(event,url)=>{if(!isTrustedFrame(url,true)){event.preventDefault();void outside(url);}});
   window.webContents.on('will-attach-webview',event=>event.preventDefault());
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
+  registerProjectTransferUI('orchestra:local-transfer',event=>trusted(event)?{window:window!,send:request=>localHttp(request,host,true)}:undefined);
   const settings=new ProtectedSettingsStore(join(app.getPath('userData'),'local-runtime'),safeStorage);
   const closeShared=registerSharedWindows({local:window,resources,preload:join(__dirname,'shared-preload.cjs'),store:new SharedConnectionStore(join(app.getPath('userData'),'shared-connections'),safeStorage),packaged:app.isPackaged});
   app.on('before-quit',closeShared);

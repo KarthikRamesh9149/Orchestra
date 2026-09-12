@@ -3,6 +3,7 @@ import {assertSharedCompatibility,sharedConnectionSchema} from '../../../src/des
 import {isLocalRoute} from './local-http.js';
 import {createHash} from 'node:crypto';
 import {SharedReadCache} from './shared-cache.js';
+import {isNativeTransferRoute} from '../../../src/desktop/transfer-contract.js';
 
 export const sharedGrantSchema=z.object({accessToken:z.string().min(1).max(16384),refreshToken:z.string().min(1).max(16384)}).strict();
 export type SharedGrant=z.infer<typeof sharedGrantSchema>;
@@ -21,7 +22,14 @@ const authPosts=new Set([...publicPosts,'/v1/auth/bootstrap','/v1/auth/refresh',
 const uuid='[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}';
 // Deliberately no generic URL proxy, OAuth callbacks, native ingestion or token administration.
 export function isSharedRoute(method:string,path:string){
- if(path.includes('%')||path.includes('\\'))return false;
+ if(path.includes('\\'))return false;
+ if(path.includes('%')){
+  // The UI encodes the colon in typed Inbox IDs. Permit only that reviewed
+  // segment; never encoded separators, authority routes or double encoding.
+  const encoded=path.split('/').filter(part=>part.includes('%'));
+  if(encoded.length!==1||! /^(suggestion|proposal|fde|agent_drift|connector):[A-Za-z0-9_.:-]{1,280}$/.test(encoded[0]!.replace(/%3a/gi,':')))return false;
+  return isLocalRoute(method,path);
+ }
  if(/^\/v1\/mcp\/tokens(?:\/|$)/.test(path))return false;
  if(isLocalRoute(method,path))return true;
  if(method==='POST'&&authPosts.has(path))return true;
@@ -79,9 +87,9 @@ export class SharedHttp{
   if(grant)headers.set('authorization','Bearer '+grant.accessToken);
   return this.network(this.connection.origin+path,{method,headers,body:body as RequestInit['body'],credentials:'omit',redirect:'error',signal:AbortSignal.any([source.signal,signal,AbortSignal.timeout(180000)])}).catch(()=>{throw new SharedNetworkUnavailable();});
  }
- async handle(request:Request):Promise<Response>{
+ async handle(request:Request,nativeTransfer=false):Promise<Response>{
   const url=new URL(request.url),path=url.pathname;
-  if(url.protocol!=='orchestra:'||url.host!=='app'||url.username||url.password||!isSharedRoute(request.method,path))return failure(403,'shared_scope_denied','This operation is outside the shared desktop contract.');
+  if(url.protocol!=='orchestra:'||url.host!=='app'||url.username||url.password||!(isSharedRoute(request.method,path)||(nativeTransfer&&isNativeTransferRoute(request.method,path))))return failure(403,'shared_scope_denied','This operation is outside the shared desktop contract.');
   if(path==='/v1/auth/csrf')return json({data:{csrfToken:'native-shared-no-cookie'},error:null});
   // Authority changes are serialized. They invalidate previous in-flight reads and streams.
   const authority=authorityPaths.has(path)&&request.method==='POST';
