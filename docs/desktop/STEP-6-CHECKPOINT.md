@@ -38,7 +38,17 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 - Encrypted synthetic backup/restore preserved all rows in 105 public tables and
   exact hashes for 3 source files in a **new** target database/private directory.
   Wrong passphrase and tampering were rejected. Redis restoration and booting the
-  restored application were not tested and remain pending.
+  restored application were initially pending; the follow-up proof below now
+  covers both for the synthetic fixture.
+- Full-stack recovery follow-up: `verify-shared-stack-recovery.ts` restored 105
+  tables, seven files and the Redis snapshot into a new isolated Docker Compose
+  project, booted its real API/worker, completed a real document job deliberately
+  left pending at backup, signed in and downloaded the exact original bytes.
+  Immutable migrations were reapplied successfully to the populated restore.
+  This is **not** an old-version-to-new-version upgrade test. Evidence is local
+  at `.desktop/step6-stack-recovery-Zf1lwR/evidence.json`. The restored stack was
+  stopped and the original synthetic stack restarted. Private volumes/archive
+  remain available for inspection; no working database was overwritten.
 - Current working-tree checks (12 September 2026): 1,550 backend tests passed,
   13 skipped; 224 frontend tests passed. Backend and native TypeScript checks,
   frontend production build, native bundle build, import provenance, action
@@ -54,8 +64,9 @@ Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c
 3. Operator email/provider configuration and real self-hosted provider qualification.
 4. Authorized export/import with source hashes, provenance, accepted decisions and explicit identity mapping; exclude credentials and unauthorized private chats.
 5. Remaining packaged normal/failure/offline journeys, cross-tenant isolation,
-   queue/restored-application recovery, complete operator backup tooling and
-   populated upgrades. Existing private-chat proof is one-server/two-account evidence.
+   broader crash/recovery scenarios, complete operator backup tooling and
+   actual populated version upgrades. Synthetic queue/application restore now
+   passes; existing private-chat proof is one-server/two-account evidence.
 6. Actual two-computer role/authority qualification.
 
 The user confirmed on 12 September that only one Mac is available. Two isolated profiles/processes on that Mac can supply development evidence, but do not satisfy item 6. This hardware limitation does not block the remaining implementation and is not permission to weaken the gate. Step 6 is not complete and must not be merged into private main yet.

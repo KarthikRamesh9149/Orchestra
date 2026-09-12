@@ -120,9 +120,16 @@ every public table and file hash, and rejects tampering/wrong passphrases. Its
 test passphrase is co-located with its disposable archive for inspection; real
 backups must store the passphrase separately.
 
-Queue restoration, booting the restored application, operator-facing complete
-backup tooling, populated version upgrades, and scoped project export/import
-with identity mapping still require implementation/qualification. Do not use a
-whole database restore as a substitute for authorized project transfer.
+`verify-shared-stack-recovery.ts` additionally restores a dedicated Redis snapshot,
+boots a **new isolated** API and worker, completes an actual pending document job,
+and verifies sign-in and downloaded source bytes. It reapplies immutable migrations
+on the populated restore. It refuses accounts outside the synthetic qualification
+domain and stops its restored stack afterward. Its temporary ownership capability
+is granted only to the one-off restore helper; API and worker remain restricted.
+
+Operator-facing complete backup tooling, old-version-to-new-version upgrades, and
+scoped project export/import with identity mapping still require implementation
+and qualification. Reapplying migrations is not an actual version upgrade. Do not
+use a whole database restore as a substitute for authorized project transfer.
 
 No full recovery, two-computer or release-readiness claim is made by this package.
