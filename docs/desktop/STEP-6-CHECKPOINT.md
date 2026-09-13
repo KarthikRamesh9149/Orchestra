@@ -408,3 +408,21 @@ and Step 6 has not been merged while its remaining credential-backed gate is ope
   it requires the user's two-factor code. No authenticator/recovery material was
   accessed and no security setting was changed. No GitHub server app was created.
   Resume after the user completes verification in that browser tab.
+
+### Shared GitHub registration follow-up
+
+- User completed GitHub's mandatory account confirmation. Created the separate
+  `Orchestra Shared Qualification` app, ID `4928838`, restricted to the owner's
+  account. Read-only permissions: contents, pull requests, checks, commit statuses,
+  Actions and deployments, plus mandatory metadata. Webhooks remain inactive.
+  No existing desktop or production registration was edited.
+- Initial creation returned GitHub HTTP 500. Checked the app listing before a
+  single retry; the retry returned confirmed registration success.
+- Generated the dedicated OAuth client secret and saved it in ignored private
+  configuration with mode 0600, without printing it or adding it to Git.
+- GitHub created an app signing key, but Brave returned `ERR_BLOCKED_BY_CLIENT`
+  for its download. No matching key file was found in Downloads. The browser
+  tool also denied access to its downloads page; no workaround was attempted.
+  Signing-key possession is therefore **not verified**. The app is not yet
+  installed/configured on the shared server and its ingestion/lifecycle gate is
+  still open. A user-completed key download is required to continue this path.
