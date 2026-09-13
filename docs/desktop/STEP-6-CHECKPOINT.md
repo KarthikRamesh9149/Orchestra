@@ -426,3 +426,13 @@ and Step 6 has not been merged while its remaining credential-backed gate is ope
   Signing-key possession is therefore **not verified**. The app is not yet
   installed/configured on the shared server and its ingestion/lifecycle gate is
   still open. A user-completed key download is required to continue this path.
+
+- User completed the manual download. RSA validation passed; authenticated
+  `GET /app` confirmed app `4928838` and its seven read-only permissions.
+  Copied the key into ignored private configuration with mode 0600 and preserved
+  the previous server configuration before enabling GitHub locally.
+- Recreated only the isolated API/worker. Real Settings Connect completed the
+  GitHub installation callback. Installation `161327313` is active, selected-repo
+  only, read-only, with writes disabled. The authenticated server lists exactly
+  `KarthikRamesh9149/Orchestra` (repository `1363807961`); no production repository
+  was granted. Repository linking, ingestion and lifecycle qualification remain.
