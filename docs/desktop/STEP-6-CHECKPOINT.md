@@ -386,3 +386,25 @@ and Step 6 has not been merged while its remaining credential-backed gate is ope
   clean worktree. This is a repaired targeted rerun, not a claim the first full
   run was entirely green. Reloaded Settings also confirmed send-only Gmail has
   Disconnect but no Sync action; Drive retains Sync/Disconnect.
+
+### Dedicated shared Slack registration and ingestion
+
+- Created `Orchestra Shared Qualification` (`A0C2B1WH2GY`) in OrchestraOS using
+  Slack's manifest UI. Verified creation separately before any retry when the
+  creation dialog stayed loading. Existing desktop/production Slack apps untouched.
+- Configured only `channels:read` and `channels:history`, localhost HTTPS callback,
+  no private-channel/DM/write/webhook scopes. Stored new client/signing secrets
+  privately; preserved pre-Slack server configuration before updating it.
+- Real OAuth connected the shared server. Added only this new app to the already
+  authorized `orchestra-desktop-qualification` synthetic channel and selected only
+  that channel, with a three-day backfill. No other channel history was imported.
+- Initial actual server sync completed: one channel, three threads, four messages,
+  four created/indexed, zero errors. Repeat completed with zero created, indexed
+  or updated revisions. PostgreSQL retained four unique provider messages.
+- Real Memory displayed the Slack provider and synthetic CSV acceptance reply
+  with provider-opening actions. This is ingestion/idempotency/UI evidence,
+  not completed revocation/recovery/AI-citation qualification.
+- Shared GitHub registration is blocked at GitHub's account verification screen:
+  it requires the user's two-factor code. No authenticator/recovery material was
+  accessed and no security setting was changed. No GitHub server app was created.
+  Resume after the user completes verification in that browser tab.
