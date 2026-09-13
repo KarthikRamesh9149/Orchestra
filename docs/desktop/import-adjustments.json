@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 770,
+  "unchangedImportedFiles": 768,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -57,6 +57,12 @@
       "reason": "Step 6 regression for unconfirmed shared-desktop logout; existing browser cookie contracts retained."
     },
     {
+      "path": "apps/beta-web/src/lib/api.integrations.test.ts",
+      "sourceSha256": "9d5ca000da9ec728abb518b4e56161303c540e2f8ca8ea00d3c708e706e445d5",
+      "importedSha256": "c93a9eae47ea2e5368498e5fa16c36e79f41cc9dd4cdd43883e7320853cd51fc",
+      "reason": "Step 6 regression preserves explicitly allowed reconnect without revoked sync or disconnect."
+    },
+    {
       "path": "apps/beta-web/src/lib/api.memory.test.ts",
       "sourceSha256": "96ed837e1c2e230bd439e7a9bddfb19343cc8b8f561b117c039cf9af8db7f088",
       "importedSha256": "4db0f8ddb4af3ba60fa9ab6fabf9c2812e60e00fa2df1e43784308661c96d5aa",
@@ -65,7 +71,7 @@
     {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "691ad4839da3178fe0f30f39eb76cf07665977c2968814c73b939a774a8e0c2b",
+      "importedSha256": "2b7f46b9c47b279ddfce4e912cf4444b08709ef5ffe5bbc0785c88a6e3b6147f",
       "reason": "Step 4 honest partial processing; Step 6 preserves unconfirmed shared logout state and authoritative provider document provenance."
     },
     {
@@ -119,8 +125,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "ee0b85122217a5ad2731d825f558197eb3b8183e7b68b5360445c88a6c21d978",
-      "reason": "Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection and native encrypted core transfer settings, preserving existing styling and hosted browser behavior."
+      "importedSha256": "b2bbe218fe1510d17147d3fb532068a40b5c0cefb97743881c0b55314cdd3a28",
+      "reason": "Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking inside existing integration cards."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -221,8 +227,8 @@
     {
       "path": "src/modules/communications/provider-readiness.ts",
       "sourceSha256": "dd0ec2d1f67d7bd0982e1f38ccc0fd8e731af71875fe4cdf7fb02ced76a8a1b2",
-      "importedSha256": "c3f2928d7482ade55a32ac09f1177b0ea1387de8c1787c58c31bbabf99d29e6c",
-      "reason": "Step 6 self-hosted Gmail invitation-sender grants never advertise mailbox sync; mailbox-evidence grants retain existing capability."
+      "importedSha256": "62e4ef6982347d01b496a4ba6ac2879a8314da711657c3991b1b8ef32963290c",
+      "reason": "Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked."
     },
     {
       "path": "src/modules/deep-research/schemas.ts",
@@ -259,6 +265,12 @@
       "sourceSha256": "8055efed3c49fab765ae20df13aada5151926de44f357a8b8558b363e21471f6",
       "importedSha256": "532e5ae2700b245ebc1421228c6568b63343288441b9ae885d3e81798dd59ee2",
       "reason": "Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected."
+    },
+    {
+      "path": "tests/communication-providers.test.ts",
+      "sourceSha256": "ace44a3e8ee112a041f08a30ac32e5a00bbe6b64f294e51f59bb8678c793ea01",
+      "importedSha256": "7ccc7cc0d04334cbd6c1d44a43f8f528a1ca38d2fdd6c0c06aa3771101938cd5",
+      "reason": "Step 6 regression for revoked connector reconnect, missing credentials and release gates."
     },
     {
       "path": "tests/document-service.test.ts",

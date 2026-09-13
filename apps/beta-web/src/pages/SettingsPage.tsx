@@ -61,6 +61,7 @@ import {
   type OperationalState,
 } from "../lib/api/settings";
 import { ApiError } from "../lib/api/client";
+import SharedGitHubRepositories from '../components/settings/SharedGitHubRepositories';
 import type { Integration, Member, MemberRole, Workspace as IntWorkspace, WorkspaceInvite } from "../lib/types/integrations";
 import type { LinkedAccount, Session, User } from "../lib/types/profile";
 import { useToastStore } from "../components/ui/Toaster";
@@ -290,6 +291,7 @@ function IntegrationsSection() {
                 </button>
               )}
             </div>
+            {intg.kind === 'github' && projectId && (intg.capabilities.canConnect || intg.capabilities.canSync) && <SharedGitHubRepositories key={projectId} projectId={projectId} onChanged={refresh}/>}
           </div>
         ))}
       </div>

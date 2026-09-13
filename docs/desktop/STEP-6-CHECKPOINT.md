@@ -1,4 +1,9 @@
-# Step 6 checkpoint: implementation in progress
+# Step 6 historical implementation checkpoints
+
+Current disposition: **complete for the authorized single-Mac scope**, with
+two-computer qualification explicitly deferred by the user. See [STEP-6.md](STEP-6.md)
+for final evidence, source-built image, packaged verification and limitations.
+The dated pending statements below are historical, not the current gate status.
 
 Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c0fc9c2f6e50804a7f744d2394` in private Orchestra/main. Production orchestrav2 remains outside scope.
 

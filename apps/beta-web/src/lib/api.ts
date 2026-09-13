@@ -1153,7 +1153,7 @@ export const getIntegrationsList = async (projectId: string): Promise<Integratio
       const connected = Boolean(p.connected);
       const canConnect = !connected && Boolean(p.capabilities?.canConnect ?? actions.has("connect")) &&
         (providerReadiness?.readiness.canConnect ?? true) &&
-        (providerReadiness == null || providerReadiness.readiness.state === "enabled");
+        (providerReadiness == null || ["enabled", "revoked"].includes(providerReadiness.readiness.state));
       const canSync = connected && Boolean(p.capabilities?.canSync ?? actions.has("sync")) &&
         (providerReadiness?.readiness.canSync ?? true);
       const canDisconnect = Boolean(
@@ -1192,7 +1192,7 @@ export const getIntegrationsList = async (projectId: string): Promise<Integratio
       if (!r?.provider || r.provider === "manual_import" || seen.has(r.provider)) continue;
       seen.add(r.provider);
       const connected = ["connected", "syncing"].includes(r.connectorStatus ?? "");
-      const canConnect = !connected && r.readiness.state === "enabled" && r.readiness.canConnect;
+      const canConnect = !connected && ["enabled", "revoked"].includes(r.readiness.state) && r.readiness.canConnect;
       const canSync = connected && r.readiness.canSync && Boolean(r.connectorId);
       const canDisconnect = Boolean(r.connectorId) && r.connectorStatus !== "revoked" &&
         (r.readiness.canDisconnect ?? true);

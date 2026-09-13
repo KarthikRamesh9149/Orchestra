@@ -36,6 +36,16 @@ export function isSharedRoute(method:string,path:string){
  if(method==='GET'&&['/v1/auth/csrf','/v1/auth/me','/v1/me/workspaces','/v1/me/sessions'].includes(path))return true;
  if(method==='POST'&&['/v1/me/workspaces/switch','/v1/me/sessions/revoke-all','/v1/me/web-vitals'].includes(path))return true;
  if(method==='DELETE'&&new RegExp(`^/v1/me/sessions/${uuid}$`).test(path))return true;
+ // Shared provider setup is server-authorized. Local native provider routes
+ // intentionally omit these; never widen local mode or forward OAuth callbacks.
+ if(method==='GET'&&['/v1/github/install-url','/v1/github/installations'].includes(path))return true;
+ if(method==='GET'&&new RegExp(`^/v1/github/installations/${uuid}/repositories$`).test(path))return true;
+ if(method==='GET'&&new RegExp(`^/v1/projects/${uuid}/github(?:/status)?$`).test(path))return true;
+ if(method==='POST'&&new RegExp(`^/v1/projects/${uuid}/github/(?:backfill|repositories/link|repositories/${uuid}/archive)$`).test(path))return true;
+ if(method==='POST'&&new RegExp(`^/v1/projects/${uuid}/connectors/(?:slack|gmail|google-drive)/connect$`).test(path))return true;
+ if(method==='POST'&&new RegExp(`^/v1/projects/${uuid}/connectors/(?:${uuid}/(?:sync|revoke)|google-drive/(?:sync|disconnect))$`).test(path))return true;
+ if(method==='GET'&&new RegExp(`^/v1/projects/${uuid}/connectors/google-drive/(?:status|files|sync-roots(?:/candidates)?)$`).test(path))return true;
+ if(method==='PATCH'&&new RegExp(`^/v1/projects/${uuid}/connectors/google-drive/sync-roots$`).test(path))return true;
  if(new RegExp(`^/v1/projects/${uuid}/members(?:/${uuid})?$`).test(path))return ['GET','POST','PATCH','DELETE'].includes(method);
  if(new RegExp(`^/v1/projects/${uuid}/join-codes(?:/${uuid}/revoke)?$`).test(path))return ['GET','POST'].includes(method);
  if(new RegExp(`^/v1/projects/${uuid}/truth-approvers(?:/${uuid})?$`).test(path))return ['GET','POST','DELETE'].includes(method);

@@ -15,6 +15,15 @@ const projectId = "11111111-1111-4111-8111-111111111111";
 describe("[FIX-19] integration capability contracts", () => {
   beforeEach(() => clearAuth());
 
+  it('offers reconnect for an explicitly reconnectable revoked grant, never sync',async()=>{
+    server.use(
+      http.get(`${api}/v1/projects/${projectId}/integrations/status`,()=>HttpResponse.json({data:{providers:[{provider:'slack',connected:false,availableActions:['connect']}]}})),
+      http.get(`${api}/v1/projects/${projectId}/connectors/readiness`,()=>HttpResponse.json({data:[{provider:'slack',connectorId:'revoked-id',connectorStatus:'revoked',readiness:{state:'revoked',canConnect:true,canSync:false,canDisconnect:false,reasons:['connector_revoked'],missingConfig:[],deferredFeatures:[]}}]}))
+    );
+    const [slack]=await getIntegrationsList(projectId);
+    expect(slack.capabilities).toEqual({canConnect:true,canSync:false,canDisconnect:false});
+  });
+
   it("preserves action capabilities and readiness while excluding manual imports", async () => {
     server.use(
       http.get(`${api}/v1/projects/${projectId}/integrations/status`, () => HttpResponse.json({

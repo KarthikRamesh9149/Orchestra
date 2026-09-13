@@ -43,15 +43,18 @@ export function getProviderReadiness(
   }
 ): ProviderReadiness {
   if (connector?.status === "revoked") {
+    // A revoked grant stays unusable, but a manager may start a fresh OAuth
+    // flow when the provider's current configuration/release gates allow it.
+    const fresh = getProviderReadiness(env, provider);
     return {
       state: "revoked",
-      canConnect: false,
+      canConnect: fresh.state === "enabled" && fresh.canConnect,
       canSync: false,
       canManualImport: false,
       canWebhook: false,
       reasons: ["connector_revoked"],
-      missingConfig: [],
-      deferredFeatures: []
+      missingConfig: fresh.missingConfig,
+      deferredFeatures: fresh.deferredFeatures
     };
   }
 

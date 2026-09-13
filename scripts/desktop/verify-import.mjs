@@ -3,7 +3,9 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
- 'src/modules/communications/provider-readiness.ts':'Step 6 self-hosted Gmail invitation-sender grants never advertise mailbox sync; mailbox-evidence grants retain existing capability.',
+ 'src/modules/communications/provider-readiness.ts':'Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked.',
+ 'tests/communication-providers.test.ts':'Step 6 regression for revoked connector reconnect, missing credentials and release gates.',
+ 'apps/beta-web/src/lib/api.integrations.test.ts':'Step 6 regression preserves explicitly allowed reconnect without revoked sync or disconnect.',
  'tests/gmail-invite-sender.test.ts':'Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities.',
  'apps/beta-web/src/lib/api.memory.test.ts':'Step 6 regression preserves authoritative Drive document provenance and partial processing.',
  'src/app/build-app.ts':'Step 6 opt-in self-hosted manifest/bearer bootstrap and native-only core transfer routes for desktop-local or opted-in self-hosted servers; managed route exposure is unchanged.',
@@ -35,7 +37,7 @@ const adjustments={
  'apps/beta-web/src/pages/ChatPage.test.tsx':'Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection.',
  'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 partial processing and native clipboard; Step 6 honest download initiation and exclusion of send-only Gmail from evidence connector counts. No redesign.',
  'apps/beta-web/src/pages/MemoryPage.test.tsx':'Step 6 regression verifies honest download initiation and excludes send-only Gmail from Memory sources.',
- 'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection and native encrypted core transfer settings, preserving existing styling and hosted browser behavior.',
+ 'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking inside existing integration cards.',
  'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
  'apps/beta-web/src/lib/api/client.ts':'Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior.',
  'apps/beta-web/src/pages/WorkspacesPage.tsx':'Step 4 truthful local workspace identity and setup navigation; Step 6 reports unconfirmed sign-out using the existing error surface without restyling.',

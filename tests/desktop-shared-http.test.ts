@@ -1,6 +1,35 @@
 import {describe,it,expect,vi} from 'vitest';
-import {SharedHttp,type SharedGrant} from '../apps/desktop/src/shared-http.js';
+import {SharedHttp,isSharedRoute,type SharedGrant} from '../apps/desktop/src/shared-http.js';
 const id='11111111-1111-4111-8111-111111111111';
+it('admits only scoped shared provider operations, not OAuth callbacks or token administration',()=>{
+ for(const [method,path] of [
+  ['GET','/v1/github/install-url'],['GET','/v1/github/installations'],
+  ['GET',`/v1/github/installations/${id}/repositories`],
+  ['GET',`/v1/projects/${id}/github`],['GET',`/v1/projects/${id}/github/status`],
+  ['POST',`/v1/projects/${id}/github/repositories/link`],
+  ['POST',`/v1/projects/${id}/github/repositories/${id}/archive`],
+  ['POST',`/v1/projects/${id}/github/backfill`],
+  ['POST',`/v1/projects/${id}/connectors/slack/connect`],
+  ['POST',`/v1/projects/${id}/connectors/gmail/connect`],
+  ['POST',`/v1/projects/${id}/connectors/google-drive/connect`],
+  ['POST',`/v1/projects/${id}/connectors/google-drive/disconnect`],
+  ['POST',`/v1/projects/${id}/connectors/google-drive/sync`],
+  ['GET',`/v1/projects/${id}/connectors/google-drive/status`],
+  ['GET',`/v1/projects/${id}/connectors/google-drive/files`],
+  ['GET',`/v1/projects/${id}/connectors/google-drive/sync-roots/candidates`],
+  ['PATCH',`/v1/projects/${id}/connectors/google-drive/sync-roots`],
+  ['POST',`/v1/projects/${id}/connectors/${id}/sync`],
+  ['POST',`/v1/projects/${id}/connectors/${id}/revoke`],
+ ])expect(isSharedRoute(method!,path!),`${method} ${path}`).toBe(true);
+ for(const [method,path] of [
+  ['POST','/v1/github/installations'],['GET','/v1/github/callback'],
+  ['GET','/v1/oauth/slack/callback'],['POST','/v1/mcp/tokens'],
+  ['POST',`/v1/projects/${id}/connectors/unknown/connect`],
+  ['POST',`/v1/projects/not-a-uuid/github/backfill`],
+  ['GET',`/v1/github/installations/${id}/tokens`],
+  ['DELETE',`/v1/github/installations/${id}/repositories`],
+ ])expect(isSharedRoute(method!,path!),`${method} ${path}`).toBe(false);
+});
 const manifest={product:'orchestra',protocol:1,minClientProtocol:1,maxClientProtocol:1,serverId:id,mode:'self-hosted',capabilities:['bearer-sessions-v1'],offlineCache:{enabled:false}};
 const connection={id,name:'Synthetic team',origin:'https://team.invalid',serverId:id};
 function setup(initial:SharedGrant|null=null){
