@@ -314,3 +314,30 @@ no configured Gmail, Drive, Slack or GitHub server credentials. Dedicated
 registrations were requested; desktop/production grants were not repurposed.
 Two-computer testing is explicitly deferred by the user. Step 7 has not begun
 and Step 6 has not been merged while its remaining credential-backed gate is open.
+
+### Dedicated Google server registration and real send (13 September 2026)
+
+- Created/configured a dedicated self-hosted Google web client in the desktop
+  test project, separate from desktop-native and production registrations.
+  Credentials remain in ignored private files and the encrypted server vault;
+  none are recorded here. API and worker were recreated locally only.
+- Verified localhost HTTPS in the real browser without bypassing a certificate
+  warning. The narrowly scoped test certificate expires 14 September 2026.
+- Connected the operator-controlled sender with send-only consent. The first
+  synthetic invitation honestly reported `gmail_send_http_403`: the Gmail API
+  was disabled in the dedicated Cloud project. Enabled that API, without
+  activating billing/trials, then submitted one controlled retry.
+- Real UI reported a secure invitation emailed to the operator-controlled test
+  address. A direct, read-only PostgreSQL check confirmed `email_delivery_status
+  = sent`, provider `gmail`, and `email_sent_at = 2026-09-13 08:40:06.779+00`.
+  The invitation role is developer and truth approval is false. The original
+  failed attempt remains separately recorded; no success was fabricated for it.
+- This confirms Gmail acceptance, not inbox receipt or a completed real-email
+  redemption/replay journey. A browser confirmation/transport timeout prevented
+  verification of cleanup of the superseded failed invitation; do not claim it
+  revoked until an authoritative check confirms it.
+- Drive server consent requested full-drive read access. Cancelled that grant
+  while checking the selected-file path; no full-drive grant was approved.
+  Drive, Slack and GitHub server ingestion/lifecycle qualification remains open.
+- Independent Step 7 work now exists separately; it does not close this gate.
+  Step 6 is still unmerged. Production and `orchestrav2` remain untouched.

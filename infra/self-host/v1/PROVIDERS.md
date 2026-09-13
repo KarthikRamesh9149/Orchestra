@@ -29,6 +29,9 @@ say an email was sent. Creating an invitation never verifies the recipient's ema
 
 For automatic delivery, connect an operator-controlled Gmail account to the
 intended project with the invitation-sender purpose and `gmail.send` consent.
+Enable the Gmail API (`gmail.googleapis.com`) in that registration's Google
+Cloud project first. OAuth consent alone does not enable the API; a valid
+send-only grant can otherwise receive HTTP 403 when sending an invitation.
 In beta mode set `BETA_GMAIL_INVITE_SENDER_ENABLED` to `true` to expose the sender
 capability. Verify the OAuth consent really is appropriate before approving it;
 do not grant mailbox-reading permission merely to send invitations.
@@ -69,5 +72,7 @@ remote revocation and reconnect. Confirm unrelated resources are excluded and
 logs contain no tokens. Each operator must qualify their own registrations;
 Step 5's local desktop-provider evidence does not certify server registrations.
 
-No real self-hosted Gmail delivery or server-provider certification is currently
-recorded. Keep those claims pending until that evidence exists.
+The 13 September 2026 isolated server test recorded Gmail accepting a real
+invitation after API activation, with `sent` persisted in PostgreSQL. This proves
+provider acceptance, not inbox receipt or completion of the invitation journey.
+Server ingestion-provider certification remains pending; see the Step 6 checkpoint.
