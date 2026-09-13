@@ -4828,11 +4828,11 @@
     {
       "id": "UI-0225",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 75,
+      "line": 79,
       "component": "button",
       "label": "\"Dismiss notification\"",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-75",
+      "desktopTestId": "desktop-MemoryPage-79",
       "bindings": [
         {
           "property": "onClick",
@@ -4843,16 +4843,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:75: exercise \"Dismiss notification\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:79: exercise \"Dismiss notification\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0226",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 253,
+      "line": 257,
       "component": "div",
       "label": "div: onDragOver, onDragLeave, onDrop",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-253",
+      "desktopTestId": "desktop-MemoryPage-257",
       "bindings": [
         {
           "property": "onDragOver",
@@ -4871,16 +4871,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:253: exercise div: onDragOver, onDragLeave, onDrop in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:257: exercise div: onDragOver, onDragLeave, onDrop in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0227",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 278,
+      "line": 282,
       "component": "button",
       "label": "Stop upload",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-278",
+      "desktopTestId": "desktop-MemoryPage-282",
       "bindings": [
         {
           "property": "onClick",
@@ -4891,16 +4891,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:278: exercise Stop upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:282: exercise Stop upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0228",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 295,
+      "line": 299,
       "component": "button",
       "label": "Remove ✕",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-295",
+      "desktopTestId": "desktop-MemoryPage-299",
       "bindings": [
         {
           "property": "onClick",
@@ -4911,16 +4911,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:295: exercise Remove ✕ in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:299: exercise Remove ✕ in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0229",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 313,
+      "line": 317,
       "component": "button",
       "label": "Choose File",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-313",
+      "desktopTestId": "desktop-MemoryPage-317",
       "bindings": [
         {
           "property": "onClick",
@@ -4931,16 +4931,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:313: exercise Choose File in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:317: exercise Choose File in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0230",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 322,
+      "line": 326,
       "component": "input",
       "label": "input: onChange",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-322",
+      "desktopTestId": "desktop-MemoryPage-326",
       "bindings": [
         {
           "property": "onChange",
@@ -4951,16 +4951,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:322: exercise input: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:326: exercise input: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0231",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 336,
+      "line": 340,
       "component": "button",
       "label": "Upload",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-336",
+      "desktopTestId": "desktop-MemoryPage-340",
       "bindings": [
         {
           "property": "onClick",
@@ -4971,16 +4971,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:336: exercise Upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:340: exercise Upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0232",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 365,
+      "line": 369,
       "component": "div",
       "label": "div: onClick, onKeyDown",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-365",
+      "desktopTestId": "desktop-MemoryPage-369",
       "bindings": [
         {
           "property": "onClick",
@@ -4995,16 +4995,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:365: exercise div: onClick, onKeyDown in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:369: exercise div: onClick, onKeyDown in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0233",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 366,
+      "line": 370,
       "component": "button",
       "label": "{`Open actions for ${doc.name}`}",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-366",
+      "desktopTestId": "desktop-MemoryPage-370",
       "bindings": [
         {
           "property": "onClick",
@@ -5015,16 +5015,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:366: exercise {`Open actions for ${doc.name}`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:370: exercise {`Open actions for ${doc.name}`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0234",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 378,
+      "line": 382,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-378",
+      "desktopTestId": "desktop-MemoryPage-382",
       "bindings": [
         {
           "property": "onClick",
@@ -5035,16 +5035,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:378: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:382: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0235",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 383,
+      "line": 387,
       "component": "button",
       "label": "Remove from memory",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-383",
+      "desktopTestId": "desktop-MemoryPage-387",
       "bindings": [
         {
           "property": "onClick",
@@ -5055,16 +5055,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:383: exercise Remove from memory in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:387: exercise Remove from memory in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0236",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 406,
+      "line": 410,
       "component": "motion.div",
       "label": "motion.div: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-406",
+      "desktopTestId": "desktop-MemoryPage-410",
       "bindings": [
         {
           "property": "onClick",
@@ -5075,16 +5075,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:406: exercise motion.div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:410: exercise motion.div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0237",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 442,
+      "line": 446,
       "component": "div",
       "label": "div: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-442",
+      "desktopTestId": "desktop-MemoryPage-446",
       "bindings": [
         {
           "property": "onClick",
@@ -5095,16 +5095,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:442: exercise div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:446: exercise div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0238",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 463,
+      "line": 467,
       "component": "DocMenu",
       "label": "DocMenu: onRemove, onDownload",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-463",
+      "desktopTestId": "desktop-MemoryPage-467",
       "bindings": [
         {
           "property": "onRemove",
@@ -5119,16 +5119,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:463: exercise DocMenu: onRemove, onDownload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:467: exercise DocMenu: onRemove, onDownload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0239",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 472,
+      "line": 476,
       "component": "div",
       "label": "div: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-472",
+      "desktopTestId": "desktop-MemoryPage-476",
       "bindings": [
         {
           "property": "onClick",
@@ -5139,16 +5139,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:472: exercise div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:476: exercise div: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0240",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 480,
+      "line": 484,
       "component": "button",
       "label": "Cancel",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-480",
+      "desktopTestId": "desktop-MemoryPage-484",
       "bindings": [
         {
           "property": "onClick",
@@ -5159,16 +5159,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:480: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:484: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0241",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 481,
+      "line": 485,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-481",
+      "desktopTestId": "desktop-MemoryPage-485",
       "bindings": [
         {
           "property": "onClick",
@@ -5179,16 +5179,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:481: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:485: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0242",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 560,
+      "line": 564,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-560",
+      "desktopTestId": "desktop-MemoryPage-564",
       "bindings": [
         {
           "property": "onClick",
@@ -5199,31 +5199,31 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:560: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:564: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0243",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 570,
+      "line": 574,
       "component": "button",
       "label": "\"Slack unavailable\"",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-570",
+      "desktopTestId": "desktop-MemoryPage-574",
       "bindings": [],
       "mode": "local and shared; remote mutations require server authority",
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:570: exercise \"Slack unavailable\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:574: exercise \"Slack unavailable\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0244",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 654,
+      "line": 658,
       "component": "button",
       "label": "{`Open ${thread.subject ?? \"untitled thread\"} from ${providerLabel(thread.provider)}`}",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-654",
+      "desktopTestId": "desktop-MemoryPage-658",
       "bindings": [
         {
           "property": "onClick",
@@ -5234,16 +5234,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:654: exercise {`Open ${thread.subject ?? \"untitled thread\"} from ${providerLabel(thread.provider)}`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:658: exercise {`Open ${thread.subject ?? \"untitled thread\"} from ${providerLabel(thread.provider)}`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0245",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 678,
+      "line": 682,
       "component": "button",
       "label": "Open Integrations →",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-678",
+      "desktopTestId": "desktop-MemoryPage-682",
       "bindings": [
         {
           "property": "onClick",
@@ -5254,16 +5254,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:678: exercise Open Integrations → in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:682: exercise Open Integrations → in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0246",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 920,
+      "line": 924,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-920",
+      "desktopTestId": "desktop-MemoryPage-924",
       "bindings": [
         {
           "property": "onClick",
@@ -5274,16 +5274,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:920: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:924: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0247",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 930,
+      "line": 934,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-930",
+      "desktopTestId": "desktop-MemoryPage-934",
       "bindings": [
         {
           "property": "onClick",
@@ -5294,16 +5294,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:930: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:934: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0248",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 957,
+      "line": 961,
       "component": "DropZone",
       "label": "DropZone: onUploaded",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-957",
+      "desktopTestId": "desktop-MemoryPage-961",
       "bindings": [
         {
           "property": "onUploaded",
@@ -5314,16 +5314,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:957: exercise DropZone: onUploaded in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:961: exercise DropZone: onUploaded in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0249",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 967,
+      "line": 971,
       "component": "input",
       "label": "{SEARCH_PLACEHOLDERS[placeholderIndex]}",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-967",
+      "desktopTestId": "desktop-MemoryPage-971",
       "bindings": [
         {
           "property": "onChange",
@@ -5346,16 +5346,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:967: exercise {SEARCH_PLACEHOLDERS[placeholderIndex]} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:971: exercise {SEARCH_PLACEHOLDERS[placeholderIndex]} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0250",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 988,
+      "line": 992,
       "component": "button",
       "label": "button: onClick, onKeyDown",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-988",
+      "desktopTestId": "desktop-MemoryPage-992",
       "bindings": [
         {
           "property": "onClick",
@@ -5370,16 +5370,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:988: exercise button: onClick, onKeyDown in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:992: exercise button: onClick, onKeyDown in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0251",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 1034,
+      "line": 1038,
       "component": "DocCard",
       "label": "DocCard: onRemove, onDownload",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-1034",
+      "desktopTestId": "desktop-MemoryPage-1038",
       "bindings": [
         {
           "property": "onRemove",
@@ -5394,16 +5394,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1034: exercise DocCard: onRemove, onDownload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1038: exercise DocCard: onRemove, onDownload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0252",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 1045,
+      "line": 1049,
       "component": "button",
       "label": "Show all docs →",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-1045",
+      "desktopTestId": "desktop-MemoryPage-1049",
       "bindings": [
         {
           "property": "onClick",
@@ -5414,16 +5414,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1045: exercise Show all docs → in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1049: exercise Show all docs → in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0253",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 1049,
+      "line": 1053,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-1049",
+      "desktopTestId": "desktop-MemoryPage-1053",
       "bindings": [
         {
           "property": "onClick",
@@ -5434,16 +5434,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1049: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1053: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0254",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 1061,
+      "line": 1065,
       "component": "CommunicationsPanel",
       "label": "CommunicationsPanel: onConnect",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-1061",
+      "desktopTestId": "desktop-MemoryPage-1065",
       "bindings": [
         {
           "property": "onConnect",
@@ -5454,16 +5454,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1061: exercise CommunicationsPanel: onConnect in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1065: exercise CommunicationsPanel: onConnect in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0255",
       "source": "apps/beta-web/src/pages/MemoryPage.tsx",
-      "line": 1078,
+      "line": 1082,
       "component": "Toast",
       "label": "Toast: onClose",
       "existingTestFile": "apps/beta-web/src/pages/MemoryPage.test.tsx",
-      "desktopTestId": "desktop-MemoryPage-1078",
+      "desktopTestId": "desktop-MemoryPage-1082",
       "bindings": [
         {
           "property": "onClose",
@@ -5474,7 +5474,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1078: exercise Toast: onClose in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryPage.tsx:1082: exercise Toast: onClose in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0256",

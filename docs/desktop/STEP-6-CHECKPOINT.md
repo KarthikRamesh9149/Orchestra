@@ -341,3 +341,48 @@ and Step 6 has not been merged while its remaining credential-backed gate is ope
   Drive, Slack and GitHub server ingestion/lifecycle qualification remains open.
 - Independent Step 7 work now exists separately; it does not close this gate.
   Step 6 is still unmerged. Production and `orchestrav2` remain untouched.
+
+### Receipt, redemption and selected Drive source follow-up
+
+- Confirmed the one synthetic invitation in the intended Gmail mailbox through
+  the real browser. Kept its activation code out of tracked evidence.
+- Six real HTTPS acceptance checks passed: receipt/superseded failed-invite
+  revocation, wrong-email rejection, account creation from the received code,
+  replay rejection, logout/new-password login with preserved workspace access,
+  and exactly one redemption without truth-approver escalation. Private evidence:
+  `.desktop/self-host-v1-qualification/received-invite-evidence.json`.
+  This is real mailbox plus server-API qualification, not packaged-UI signup.
+- Authorized the dedicated server client's full-drive **read** scope under the
+  user's explicit setup authority. No Drive writes. Verified the initial all-drive
+  root was unselected, then selected only the existing labelled synthetic document.
+  Read scope is broader than ingestion scope; do not describe this as selected-file
+  OAuth. No desktop-native or production registration was changed.
+- First sync completed: 1 scanned, 1 downloaded, 1 indexed, 0 failed. Repeated sync
+  completed: 1 scanned, 0 downloaded, 0 indexed, 1 skipped, 0 failed. PostgreSQL
+  retained exactly one imported file and one document. The real viewer rendered
+  the seven-reviewer fact, source-link acceptance criterion and revision-two marker.
+- Live testing reproduced false upload provenance and a send-only Gmail account
+  appearing as communication evidence. Three initially failing regressions now
+  pass. The correction preserves server source labels and partial-processing state,
+  disables sender-only sync also in self-hosted mode, and excludes that sender
+  from Memory connector counts. Mailbox-evidence Gmail capability is preserved.
+- 95 focused backend tests and 25 frontend tests passed. Backend TypeScript and
+  frontend production build passed in a clean detached worktree (the original
+  checkout contains unrelated untracked duplicate files, which were preserved).
+- Deployed an incremental local qualification image based on the previously
+  clean-built image; not a new clean-image release certification. Exact image:
+  `sha256:bc92b2c633814ffbaff8e01c5a6627ac88a0fca62430d66524aa2deeaa0b0c70`.
+  Browser reload verified `1 docs · 0 connectors`, Google Drive provenance,
+  honest partial processing, and the real source content in the viewer.
+- Remaining: Drive server recovery/revocation/reconnect and citation checks,
+  dedicated Slack/GitHub server registrations and their full lifecycle checks,
+  then the final exact-candidate Step 6 gate. Two-machine testing remains deferred.
+  Step 6 is not complete or merged; Step 1–5 bounded Mac qualification is recorded
+  separately and was not rerun in full by these server tests.
+- Broader suites: 1,594 backend tests passed with one stale review-hash failure
+  and 13 explicitly skipped tests. After synchronizing the regenerated review
+  manifest into the clean test worktree, all five affected desktop-contract tests
+  passed. All 230 frontend tests passed. Import/inventory checks passed in the
+  clean worktree. This is a repaired targeted rerun, not a claim the first full
+  run was entirely green. Reloaded Settings also confirmed send-only Gmail has
+  Disconnect but no Sync action; Drive retains Sync/Disconnect.

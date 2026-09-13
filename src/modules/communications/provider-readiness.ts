@@ -187,11 +187,15 @@ function baseReadiness(
       };
     }
     const missing = hasAll(env, ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI"]);
+    const invitationOnly = isMvpBetaMode(env) || (
+      connector?.configJson != null && typeof connector.configJson === "object" &&
+      "purpose" in connector.configJson && connector.configJson.purpose === "invitation_sender"
+    );
     return readinessFromMissing(missing, {
       enabledReason: "gmail_invitation_sender_oauth_configured",
       gatedReason: "gmail_configuration_incomplete",
-      canSync: !isMvpBetaMode(env),
-      deferredFeatures: isMvpBetaMode(env)
+      canSync: !invitationOnly,
+      deferredFeatures: invitationOnly
         ? ["gmail_mailbox_sync_disabled_for_invitation_sender"]
         : env.GOOGLE_PUBSUB_TOPIC ? [] : ["gmail_push_watch_deferred_without_google_pubsub_topic"]
     });

@@ -887,17 +887,19 @@ function toDoc(row: any): Doc {
   const title = row.title ?? row.name ?? version.title ?? "Uploaded document";
   const fileSize = Number(version.fileSize ?? row.fileSize ?? 0);
   const fileName = version.fileName ?? row.fileName ?? title;
+  const externalSource = typeof row.sourceProvider === "string" && !["upload", "manual_upload"].includes(row.sourceProvider);
+  const sourceLabel = externalSource ? (row.sourceLabel || row.sourceProvider) : "Uploaded";
   return {
     id: row.id ?? row.documentId,
     name: title,
     type: version.mimeType?.includes("wordprocessingml") ? "srs" : "spec",
     fileName,
-    size: fileSize > 0 ? `${(fileSize / 1024 / 1024).toFixed(1)} MB` : "Uploaded",
+    size: fileSize > 0 ? `${(fileSize / 1024 / 1024).toFixed(1)} MB` : sourceLabel,
     pages: version.pageCount ?? 1,
     status: version.status === "failed" ? "failed" : version.status === "ready" ? "ready" : version.status === "partial" ? "partial" : "processing",
     uploadedBy: "Project member",
     uploadedAt: row.createdAt ? new Date(row.createdAt).toLocaleDateString() : "Recently",
-    excerpt: row.summary ?? version.parseWarningJson?.summary ?? "Uploaded project memory document."
+    excerpt: row.summary ?? version.parseWarningJson?.summary ?? (externalSource ? `Project memory document from ${sourceLabel}.` : "Uploaded project memory document.")
   };
 }
 

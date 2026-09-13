@@ -1,13 +1,20 @@
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { server } from "../test/server";
-import { archiveDocument, clearAuth, getCommunicationThreads, reconcileDocumentUpload, uploadDoc } from "./api";
+import { archiveDocument, clearAuth, getDocs, getCommunicationThreads, reconcileDocumentUpload, uploadDoc } from "./api";
 
 const api = "http://localhost:3000";
 const projectId = "11111111-1111-4111-8111-111111111111";
 
 describe("[FIX-20] Memory backend contracts", () => {
   beforeEach(() => clearAuth());
+
+  it("preserves authoritative Drive provenance instead of claiming an upload", async () => {
+    server.use(http.get(`${api}/v1/projects/${projectId}/documents`, () => HttpResponse.json({data:[{
+      id:'drive-document', title:'Synthetic Drive document', sourceProvider:'google_drive', sourceLabel:'Google Drive', currentVersion:{status:'partial'}
+    }]})));
+    expect((await getDocs(projectId))[0]).toMatchObject({size:'Google Drive',excerpt:'Project memory document from Google Drive.',status:'partial'});
+  });
 
   it("queries all communication providers and suppresses duplicate source projections", async () => {
     let query = "";

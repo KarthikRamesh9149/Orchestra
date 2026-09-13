@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 773,
+  "unchangedImportedFiles": 770,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -57,10 +57,16 @@
       "reason": "Step 6 regression for unconfirmed shared-desktop logout; existing browser cookie contracts retained."
     },
     {
+      "path": "apps/beta-web/src/lib/api.memory.test.ts",
+      "sourceSha256": "96ed837e1c2e230bd439e7a9bddfb19343cc8b8f561b117c039cf9af8db7f088",
+      "importedSha256": "4db0f8ddb4af3ba60fa9ab6fabf9c2812e60e00fa2df1e43784308661c96d5aa",
+      "reason": "Step 6 regression preserves authoritative Drive document provenance and partial processing."
+    },
+    {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "342ee585ca3e77d7700c1022293b5c73f679a2a603f3bfffde367fe13c6e6f09",
-      "reason": "Step 4 partial document state must not display as endlessly processing; Step 6 preserves shared login state when server logout is unconfirmed."
+      "importedSha256": "691ad4839da3178fe0f30f39eb76cf07665977c2968814c73b939a774a8e0c2b",
+      "reason": "Step 4 honest partial processing; Step 6 preserves unconfirmed shared logout state and authoritative provider document provenance."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -101,14 +107,14 @@
     {
       "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",
       "sourceSha256": "c4e17f06fa5564d83f0a280ce3e0115e7c52f8c32aa9e38c4bd9062f846f7eec",
-      "importedSha256": "bc4dab839e207e3f5d91b595d7713f4d79338b85575128da6cac6fa582272317",
-      "reason": "Step 6 regression verifies renderer-initiated download reports a request, not a completed native save."
+      "importedSha256": "a8fcd19ee9bf1c7600a38ddf23847932e26e89934c39e355e174c1b9ab6ee1ff",
+      "reason": "Step 6 regression verifies honest download initiation and excludes send-only Gmail from Memory sources."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
       "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
-      "importedSha256": "d4bbc6e6454c8abb8886adc40c73ec0b2dca2ee273bdcb86b13d4d4b4615d947",
-      "reason": "Step 4 truthful partial-processing status and native clipboard feedback; Step 6 shared/browser download wording no longer claims a saved file before the save dialog completes. No redesign."
+      "importedSha256": "104b68a1507d111818a5cfc4d4504f456e8257d32a546921cdb7ac55e0fe3a24",
+      "reason": "Step 4 partial processing and native clipboard; Step 6 honest download initiation and exclusion of send-only Gmail from evidence connector counts. No redesign."
     },
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
@@ -213,6 +219,12 @@
       "reason": "Step 5 retain honest lexical communication evidence when desktop embedding configuration or request allowance is unavailable; no mock vectors, semantic completion remains explicit."
     },
     {
+      "path": "src/modules/communications/provider-readiness.ts",
+      "sourceSha256": "dd0ec2d1f67d7bd0982e1f38ccc0fd8e731af71875fe4cdf7fb02ced76a8a1b2",
+      "importedSha256": "c3f2928d7482ade55a32ac09f1177b0ea1387de8c1787c58c31bbabf99d29e6c",
+      "reason": "Step 6 self-hosted Gmail invitation-sender grants never advertise mailbox sync; mailbox-evidence grants retain existing capability."
+    },
+    {
       "path": "src/modules/deep-research/schemas.ts",
       "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
       "importedSha256": "a0a9b4e1837748146a95d99db416d4baa1eae99781c03e58eacc25259795c4f3",
@@ -253,6 +265,12 @@
       "sourceSha256": "805cfbd1afc7a08bba2c823758f2499a9cb46ff6b907ded01262ed768457582f",
       "importedSha256": "7058480945442f57f673976af848e46cb6ea69aace6b23389459df047a239f5e",
       "reason": "Step 5 regression coverage for native source identity and authoritative desktop Drive indexing completion; inherited document tests retained."
+    },
+    {
+      "path": "tests/gmail-invite-sender.test.ts",
+      "sourceSha256": "25fadc1fae652c8eb745faaad8897458cb93121460ef0650ca04d267c65dc7c5",
+      "importedSha256": "f646b1f7eccc044e05d8d28a636d445f507d67844f9f5a7bb3749a5c4d303959",
+      "reason": "Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities."
     }
   ]
 }

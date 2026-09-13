@@ -3,6 +3,9 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'src/modules/communications/provider-readiness.ts':'Step 6 self-hosted Gmail invitation-sender grants never advertise mailbox sync; mailbox-evidence grants retain existing capability.',
+ 'tests/gmail-invite-sender.test.ts':'Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities.',
+ 'apps/beta-web/src/lib/api.memory.test.ts':'Step 6 regression preserves authoritative Drive document provenance and partial processing.',
  'src/app/build-app.ts':'Step 6 opt-in self-hosted manifest/bearer bootstrap and native-only core transfer routes for desktop-local or opted-in self-hosted servers; managed route exposure is unchanged.',
  'src/lib/ai/index.ts':'Step 6 self-hosting without an operator key uses explicit offline providers rather than simulated generation, vectors or transcription.',
  'src/lib/storage/index.ts':'Step 6 self-hosted local storage uses the private bounded driver; hosted storage behavior remains unchanged.',
@@ -24,14 +27,14 @@ const adjustments={
  'apps/beta-web/src/components/socrates/DeepResearch.tsx':'Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation.',
  'apps/beta-web/src/components/socrates/DeepResearch.test.tsx':'Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered.',
  'apps/beta-web/src/lib/types.ts':'Step 4 preserve authoritative partial document processing state.',
- 'apps/beta-web/src/lib/api.ts':'Step 4 partial document state must not display as endlessly processing; Step 6 preserves shared login state when server logout is unconfirmed.',
+ 'apps/beta-web/src/lib/api.ts':'Step 4 honest partial processing; Step 6 preserves unconfirmed shared logout state and authoritative provider document provenance.',
  'apps/beta-web/src/lib/api.auth.test.ts':'Step 6 regression for unconfirmed shared-desktop logout; existing browser cookie contracts retained.',
  'apps/beta-web/src/context/AuthContext.tsx':'Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged.',
  'apps/beta-web/src/context/AuthContext.bootstrap.test.tsx':'Step 6 shared logout failure regression alongside stale bootstrap protection.',
  'apps/beta-web/src/pages/ChatPage.tsx':'Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions.',
  'apps/beta-web/src/pages/ChatPage.test.tsx':'Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection.',
- 'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 truthful partial-processing status and native clipboard feedback; Step 6 shared/browser download wording no longer claims a saved file before the save dialog completes. No redesign.',
- 'apps/beta-web/src/pages/MemoryPage.test.tsx':'Step 6 regression verifies renderer-initiated download reports a request, not a completed native save.',
+ 'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 partial processing and native clipboard; Step 6 honest download initiation and exclusion of send-only Gmail from evidence connector counts. No redesign.',
+ 'apps/beta-web/src/pages/MemoryPage.test.tsx':'Step 6 regression verifies honest download initiation and excludes send-only Gmail from Memory sources.',
  'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI and provider controls; Step 6 adds lazy server connection and native encrypted core transfer settings, preserving existing styling and hosted browser behavior.',
  'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
  'apps/beta-web/src/lib/api/client.ts':'Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior.',

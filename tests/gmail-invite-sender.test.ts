@@ -21,6 +21,11 @@ const betaEnv = {
 } as AppEnv;
 
 describe("Gmail invitation sender", () => {
+  it("keeps self-hosted invitation senders out of mailbox sync", () => {
+    const env={...betaEnv,ORCHESTRA_PROFILE:'full',MVP_BETA_MODE:false} as AppEnv;
+    expect(getProviderReadiness(env,'gmail',{status:'connected',credentialsRef:'synthetic-ref',configJson:{purpose:'invitation_sender'}})).toMatchObject({canSync:false,deferredFeatures:['gmail_mailbox_sync_disabled_for_invitation_sender']});
+    expect(getProviderReadiness(env,'gmail',{status:'connected',credentialsRef:'synthetic-ref',configJson:{purpose:'mailbox_evidence'}}).canSync).toBe(true);
+  });
   it("is separately beta-gated, connectable when configured, and never enables mailbox sync", () => {
     expect(getProviderReadiness(betaEnv, "gmail")).toMatchObject({
       state: "enabled",

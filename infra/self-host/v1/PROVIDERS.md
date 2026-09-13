@@ -72,7 +72,9 @@ remote revocation and reconnect. Confirm unrelated resources are excluded and
 logs contain no tokens. Each operator must qualify their own registrations;
 Step 5's local desktop-provider evidence does not certify server registrations.
 
-The 13 September 2026 isolated server test recorded Gmail accepting a real
-invitation after API activation, with `sent` persisted in PostgreSQL. This proves
-provider acceptance, not inbox receipt or completion of the invitation journey.
-Server ingestion-provider certification remains pending; see the Step 6 checkpoint.
+The 13 September 2026 isolated server test verified real Gmail receipt, account
+activation from that received code, wrong-email/replay rejection, password login,
+and single-use membership persistence. Drive imported one explicitly selected
+synthetic source, repeated sync without duplication, and displayed its content
+in Memory/viewer. Drive lifecycle and Slack/GitHub server qualification remain
+pending; see the Step 6 checkpoint for the exact scope and remaining gates.
