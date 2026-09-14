@@ -36,12 +36,44 @@ New verified corrections:
   client and rejects links escaping the runtime. The original failed extraction
   proof is retained at `/private/tmp/orchestra-step7-real-extraction-GFjrNe/report.json`.
 
-Current source tests: 1,648 backend/desktop passed, 13 documented skips; frontend
+Current source tests: 1,649 backend/desktop passed, 13 documented skips; frontend
 238 passed before the packaging-only change. Desktop build/typecheck, source
 inventory/provenance, local secret scan and three npm audits pass. These results
 do not close the remaining actual update installation/rollback, physical
 sleep/wake and final exact-package qualification work. No automatic updater,
 release signing or Step 7 completion is claimed.
+
+### Relocatable 0.0.5 candidate measurements
+
+Candidate package `1e7b4d87-037d-44f7-932e-3063db6a4d5c`, code committed as
+`6699131`, was tested on the existing synthetic 0.0.4 transfer profile without
+resetting its database. Sixty route samples: p95 67.67 ms; thirty
+handler-to-frame samples: p95 12.60 ms; twenty offline retrieval samples: p95
+3 ms; observed CLS 0.00000681; no renderer errors. One populated launch was
+8.835 seconds while package extraction was running concurrently. These are
+single-Mac measurements, not cold-launch p95, INP, external AI or clean-machine
+certification. Evidence: `/private/tmp/orchestra-step7-benchmark-RKc8AO/report.json`.
+
+The extraction harness also found AppleDouble metadata sidecars in the default
+ditto ZIP. The bundle archive recipe now explicitly omits resource-fork metadata
+instead of silently excluding discrepancies from the hash comparison. Every
+file, executable flag and symlink must match. Failed runs remain retained;
+extraction is not installation or rollback proof.
+
+The corrected full archive subsequently passed: all 20,491 entries match the
+bundle's file hashes, executable flags, directories and symlinks. The extracted
+application then completed fresh onboarding, source upload/view/download,
+cited offline Socrates, multiple chats, draft persistence, deletion and restart
+from its relocated directory. Evidence:
+`/private/tmp/orchestra-step7-real-extraction-F40Z4o/report.json` and its
+`packaged-smoke.log`. This is a real relocated package test on this Mac, not a
+second clean computer, signed-public-release test or automatic update install.
+
+An idle rerun after extraction finished recorded: one populated launch 4.039 s,
+warm-route p95 69.86 ms, handler-to-frame p95 11.30 ms, local retrieval p95 5 ms,
+CLS 0.00000689 and no renderer errors. Same package, profile and sample counts;
+both runs are retained. Evidence:
+`/private/tmp/orchestra-step7-benchmark-v4FTbk/report.json`.
 
 Initial base: `86e540e`; resumed with completed Step 6 main `2285d06` merged into
 `codex/desktop-step-7` on 14 September. Step 6 is complete for the approved
