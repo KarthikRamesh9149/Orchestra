@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 767,
+  "unchangedImportedFiles": 765,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -89,14 +89,14 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
       "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
-      "importedSha256": "b1c0f5230ed6bcdb04dba591ae619f85aceb9f00f97f08d35e74ace8259ad947",
-      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection."
+      "importedSha256": "79c9d686ae3bc9e4ef1531baba6ab0ba661be1ff7c968d6fcf0f212eaff6a3c0",
+      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
     },
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "02248e68538955f9e16ac89059812755b781fbcd9ab282761a9a28b184f03908",
-      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions."
+      "importedSha256": "2c83faf661f3e6cafc951e48cd3d4979f8af1f03de81fabc60260edd261ba131",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
     },
     {
       "path": "apps/beta-web/src/pages/DashboardPage.tsx",
@@ -107,8 +107,8 @@
     {
       "path": "apps/beta-web/src/pages/DeliveryPage.tsx",
       "sourceSha256": "d0ebdf4b131fe053a09bb19a1103e84210773baa3c2bb51a20e6bc99cecbcdd7",
-      "importedSha256": "bdd8daec25380b2962811f0ad68e5d7c8d03923ae838eb880ed512be2bb688bd",
-      "reason": "Steps 4/5 native context-pack save, clipboard and scoped MCP pairing; preserve hosted behavior and existing visual tokens."
+      "importedSha256": "952d3fe67a300c2196c061b9e8bc1afabb627ae9843c5afce3207b5347eb6543",
+      "reason": "Steps 4/5 native context-pack save, clipboard and scoped MCP pairing; preserve hosted behavior and existing visual tokens. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
     },
     {
       "path": "apps/beta-web/src/pages/LiveDocViewerPage.tsx",
@@ -141,10 +141,22 @@
       "reason": "Step 4 reuse existing accessible teal/red theme tokens for approval and review controls; preserve layout and interaction."
     },
     {
+      "path": "apps/beta-web/src/pages/TruthChangePacketPage.tsx",
+      "sourceSha256": "a0f9f8b79b45941c6e03ee241c579d9ba975a6fe73c57bd55e42058bb1532f5f",
+      "importedSha256": "9df31ae2e28b59b05683ac29c30f4d27dd16125bfd4b09cb6caccf50ef339406",
+      "reason": "Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
+    },
+    {
       "path": "apps/beta-web/src/pages/TruthInboxPage.tsx",
       "sourceSha256": "1b315aa52bc52f1ed62c358d8dd05156c61a28055424fab5e3d09fbd2f683ad7",
-      "importedSha256": "477243879dcb1ebc734a81a98e2932865bdae86f01d2698b2349e3133d002edc",
-      "reason": "Step 4 explicit filter names for reliable keyboard and assistive-technology operation; no styling changes."
+      "importedSha256": "9264e19edb5d842eb8819dc976ff6b902fbdbacba8327096488a8fb946664cbc",
+      "reason": "Step 4 explicit filter names for reliable keyboard and assistive-technology operation; no styling changes. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
+    },
+    {
+      "path": "apps/beta-web/src/pages/WatchtowerPage.tsx",
+      "sourceSha256": "936754a591d911880ee63de02bfeebe6dbc97e32b6a7bc2717b9c8e0d2215512",
+      "importedSha256": "89d60cfad3d3894c4eba447e5fef74e67802129b1767d520012b3e6edd2d12db",
+      "reason": "Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
     },
     {
       "path": "apps/beta-web/src/pages/WorkspacesPage.test.tsx",

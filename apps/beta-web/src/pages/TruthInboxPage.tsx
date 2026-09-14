@@ -161,7 +161,7 @@ export function TruthInboxPage() {
       if (action === "ask_socrates") {
         const outcome = result.outcome as { answer?: { sessionId?: string; session?: { sessionId?: string } } } | null;
         const sessionId = outcome?.answer?.sessionId ?? outcome?.answer?.session?.sessionId;
-        showToast("Socrates opened an evidence-backed conversation.", "success");
+        showToast("Conversation opened.", "success");
         navigate(sessionId ? `/chat/${encodeURIComponent(sessionId)}` : "/chat");
         return;
       }
@@ -206,7 +206,7 @@ export function TruthInboxPage() {
           <div>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]">Decision intelligence</p>
             <h1 id="truth-inbox-heading" className="mt-1 font-sans text-2xl font-semibold text-[var(--text-default)]">Truth Inbox</h1>
-            <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">What needs your attention today—evidence-backed changes, conflicts, gaps, drift, and connector health in one review queue.</p>
+            <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">Changes and issues that need review.</p>
           </div>
           <button type="button" onClick={() => void load(true, false)} disabled={state === "loading" || state === "refreshing"} className="flex items-center gap-2 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)] disabled:opacity-50">
             <RefreshCw size={14} aria-hidden="true" /> {state === "loading" || state === "refreshing" ? "Refreshing…" : "Refresh"}
@@ -243,7 +243,7 @@ export function TruthInboxPage() {
         </div>
 
         {error ? <div role="alert" className="mt-4 rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error}</div> : null}
-        {state === "loading" ? <p role="status" className="mt-8 text-sm text-[var(--text-muted)]">Loading the authoritative review queue…</p> : null}
+        {state === "loading" ? <p role="status" className="mt-8 text-sm text-[var(--text-muted)]">Loading review queue…</p> : null}
         {state === "failed" ? <button type="button" onClick={() => void load(true, false)} className="mt-4 rounded-lg bg-[var(--terracotta)] px-3 py-2 text-xs text-white">Try again</button> : null}
         {state === "empty" ? <p role="status" className="mt-8 rounded-xl border border-[var(--border-soft)] p-5 text-sm text-[var(--text-muted)]">Nothing currently matches these filters. Deferred, snoozed, and completed items remain available through Status.</p> : null}
 

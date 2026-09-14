@@ -623,7 +623,7 @@ function ChatInput({
           </div>
         </div>
         <p className="mt-1.5 text-center font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">
-          Socrates cites sources. Double-check important decisions.
+          Check sources before acting.
         </p>
       </div>
     </div>
@@ -1136,14 +1136,14 @@ export function ChatPage() {
         try {
           cancellationConfirmed = Boolean(await activeRequest.cancelPromise);
         } catch {
-          addToast("Socrates could not confirm cancellation. Reload the conversation to check its authoritative state.", "error");
+          addToast("Cancellation wasn’t confirmed. Reload to check the response.", "error");
         }
         assistantMsg = {
           id: activeRequest.assistantMessageId ?? makeMessageId(),
           role: "assistant",
           content: cancellationConfirmed
             ? "Response stopped."
-            : "Cancellation was not confirmed. Reload this conversation to check the authoritative response.",
+            : "Cancellation wasn’t confirmed. Reload to check the response.",
           timestamp: new Date().toISOString(),
           isError: true,
         };

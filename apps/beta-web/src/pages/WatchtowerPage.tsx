@@ -109,7 +109,7 @@ export function WatchtowerPage() {
         </div>
 
         {error ? <div role="alert" className="mt-4 rounded-lg border border-[#9E3B2E]/20 bg-[#9E3B2E]/5 p-3 text-sm text-[#9E3B2E]">{error}</div> : null}
-        {state === "loading" ? <p role="status" className="mt-8 text-sm text-[var(--text-muted)]">Loading authoritative Watchtower evidence…</p> : null}
+        {state === "loading" ? <p role="status" className="mt-8 text-sm text-[var(--text-muted)]">Loading findings…</p> : null}
         {state === "empty" ? <p role="status" className="mt-8 rounded-xl border border-[var(--border-soft)] p-5 text-sm text-[var(--text-muted)]">No current drift, conflict, missing-evidence, or Safe-to-Touch signals were found.</p> : null}
 
         {suggestions.length > 0 ? <section className="mt-7" aria-labelledby="review-signals-heading">

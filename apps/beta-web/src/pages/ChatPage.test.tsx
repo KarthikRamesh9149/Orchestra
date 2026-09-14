@@ -542,7 +542,7 @@ describe("server-authoritative Socrates chat", () => {
     await user.type(input, "Fail cancellation honestly{Enter}");
     fireEvent.keyDown(input, { key: "Enter" });
 
-    expect(await screen.findByText("Cancellation was not confirmed. Reload this conversation to check the authoritative response.")).toBeInTheDocument();
+    expect(await screen.findByText("Cancellation wasn’t confirmed. Reload to check the response.")).toBeInTheDocument();
     expect(screen.queryByText("Response stopped.")).not.toBeInTheDocument();
   });
 });

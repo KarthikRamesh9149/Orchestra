@@ -133,7 +133,7 @@ export function TruthChangePacketPage() {
     }
   };
 
-  if (state === "loading") return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><p role="status" className="text-sm text-[var(--text-muted)]">Building the evidence-backed change packet…</p></div>;
+  if (state === "loading") return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><p role="status" className="text-sm text-[var(--text-muted)]">Loading change packet…</p></div>;
   if (state === "failed" || !packet) return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><div role="alert" className="rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error ?? "Truth Change Packet unavailable."}</div><button type="button" onClick={() => { setState("loading"); void load(); }} className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)]">Try again</button></div>;
 
   return (

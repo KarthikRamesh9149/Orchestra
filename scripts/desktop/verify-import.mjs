@@ -55,6 +55,11 @@ const adjustments={
  'apps/vscode-extension/package-lock.json':'Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh.'
 };
 const changes=[];
+// User-authorized UI copy cleanup during Step 8; no styling or behavior changes.
+for (const file of ['ChatPage.tsx','ChatPage.test.tsx','DeliveryPage.tsx','TruthInboxPage.tsx','TruthChangePacketPage.tsx','WatchtowerPage.tsx']) {
+ const key=`apps/beta-web/src/pages/${file}`;
+ adjustments[key]=(adjustments[key] ? adjustments[key]+' ' : '')+'Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes.';
+}
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);
