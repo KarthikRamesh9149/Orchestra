@@ -5,7 +5,7 @@ import {readFile,mkdtemp,writeFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 const repo=resolve(import.meta.dirname,'../..');
-const packageRoot=(await readFile(join(repo,'.desktop/latest-package.txt'),'utf8')).trim();
+const packageRoot=process.argv[2]?resolve(process.argv[2]):(await readFile(join(repo,'.desktop/latest-package.txt'),'utf8')).trim();
 const data=await mkdtemp('/private/tmp/orchestra-step4-acceptance-');
 const pdf=await new Promise(resolve=>{const chunks=[],document=new PDFDocument();document.on('data',chunk=>chunks.push(chunk));document.on('end',()=>resolve(Buffer.concat(chunks)));document.fontSize(18).text('Orchestra Desktop Pilot Requirements');document.fontSize(12).text('The pilot launch date is 21 October 2026. Local workspaces need no hosted account. Evidence remains on this Mac. Acceptance requires upload, cited search, persistent chats and drafts, and restart recovery. The responsible owner is the local product manager. Changes require human approval; generated suggestions are not accepted truth.');document.end();});
 const results={profile:data,packageRoot,passed:[],errors:[],httpFailures:[]};
@@ -15,7 +15,7 @@ function observe(){page.on('pageerror',error=>results.errors.push(error.message)
 const record=name=>{results.passed.push(name);console.log('PASS',name);};
 observe();
 try{
- await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Continue without AI'}).click({timeout:180000});
+ await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Continue locally',exact:true}).click({timeout:180000});
  await page.getByLabel('New workspace name').fill('Mac Acceptance Workspace');await page.getByRole('button',{name:'Create workspace',exact:true}).click();
  await page.waitForURL('**/memory',{timeout:30000});record('local onboarding and workspace creation');
  await page.locator('input[type=file]').first().setInputFiles({name:'Desktop-Pilot-Requirements.pdf',mimeType:'application/pdf',buffer:pdf});

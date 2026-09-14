@@ -9677,6 +9677,13 @@
     },
     {
       "lock": "apps/desktop/package-lock.json",
+      "location": "node_modules/pend",
+      "version": "1.2.0",
+      "license": "MIT",
+      "integrity": "sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg=="
+    },
+    {
+      "lock": "apps/desktop/package-lock.json",
       "location": "node_modules/plist",
       "version": "3.1.1",
       "license": "MIT",
@@ -9786,6 +9793,13 @@
       "version": "22.0.0",
       "license": "ISC",
       "integrity": "sha512-rwu/ClNdSMpkSrUb+d6BRsSkLUq1fmfsY6TOpYzTwvwkg1/NRG85KBy3kq++A8LKQwX6lsu+aWad+2khvuXrqw=="
+    },
+    {
+      "lock": "apps/desktop/package-lock.json",
+      "location": "node_modules/yauzl",
+      "version": "3.4.0",
+      "license": "MIT",
+      "integrity": "sha512-jIH9yLR9wqr0wOS0TpBvo/g/2UgZH5qePVbjgRliiF0BYvOZyaBknKsF+x9Iht0O6sqgnB93rCICdOZFecJuDw=="
     }
   ]
 }

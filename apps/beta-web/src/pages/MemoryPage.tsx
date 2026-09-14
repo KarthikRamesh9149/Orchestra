@@ -32,6 +32,8 @@ import {
   getCommunicationReadiness,
   getCommunicationThreads,
   getDocs,
+  getDocumentStatus,
+  retryDocumentProcessing,
   getDocFileBlob,
   loadOperationalState,
   listCommunicationConnectors,
@@ -353,7 +355,7 @@ function DropZone({
 
 // ─── Doc Context Menu ─────────────────────────────────────────────────────────
 
-function DocMenu({ doc, onRemove, onDownload }: { doc: Doc; onRemove: () => void; onDownload: () => void }) {
+function DocMenu({ doc, onRemove, onDownload, onRetry }: { doc: Doc; onRemove: () => void; onDownload: () => void; onRetry:()=>void }) {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const ref = useRef<HTMLDivElement>(null);
@@ -377,6 +379,7 @@ function DocMenu({ doc, onRemove, onDownload }: { doc: Doc; onRemove: () => void
             {[
               { label: "Open", icon: FileText, action: () => { navigate(`/memory/docs/${doc.id}/view`); setOpen(false); } },
               { label: "Download original", icon: Download, action: () => { onDownload(); setOpen(false); } },
+              ...(isDesktop()&&doc.status==='failed'?[{label:'Retry processing',icon:RefreshCw,action:()=>{onRetry();setOpen(false);}}]:[]),
               { label: "Copy doc ID", icon: Copy, action: () => { void copyText(doc.id).then(()=>setOpen(false)).catch(()=>useToastStore.getState().add('Document ID could not be copied.', 'error')); } },
             ].map(({ label, icon: Icon, action }) => (
               <button key={label} type="button" onClick={action} className="flex w-full items-center gap-3 px-4 py-2.5 font-sans text-[13px] text-[var(--text-default)] hover:bg-[var(--bg-inset)]">
@@ -396,7 +399,7 @@ function DocMenu({ doc, onRemove, onDownload }: { doc: Doc; onRemove: () => void
 
 // ─── Doc Card ─────────────────────────────────────────────────────────────────
 
-function DocCard({ doc, onRemove, onDownload }: { doc: Doc; onRemove: (id: string) => Promise<void>; onDownload: (doc: Doc) => Promise<void> }) {
+function DocCard({ doc, onRemove, onDownload, onRetry }: { doc: Doc; onRemove: (id: string) => Promise<void>; onDownload: (doc: Doc) => Promise<void>; onRetry:(id:string)=>Promise<void> }) {
   const navigate = useNavigate();
   const [showConfirm, setShowConfirm] = useState(false);
   const [removing, setRemoving] = useState(false);
@@ -464,7 +467,7 @@ function DocCard({ doc, onRemove, onDownload }: { doc: Doc; onRemove: (id: strin
               </div>
             )}
             {/* Menu */}
-            <DocMenu doc={doc} onRemove={() => { setRemoveError(null); setShowConfirm(true); }} onDownload={() => { void onDownload(doc); }} />
+            <DocMenu doc={doc} onRemove={() => { setRemoveError(null); setShowConfirm(true); }} onDownload={() => { void onDownload(doc); }} onRetry={()=>{void onRetry(doc.id);}} />
           </div>
         </div>
       </motion.div>
@@ -714,7 +717,32 @@ export function MemoryPage() {
   const [hasMoreDocuments, setHasMoreDocuments] = useState(false);
   const [loadingMoreDocuments, setLoadingMoreDocuments] = useState(false);
   const activeProjectRef = useRef(projectId);
+  const retryingDocuments=useRef(new Set<string>());
   activeProjectRef.current = projectId;
+  const processingKey=JSON.stringify(docs.filter(doc=>doc.status==='processing').map(doc=>doc.id).sort());
+  const toastRef=useRef(showToast);toastRef.current=showToast;
+  useEffect(()=>{
+    if(!isDesktop()||!projectId)return;
+    const ids:string[]=JSON.parse(processingKey);if(!ids.length)return;
+    const controller=new AbortController();let timer:ReturnType<typeof setTimeout>,attempts=0,cursor=0;
+    const poll=async()=>{
+      try{
+        const batch=ids.slice(cursor,cursor+4);cursor=(cursor+batch.length)%ids.length;
+        const rows=await Promise.all(batch.map(id=>getDocumentStatus(projectId,id,AbortSignal.any([controller.signal,AbortSignal.timeout(10000)]))));
+        if(controller.signal.aborted||activeProjectRef.current!==projectId)return;
+        const byId=new Map(rows.map(row=>[row.id,row]));
+        const reconcile=(prior:Doc[])=>prior.map(doc=>byId.get(doc.id)??doc);
+        setDocs(reconcile);
+        setDocsState(prior=>prior.state==='ready'||prior.state==='empty'?{...prior,data:reconcile(prior.data)}:prior);
+        if(++attempts<60)timer=setTimeout(()=>void poll(),2000);
+        else toastRef.current('Document processing is taking longer than expected. Reload Memory to check its latest status.','terracotta');
+      }catch{
+        if(!controller.signal.aborted)toastRef.current('Document status could not be refreshed. Your uploaded file is retained; reload Memory to retry.','terracotta');
+      }
+    };
+    timer=setTimeout(()=>void poll(),2000);
+    return()=>{controller.abort();clearTimeout(timer);};
+  },[projectId,processingKey]);
   const loadMoreDocuments = async () => {
     if (!projectId || loadingMoreDocuments) return;
     setLoadingMoreDocuments(true);
@@ -824,6 +852,21 @@ export function MemoryPage() {
         receivedAt: new Date().toISOString(),
       };
     });
+  };
+
+  const handleRetryDoc=async(documentId:string)=>{
+    if(!projectId)return;
+    const key=projectId+':'+documentId;if(retryingDocuments.current.has(key))return;
+    retryingDocuments.current.add(key);
+    try{
+      await retryDocumentProcessing(projectId,documentId);
+      const updated=await getDocumentStatus(projectId,documentId);
+      if(activeProjectRef.current!==projectId)return;
+      setDocs(prior=>prior.map(doc=>doc.id===documentId?updated:doc));
+      setDocsState(prior=>prior.state==='ready'||prior.state==='empty'?{...prior,data:prior.data.map(doc=>doc.id===documentId?updated:doc)}:prior);
+      showToast('Document processing retry confirmed.');
+    }catch(error){if(activeProjectRef.current===projectId)showToast(error instanceof Error?error.message:'Retry could not be confirmed. Reload before trying again.','terracotta');}
+    finally{retryingDocuments.current.delete(key);}
   };
 
   const handleRemoveDoc = async (docId: string) => {
@@ -1035,7 +1078,7 @@ export function MemoryPage() {
                     ) : (
                       <AnimatePresence>
                         {docsInAll.map((doc) => (
-                          <DocCard key={doc.id} doc={doc} onRemove={handleRemoveDoc} onDownload={handleDownloadDoc} />
+                          <DocCard key={doc.id} doc={doc} onRemove={handleRemoveDoc} onDownload={handleDownloadDoc} onRetry={handleRetryDoc} />
                         ))}
                       </AnimatePresence>
                     )}

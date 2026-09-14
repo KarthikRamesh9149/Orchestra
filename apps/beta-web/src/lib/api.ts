@@ -310,6 +310,11 @@ export const getDocs = async (projectId: string, page = 1): Promise<Doc[]> => {
   return list.filter(Boolean).map(toDoc);
 };
 
+export const getDocumentStatus = async (projectId:string,documentId:string,signal?:AbortSignal):Promise<Doc> =>
+  toDoc(await apiJson<any>(`/v1/projects/${projectId}/documents/${documentId}`,{signal,cache:'no-store'}));
+export const retryDocumentProcessing = (projectId:string,documentId:string) =>
+  apiJson(`/v1/projects/${projectId}/documents/${documentId}/reprocess`,{method:'POST',body:JSON.stringify({})});
+
 export type UploadDocumentOptions = {
   signal?: AbortSignal;
   onProgress?: (progress: import("./api/client").UploadProgress) => void;

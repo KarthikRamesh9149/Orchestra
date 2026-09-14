@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 768,
+  "unchangedImportedFiles": 767,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -51,6 +51,12 @@
       "reason": "Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior."
     },
     {
+      "path": "apps/beta-web/src/lib/api/memory.ts",
+      "sourceSha256": "dd42a29356ac87a1cdf0319724d6edcc4b9b4627f41d124aa1498dcc128210b0",
+      "importedSha256": "f528c163348025a49469644705f3afcc417cbf95a7c014c926a6a20e3143e7be",
+      "reason": "Step 7 exposes existing authorized document read/reprocess contracts for bounded status refresh and explicit failed-work retry."
+    },
+    {
       "path": "apps/beta-web/src/lib/api.auth.test.ts",
       "sourceSha256": "34d7830a9ef8b526b48f42217051218e064c40044ac750254f490b8359ade045",
       "importedSha256": "101cd8231b1379bc2f6a70d0eb5ac248098212508598dda4dc095aec8d82b4a1",
@@ -71,8 +77,8 @@
     {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "2b7f46b9c47b279ddfce4e912cf4444b08709ef5ffe5bbc0785c88a6e3b6147f",
-      "reason": "Step 4 honest partial processing; Step 6 preserves unconfirmed shared logout state and authoritative provider document provenance."
+      "importedSha256": "32487f28391a5467ae5d59f29015409b0ddae9555e567985efac8e891d9864e9",
+      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -113,14 +119,14 @@
     {
       "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",
       "sourceSha256": "c4e17f06fa5564d83f0a280ce3e0115e7c52f8c32aa9e38c4bd9062f846f7eec",
-      "importedSha256": "a8fcd19ee9bf1c7600a38ddf23847932e26e89934c39e355e174c1b9ab6ee1ff",
-      "reason": "Step 6 regression verifies honest download initiation and excludes send-only Gmail from Memory sources."
+      "importedSha256": "50b581b13223a4797d46ed8af3cea48874eab16ef6de76604cea36a2dfa145e7",
+      "reason": "Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
       "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
-      "importedSha256": "104b68a1507d111818a5cfc4d4504f456e8257d32a546921cdb7ac55e0fe3a24",
-      "reason": "Step 4 partial processing and native clipboard; Step 6 honest download initiation and exclusion of send-only Gmail from evidence connector counts. No redesign."
+      "importedSha256": "fa49f986ed111af154d34770fbb84b98d586bbe3025ca0dc4b0bbd7365e7e793",
+      "reason": "Steps 4/6 partial processing, native clipboard, honest downloads and send-only Gmail exclusion; Step 7 bounded pending-document refresh with cancellation. No redesign."
     },
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",

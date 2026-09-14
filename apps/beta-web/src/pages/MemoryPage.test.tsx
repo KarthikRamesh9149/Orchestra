@@ -1,4 +1,5 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
+import * as desktop from '../lib/desktop';
 import userEvent from "@testing-library/user-event";
 import { StrictMode } from "react";
 import { MemoryRouter, useLocation } from "react-router-dom";
@@ -9,6 +10,8 @@ import { MemoryPage } from "./MemoryPage";
 const mocks = vi.hoisted(() => ({
   archiveDocument: vi.fn(),
   getDocs: vi.fn(),
+  getDocumentStatus: vi.fn(),
+  retryDocumentProcessing: vi.fn(),
   getDocFileBlob: vi.fn(),
   getCommunicationThreads: vi.fn(),
   getCommunicationReadiness: vi.fn(),
@@ -58,6 +61,65 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getCommunicationThreads.mockResolvedValue([]);
     mocks.getCommunicationReadiness.mockResolvedValue([]);
     mocks.listCommunicationConnectors.mockResolvedValue([]);
+  });
+
+  it('refreshes pending desktop processing from the backend and stops after completion',async()=>{
+    const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
+    mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
+    mocks.getDocumentStatus.mockResolvedValue({...doc,status:'partial'});
+    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    try{
+      await waitFor(()=>expect(screen.getByText('Processing',{exact:true})).toBeVisible());
+      await waitFor(()=>expect(screen.getByText('Partially processed',{exact:true})).toBeVisible(),{timeout:3500});
+      expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1);
+      await act(async()=>{await new Promise(resolve=>setTimeout(resolve,2200));});
+      expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1);
+    }finally{view.unmount();spy.mockRestore();}
+  },8000);
+
+  it('does not apply a pending status response to another workspace',async()=>{
+    const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
+    let complete!:(value:Doc)=>void;
+    mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
+    mocks.getDocumentStatus.mockImplementation(()=>new Promise(resolve=>{complete=resolve;}));
+    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    try{
+      await waitFor(()=>expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1),{timeout:3500});
+      const signal=mocks.getDocumentStatus.mock.calls[0][2] as AbortSignal;
+      mocks.activeProjectId='project-2';mocks.getDocs.mockResolvedValue([{...doc,id:'other',name:'Other workspace document'}]);
+      view.rerender(<MemoryRouter><MemoryPage /></MemoryRouter>);
+      await waitFor(()=>expect(screen.getByRole('button',{name:'Open actions for Other workspace document'})).toBeInTheDocument());
+      expect(signal.aborted).toBe(true);
+      await act(async()=>complete({...doc,name:'Obsolete response',status:'ready'}));
+      expect(screen.queryByText('Obsolete response')).not.toBeInTheDocument();
+    }finally{view.unmount();spy.mockRestore();}
+  });
+
+  it('retains the pending document and reports a failed status refresh honestly',async()=>{
+    const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
+    mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
+    mocks.getDocumentStatus.mockRejectedValue(new Error('Synthetic outage'));
+    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    try{
+      await waitFor(()=>expect(screen.getByText(/Document status could not be refreshed/)).toBeInTheDocument(),{timeout:3500});
+      expect(screen.getByRole('button',{name:'Open actions for Core PRD'})).toBeInTheDocument();
+    }finally{view.unmount();spy.mockRestore();}
+  });
+
+  it('retries a failed desktop document without deleting or uploading it again',async()=>{
+    const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
+    mocks.getDocs.mockResolvedValue([{...doc,status:'failed'}]);
+    mocks.retryDocumentProcessing.mockResolvedValue({queued:true});
+    mocks.getDocumentStatus.mockResolvedValue({...doc,status:'partial'});
+    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    try{
+      const user=userEvent.setup();
+      await user.click(await screen.findByRole('button',{name:'Open actions for Core PRD'}));
+      await user.click(screen.getByRole('button',{name:'Retry processing'}));
+      await waitFor(()=>expect(mocks.retryDocumentProcessing).toHaveBeenCalledWith('project-1','document-1'));
+      await waitFor(()=>expect(screen.getByText('Partially processed')).toBeInTheDocument());
+      expect(mocks.uploadDoc).not.toHaveBeenCalled();expect(mocks.archiveDocument).not.toHaveBeenCalled();
+    }finally{view.unmount();spy.mockRestore();}
   });
 
   it("reports loading rather than fabricated zero memory counts", () => {

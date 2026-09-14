@@ -5,6 +5,8 @@ export {
   getCommunicationThreads,
   getCommunicationReadiness,
   getDocs,
+  getDocumentStatus,
+  retryDocumentProcessing,
   listCommunicationConnectors,
   uploadDoc
 } from "../api";

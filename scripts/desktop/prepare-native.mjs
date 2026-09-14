@@ -2,6 +2,7 @@ import {mkdir,readFile,writeFile,cp,readdir,lstat,mkdtemp,rename} from 'node:fs/
 import {execFileSync} from 'node:child_process';
 import {createHash,randomUUID} from 'node:crypto';
 import {resolve,join,relative,dirname,basename} from 'node:path';
+import {normalizeRuntimeLinks} from '../../apps/desktop/scripts/runtime-links.mjs';
 const root=resolve(import.meta.dirname,'../..');
 if(process.platform!=='darwin'||process.arch!=='arm64')throw new Error('Native preparation requires a qualified target recipe; Windows remains blocked');
 const native=join(root,'.desktop/native/darwin-arm64');
@@ -35,6 +36,7 @@ await cp(join(root,'node_modules'),join(runtime,'backend/node_modules'),{recursi
 await cp(join(root,'prisma'),join(runtime,'backend/prisma'),{recursive:true});
 await writeFile(join(runtime,'backend/package.json'),JSON.stringify({private:true,type:'module'}));
 await cp(join(root,'apps/beta-web/dist'),join(runtime,'ui'),{recursive:true});
+await normalizeRuntimeLinks(runtime);
 const inventory=[];for(const file of await files(join(runtime,'native')))inventory.push({path:relative(runtime,file),sha256:createHash('sha256').update(await readFile(file)).digest('hex')});
 await writeFile(join(runtime,'native-manifest.json'),JSON.stringify({platform:'darwin-arm64',node:'24.19.0',postgres:'17.11',pgvector:'0.8.6',internal:true,files:inventory},null,2));
 try{await rename(join(root,'.desktop/runtime'),join(root,'.desktop/runtime-previous-'+randomUUID()));}catch(error){if(error.code!=='ENOENT')throw error;}

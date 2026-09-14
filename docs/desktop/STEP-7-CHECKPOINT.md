@@ -1,5 +1,48 @@
 # Step 7: independent hardening work, not release completion
 
+## Current status, 14 September 2026 (supersedes earlier barriers below)
+
+Developer ID signing/notarization is explicitly deferred by the user for this
+Mac-only **internal** beta. It is not an outstanding request for approval and
+does not count as passed public distribution. The other qualification gates
+remain in force. Main and production are unchanged.
+
+New verified corrections:
+
+- Concurrent first-run vault creation now converges on one durable encrypted
+  identity instead of overwriting it. Oversized encryption output and denied
+  credential access fail without publishing partial credentials.
+- Private source reads enforce permissions and bounded size, including growth
+  or truncation during streaming. Durable replacement preserves the original
+  when a write fails.
+- Actual ENOSPC on a disposable 32-MiB test volume preserves the original file,
+  removes partial writes and permits recovery after freeing synthetic filler.
+  Evidence: `/private/tmp/orchestra-step7-disk-full-InjOKm/report.json`.
+- Desktop Memory refreshes processing state with bounded, abortable polling.
+  Failed processing has a Retry processing action through the existing protected
+  backend, without re-uploading or deleting the source. Existing styling stays.
+- A real native-host kill after a durable parse claim leads to an explicit failed
+  run, not a permanent spinner. The native retry completes with one source.
+  Evidence: `/private/tmp/orchestra-step7-worker-crash-7PyNLa/report.json`.
+  This is parse recovery, not proof of every research/provider crash path.
+- A 150-page synthetic PDF and an 80-message offline conversation survive their
+  tested journeys. One long-history usability sample was 156 ms. This is not a
+  production AI or enterprise-corpus benchmark.
+  Evidence: `/private/tmp/orchestra-step7-corpus-89yrIi/report.json`.
+- ZIP extraction rejects traversal, external symlinks, special files, duplicate
+  paths, oversize, cancellation and altered bytes. It does not install updates.
+- Actual package extraction exposed absolute runtime symlinks back to the build
+  checkout. Packaging now preserves relative symlinks, uses the bundled Prisma
+  client and rejects links escaping the runtime. The original failed extraction
+  proof is retained at `/private/tmp/orchestra-step7-real-extraction-GFjrNe/report.json`.
+
+Current source tests: 1,648 backend/desktop passed, 13 documented skips; frontend
+238 passed before the packaging-only change. Desktop build/typecheck, source
+inventory/provenance, local secret scan and three npm audits pass. These results
+do not close the remaining actual update installation/rollback, physical
+sleep/wake and final exact-package qualification work. No automatic updater,
+release signing or Step 7 completion is claimed.
+
 Initial base: `86e540e`; resumed with completed Step 6 main `2285d06` merged into
 `codex/desktop-step-7` on 14 September. Step 6 is complete for the approved
 single-Mac scope; it no longer blocks this step. The

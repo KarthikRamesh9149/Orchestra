@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'apps/beta-web/src/lib/api/memory.ts':'Step 7 exposes existing authorized document read/reprocess contracts for bounded status refresh and explicit failed-work retry.',
  'src/modules/communications/provider-readiness.ts':'Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked.',
  'tests/communication-providers.test.ts':'Step 6 regression for revoked connector reconnect, missing credentials and release gates.',
  'apps/beta-web/src/lib/api.integrations.test.ts':'Step 6 regression preserves explicitly allowed reconnect without revoked sync or disconnect.',
@@ -29,14 +30,14 @@ const adjustments={
  'apps/beta-web/src/components/socrates/DeepResearch.tsx':'Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation.',
  'apps/beta-web/src/components/socrates/DeepResearch.test.tsx':'Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered.',
  'apps/beta-web/src/lib/types.ts':'Step 4 preserve authoritative partial document processing state.',
- 'apps/beta-web/src/lib/api.ts':'Step 4 honest partial processing; Step 6 preserves unconfirmed shared logout state and authoritative provider document provenance.',
+ 'apps/beta-web/src/lib/api.ts':'Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation.',
  'apps/beta-web/src/lib/api.auth.test.ts':'Step 6 regression for unconfirmed shared-desktop logout; existing browser cookie contracts retained.',
  'apps/beta-web/src/context/AuthContext.tsx':'Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged.',
  'apps/beta-web/src/context/AuthContext.bootstrap.test.tsx':'Step 6 shared logout failure regression alongside stale bootstrap protection.',
  'apps/beta-web/src/pages/ChatPage.tsx':'Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions.',
  'apps/beta-web/src/pages/ChatPage.test.tsx':'Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection.',
- 'apps/beta-web/src/pages/MemoryPage.tsx':'Step 4 partial processing and native clipboard; Step 6 honest download initiation and exclusion of send-only Gmail from evidence connector counts. No redesign.',
- 'apps/beta-web/src/pages/MemoryPage.test.tsx':'Step 6 regression verifies honest download initiation and excludes send-only Gmail from Memory sources.',
+ 'apps/beta-web/src/pages/MemoryPage.tsx':'Steps 4/6 partial processing, native clipboard, honest downloads and send-only Gmail exclusion; Step 7 bounded pending-document refresh with cancellation. No redesign.',
+ 'apps/beta-web/src/pages/MemoryPage.test.tsx':'Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation.',
  'apps/beta-web/src/pages/SettingsPage.tsx':'Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking inside existing integration cards.',
  'src/modules/integrations/integrations.service.ts':'Step 4 truthful desktop capability readiness; provider qualification stays Step 5.',
  'apps/beta-web/src/lib/api/client.ts':'Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior.',
