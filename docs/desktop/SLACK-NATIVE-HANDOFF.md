@@ -1,7 +1,7 @@
 # Slack native callback qualification
 
 Status: real Mac handoff, import, restart and revocation verified. Public
-distribution awaits explicit activation approval; cross-workspace onboarding
+Slack app distribution activated with explicit owner approval; cross-workspace onboarding
 remains unqualified. Source and downloads remain private.
 
 The desktop callback is `orchestra-desktop://oauth/slack/callback`. The Mac
@@ -41,7 +41,13 @@ No security warning was bypassed.
 
 After saving the native-only registration and confirming the reviewed no-hardcoded
 tokens declaration, Slack enabled its Activate Public Distribution button.
-Activation still requires explicit approval. Browser cancellation/reconnect and
+The owner then explicitly approved activation. Slack confirmed "Share Your App
+with Any Workspace" and displayed "Deactivate Public Distribution" on 15
+September 2026. This is app installability, not Marketplace review approval or
+publication of the private source/packages. Users must start authorization from
+the desktop app so a live PKCE verifier and state exist; the generic Slack share
+button alone does not establish a desktop authorization session.
+Browser cancellation/reconnect and
 non-owner-workspace installation are not newly certified by this live run;
 cancellation/replay/expiry have automated coverage. Public source, packages,
 Marketplace submission and production changes remain outside this approval.
