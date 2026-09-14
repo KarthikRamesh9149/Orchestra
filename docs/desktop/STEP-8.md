@@ -32,8 +32,23 @@ reintroduced as claimed successes. No feed is published for an inactive updater.
 Steps 1–7 internal results remain in their reports; this documentation-only work
 does not require rerunning unchanged runtime suites or repeat paid model calls.
 
-The safe stopping point is a private preparation branch, not a public release.
-Do not integrate or declare Step 8 complete until its applicable gate passes.
+The owner subsequently requested one branch only. Private preparation work is
+therefore consolidated into `main` with history preserved. This is repository
+housekeeping, not certification of the open gates or authorization to publish.
+
+## Private consolidation, 15 September 2026
+
+- Product-first README added without changing application styling or behavior.
+- Actual bundled-notice inventory added with regression coverage. Missing
+  standalone notices require inspection; presence does not certify compliance.
+- All historical step branch tips were checked for ancestry before removal.
+  Their commits remain reachable from main. Existing worktrees and untracked
+  local files are retained, not deleted.
+- Current open checks: fresh-user connector journeys, browser/shared TLS handoff,
+  full third-party notice review and complete multi-user UI evidence. Existing
+  single-Mac shared HTTPS/API checks are not a replacement for those journeys.
+- Public release, signed distribution, Windows, two-machine tests and automatic
+  updates remain deferred. No production repository changes are authorized.
 
 ## Preparation evidence
 
