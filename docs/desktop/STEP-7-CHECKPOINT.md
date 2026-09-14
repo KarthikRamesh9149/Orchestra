@@ -1,8 +1,8 @@
 # Step 7: independent hardening work, not release completion
 
-Base: `86e540e` on `codex/desktop-step-6`. Working branch: `codex/desktop-step-7`.
-The user authorised parallel sequencing while the Step 6 credential save/real
-self-hosted provider tests wait. Step 6 is not merged or called complete. The
+Initial base: `86e540e`; resumed with completed Step 6 main `2285d06` merged into
+`codex/desktop-step-7` on 14 September. Step 6 is complete for the approved
+single-Mac scope; it no longer blocks this step. The
 second-computer check and Windows remain explicitly deferred. Production is out
 of scope. No paid Actions, public release, signing purchase or UI changes.
 
@@ -61,7 +61,7 @@ The tool did not alter or sign the app or bypass Gatekeeper.
 
 ## Still required for Step 7 completion
 
-1. Complete the Step 6 self-hosted credential/provider gate.
+1. Step 6 self-hosted credential/provider gate: completed; see STEP-6.md.
 2. Review the final packaged IPC/filesystem/parser/auth/credential/prompt-injection
    boundaries and close findings. Passing existing tests is not that full audit.
 3. Implement and exercise the actual signed update delivery/install/recovery
@@ -76,3 +76,58 @@ The tool did not alter or sign the app or bypass Gatekeeper.
 
 No merge, publication, automatic-update promise or Step 7 completion is justified
 by this checkpoint.
+
+## 14 September: verified download staging and recovery
+
+- Added a main-process-only download stage: exact signed manifest, HTTPS origin,
+  no redirects/cookies, bounded bytes/time, identity encoding, private exclusive
+  files, streamed hash/length verification, fsync and post-download expiry check.
+  Nothing is extracted, executed or installed. There is no renderer entry point.
+- Startup recovery revalidates the signature, current version/schema policy and
+  exact saved artifact bytes. Receipts alone are not trusted. Partial/orphan
+  stages are not install candidates; failed retries remove only their own stage.
+- Thirteen new tests pass, including actual filesystem writes, a real TLS server
+  with a test-only CA, mid-stream cancellation, malicious/truncated data, unsafe
+  roots, replay/policy checks through the verifier, preserved earlier downloads,
+  and SIGKILL of an owned disposable downloader process after a partial write.
+  A fresh retry then succeeds. This is download interruption, **not** interruption
+  during application replacement or database migration.
+- Full combined desktop/backend gate: **1,627 passed, 13 documented skips**.
+  Frontend remains 234/234; its code is unchanged after the Step 6 integration. The twelve
+  signing-preflight acceptance tests also pass. Typechecks and import/inventory
+  gates pass. No production or main update, paid Actions, or UI restyling.
+
+### Measured internal-package performance
+
+Package: Step 6 internal build `14af2f09-b73d-4a3b-8a73-d3e3fe015c5f`, not a signed
+Step 7 release candidate. Same Apple M5/16-GiB Mac, existing synthetic transfer
+profile, 60 route samples, 30 handler-to-frame input samples and 20 cited offline
+Socrates retrieval samples. No external model calls or AI credits used.
+
+| Measurement | Concurrent-test run | Serial rerun |
+| --- | --- | --- |
+| Warm route p95 | 150.28 ms | 68.60 ms |
+| Input handler-to-frame p95 | 13.10 ms | 11.40 ms |
+| Local retrieval p95 | 7 ms | 4 ms |
+| Observed CLS | 0 | 0.00000668 |
+| Single populated launch | 10.685 s | 4.254 s |
+
+The first run overlapped the full test suite. Both records are retained; neither
+establishes a cold-launch p95, large-corpus performance, physical input latency,
+or external AI performance. Evidence: `/private/tmp/orchestra-step7-benchmark-JHeCIk/report.json`
+and `/private/tmp/orchestra-step7-benchmark-tFvSmQ/report.json`. Offline responses
+were required to be explicitly degraded and cited, not represented as live AI.
+
+### Confirmed release barrier and remaining implementation
+
+Read-only signing inventory still contains only Apple Development, not Developer
+ID Application. The actual internal package failed strict seal, distribution
+identity, Gatekeeper and stapled-ticket verification. Nothing was re-signed with
+a substitute identity and no warning was bypassed. No purchase was made.
+
+Remaining: trusted release feed/key provisioning; a real OS-verified installer
+controller with application/database backup and replacement recovery; signed
+artifact qualification; broad packaged security/fault tests, large-data and
+long-chat profiles, physical sleep/wake, and clean installation/update/uninstall
+proof. Download staging does not close these requirements. Step 7 remains open
+and its branch must not merge to main until its gate passes.

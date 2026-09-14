@@ -64,7 +64,7 @@ export async function inspectMacSigning(app, expected, run = execute) {
     expected, identity, checks,
     signingVerified: Object.values(checks).every(check => check.status === 'passed'),
     releaseReady: false,
-    remaining: ['Exact installer/update artifact qualification', 'Step 6 remaining gate', 'Packaged security, recovery and performance gates', 'Publication approval'],
+    remaining: ['Exact installer/update artifact qualification', 'Packaged security, recovery and performance gates', 'Publication approval'],
   };
 }
 
