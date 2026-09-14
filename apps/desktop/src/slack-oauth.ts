@@ -1,9 +1,8 @@
 import {z} from 'zod';
-import {startOAuthCallback} from './oauth-loopback.js';
+import {slackNativeCallback} from './slack-native-callback.js';
 
 // Public registration identifier. No shared client secret is shipped.
 export const SLACK_DESKTOP_CLIENT_ID='11246081957072.12035271294499';
-export const SLACK_DESKTOP_CALLBACK_PORT=43827;
 export const slackCredentialSchema=z.object({
  teamId:z.string().regex(/^T[A-Z0-9]+$/),teamName:z.string().max(255),userId:z.string().regex(/^U[A-Z0-9]+$/),
  accessToken:z.string().min(10).max(4096),refreshToken:z.string().min(10).max(4096),
@@ -36,7 +35,7 @@ function parseToken(value:unknown){
  return {accessToken:token.access_token,refreshToken:token.refresh_token,expiresAt:Date.now()+token.expires_in*1000,scopes:[...requiredScopes]};
 }
 export async function connectSlack(openBrowser:(url:string)=>Promise<void>,signal?:AbortSignal,fetchImpl:typeof fetch=fetch):Promise<SlackCredential>{
- const callback=await startOAuthCallback({port:SLACK_DESKTOP_CALLBACK_PORT,signal});
+ const callback=slackNativeCallback.begin(signal);
  try{
   const url=new URL('https://slack.com/oauth/v2/authorize');
   for(const [key,value] of Object.entries({client_id:SLACK_DESKTOP_CLIENT_ID,scope:'',user_scope:requiredScopes.join(','),redirect_uri:callback.redirectUri,state:callback.state,code_challenge:callback.challenge,code_challenge_method:'S256'}))url.searchParams.set(key,value);

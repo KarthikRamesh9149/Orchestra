@@ -10,7 +10,7 @@ if(manifest.platform!==`${process.platform}-${process.arch}`)throw new Error('A 
 await access(join(root,'apps/desktop/dist/main.cjs'));
 const runtime=join(root,'.desktop/runtime');
 await normalizeRuntimeLinks(runtime);
-const outputs=await packager({dir:join(root,'apps/desktop'),name:'Orchestra Desktop Internal',appBundleId:'dev.orchestra.desktop.internal',appVersion:version,electronVersion:'44.3.0',platform:process.platform,arch:process.arch,out:join(root,'.desktop/packages',randomUUID()),overwrite:false,asar:true,prune:false,ignore:[/^\/node_modules($|\/)/,/^\/src($|\/)/,/^\/scripts($|\/)/,/^\/tsconfig\.json$/],extraResource:[runtime],afterCopyExtraResources:[async ({buildPath})=>{
+const outputs=await packager({protocols:[{name:'Orchestra Desktop Slack authorization',schemes:['orchestra-desktop']}],dir:join(root,'apps/desktop'),name:'Orchestra Desktop Internal',appBundleId:'dev.orchestra.desktop.internal',appVersion:version,electronVersion:'44.3.0',platform:process.platform,arch:process.arch,out:join(root,'.desktop/packages',randomUUID()),overwrite:false,asar:true,prune:false,ignore:[/^\/node_modules($|\/)/,/^\/src($|\/)/,/^\/scripts($|\/)/,/^\/tsconfig\.json$/],extraResource:[runtime],afterCopyExtraResources:[async ({buildPath})=>{
  // Packager's default fs.cp expands relative links into absolute paths back to
  // the build machine. Replace only its fresh staging copy, preserving links.
  const destination=join(buildPath,'Orchestra Desktop Internal.app/Contents/Resources/runtime');

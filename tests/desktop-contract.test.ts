@@ -42,10 +42,12 @@ describe("desktop Step 1 boundary", () => {
   });
 
   it("keeps publication, signing, licensing and sequential execution explicit", () => {
-    expect(read("README.md")).toContain("proposed, not granted or applied");
+    expect(read("README.md")).toContain("approved by the owner after confirming ownership");
+    expect(read("README.md")).toContain("private by explicit owner instruction");
     expect(read("docs/desktop/CONTRACT.md")).toContain("No automatic progression");
     expect(read("docs/desktop/RELEASE-DEPENDENCIES.md")).toContain("Not confirmed; blocks signed release");
-    expect(existsSync("LICENSE")).toBe(false);
+    expect(read("LICENSE")).toContain("Apache License");
+    expect(read("LICENSE")).toContain("Version 2.0, January 2004");
   });
 
   it("retains excluded upstream checks and gives them explicit later owners", () => {

@@ -17,6 +17,7 @@ import {downloadDocument,downloadPreflight} from './document-download.js';
 import {runMcpRelay} from './mcp-relay.js';
 import {createDesktopPairing,revokeDesktopPairing,pairInputSchema,pairingSetup} from './mcp-pairing.js';
 import {connectSlack,refreshSlack,revokeSlack} from './slack-oauth.js';
+import {slackNativeCallback,SLACK_CALLBACK_SCHEME} from './slack-native-callback.js';
 import {listSlackChannels,readSlackChannel} from './slack-sources.js';
 import {connectGitHub,refreshGitHub,listGitHubRepositories} from './github-oauth.js';
 import {readGitHubSnapshot} from './github-sources.js';
@@ -43,6 +44,7 @@ const host=new HostClient(delta=>{if(window&&!window.isDestroyed())window.webCon
 const selections=new Selections();
 if(!single)app.quit();
 else {
+ app.on('open-url',(event,url)=>{event.preventDefault();if(slackNativeCallback.accept(url)){window?.show();window?.focus();}});
  app.on('second-instance',()=>{window?.show();window?.focus();});
  app.on('before-quit',event=>{if(!closing){event.preventDefault();closing=true;slackAuthorization?.abort();githubAuthorization?.abort();driveAuthorization?.abort();void host.close().finally(()=>app.quit());}});
  app.on('window-all-closed',()=>app.quit());
@@ -189,10 +191,11 @@ else {
     if((await settings.read()).slack)return {ok:false,error:{code:'slack_already_connected',message:'Disconnect this installation before linking another Slack account.'}};
     const consent=await dialog.showMessageBox(window!,{type:'question',message:'Connect Slack to this Mac?',detail:'Slack will request read-only access to public channels. Tokens are encrypted with macOS protection, outside the web interface. No messages are imported until you explicitly select channels. This does not connect hosted Orchestra.',buttons:['Cancel','Continue to Slack'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    if(!app.isPackaged||!app.setAsDefaultProtocolClient(SLACK_CALLBACK_SCHEME))throw new Error('Native Slack callback registration unavailable');
     const credential=await connectSlack(url=>shell.openExternal(url),slackAuthorization.signal);
     await settings.write({...await settings.read(),slack:credential});
     return {ok:true,data:{connected:true,teamName:credential.teamName,teamId:credential.teamId}};
-   }catch{return {ok:false,error:{code:'slack_connect_failed',message:'Slack connection was not saved. It may have been cancelled, expired, blocked by the local callback port, or rejected by Slack. Retry from Orchestra.'}};}
+   }catch{return {ok:false,error:{code:'slack_connect_failed',message:'Slack connection was not saved. Open the packaged desktop app and retry; authorization may have expired, been declined, or the browser could not return to Orchestra.'}};}
    finally{slackAuthorization=undefined;configuringAi=false;}
   });
   ipcMain.handle('orchestra:slack-revoke',async event=>{
