@@ -2,6 +2,25 @@
 
 ## Current status, 14 September 2026 (supersedes earlier barriers below)
 
+### Physical sleep/wake completed with the user present
+
+The user closed the Mac lid and reopened/unlocked it. Real native suspend/resume
+events recorded **39.024 seconds** between them. The existing runtime was ready,
+and the source document, cited transcript and unsent draft survived wake,
+navigation and reload, with no renderer errors. Evidence:
+`/private/tmp/orchestra-step7-physical-wake-OrLJkH/report.json`.
+
+Two earlier programmatic sleep attempts immediately resumed (701 ms and 548 ms)
+and are retained as failed qualification, not counted as successful tests. The
+first also exposed a disconnected automation transport while the app itself
+remained alive. The harness now persists native power events separately and
+reattaches only to its owned synthetic app after waking; it never emits fake
+power events or changes global power/security settings.
+
+Physical sleep/wake is no longer pending. Automatic update installation remains
+unimplemented/unqualified with signing deferred; the verified manual update
+procedure is not an automatic updater. No main merge or public release is made.
+
 ### Latest continuation: manual recovery and research process-kill proof
 
 - Controlled **manual** 0.0.4 → 0.0.5 installation on a copied synthetic populated
