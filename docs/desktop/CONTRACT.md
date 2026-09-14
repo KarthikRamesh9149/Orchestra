@@ -12,7 +12,7 @@ Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit
 4. Every assigned parity row passes normal, failure and restart flows in packaged UI, without a terminal. Preserve style and truthful unavailable states.
 5. Each advertised provider/model/client combination passes real-account tests on the currently authorized platform, with privacy-consistent traffic. Preflight pack ID → authorized MCP retrieval → linked Postflight verified in Codex; VS Code pairing verified. User scope revision on 11 September 2026: qualify Codex and VS Code only. Claude and Cursor are deferred, not certified or advertised as tested. Windows remains deferred under the earlier Mac-only revision.
 6. Different roles observe authoritative shared changes. Isolation, compatibility, fresh self-hosting, export/import, backup/restore and upgrade pass. On 13 September the user explicitly deferred the second-physical-computer check and authorized completion of the remaining Step 6 gate, followed by Step 7. Two-computer behaviour remains unqualified, not passed.
-7. The currently authorised Mac package must pass clean install, populated upgrade, recovery and tamper tests. On 14 September the user explicitly deferred Developer ID signing and notarization: this gate now targets an unsigned Mac-only internal beta, not a signed public release. Do not disable Gatekeeper or security warnings. Windows remains deferred, not certified. No unresolved Critical/High security, data-loss or core-flow defect. Lesser exceptions require explicit acceptance. No main merge or publication follows from partial checks.
+7. The currently authorised Mac package must pass clean install, populated upgrade, recovery and tamper tests. On 14 September the user explicitly deferred Developer ID signing and notarization, then explicitly approved deferring automatic updates and closing Step 7 for an unsigned, manual-update-only internal beta. Manual upgrade, complete-profile rollback and physical sleep/wake require real qualification; they are not waived. Do not disable Gatekeeper or security warnings. Windows remains deferred, not certified. No unresolved Critical/High security, data-loss or core-flow defect. Lesser exceptions require explicit acceptance. See STEP-7.md for the scoped closure and limitations. This does not authorize public publication.
 8. Explicit source/publication approval, independent public download/build/install/core journey/update checks on both platforms.
 
 ## Product rules
@@ -29,6 +29,13 @@ Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit
 - Export/import excludes credentials and unauthorized private chats; preserves bytes/hashes/provenance/accepted decisions with explicit identity mapping.
 
 ## Performance and acceptance
+
+Additional explicit scope decision, 14 September: automatic update delivery and
+installation are deferred with signing for the internal beta. They are not
+implemented/certified merely because verifier and extraction tests pass. The
+user approved manual-update-only Step 7 closure after the manual rollback and
+39-second physical sleep/wake tests passed. Step 8 still needs separate approval;
+public distribution, signing and automatic updates remain future gates.
 
 Proposed Step 7 p95 gates: input feedback ≤100 ms, warm-route usability ≤300 ms, local retrieval ≤1 s; layout shift ≤0.1. Establish repeatable datasets/hardware on both platforms. Record cold/warm launch and external model latency separately. These are targets, not measurements or claims about the imported baseline.
 

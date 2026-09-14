@@ -1,5 +1,11 @@
 # Step 7: independent hardening work, not release completion
 
+**Historical checkpoint. Superseded for current status by [STEP-7.md](STEP-7.md).**
+The user subsequently explicitly approved deferring automatic updates and closing
+the unsigned, manual-update-only internal-beta scope after physical wake passed.
+The unfinished/public-release statements below describe earlier checkpoints;
+their failed runs and limitations are retained, not erased or marked passed.
+
 ## Current status, 14 September 2026 (supersedes earlier barriers below)
 
 ### Physical sleep/wake completed with the user present
