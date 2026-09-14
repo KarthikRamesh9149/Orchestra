@@ -43,15 +43,18 @@ export function getProviderReadiness(
   }
 ): ProviderReadiness {
   if (connector?.status === "revoked") {
+    // A revoked grant stays unusable, but a manager may start a fresh OAuth
+    // flow when the provider's current configuration/release gates allow it.
+    const fresh = getProviderReadiness(env, provider);
     return {
       state: "revoked",
-      canConnect: false,
+      canConnect: fresh.state === "enabled" && fresh.canConnect,
       canSync: false,
       canManualImport: false,
       canWebhook: false,
       reasons: ["connector_revoked"],
-      missingConfig: [],
-      deferredFeatures: []
+      missingConfig: fresh.missingConfig,
+      deferredFeatures: fresh.deferredFeatures
     };
   }
 
@@ -187,11 +190,15 @@ function baseReadiness(
       };
     }
     const missing = hasAll(env, ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET", "GOOGLE_REDIRECT_URI"]);
+    const invitationOnly = isMvpBetaMode(env) || (
+      connector?.configJson != null && typeof connector.configJson === "object" &&
+      "purpose" in connector.configJson && connector.configJson.purpose === "invitation_sender"
+    );
     return readinessFromMissing(missing, {
       enabledReason: "gmail_invitation_sender_oauth_configured",
       gatedReason: "gmail_configuration_incomplete",
-      canSync: !isMvpBetaMode(env),
-      deferredFeatures: isMvpBetaMode(env)
+      canSync: !invitationOnly,
+      deferredFeatures: invitationOnly
         ? ["gmail_mailbox_sync_disabled_for_invitation_sender"]
         : env.GOOGLE_PUBSUB_TOPIC ? [] : ["gmail_push_watch_deferred_without_google_pubsub_topic"]
     });

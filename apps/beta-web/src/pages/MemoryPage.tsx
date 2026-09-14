@@ -55,6 +55,10 @@ const SEARCH_PLACEHOLDERS = [
   "Who owns the assignment module?",
 ];
 
+const isEvidenceConnector = (connector: CommunicationConnector) => !(
+  connector.provider === "gmail" && connector.readiness?.deferredFeatures?.includes("gmail_mailbox_sync_disabled_for_invitation_sender")
+);
+
 // ─── Toast ────────────────────────────────────────────────────────────────────
 
 function Toast({ message, visible, type = "teal", onClose }: { message: string; visible: boolean; type?: "teal" | "terracotta"; onClose: () => void }) {
@@ -771,7 +775,7 @@ export function MemoryPage() {
           getCommunicationThreads(projectId),
           getCommunicationReadiness(projectId),
         ]);
-        return { connectors: connectorRows, threads: threadRows, readiness };
+        return { connectors: connectorRows.filter(isEvidenceConnector), threads: threadRows, readiness };
       },
       (result) => result.connectors.length === 0 && result.threads.length === 0
     )
@@ -868,7 +872,7 @@ export function MemoryPage() {
         return;
       }
       const refreshed = await listCommunicationConnectors(projectId);
-      setConnectors(refreshed);
+      setConnectors(refreshed.filter(isEvidenceConnector));
       showToast("Slack connected.");
     } catch (err) {
       showToast(err instanceof Error ? err.message : "Could not start Slack connection.", "terracotta");

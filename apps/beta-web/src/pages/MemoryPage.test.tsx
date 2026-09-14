@@ -73,6 +73,13 @@ describe("[FIX-20] Memory document persistence", () => {
     expect(screen.queryByText("0 docs · 0 connectors")).not.toBeInTheDocument();
   });
 
+  it("does not count a send-only Gmail account as communication evidence", async () => {
+    mocks.listCommunicationConnectors.mockResolvedValue([{id:'sender',provider:'gmail',accountLabel:'Synthetic sender',status:'connected',readiness:{deferredFeatures:['gmail_mailbox_sync_disabled_for_invitation_sender']}}]);
+    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    await waitFor(()=>expect(screen.getByText('1 docs · 0 connectors')).toBeVisible());
+    expect(screen.queryByText('Synthetic sender')).not.toBeInTheDocument();
+  });
+
   it("keeps the dialog and document visible when the backend rejects removal", async () => {
     mocks.archiveDocument.mockRejectedValue(new Error("Manager access required"));
     const user = userEvent.setup();

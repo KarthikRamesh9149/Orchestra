@@ -28,6 +28,13 @@ import { getJobExecutionPolicy, assertProductionQueueMode } from "../src/lib/job
 import { JobNames } from "../src/lib/jobs/types.js";
 import { callMicrosoftGraph, signMicrosoftWebhookClientState } from "../src/lib/communications/microsoft-graph.js";
 
+it('permits fresh OAuth after revocation without permitting revoked sync or bypassing configuration',()=>{
+ const ready=getProviderReadiness(createEnv(), 'slack',{status:'revoked'});
+ expect(ready).toMatchObject({state:'revoked',canConnect:true,canSync:false,canWebhook:false});
+ expect(getProviderReadiness(createEnv({SLACK_CLIENT_SECRET:undefined}), 'slack',{status:'revoked'}).canConnect).toBe(false);
+ expect(getProviderReadiness(createEnv({NODE_ENV:'production',ORCHESTRA_PROFILE:'mvp-beta',MVP_BETA_MODE:true}), 'slack',{status:'revoked'}).canConnect).toBe(false);
+});
+
 function createEnv(overrides: Record<string, unknown> = {}) {
   const nodeEnv = (overrides.NODE_ENV as string | undefined) ?? "test";
   return {

@@ -29,6 +29,9 @@ say an email was sent. Creating an invitation never verifies the recipient's ema
 
 For automatic delivery, connect an operator-controlled Gmail account to the
 intended project with the invitation-sender purpose and `gmail.send` consent.
+Enable the Gmail API (`gmail.googleapis.com`) in that registration's Google
+Cloud project first. OAuth consent alone does not enable the API; a valid
+send-only grant can otherwise receive HTTP 403 when sending an invitation.
 In beta mode set `BETA_GMAIL_INVITE_SENDER_ENABLED` to `true` to expose the sender
 capability. Verify the OAuth consent really is appropriate before approving it;
 do not grant mailbox-reading permission merely to send invitations.
@@ -69,5 +72,30 @@ remote revocation and reconnect. Confirm unrelated resources are excluded and
 logs contain no tokens. Each operator must qualify their own registrations;
 Step 5's local desktop-provider evidence does not certify server registrations.
 
-No real self-hosted Gmail delivery or server-provider certification is currently
-recorded. Keep those claims pending until that evidence exists.
+The 13 September 2026 isolated server test verified real Gmail receipt, account
+activation from that received code, wrong-email/replay rejection, password login,
+and single-use membership persistence. Drive imported one explicitly selected
+synthetic source, repeated sync without duplication, and displayed its content
+in Memory/viewer. Drive and Slack were subsequently revoked, reauthorized and
+resynchronized. GitHub was qualified against one selected private test repository,
+including remote installation suspension/recovery and local project unlink/relink.
+See the Step 6 report for exact evidence and limits; this is not certification
+of arbitrary operator registrations or every optional provider feature.
+
+### Reconnection requirements
+
+- A revoked Slack connection can start fresh OAuth only if current configuration
+  and release policy still allow it. Sync remains forbidden until reconnection.
+  Revocation can remove the app from channels: re-add the same dedicated app to
+  each explicitly selected channel before retrying. Do not broaden ingestion.
+- Prefer separate Google OAuth clients for invitation mail and Drive. If an
+  operator deliberately shares a client/account, revoking one Google grant can
+  invalidate the other grant too. Reconnect the sender with send-only consent,
+  test delivery, and recheck the selected Drive roots. Do not add mailbox-read
+  scopes to repair sending. The qualification exercised this recovery.
+- After installing the GitHub App, use **Choose GitHub repository** and explicitly
+  link an authorized repository. Installation alone does not select a project's
+  evidence. Link confirmation reloads authoritative server state; use Sync next.
+  Project Disconnect archives the project link; it does not uninstall the app
+  from GitHub or erase historical evidence. Manage installation-wide revocation
+  in GitHub. Keep source history separate from current accepted product truth.

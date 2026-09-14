@@ -1,4 +1,9 @@
-# Step 6 checkpoint: implementation in progress
+# Step 6 historical implementation checkpoints
+
+Current disposition: **complete for the authorized single-Mac scope**, with
+two-computer qualification explicitly deferred by the user. See [STEP-6.md](STEP-6.md)
+for final evidence, source-built image, packaged verification and limitations.
+The dated pending statements below are historical, not the current gate status.
 
 Branch: `codex/desktop-step-6`, based on verified Step 5 commit `243cd1b80c4262c0fc9c2f6e50804a7f744d2394` in private Orchestra/main. Production orchestrav2 remains outside scope.
 
@@ -314,3 +319,125 @@ no configured Gmail, Drive, Slack or GitHub server credentials. Dedicated
 registrations were requested; desktop/production grants were not repurposed.
 Two-computer testing is explicitly deferred by the user. Step 7 has not begun
 and Step 6 has not been merged while its remaining credential-backed gate is open.
+
+### Dedicated Google server registration and real send (13 September 2026)
+
+- Created/configured a dedicated self-hosted Google web client in the desktop
+  test project, separate from desktop-native and production registrations.
+  Credentials remain in ignored private files and the encrypted server vault;
+  none are recorded here. API and worker were recreated locally only.
+- Verified localhost HTTPS in the real browser without bypassing a certificate
+  warning. The narrowly scoped test certificate expires 14 September 2026.
+- Connected the operator-controlled sender with send-only consent. The first
+  synthetic invitation honestly reported `gmail_send_http_403`: the Gmail API
+  was disabled in the dedicated Cloud project. Enabled that API, without
+  activating billing/trials, then submitted one controlled retry.
+- Real UI reported a secure invitation emailed to the operator-controlled test
+  address. A direct, read-only PostgreSQL check confirmed `email_delivery_status
+  = sent`, provider `gmail`, and `email_sent_at = 2026-09-13 08:40:06.779+00`.
+  The invitation role is developer and truth approval is false. The original
+  failed attempt remains separately recorded; no success was fabricated for it.
+- This confirms Gmail acceptance, not inbox receipt or a completed real-email
+  redemption/replay journey. A browser confirmation/transport timeout prevented
+  verification of cleanup of the superseded failed invitation; do not claim it
+  revoked until an authoritative check confirms it.
+- Drive server consent requested full-drive read access. Cancelled that grant
+  while checking the selected-file path; no full-drive grant was approved.
+  Drive, Slack and GitHub server ingestion/lifecycle qualification remains open.
+- Independent Step 7 work now exists separately; it does not close this gate.
+  Step 6 is still unmerged. Production and `orchestrav2` remain untouched.
+
+### Receipt, redemption and selected Drive source follow-up
+
+- Confirmed the one synthetic invitation in the intended Gmail mailbox through
+  the real browser. Kept its activation code out of tracked evidence.
+- Six real HTTPS acceptance checks passed: receipt/superseded failed-invite
+  revocation, wrong-email rejection, account creation from the received code,
+  replay rejection, logout/new-password login with preserved workspace access,
+  and exactly one redemption without truth-approver escalation. Private evidence:
+  `.desktop/self-host-v1-qualification/received-invite-evidence.json`.
+  This is real mailbox plus server-API qualification, not packaged-UI signup.
+- Authorized the dedicated server client's full-drive **read** scope under the
+  user's explicit setup authority. No Drive writes. Verified the initial all-drive
+  root was unselected, then selected only the existing labelled synthetic document.
+  Read scope is broader than ingestion scope; do not describe this as selected-file
+  OAuth. No desktop-native or production registration was changed.
+- First sync completed: 1 scanned, 1 downloaded, 1 indexed, 0 failed. Repeated sync
+  completed: 1 scanned, 0 downloaded, 0 indexed, 1 skipped, 0 failed. PostgreSQL
+  retained exactly one imported file and one document. The real viewer rendered
+  the seven-reviewer fact, source-link acceptance criterion and revision-two marker.
+- Live testing reproduced false upload provenance and a send-only Gmail account
+  appearing as communication evidence. Three initially failing regressions now
+  pass. The correction preserves server source labels and partial-processing state,
+  disables sender-only sync also in self-hosted mode, and excludes that sender
+  from Memory connector counts. Mailbox-evidence Gmail capability is preserved.
+- 95 focused backend tests and 25 frontend tests passed. Backend TypeScript and
+  frontend production build passed in a clean detached worktree (the original
+  checkout contains unrelated untracked duplicate files, which were preserved).
+- Deployed an incremental local qualification image based on the previously
+  clean-built image; not a new clean-image release certification. Exact image:
+  `sha256:bc92b2c633814ffbaff8e01c5a6627ac88a0fca62430d66524aa2deeaa0b0c70`.
+  Browser reload verified `1 docs · 0 connectors`, Google Drive provenance,
+  honest partial processing, and the real source content in the viewer.
+- Remaining: Drive server recovery/revocation/reconnect and citation checks,
+  dedicated Slack/GitHub server registrations and their full lifecycle checks,
+  then the final exact-candidate Step 6 gate. Two-machine testing remains deferred.
+  Step 6 is not complete or merged; Step 1–5 bounded Mac qualification is recorded
+  separately and was not rerun in full by these server tests.
+- Broader suites: 1,594 backend tests passed with one stale review-hash failure
+  and 13 explicitly skipped tests. After synchronizing the regenerated review
+  manifest into the clean test worktree, all five affected desktop-contract tests
+  passed. All 230 frontend tests passed. Import/inventory checks passed in the
+  clean worktree. This is a repaired targeted rerun, not a claim the first full
+  run was entirely green. Reloaded Settings also confirmed send-only Gmail has
+  Disconnect but no Sync action; Drive retains Sync/Disconnect.
+
+### Dedicated shared Slack registration and ingestion
+
+- Created `Orchestra Shared Qualification` (`A0C2B1WH2GY`) in OrchestraOS using
+  Slack's manifest UI. Verified creation separately before any retry when the
+  creation dialog stayed loading. Existing desktop/production Slack apps untouched.
+- Configured only `channels:read` and `channels:history`, localhost HTTPS callback,
+  no private-channel/DM/write/webhook scopes. Stored new client/signing secrets
+  privately; preserved pre-Slack server configuration before updating it.
+- Real OAuth connected the shared server. Added only this new app to the already
+  authorized `orchestra-desktop-qualification` synthetic channel and selected only
+  that channel, with a three-day backfill. No other channel history was imported.
+- Initial actual server sync completed: one channel, three threads, four messages,
+  four created/indexed, zero errors. Repeat completed with zero created, indexed
+  or updated revisions. PostgreSQL retained four unique provider messages.
+- Real Memory displayed the Slack provider and synthetic CSV acceptance reply
+  with provider-opening actions. This is ingestion/idempotency/UI evidence,
+  not completed revocation/recovery/AI-citation qualification.
+- Shared GitHub registration is blocked at GitHub's account verification screen:
+  it requires the user's two-factor code. No authenticator/recovery material was
+  accessed and no security setting was changed. No GitHub server app was created.
+  Resume after the user completes verification in that browser tab.
+
+### Shared GitHub registration follow-up
+
+- User completed GitHub's mandatory account confirmation. Created the separate
+  `Orchestra Shared Qualification` app, ID `4928838`, restricted to the owner's
+  account. Read-only permissions: contents, pull requests, checks, commit statuses,
+  Actions and deployments, plus mandatory metadata. Webhooks remain inactive.
+  No existing desktop or production registration was edited.
+- Initial creation returned GitHub HTTP 500. Checked the app listing before a
+  single retry; the retry returned confirmed registration success.
+- Generated the dedicated OAuth client secret and saved it in ignored private
+  configuration with mode 0600, without printing it or adding it to Git.
+- GitHub created an app signing key, but Brave returned `ERR_BLOCKED_BY_CLIENT`
+  for its download. No matching key file was found in Downloads. The browser
+  tool also denied access to its downloads page; no workaround was attempted.
+  Signing-key possession is therefore **not verified**. The app is not yet
+  installed/configured on the shared server and its ingestion/lifecycle gate is
+  still open. A user-completed key download is required to continue this path.
+
+- User completed the manual download. RSA validation passed; authenticated
+  `GET /app` confirmed app `4928838` and its seven read-only permissions.
+  Copied the key into ignored private configuration with mode 0600 and preserved
+  the previous server configuration before enabling GitHub locally.
+- Recreated only the isolated API/worker. Real Settings Connect completed the
+  GitHub installation callback. Installation `161327313` is active, selected-repo
+  only, read-only, with writes disabled. The authenticated server lists exactly
+  `KarthikRamesh9149/Orchestra` (repository `1363807961`); no production repository
+  was granted. Repository linking, ingestion and lifecycle qualification remain.
