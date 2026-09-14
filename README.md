@@ -2,7 +2,9 @@
 
 One Source of Truth and Product Brain for high-speed teams.
 
-Private desktop-development repository. **Not a public desktop release yet.** The local engine, internal Mac shell and local onboarding/workflows have passed their scoped gates through Step 4. Real AI/connectors/MCP qualification remains Step 5; Windows is explicitly deferred until test hardware is available. Do not run it against existing production infrastructure.
+Private desktop-development repository. **Not a public desktop release yet.** Steps 1–7 have recorded scoped internal Mac qualification, including real desktop AI/connectors and Codex/VS Code, shared-server checks and manual update/recovery. Windows, two-computer qualification, signing/notarization and automatic updates are deferred, not passed. Do not run it against existing production infrastructure.
+
+Start with the [release status and download information](docs/desktop/release/README.md), [source-build recipe](docs/desktop/release/BUILD.md), and [privacy and support guide](docs/desktop/release/USER-GUIDE.md). Step 8 publication remains gated separately from internal qualification.
 
 ## Development baseline
 
