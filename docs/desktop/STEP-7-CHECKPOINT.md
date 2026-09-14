@@ -2,6 +2,38 @@
 
 ## Current status, 14 September 2026 (supersedes earlier barriers below)
 
+### Latest continuation: manual recovery and research process-kill proof
+
+- Controlled **manual** 0.0.4 → 0.0.5 installation on a copied synthetic populated
+  profile passed. Actual SIGKILL of the candidate copy preserved the old working
+  application. Full-profile restore recovered the pre-update document IDs and
+  transcripts, excluding an intentionally added post-update session. A retry and
+  data-retaining removal/reinstallation passed. Original profiles and apps were
+  untouched. Proof: `/private/tmp/orchestra-step7-manual-upgrade-Kvg9Z8/report.json`.
+- Repeated current-candidate runtime SIGKILL, honest recovery UI, upload/cancel/
+  reconciliation, persisted removal, native save cancellation, chat terminal-state
+  and transient transport failure tests passed. Evidence is in the synthetic
+  `orchestra-step4-acceptance-GpIlkq` profile's `runtime-recovery.json` and
+  `recovery.json`. Chat completed before cancellation; this is recorded honestly.
+- Actual packaged DeepResearchService plus real local PostgreSQL: the disposable
+  worker was killed after durable claim, with the embedding dependency deliberately
+  paused. The live lease was not reset prematurely. After the actual 120-second
+  expiry, getRun reconciled it to failed. No time rewriting or paid model calls.
+  This is process-failure proof, not AI output quality certification.
+  Proof: `/private/tmp/orchestra-step7-research-crash-0AXeG9/report.json`.
+- New harnesses pass syntax checks; local secret scan and inventory/import gates
+  pass. App code/dependencies are unchanged from the previously verified 1,649-test
+  source candidate, so unrelated suites were not repeated for reassurance.
+
+See INTERNAL-UPDATE-RECOVERY.md for the manual procedure and limitations.
+Automatic installation is **not implemented or certified**. Electron's native Mac
+autoUpdater requires signing; the user deferred signing, not macOS security.
+Do not substitute a custom unsigned installer and silently claim the original
+automatic-update gate passed. Physical sleep/wake also remains unverified:
+`sudo -n true` requires authentication, so a guaranteed wake could not be scheduled.
+No physical sleep was initiated remotely. These remain explicit gaps; main and
+production are unchanged, and Step 7 is not marked complete.
+
 Developer ID signing/notarization is explicitly deferred by the user for this
 Mac-only **internal** beta. It is not an outstanding request for approval and
 does not count as passed public distribution. The other qualification gates
