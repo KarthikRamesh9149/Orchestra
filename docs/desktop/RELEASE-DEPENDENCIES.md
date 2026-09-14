@@ -4,9 +4,9 @@ No signing credentials, provider approvals, Windows test hardware or legal owner
 
 | Dependency | Accountable role | Availability / gate |
 | --- | --- | --- |
-| First-party source ownership and Apache-2.0 approval | Karthik Ramesh, repository owner | Unconfirmed; proposed only. Blocks applying license/publication |
+| First-party source ownership and Apache-2.0 approval | Karthik Ramesh, repository owner | Owner explicitly confirmed ownership of original code/assets and approved Apache-2.0. Applied to first-party code; publication explicitly withheld |
 | Third-party dependency and transitive license review | Implementer prepares inventory; owner approves rights exceptions | Lockfile metadata inventory required; full bundled notices and binaries checked again in Steps 3/7/8 |
-| Existing visual assets/fonts/icon rights | Owner confirms origin; implementer records notices | Unconfirmed; omitted binary assets cannot be treated as cleared |
+| Existing visual assets/fonts/icon rights | Owner confirms origin; implementer records notices | Owner confirmed original asset ownership. Third-party font/asset notices remain subject to review; omitted binary assets are not bundled or implicitly cleared |
 | Mac Apple Silicon development | Current local Mac | Host available; clean-machine independent qualification not yet provided |
 | Windows x64 machine and independent tester | Owner nominates tester | Explicitly deferred by the user; current development is Mac-only. Windows cannot be advertised or released until independently qualified |
 | Mac developer signing/notarization credentials | Owner | Not confirmed; blocks signed release; no purchase authorized |
@@ -23,4 +23,4 @@ No signing credentials, provider approvals, Windows test hardware or legal owner
 
 Imported from `KarthikRamesh9149/orchestrav2`, revision `8561d41980e97924db33e0c8f748b7cf576aac83`. Git history was not imported. Preserve source copyright comments and third-party notices. No root LICENSE/NOTICE file was present in the source tree; absence is not evidence of permission to redistribute. Source access is not an ownership determination.
 
-The import manifest records excluded internal material without copying its contents. Dependency metadata is descriptive, not legal approval. Publication remains blocked until required rights and notices are resolved.
+The import manifest records excluded internal material without copying its contents. Dependency metadata is descriptive, not legal approval. First-party licensing is now owner-approved; publication remains expressly unauthorized and bundled third-party notice review remains pending.

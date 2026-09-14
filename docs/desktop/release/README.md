@@ -14,8 +14,9 @@ deployed download site. No public tag, release or update feed has been published
 | Automatic updates | Deferred; verification helpers are not a working updater |
 | Shared teams | Single-Mac qualification; two-computer test deferred |
 
-The owner must approve source/asset rights, the final publication material and
-repository visibility before publication. The internal signing exception does
+The owner confirmed original code/asset ownership and approved Apache-2.0, but
+explicitly withheld publication. Final material, third-party notices and
+repository visibility need approval before publication. The internal signing exception does
 not waive public-release signing/notarization. Provider testing registrations
 are not proof of public customer enrollment.
 

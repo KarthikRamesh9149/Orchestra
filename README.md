@@ -26,4 +26,4 @@ No GitHub Actions or deployment configuration is enabled. No production integrat
 
 ## Licensing
 
-Apache-2.0 is **proposed, not granted or applied**. This repository remains private pending ownership and dependency-rights review. See [rights and external dependencies](docs/desktop/RELEASE-DEPENDENCIES.md). Do not publish or distribute builds based on the proposed license.
+First-party Orchestra code is licensed under [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their respective licenses. This repository remains **private by explicit owner instruction**; applying the license does not authorize publication. Bundled third-party notice review remains pending. See [rights and external dependencies](docs/desktop/RELEASE-DEPENDENCIES.md).

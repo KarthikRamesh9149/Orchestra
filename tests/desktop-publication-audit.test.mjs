@@ -17,7 +17,8 @@ test('non-registry sources are separately visible and resolved URLs are not emit
 test('repository audit cannot certify a public release', () => {
   const report = publicationReport(resolve(import.meta.dirname,'..'));
   assert.equal(report.releaseReady,false);
-  assert.ok(report.blockers.length >= 6);
+  assert.ok(report.blockers.length >= 5);
+  assert.match(report.firstPartyLicense,/Apache-2.0/);
   assert.ok(report.dependencies > 100);
   assert.match(report.sourceHead,/^[a-f0-9]{40}$/);
 });

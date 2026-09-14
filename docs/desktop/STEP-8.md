@@ -15,8 +15,9 @@ private main `4ab88630685077bbec23b7d38da7750bda84c30d` on
 
 ## Required before publication
 
-1. Owner confirms redistribution rights and license choice, including assets.
-   Apache-2.0 remains proposed, not applied.
+1. Completed: owner confirmed ownership of original code/assets and approved
+   Apache-2.0 for first-party code. LICENSE is applied. The owner explicitly
+   instructed that the repository must not be made public yet.
 2. Review complete source/history contents and exact bundled third-party notices.
    Lockfile license metadata and filename checks are only triage.
 3. Independently reproduce a fresh source build without private packages or keys.
