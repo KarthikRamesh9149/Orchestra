@@ -1,7 +1,7 @@
 # Orchestra desktop work boundaries
 
 - This private repository is `KarthikRamesh9149/Orchestra`. Never push, merge, deploy or change visibility of `orchestrav2` as part of desktop work.
-- Execute only the explicitly authorized numbered step on `codex/desktop-step-N`. Stop after its report. Do not advance automatically.
+- The owner requested one branch only on 15 September 2026: use `main` for this private repository. Historical step commits remain in its ancestry. This consolidation does not waive verification gates or authorize public release or production changes.
 - Read docs/desktop/CONTRACT.md and the owning parity rows before changing functionality. Preserve UI styling and evidence/approval semantics.
 - No paid GitHub Actions, purchases, infrastructure upgrades or public publication. No copied production credentials or data. Ask before modifying other applications' configuration.
 - Model selection follows the current user choice. Astra stays responsible when selected; no automatic Sol/Terra/Luna handoffs. Independent review, when required, inherits the selected model unless explicitly overridden.

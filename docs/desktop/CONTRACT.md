@@ -2,7 +2,7 @@
 
 Repository: private `KarthikRamesh9149/Orchestra`. Production `orchestrav2` is outside the write/deployment scope.
 
-Execute only the user-authorized numbered step on `codex/desktop-step-N`. Commit and push focused changes; integrate into this repository's main only when that step's gate passes. Report evidence and blockers, explain the next step, and stop. No automatic progression. No public repository, release, spending or third-party client configuration changes without the specified authorization.
+Execute only user-authorized work. On 15 September 2026 the owner requested one branch only: `main` now contains the historical step work with ancestry preserved. Commit focused changes there after applicable verification. Branch consolidation does not certify unfinished gates. No public repository, release, spending or third-party client configuration changes without the specified authorization.
 
 ## Gates
 

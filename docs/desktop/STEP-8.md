@@ -50,6 +50,42 @@ housekeeping, not certification of the open gates or authorization to publish.
 - Public release, signed distribution, Windows, two-machine tests and automatic
   updates remain deferred. No production repository changes are authorized.
 
+## Current private candidate verification
+
+- Local Settings previously rendered native connector controls alongside hosted
+  connector projections. This could imply access remained after native revocation.
+  Local mode now uses only its native panels; shared/web hosted controls remain.
+  No styles, design tokens or CSS were changed. Imported evidence is preserved.
+- Regression and full frontend suite: 239 tests across 49 files passed. Four
+  publication/notice inventory tests passed. Frontend build and Mac packaging passed.
+- Native candidate `95388b6b-c35c-49dd-b4c6-0442eefe3ac9` reopened the existing
+  synthetic workspace. Memory retained the revoked Slack source; Settings showed
+  native Slack/GitHub/Drive controls and no duplicate hosted integration panel.
+  Native screenshot confirmed a rendered, nonblank Settings screen without a
+  framework overlay. Native console logging was not captured; do not infer clean
+  logs from the screenshot. This is one desktop viewport, not responsive coverage.
+- The first packaging attempt reused the assembled runtime UI. It was not counted
+  as verification of the fix. Reassembly and repackaging preceded the actual check.
+- The original silent launch explainer is rendered and privately included with its
+  source script. AVFoundation confirms 60 seconds, 1920×1080, 30 fps. It is clearly
+  labelled illustrative, not live footage or performance evidence.
+- All eight old remote/local step branch refs were deleted only after ancestry
+  verification. Every commit remains reachable from main; worktrees are retained.
+
+### Open, not passed
+
+The shared browser still rejects the local test certificate. The existing
+hostname-scoped macOS trust is not sufficient for the browser, and native shared
+connection also reports failure. No security warning was bypassed, certificate
+validation disabled, or broad root trust installed. Resolving this safely and
+completing fresh-user browser/provider journeys remains required.
+
+The notice scanner finds 451 backend runtime package entries, 19 without standalone
+root notices. This is not 19 proven violations: for example, isarray includes its
+license in README. Complete transitive notice resolution, frontend/native license
+aggregation and public-distribution review remain open. No full compliance claim
+is made by a filename inventory. Public publication is still prohibited.
+
 ## Preparation evidence
 
 The lockfile audit counted 1,400 dependency entries and no non-registry resolved

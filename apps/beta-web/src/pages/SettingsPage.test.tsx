@@ -7,6 +7,7 @@ import { Toaster, useToastStore } from "../components/ui/Toaster";
 import { useThemeStore } from "../store/themeStore";
 import { server } from "../test/server";
 import { SettingsPage } from "./SettingsPage";
+import * as desktopMode from "../lib/desktop";
 
 function render(node: React.ReactNode) { return renderView(<>{node}<Toaster /></>); }
 
@@ -23,6 +24,19 @@ vi.mock("../context/AuthContext", () => ({
 }));
 
 describe("Settings workspace persistence", () => {
+  it("local Settings does not present retained server evidence as live connector access", async () => {
+    vi.spyOn(desktopMode, "isDesktop").mockReturnValue(true);
+    let hostedStatusReads = 0;
+    server.use(http.get("http://localhost:3000/v1/projects/local-project/integrations/status", () => {
+      hostedStatusReads++;
+      return HttpResponse.json({data:{providers:[{provider:"slack",label:"Slack",connected:true,status:"connected",availableActions:["disconnect"]}]},error:null});
+    }));
+    render(<SettingsPage />);
+    await screen.findByText("Original Workspace");
+    expect(screen.queryByRole("button", {name:"Disconnect Slack"})).not.toBeInTheDocument();
+    expect(hostedStatusReads).toBe(0);
+    expect(document.getElementById("integrations")).toBeNull();
+  });
   it("[R08] renders each toast once with the app-level outlet", async () => {
     render(<SettingsPage />);
     await screen.findByText("Original Workspace");

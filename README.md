@@ -8,6 +8,12 @@ Your requirements live in documents. Decisions happen in chat. Implementation ha
 
 [How it works](#from-scattered-context-to-a-shared-decision) · [Start locally](docs/desktop/release/BUILD.md) · [Privacy](docs/desktop/release/USER-GUIDE.md)
 
+## See the idea in one minute
+
+[![Orchestra: Move fast. Build from the same truth.](docs/desktop/media/Orchestra-launch-poster.png)](docs/desktop/media/Orchestra-launch.mp4)
+
+[Watch the 60-second product explainer](docs/desktop/media/Orchestra-launch.mp4). Silent, with on-screen text and illustrative examples; not a live app recording. No public availability or benchmark claim is implied.
+
 ## Stop rebuilding the context before you can do the work
 
 “Was that approved?” “Which document is current?” “Why did we change this?”

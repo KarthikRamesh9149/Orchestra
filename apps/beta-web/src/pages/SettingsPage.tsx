@@ -932,7 +932,9 @@ export function SettingsPage() {
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop GitHub…</p>}><DesktopGitHubSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop Drive…</p>}><DesktopDriveSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading selected-source refresh…</p>}><DesktopSyncSettings/></Suspense>}
-          <IntegrationsSection />
+          {/* Local credentials are owned by the native connector panels above.
+              Imported server projections must not imply a live native connection. */}
+          {!isDesktop() && <IntegrationsSection />}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <WorkspaceSection />
             <AccountSection />

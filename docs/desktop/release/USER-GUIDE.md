@@ -35,8 +35,11 @@ public diagnostics service is configured here. Do not attach raw profiles,
 tokens, provider responses, source text or private screenshots to public issues.
 
 The current web HTML also references Google Fonts (Geist and Geist Mono).
-Actual packaged font/network behavior and redistribution notices require final
-publication review; do not describe this candidate as making no network requests.
+Geist is copyright 2023 Vercel, in collaboration with basement.studio, under
+[SIL Open Font License 1.1](https://github.com/vercel/geist-font/blob/main/LICENSE.txt).
+The font files are externally referenced, not included in the source snapshot;
+do not describe this candidate as making no network requests. Any future bundled
+font delivery must include its corresponding copyright and full license notice.
 
 ## Update, backup and uninstall
 
@@ -63,4 +66,7 @@ normal uninstall. No automatic updater is active.
 For a private support report, provide app version, macOS/architecture, local/shared
 mode, reproduction steps and redacted error code. Source content and credentials
 are not required by default. A named support/recovery owner and response channel
-must be confirmed before a public beta; none is advertised as staffed here.
+must be confirmed before a public beta. For the current private beta, the owner
+is Karthik Ramesh and the contact is hello@orchestraos.dev, as designated in this
+task. This is not a 24/7 service or a response-time guarantee. Fresh email-delivery
+testing remains separate from identifying the contact.
