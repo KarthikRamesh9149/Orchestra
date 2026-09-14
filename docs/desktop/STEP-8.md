@@ -49,3 +49,41 @@ tests passed. Fresh Prisma generation, backend compilation and frontend producti
 build also passed. Seven local documentation links resolve, whitespace checks
 and the local security scan pass. This is not independent clean-machine native
 installer evidence, full-history secret clearance or a complete bundled-license audit.
+
+## Fresh native reproduction, 14 September 2026
+
+The first native build from the fresh Step 8 checkout failed: OpenSSL's pristine
+archive has no generated Makefile, but the recipe ran `make clean` before
+configuration. The recipe now cleans only configured trees and propagates actual
+clean failures; it also creates its own `.desktop` directory. A regression test
+covers fresh/configured trees and failure propagation. All four Step 8 Node tests,
+the static security scan, import review and inventory checks pass.
+
+The corrected source recipe built PostgreSQL 17.11, OpenSSL 3.5.8 and pgvector
+0.8.6 from checksum-verified upstream archives, assembled the runtime and created
+internal package `85fd01be-b40c-4441-be9b-00d31a6328e0` (0.0.5). This used fresh
+native build outputs, not the previous worktree's runtime. Native tests passed
+with empty PATH: fresh launch, competing-engine rejection, missing/invalid
+loopback authority rejection, save/reopen, parent IPC loss and SIGKILL recovery.
+PostgreSQL, pgvector and OpenSSL license files are present; this is not a full
+transitive notice/legal review.
+
+The fresh packaged UI passed 12 functional checks: onboarding, upload, document
+viewer, exact-byte download, cited evidence-only answer, navigation/draft
+continuity, route access, restart persistence, rename, subscription persistence,
+multiple chats and deletion. No page errors or HTTP failures were recorded.
+**The overall UI smoke exited nonzero:** final screenshot capture timed out after
+fonts loaded. Visual evidence is not certified by the functional results. This
+was same-Mac synthetic verification, not an independent customer/public download
+or live AI qualification.
+
+Private evidence (not publication artifacts):
+
+- `/private/tmp/orchestra-step8-native-build.log` — original reproduced failure.
+- `/private/tmp/orchestra-step8-native-rebuild.log` — successful native build.
+- `/private/tmp/orchestra-step8-prepare-native.log` and `orchestra-step8-package.log` — packaging.
+- `/private/tmp/orchestra-step8-native-smoke.log` — passed native lifecycle checks.
+- `/private/tmp/orchestra-step4-acceptance-BWtEa1/result.json` — functional checks and screenshot failure.
+
+Public gates above remain open. No main merge, release, visibility change,
+production mutation, paid Actions or paid service was performed.

@@ -3,8 +3,10 @@ import {tmpdir} from 'node:os';
 import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {resolve,join} from 'node:path';
+import {cleanConfiguredSource} from './native-build-clean.mjs';
 if(process.platform!=='darwin'||process.arch!=='arm64')throw new Error('This recipe builds only macOS ARM64');
 const root=resolve(import.meta.dirname,'../..');
+await mkdir(join(root,'.desktop'),{recursive:true});
 // Upstream makefiles do not support whitespace in install/build flags. This
 // private temporary alias still writes only into this repository's .desktop.
 const alias=await mkdtemp(join(tmpdir(),'orchestra-native-'));
@@ -28,7 +30,7 @@ for(const source of sources){
 }
 const ssl=join(base,'openssl-shared');
 try{await access(join(ssl,'lib/libcrypto.3.dylib'));}catch{
- await run('/usr/bin/make',['clean'],join(base,'openssl-3.5.8'));
+ await cleanConfiguredSource(join(base,'openssl-3.5.8'),run);
  await run('/usr/bin/perl',['Configure','darwin64-arm64-cc','shared','no-tests',`--prefix=${ssl}`,'--libdir=lib'],join(base,'openssl-3.5.8'));
  await run('/usr/bin/make',['-j4'],join(base,'openssl-3.5.8'));
  await run('/usr/bin/make',['install_sw'],join(base,'openssl-3.5.8'));
