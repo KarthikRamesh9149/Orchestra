@@ -13,5 +13,10 @@ test('inventories actual notices without following outside symlinks or declaring
   const report=await inventoryNotices(root);
   assert.equal(report.packages.length,2);assert.equal(report.standaloneNoticeMissing[0].name,'b');
   assert.equal(report.complete,false);assert.match(report.packages[0].notices[0].sha256,/^[a-f0-9]{64}$/);
+  await writeFile(join(root,'b/README.md'),'Copyright synthetic fixture. Permission is hereby granted. THE SOFTWARE IS PROVIDED without warranty.');
+  const embedded=await inventoryNotices(root);
+  assert.equal(embedded.standaloneNoticeMissing.length,1);
+  assert.equal(embedded.unresolvedNoticeLocations.length,0);
+  assert.equal(embedded.packages.find(p=>p.name==='b').embeddedNotices.length,1);
  }finally{await rm(root,{recursive:true,force:true});}
 });
