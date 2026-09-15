@@ -7,8 +7,10 @@ test('owner logo is preserved at its original aspect ratio and used in README',a
  assert.equal(png.toString('hex',0,8),'89504e470d0a1a0a');
  assert.equal(png.readUInt32BE(16),728);assert.equal(png.readUInt32BE(20),718);
  const readme=(await read('README.md')).toString();
- assert.match(readme,/<h1 align="center">\s*<img src="apps\/desktop\/assets\/orchestra-logo\.png" alt="Orchestra logo" width="64" \/>\s*Orchestra\s*<\/h1>/);
- assert.match(readme,/<h3 align="center">Product Brain and One Source of Truth for High-Speed Teams<\/h3>/);
+ assert.match(readme,/<img src="docs\/desktop\/media\/orchestra-banner-canva\.png" alt="Orchestra — Product Brain for High Speed Teams" width="900" \/>/);
+ const banner=await read('docs/desktop/media/orchestra-banner-canva.png');
+ assert.equal(banner.toString('hex',0,8),'89504e470d0a1a0a');
+ assert(banner.readUInt32BE(16)>banner.readUInt32BE(20),'banner is landscape');
 });
 test('Mac packager uses a valid multiresolution Orchestra icon',async()=>{
  const icns=await read('apps/desktop/assets/Orchestra.icns');
