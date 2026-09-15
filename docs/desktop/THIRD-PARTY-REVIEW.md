@@ -93,22 +93,37 @@ file. Fontkit's test-font licenses are not a license for its implementation.
 MIT/BSD labels must not be replaced with invented copyright notices. These need
 upstream attribution resolution, not another filename-only passing check.
 
-## Remaining attribution blockers, 16 September
+## Current blocker register, 16 September
 
 | Package | Review result / required resolution |
 | --- | --- |
 | @swc/helpers 0.3.17 | Published metadata says MIT, while the inspected SWC v1.2.192 root LICENSE is Apache-2.0. Do not silently apply the root license to this older helper package. Obtain the version's applicable notice or separately qualify an upgrade. |
-| abstract-logging 2.0.1 | Published README points to jsumners.mit-license.org; the linked notice could not be retrieved. Preserve the pointer, but do not fabricate its copyright year/text. |
 | brotli 1.3.3 | Reviewed published source revision lacks a root implementation license file; requires upstream notice resolution. |
 | dfa 1.2.0 | MIT label/README statement is not a complete bundled attribution; requires upstream notice resolution. |
 | dingbat-to-unicode 1.0.1 | BSD-2-Clause metadata exists but the reviewed release tree lacks its copyright-bearing license text. |
 | fontkit 1.9.0 | Test-font licenses do not resolve implementation attribution; requires the software notice. |
 | stackback 0.0.2 | Published revision lacks the complete notice; preserve existing metadata pending upstream resolution. |
 | tr46 0.0.3 | Published revision lacks the complete notice; a newer release's notice is not automatically proof for this version. |
-| xml-naming 0.1.0 | Metadata declares MIT but has no registry source revision or complete root notice; establish applicable upstream attribution. |
 
-All twelve previously open locations have now been examined. Three have a
-documented repository-root notice; nine remain attribution blockers, not
-unexamined files or certified violations. No dependencies were removed, updated
-or relicensed to make this review appear complete. No maintainer has been
-contacted and no public issue has been posted.
+All twelve previously open locations have been examined. Five now have documented
+notice evidence and seven remain attribution blockers, not unexamined files or
+certified violations. The recovered-notices manifest is the current machine-readable
+register. Earlier counts above are retained only as review history.
+
+Existing upstream requests were checked on 16 September; none supplies a verified
+resolution for these installed versions:
+
+- [fontkit missing implementation notice](https://github.com/foliojs/fontkit/issues/255)
+- [dfa missing notice](https://github.com/foliojs/dfa/issues/3)
+- [Brotli generated encoder provenance and notices](https://github.com/foliojs/brotli.js/issues/57)
+- [dingbat-to-unicode exact-version notice request](https://github.com/mwilliamson/dingbat-to-unicode/issues/1)
+
+Third-party issue comments are not a substitute for an applicable owner-provided
+notice. No duplicate public requests were posted. No dependencies were removed,
+updated or relicensed to make this review appear complete.
+
+The component-level notices already embedded in Brotli's decoder and stackback's
+V8-derived formatter are additionally preserved in `third-party/component-notices.txt`.
+They do not license the rest of either package. A regression test compares those
+extracts with the exact installed source headers and rejects an accidental claim
+that their package-level blockers are closed.
