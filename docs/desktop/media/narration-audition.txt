@@ -1,0 +1,5 @@
+Your team moves fast. But the context behind your product can fall behind.
+
+A requirement lives in a document. A change arrives in a conversation. And the person building it needs to know which version is actually approved.
+
+This is Orchestra. Product Brain for High Speed Teams. Let's follow one project, from the original evidence to the context you give your coding agent.

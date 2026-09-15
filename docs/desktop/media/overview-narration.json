@@ -1,0 +1,9 @@
+[
+  {"start":0,"end":6,"text":"Your team moves fast. But your product context can fall behind."},
+  {"start":6,"end":13,"text":"The document says one thing. A new request says another. Which version should your team build?"},
+  {"start":13,"end":21,"text":"Orchestra brings the question back to your project. Choose the source, then ask what is actually in scope."},
+  {"start":21,"end":29,"text":"Check the evidence, not just the answer. This demo uses evidence-only mode, without an AI provider."},
+  {"start":29,"end":38,"text":"Read the original requirement: CSV export is included. PDF export is not."},
+  {"start":38,"end":48,"text":"Preflight checks the agent's context. Missing acceptance criteria remain a blocker. A context pack doesn't prove the work is complete."},
+  {"start":48,"end":60,"text":"Orchestra. Product Brain for High Speed Teams. Connect evidence, make explicit decisions, and give your team a shared understanding of what to build next."}
+]
