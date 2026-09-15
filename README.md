@@ -1,8 +1,9 @@
-<img src="apps/desktop/assets/orchestra-logo.png" alt="Orchestra logo" width="96" />
+<h1 align="center">
+  <img src="apps/desktop/assets/orchestra-logo.png" alt="Orchestra logo" width="64" />
+  Orchestra
+</h1>
 
-# Orchestra
-
-### One Source of Truth and Product Brain for high-speed teams.
+<h3 align="center">Product Brain and One Source of Truth for High-Speed Teams</h3>
 
 Your requirements live in documents. Decisions happen in chat. Implementation happens in GitHub. Orchestra connects the evidence, the decisions and the context your team builds from.
 
