@@ -1,5 +1,38 @@
 # Exact-runtime notice review
 
+## Current result, 16 September 2026
+
+Seven attribution blockers remain. Two additional notices were recovered in this
+pass; their hashes, sources and limits are recorded in
+[`third-party/recovered-notices.json`](third-party/recovered-notices.json).
+
+- **xml-naming 0.1.0:** resolved the missing software notice using revision
+  `c0afc395948730bed124859d7fc7cccabe0aac8a`. Its package version matches and both
+  published `src` files match byte for byte. The repository contains the MIT
+  notice omitted by the package's `files` selection.
+- **abstract-logging 2.0.1:** recovered the author-maintained notice explicitly
+  linked by its published README. The captured HTML is stored as inert `.txt`.
+  Its dynamic 2026 copyright year is preserved, not misrepresented as the
+  package's release year.
+- **Brotli:** the decoder source contains Google Apache-2.0 notices despite the
+  root MIT metadata. These existing source notices must remain intact; a root
+  MIT label cannot clear all bundled-code obligations.
+- **stackback:** `formatstack.js` contains a full V8/Google BSD-style notice.
+  Preserve it for source and binary distributions. It does not resolve the
+  separate missing MIT attribution for the rest of this package.
+
+The remaining seven are @swc/helpers, brotli, dfa, dingbat-to-unicode, fontkit,
+stackback and tr46 at the versions listed below. Closing them requires applicable
+upstream notice/clarification or an independently tested dependency replacement.
+No maintainer clarification was obtained. No dependency was silently replaced,
+feature removed, or license invented. This is not public-release clearance.
+
+The native preparation script copies the entire supplemental notice directory;
+these additions therefore enter future prepared runtimes. Existing packages
+must be rebuilt before claiming that they contain the recovered files.
+
+## Earlier review history (counts below describe the prior checkpoint)
+
 Private Mac runtime reviewed 15 September 2026. This records evidence, not legal
 advice or clearance to redistribute publicly.
 
