@@ -1,3 +1,5 @@
+<img src="apps/desktop/assets/orchestra-logo.png" alt="Orchestra logo" width="96" />
+
 # Orchestra
 
 ### One Source of Truth and Product Brain for high-speed teams.
