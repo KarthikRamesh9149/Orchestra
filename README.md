@@ -2,78 +2,164 @@
   <img src="docs/desktop/media/orchestra-banner-canva.png" alt="Orchestra — Product Brain for High Speed Teams" width="900" />
 </p>
 
-Your requirements live in documents. Decisions happen in chat. Implementation happens in GitHub. Orchestra connects the evidence, the decisions and the context your team builds from.
+<p align="center">
+  <a href="#watch-the-product"><strong>Watch the product</strong></a> &nbsp; · &nbsp;
+  <a href="docs/desktop/release/BUILD.md"><strong>Build locally</strong></a> &nbsp; · &nbsp;
+  <a href="infra/self-host/v1/README.md"><strong>Self-host</strong></a> &nbsp; · &nbsp;
+  <a href="#privacy">Privacy</a>
+</p>
 
-**Know what changed. Decide what matters. Build from the same truth.**
+Your PRD says one thing. A conversation changes the scope. Your coding agent still has yesterday's context.
 
-[How it works](#from-scattered-context-to-a-shared-decision) · [Start locally](docs/desktop/release/BUILD.md) · [Privacy](docs/desktop/release/USER-GUIDE.md)
+**Orchestra brings project evidence, decisions and agent context together, so your team knows what it is building and why.**
 
-## See the idea in one minute
+> Private Mac beta. Source access is required. Public downloads are not available yet.
 
-[![Orchestra: Move fast. Build from the same truth.](docs/desktop/media/Orchestra-launch-poster.png)](docs/desktop/media/Orchestra-launch.mp4)
+## Watch the product
 
-[Watch the 60-second product explainer](docs/desktop/media/Orchestra-launch.mp4). Silent, with on-screen text and illustrative examples; not a live app recording. No public availability or benchmark claim is implied.
+Ask about a requirement, inspect the retrieved evidence, then open the original source without leaving Orchestra.
 
-## Stop rebuilding the context before you can do the work
+https://github.com/user-attachments/assets/743f1442-8824-47b5-beb2-ceb75e8a30b1
 
-“Was that approved?” “Which document is current?” “Why did we change this?”
+*24-second edited walkthrough of the real desktop app with a fictional project. This profile uses clearly labelled evidence-only mode, not AI synthesis. [Capture details](docs/desktop/media/EVIDENCE-DEMO.md) · [Video file](docs/desktop/media/orchestra-evidence-walkthrough.mp4)*
 
-Bring selected files, conversations and engineering evidence into project memory. Ask Socrates a question, inspect the sources, and keep proposed changes separate from decisions a person has actually approved.
+## Keep the source one click away
 
-## From scattered context to a shared decision
+A useful answer should take you back to the evidence. Socrates keeps source links beside the response; Memory opens the uploaded document so you can check the requirement yourself.
 
-1. **Bring in the evidence.** Select files, folders, repositories and supported connector resources. Keep their provenance attached.
-2. **Ask a useful question.** Socrates answers from project context with citations you can inspect. Separate conversations and drafts persist.
-3. **Review what changed.** Truth Inbox and Change Packets bring proposed changes, evidence and affected areas into one review workflow.
-4. **Approve deliberately.** A generated suggestion is not accepted truth. Authorized human decisions shape the Product Brain and Live Doc.
-5. **Give agents the right context.** Preflight prepares a scoped context pack. Codex or VS Code retrieves the exact pack through MCP; Postflight records implementation evidence against it.
+<p align="center">
+  <a href="docs/desktop/media/orchestra-evidence-walkthrough.gif">
+    <img src="docs/desktop/media/orchestra-evidence-walkthrough.gif" alt="Real Orchestra walkthrough: document-scoped question, labelled evidence-only response, citation and source document" width="900" />
+  </a>
+</p>
 
-| When you need to know… | Use Orchestra to… |
+With your AI provider configured, Socrates can synthesize answers from project context. Without it, reading and evidence search remain available, without pretending an AI answer was generated.
+
+## Turn a request into a deliberate decision
+
+“Can we add this before launch?” is new evidence, not automatic approval.
+
+**Truth Inbox** brings proposed changes and review findings together. **Change Packets** show the evidence and affected areas. Authorized review determines what becomes accepted project truth.
+
+The workflow stays explicit:
+
+**Source evidence → proposed change → human review → accepted truth → implementation evidence**
+
+Product Brain and Live Doc keep the approved context available to the team. Timeline helps explain when and why it changed. Delivery views expose implementation evidence and unresolved gaps; they do not certify that a release is safe.
+
+## Give your coding agent the right starting point
+
+Before Codex starts, **Agent Preflight** assembles scoped context, constraints, required tests and unresolved questions. A missing decision stays visible instead of becoming the agent's assumption.
+
+1. Describe the implementation task.
+2. Review the context pack and any blockers.
+3. Let your paired agent retrieve that **exact pack ID** through Orchestra MCP.
+4. Record its work against that pack for **Postflight** review.
+
+Postflight records implementation evidence. It does not silently approve new product requirements. The currently qualified desktop-client scope is **Codex and VS Code**.
+
+## Questions worth asking your Product Brain
+
+| You need to know | Orchestra helps you inspect |
 | --- | --- |
-| What did we agree to build? | Find accepted requirements and supporting evidence. |
-| Did this conversation change the scope? | Review a proposed change before treating it as a decision. |
-| What could this decision affect? | Inspect linked product and engineering context. |
-| What should I give my coding agent? | Prepare scoped context and unresolved questions in Preflight. |
-| Was the approved change delivered? | Inspect delivery evidence and remaining gaps. |
+| What did we agree to build? | Accepted requirements and their supporting sources. |
+| Did this message change the scope? | The proposed change, evidence and review state. |
+| Why does the PRD differ from the implementation? | Linked product and engineering evidence, with remaining gaps. |
+| What should I give my coding agent? | Task-specific context, boundaries and unresolved decisions. |
+| Was the approved change delivered? | Recorded implementation and delivery evidence. |
+| What needs attention this week? | Pending reviews, context health and source-linked briefs. |
 
-Memory keeps the original evidence close to the answer. Timeline makes decisions easier to revisit. Delivery and Release Truth show implementation evidence and unresolved gaps; they do not certify that a release is safe. AI output remains generated context until the appropriate human review accepts a change.
+## Bring the context you choose
 
-## Your workspace, your choice
+| Source | Selection |
+| --- | --- |
+| Files and folders | Explicitly selected local evidence. |
+| Git repositories | Selected local repositories and engineering context. |
+| GitHub | Authorized repositories and their supported evidence. |
+| Google Drive | Selected documents with provider authorization. |
+| Slack | Selected authorized conversation sources. |
+| Agent clients | Scoped MCP access for Codex and VS Code. |
 
-**Local:** application-managed PostgreSQL and files on your Mac, with no hosted signup. Read and search saved evidence without an AI key. Generation requires your configured external AI provider; fully offline model generation is not included.
+Internal real-account checks cover the desktop connector scope. New-user and new-workspace onboarding is still being qualified; an installable provider app is not proof that every customer's connection works.
 
-**Shared:** connect to an explicit, trusted server. That server owns membership, authorization and accepted decisions. Local data is not silently published to a team. [Self-hosting →](infra/self-host/v1/README.md)
+## Local when you want it. Shared when you need it.
 
-Credentials use OS-protected storage outside browser persistence. AI requests send relevant context to your chosen provider. Source files rely on your Mac account and disk encryption, not promised application-level encryption. Provider use can incur charges; no credits are included. [Network and recovery details →](docs/desktop/release/USER-GUIDE.md)
+| | Local workspace | Shared workspace |
+| --- | --- | --- |
+| Authority | This installation | Your selected server |
+| Data | Application-managed database and files on your Mac | Server-owned project data and permissions |
+| Sign-in | No hosted signup required | Server identity and membership |
+| Offline | Read and search saved evidence | Optional bounded, read-only cache; disabled by default |
+| Team changes | Not silently published | Live server authorization required |
 
-## Connections
+The desktop app manages its own PostgreSQL/pgvector runtime. Consumer local operation does not require Docker or a separately installed database. Operators can use the versioned [self-hosting package](infra/self-host/v1/README.md) for shared teams.
 
-The desktop scope is **GitHub, Google Drive and Slack**, selected local sources, **Codex and VS Code**. Recorded real-account internal checks do not establish onboarding for every new account or workspace. Provider approval and fresh-user qualification remain separate gates; an installable app registration is not a passed customer journey.
+## Privacy
 
-## Try the private internal beta
+- **Choose what enters the workspace.** Local data is not silently published to a shared server.
+- **Bring your own AI configuration.** Relevant request context goes to your selected external provider. Its API charges may apply; no credits are included.
+- **Keep credentials outside the renderer.** Secrets use OS-protected storage rather than browser persistence.
+- **Protect the Mac itself.** Source files and the database rely on your account and disk encryption; application-level encryption of every file is not promised.
+- **Know what leaves the device.** Connectors contact their providers, shared mode contacts its server, and the current UI references Google Fonts. Local mode is not a claim of zero network traffic.
 
-Private desktop-development repository. **Not a public desktop release yet.** Steps 1–7 have recorded scoped internal Mac qualification, including real desktop AI/connectors and Codex/VS Code, shared-server checks and manual update/recovery. Windows, two-computer qualification, signing/notarization and automatic updates are deferred, not passed. Do not run it against existing production infrastructure.
+[Full network, retention and recovery guide →](docs/desktop/release/USER-GUIDE.md)
 
-Start with the [release status and download information](docs/desktop/release/README.md), [source-build recipe](docs/desktop/release/BUILD.md), and [privacy and support guide](docs/desktop/release/USER-GUIDE.md). Step 8 publication remains gated separately from internal qualification.
+## System requirements
 
-## Build and inspect
+| | Current internal scope |
+| --- | --- |
+| Platform | macOS on Apple Silicon |
+| Local runtime | Application-managed PostgreSQL/pgvector and files |
+| AI generation | A configured external AI provider; network and provider credit required |
+| Without AI | Saved-document reading and evidence search |
+| Shared teams | A compatible trusted HTTPS server |
+| Updates | Manual upgrade and recovery; no automatic updater |
+| Source build | Node.js 24/npm, Xcode command-line tools, Perl/tar and network access |
 
-Node.js 24 and npm are used for this baseline. Install dependencies with `npm ci --ignore-scripts`, then `npm run prisma:generate`. Build with `npm run build`; run the applicable baseline with `npx vitest run --config vitest.desktop.config.ts` and `npm --prefix apps/beta-web test`. These do not qualify packaged desktop operation.
+Windows, public signed/notarized distribution and two-computer qualification are deferred. No universal CPU, memory or latency benchmark is claimed.
 
-`npm test` retains the unmodified upstream selection, including hosted-release evidence checks which fail without deliberately excluded production documents. [Their explicit scope and later owners](docs/desktop/upstream-checks.json) are recorded; they are not counted as passed by the desktop-baseline suite.
+## Build from source
 
-See [desktop contract](docs/desktop/CONTRACT.md), [architecture](docs/desktop/ADR-001.md), [threat model](docs/desktop/THREAT-MODEL.md), [feature inventory](docs/desktop/feature-parity.json), and [Step 1 evidence](docs/desktop/STEP-1.md).
+For maintainers and contributors with repository access, start from a fresh checkout without production secrets or customer data:
 
-For the portable engine, see [Step 2 setup and evidence](docs/desktop/STEP-2.md) and [its runtime decisions](docs/desktop/ADR-002.md). It uses local PostgreSQL, private files, durable jobs and offline evidence search without hosted signup or Redis. Real AI provider and public-distribution qualification are not claimed complete.
+```sh
+git clone https://github.com/KarthikRamesh9149/Orchestra.git
+cd Orchestra
+npm ci --ignore-scripts
+npm run prisma:generate
+npm run build
+npm --prefix apps/desktop ci
+npm --prefix apps/desktop run typecheck
+npm --prefix apps/desktop run build
+mkdir -p .desktop
+node scripts/desktop/build-native-mac.mjs
+node scripts/desktop/prepare-native.mjs
+npm --prefix apps/desktop run package
+```
 
-For the internal Mac shell and deferred release qualification, see [Step 3](docs/desktop/STEP-3.md) and [native runtime decisions](docs/desktop/ADR-003.md). This is not a public release.
+The [full build guide](docs/desktop/release/BUILD.md) covers prerequisites, native provenance and applicable tests. The internal package path is recorded in `.desktop/latest-package.txt`. Do not bypass macOS security warnings to distribute an unsigned build.
 
-For local onboarding, chat continuity, source ingestion, approval/Live Doc and native recovery evidence, see [Step 4 acceptance](docs/desktop/STEP-4-ACCEPTANCE.md). The packaged tests use synthetic local data; they do not certify real AI models, external providers or shared teams.
+## Contributing and support
 
-The source was imported as a snapshot, without upstream Git history. Its immutable revision and per-file hashes are recorded in [import manifest](docs/desktop/import-manifest.json). Excluded historical release evidence is not a claim that those upstream checks were unnecessary or passed here.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, change boundaries, verification and safe demo data.
 
-No GitHub Actions or deployment configuration is enabled. No production integration is configured. Desktop development cannot modify the existing managed product.
+Maintainer and recovery owner: **Karthik Ramesh**. Private support: **hello@orchestraos.dev**. Include the app version and reproduction steps, not credentials or customer records.
 
-## Licensing
+<details>
+<summary><strong>Architecture, qualification and release evidence</strong></summary>
 
-First-party Orchestra code is licensed under [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their respective licenses. This repository remains **private by explicit owner instruction**; applying the license does not authorize publication. Bundled third-party notice review remains pending. See [rights and external dependencies](docs/desktop/RELEASE-DEPENDENCIES.md).
+- [Desktop contract](docs/desktop/CONTRACT.md), [architecture](docs/desktop/ADR-001.md) and [threat model](docs/desktop/THREAT-MODEL.md).
+- [Feature inventory](docs/desktop/feature-parity.json) and [release status](docs/desktop/release/README.md).
+- [Local workflow evidence](docs/desktop/STEP-4-ACCEPTANCE.md) and [manual update/recovery](docs/desktop/INTERNAL-UPDATE-RECOVERY.md).
+- [Immutable source import](docs/desktop/import-manifest.json) and [hosted-only test exclusions](docs/desktop/upstream-checks.json).
+- [Third-party notice review](docs/desktop/THIRD-PARTY-REVIEW.md): seven attribution blockers remain.
+
+Passing local tests is not public-release certification. No paid GitHub Actions or production deployment is enabled by this desktop work. The managed `orchestrav2` product remains separate.
+
+</details>
+
+## License
+
+First-party code is [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their own licenses and notices.
+
+This repository remains **private by explicit owner instruction**. Licensing the first-party code does not authorize publication or clear unresolved third-party obligations.
