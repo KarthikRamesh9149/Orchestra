@@ -74,11 +74,12 @@ housekeeping, not certification of the open gates or authorization to publish.
 
 ### Open, not passed
 
-The shared browser still rejects the local test certificate. The existing
-hostname-scoped macOS trust is not sufficient for the browser, and native shared
-connection also reports failure. No security warning was bypassed, certificate
-validation disabled, or broad root trust installed. Resolving this safely and
-completing fresh-user browser/provider journeys remains required.
+The shared TLS defect was repaired and verified in Brave and the packaged native
+app on 16 September. A temporary name-constrained localhost CA was explicitly
+approved, then removed after testing. Native shared networking now respects
+system trust through an isolated Chromium session without bypassing validation.
+Login, document access, developer restrictions, restart and logout passed.
+See LOCAL-TLS-QUALIFICATION.md for exact scope and the remaining onboarding limits.
 
 The notice scanner finds 451 backend runtime package entries, 19 without standalone
 root notices. This is not 19 proven violations: for example, isarray includes its

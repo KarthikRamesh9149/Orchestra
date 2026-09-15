@@ -48,5 +48,32 @@
     "sha256": "743d64c1f8a673ddcfd1740aa81672eac950ad7e63f6ba2d7c39f91dd57c5b99",
     "source": "https://raw.githubusercontent.com/rolldown/rolldown/483c64833c0fb0d1b75f1339accf781c0a09b335/THIRD-PARTY-LICENSE",
     "normalization": "One terminal newline added; notice text unchanged."
+  },
+  {
+    "package": "@aws-sdk/credential-provider-http",
+    "version": "3.972.28",
+    "file": "aws-sdk.txt",
+    "sha256": "4186c3f89c23f27b4c0caab574737c49ee5137c36a3c103484feaca4aeec2310",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/86b3dcd6619aa3a5972f2e189b0e0b83d9a07ffe/LICENSE",
+    "normalization": "One terminal newline added; notice text unchanged.",
+    "basis": "Published package declares Apache-2.0 and the AWS SDK repository; this is the pinned repository-root license, not a recovered package-specific file."
+  },
+  {
+    "package": "@aws-sdk/credential-provider-login",
+    "version": "3.972.30",
+    "file": "aws-sdk.txt",
+    "sha256": "4186c3f89c23f27b4c0caab574737c49ee5137c36a3c103484feaca4aeec2310",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/86b3dcd6619aa3a5972f2e189b0e0b83d9a07ffe/LICENSE",
+    "normalization": "One terminal newline added; notice text unchanged.",
+    "basis": "Published package declares Apache-2.0 and the AWS SDK repository; this is the pinned repository-root license, not a recovered package-specific file."
+  },
+  {
+    "package": "@aws-sdk/nested-clients",
+    "version": "3.996.20",
+    "file": "aws-sdk.txt",
+    "sha256": "4186c3f89c23f27b4c0caab574737c49ee5137c36a3c103484feaca4aeec2310",
+    "source": "https://raw.githubusercontent.com/aws/aws-sdk-js-v3/86b3dcd6619aa3a5972f2e189b0e0b83d9a07ffe/LICENSE",
+    "normalization": "One terminal newline added; notice text unchanged.",
+    "basis": "Published package declares Apache-2.0 and the AWS SDK repository; this is the pinned repository-root license, not a recovered package-specific file."
   }
 ]

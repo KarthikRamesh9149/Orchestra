@@ -49,7 +49,12 @@ two-computer pass. Selected-channel Slack sync completed at
 existing accounts do not qualify new-account provider onboarding.
 
 Do not click through browser warnings or disable TLS verification.
-Remove test trust after qualification; record exact certificate
+Temporary trust was removed successfully through `security remove-trusted-cert`
+after the owner's macOS approval. A fresh `security verify-cert` now returns
+`CSSMERR_TP_NOT_TRUSTED`, confirming the temporary grant is no longer effective.
+The private test CA/leaf files remain for evidence; no unrelated trust was removed.
+Fresh browser connections to this disposable server now require deliberate new
+test trust; do not bypass that expected warning. Record exact certificate
 fingerprints before changing any trust entry. Never remove unrelated certificates.
 
 The owner has no second GitHub account. Non-owner GitHub enrollment remains

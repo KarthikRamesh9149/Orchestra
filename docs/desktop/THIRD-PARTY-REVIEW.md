@@ -26,11 +26,16 @@ The Rolldown 1.2.4 native binding now also has its root MIT notice and upstream
 Rollup/esbuild notices from the exact release revision
 483c64833c0fb0d1b75f1339accf781c0a09b335. The third-party text has one terminal
 newline added, explicitly recorded in the manifest; no terms were changed.
-This leaves 12 backend package notice locations unresolved. In particular,
+Three AWS packages now reference the pinned AWS repository-root Apache-2.0
+notice, whose Amazon copyright attribution is retained. Their published package
+metadata identifies that repository and Apache-2.0. The manifest explicitly
+distinguishes this repository-root notice from a recovered package-specific
+file; it does not claim a package source commit was supplied by npm.
+This leaves 9 backend package notice locations unresolved. In particular,
 native dependencies can carry additional third-party obligations beyond the root
 JavaScript package license. Do not close those obligations based on this table.
 
-Remaining packages include AWS credential providers/nested clients, SWC helpers,
+Remaining packages include SWC helpers,
 abstract-logging, brotli, dfa, dingbat-to-unicode,
 fontkit, stackback, tr46 and xml-naming. Some registry records have no source
 revision. The full current list is reproducible with:
@@ -54,3 +59,23 @@ stackback, tr46 and dingbat-to-unicode did not contain a root software license
 file. Fontkit's test-font licenses are not a license for its implementation.
 MIT/BSD labels must not be replaced with invented copyright notices. These need
 upstream attribution resolution, not another filename-only passing check.
+
+## Remaining attribution blockers, 16 September
+
+| Package | Review result / required resolution |
+| --- | --- |
+| @swc/helpers 0.3.17 | Published metadata says MIT, while the inspected SWC v1.2.192 root LICENSE is Apache-2.0. Do not silently apply the root license to this older helper package. Obtain the version's applicable notice or separately qualify an upgrade. |
+| abstract-logging 2.0.1 | Published README points to jsumners.mit-license.org; the linked notice could not be retrieved. Preserve the pointer, but do not fabricate its copyright year/text. |
+| brotli 1.3.3 | Reviewed published source revision lacks a root implementation license file; requires upstream notice resolution. |
+| dfa 1.2.0 | MIT label/README statement is not a complete bundled attribution; requires upstream notice resolution. |
+| dingbat-to-unicode 1.0.1 | BSD-2-Clause metadata exists but the reviewed release tree lacks its copyright-bearing license text. |
+| fontkit 1.9.0 | Test-font licenses do not resolve implementation attribution; requires the software notice. |
+| stackback 0.0.2 | Published revision lacks the complete notice; preserve existing metadata pending upstream resolution. |
+| tr46 0.0.3 | Published revision lacks the complete notice; a newer release's notice is not automatically proof for this version. |
+| xml-naming 0.1.0 | Metadata declares MIT but has no registry source revision or complete root notice; establish applicable upstream attribution. |
+
+All twelve previously open locations have now been examined. Three have a
+documented repository-root notice; nine remain attribution blockers, not
+unexamined files or certified violations. No dependencies were removed, updated
+or relicensed to make this review appear complete. No maintainer has been
+contacted and no public issue has been posted.
