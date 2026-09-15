@@ -22,12 +22,16 @@ The five upstream notices are now preserved byte-for-byte in `third-party/`,
 with a package/version/source-revision/hash manifest and regression checks.
 Runtime preparation copies this directory to `third-party-notices` in future
 packages. Existing already-built packages were not retroactively modified.
-This leaves 13 backend package notice locations unresolved. In particular,
+The Rolldown 1.2.4 native binding now also has its root MIT notice and upstream
+Rollup/esbuild notices from the exact release revision
+483c64833c0fb0d1b75f1339accf781c0a09b335. The third-party text has one terminal
+newline added, explicitly recorded in the manifest; no terms were changed.
+This leaves 12 backend package notice locations unresolved. In particular,
 native dependencies can carry additional third-party obligations beyond the root
 JavaScript package license. Do not close those obligations based on this table.
 
 Remaining packages include AWS credential providers/nested clients, SWC helpers,
-Rolldown native bindings, abstract-logging, brotli, dfa, dingbat-to-unicode,
+abstract-logging, brotli, dfa, dingbat-to-unicode,
 fontkit, stackback, tr46 and xml-naming. Some registry records have no source
 revision. The full current list is reproducible with:
 

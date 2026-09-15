@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 765,
+  "unchangedImportedFiles": 764,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -129,10 +129,16 @@
       "reason": "Steps 4/6 partial processing, native clipboard, honest downloads and send-only Gmail exclusion; Step 7 bounded pending-document refresh with cancellation. No redesign."
     },
     {
+      "path": "apps/beta-web/src/pages/SettingsPage.test.tsx",
+      "sourceSha256": "765b62a4eebf90e8ff488f4af5050c8caec6156758169c58ffd071889a7acb72",
+      "importedSha256": "23b545a3f58699055ab31fb2cea026f252032bde3dd301c455d5e21f0df6bce3",
+      "reason": "Step 8 regression verifies local Settings does not fetch hosted integration status or imply retained evidence is a live native connection; existing hosted tests preserved."
+    },
+    {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "b2bbe218fe1510d17147d3fb532068a40b5c0cefb97743881c0b55314cdd3a28",
-      "reason": "Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking inside existing integration cards."
+      "importedSha256": "117ef20982dd411e1e768f29605088deec83ee5bb91ef17c7bfe5ba60305546f",
+      "reason": "Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking; Step 8 local native connector panels replace misleading retained hosted projections without changing shared/web panels or styling."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",

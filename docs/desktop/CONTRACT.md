@@ -6,6 +6,8 @@ Execute only user-authorized work. On 15 September 2026 the owner requested one 
 
 ## Gates
 
+No automatic progression beyond the work the user has explicitly authorized.
+
 1. Reviewed, buildable source snapshot; complete action inventory; architecture, threat model, provenance and external dependencies recorded.
 2. Fresh plain PostgreSQL/pgvector local engine: upload → parse → index → cited answer → authorized approval → restart preserves state. Worker-kill/retry cannot duplicate accepted effects. No hidden Redis dependency.
 3. Internal Mac ARM package launches without developer tools; provision, save, quit and reopen safely. Duplicate-launch/process-kill recovery passes. Windows x64 is deferred by explicit user instruction until a Windows test machine is available; it is not claimed supported or tested.

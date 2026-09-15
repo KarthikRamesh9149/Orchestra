@@ -33,5 +33,20 @@
     "file": "undici-types.txt",
     "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27",
     "source": "https://raw.githubusercontent.com/nodejs/undici/9197790ae0d015b40b75fd0c5cdb7420704b5272/LICENSE"
+  },
+  {
+    "package": "@rolldown/binding-darwin-arm64",
+    "version": "1.2.4",
+    "file": "rolldown.txt",
+    "sha256": "23ecfff35a5a2e80d92142f75228912c3b1abc4b5a8337a821ff4397e2f9f734",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/483c64833c0fb0d1b75f1339accf781c0a09b335/LICENSE"
+  },
+  {
+    "package": "@rolldown/binding-darwin-arm64",
+    "version": "1.2.4",
+    "file": "rolldown-third-party.txt",
+    "sha256": "743d64c1f8a673ddcfd1740aa81672eac950ad7e63f6ba2d7c39f91dd57c5b99",
+    "source": "https://raw.githubusercontent.com/rolldown/rolldown/483c64833c0fb0d1b75f1339accf781c0a09b335/THIRD-PARTY-LICENSE",
+    "normalization": "One terminal newline added; notice text unchanged."
   }
 ]

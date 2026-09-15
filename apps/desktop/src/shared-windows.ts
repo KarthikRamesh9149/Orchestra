@@ -11,10 +11,13 @@ import {openConfirmedExternal} from './external-link.js';
 import {copyPlainText} from './clipboard.js';
 import {authorizeSharedDownload} from './shared-download.js';
 import {registerProjectTransferUI} from './project-transfer-ui.js';
+import {sharedNetwork} from './shared-network.js';
 
 const connectSchema=z.object({name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
 export function registerSharedWindows(options:{local:BrowserWindow;resources:string;preload:string;store:SharedConnectionStore;packaged:boolean}){
  const windows=new Map<string,{window:BrowserWindow;transport:SharedHttp}>();
+ const controlSession=session.fromPartition('orchestra-shared-control-'+randomUUID(),{cache:false});
+ const controlNetwork=sharedNetwork(controlSession);
  const resumed=()=>{for(const row of windows.values())row.transport.revalidate();};
  powerMonitor.on('resume',resumed);
  const trustedLocal=(event:Electron.IpcMainInvokeEvent)=>event.sender===options.local.webContents&&event.senderFrame===options.local.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
@@ -26,7 +29,7 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
   // No persist: prefix: cookies, localStorage, HTTP caches and drafts remain memory-only.
   const isolated=session.fromPartition('orchestra-shared-'+connection.id+'-'+randomUUID(),{cache:false});
   isolated.setPermissionRequestHandler((_contents,_permission,callback)=>callback(false));isolated.setPermissionCheckHandler(()=>false);
-  const transport=new SharedHttp(connection,options.store.grants(connection.id),fetch,{
+  const transport=new SharedHttp(connection,options.store.grants(connection.id),sharedNetwork(isolated),{
    onOffline:value=>{if(!window.isDestroyed())window.webContents.send('orchestra:shared-offline',value);},
    invalidateView:()=>{if(!window.isDestroyed())window.webContents.reload();}
   });
@@ -52,7 +55,7 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
   try{
    const decision=await dialog.showMessageBox(options.local,{type:'question',message:'Connect to this team server?',detail:`${parsed.data.name}\n${parsed.data.origin}\n\nThis server owns shared accounts, files and approvals. Sign in with an account for this server. Your local workspace and provider credentials will not be sent. Offline caching is off by default. Your server operator may allow a bounded, expiring read-only copy of document metadata in this window's memory.`,buttons:['Cancel','Check server and connect'],defaultId:0,cancelId:0});
    if(decision.response!==1)return {ok:true,data:{cancelled:true}};
-   const manifest=await inspectSharedServer(parsed.data.origin),connection={...parsed.data,id:randomUUID(),serverId:manifest.serverId};
+   const manifest=await inspectSharedServer(parsed.data.origin,controlNetwork),connection={...parsed.data,id:randomUUID(),serverId:manifest.serverId};
    await options.store.add(connection);await open(connection);return {ok:true,data:{connected:true}};
   }catch{return {ok:false,error:{code:'shared_connect_failed',message:'Connection was not completed. The server must have trusted HTTPS, compatible desktop support and a stable server identity. If it was saved, try Open below.'}};}finally{changing=false;}
  });
@@ -68,7 +71,7 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
    const decision=await dialog.showMessageBox(options.local,{type:'question',message:'Sign out and remove this server?',detail:`${connection.origin}\nLocal workspace data is unaffected. Shared data remains on the server. An active saved session must be revoked successfully before removal.`,buttons:['Cancel','Sign out and remove'],defaultId:0,cancelId:0});if(decision.response!==1)return {ok:true,data:{cancelled:true}};
    windows.get(connection.id)?.window.close();
    const grants=options.store.grants(connection.id);if(await grants.read()){
-    const transport=new SharedHttp(connection,grants);try{const result=await transport.handle(new Request('orchestra://app/v1/auth/logout',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}));if(!result.ok)throw new Error('Sign-out not confirmed');}finally{transport.close();}
+    const transport=new SharedHttp(connection,grants,controlNetwork);try{const result=await transport.handle(new Request('orchestra://app/v1/auth/logout',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}));if(!result.ok)throw new Error('Sign-out not confirmed');}finally{transport.close();}
    }
    await options.store.remove(connection.id);return {ok:true,data:{removed:true}};
   }catch{return {ok:false,error:{message:'Removal was not confirmed. Reconnect and sign out successfully before removing the server.'}};}finally{changing=false;}
