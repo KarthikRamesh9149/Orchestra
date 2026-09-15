@@ -27,4 +27,10 @@ test('README walkthrough assets have real media signatures and bounded sizes', a
   assert.equal(video.subarray(4, 8).toString(), 'ftyp');
   assert(video.length > 100_000 && video.length < 10_000_000);
   assert((await stat(new URL('orchestra-source-view.png', base))).size > 10_000);
+  const film = await readFile(new URL('Orchestra-product-film.mp4', base));
+  assert.equal(film.subarray(4, 8).toString(), 'ftyp');
+  assert(film.length > 1_000_000 && film.length < 10_000_000);
+  const preflight = await readFile(new URL('orchestra-preflight-walkthrough.gif', base));
+  assert.match(preflight.subarray(0, 6).toString(), /^GIF8[79]a$/);
+  assert(preflight.length > 100_000 && preflight.length < 5_000_000);
 });

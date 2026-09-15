@@ -17,11 +17,11 @@ Your PRD says one thing. A conversation changes the scope. Your coding agent sti
 
 ## Watch the product
 
-Ask about a requirement, inspect the retrieved evidence, then open the original source without leaving Orchestra.
+From scattered requirements to inspectable evidence and clearer agent context, in one minute.
 
-https://github.com/user-attachments/assets/743f1442-8824-47b5-beb2-ceb75e8a30b1
+https://github.com/user-attachments/assets/9dd87791-42be-4801-8bad-c71fe8ddcd7e
 
-*24-second edited walkthrough of the real desktop app with a fictional project. This profile uses clearly labelled evidence-only mode, not AI synthesis. [Capture details](docs/desktop/media/EVIDENCE-DEMO.md) · [Video file](docs/desktop/media/orchestra-evidence-walkthrough.mp4)*
+*60-second original film: illustrative framing and real captures of a fictional project. The demo shows evidence-only mode, not AI synthesis, and retains preflight blockers. [Film details](docs/desktop/media/PRODUCT-FILM.md) · [Focused 24-second walkthrough](https://github.com/user-attachments/assets/743f1442-8824-47b5-beb2-ceb75e8a30b1)*
 
 ## Keep the source one click away
 
@@ -47,9 +47,23 @@ The workflow stays explicit:
 
 Product Brain and Live Doc keep the approved context available to the team. Timeline helps explain when and why it changed. Delivery views expose implementation evidence and unresolved gaps; they do not certify that a release is safe.
 
+<p align="center">
+  <img src="docs/desktop/media/orchestra-source-view.png" alt="Actual source viewer showing the fictional Northstar launch requirements, separate from an approval" width="900" />
+</p>
+
+*Start with the source. Reading or generating context is not the same as approving a change.*
+
 ## Give your coding agent the right starting point
 
 Before Codex starts, **Agent Preflight** assembles scoped context, constraints, required tests and unresolved questions. A missing decision stays visible instead of becoming the agent's assumption.
+
+<p align="center">
+  <a href="docs/desktop/media/orchestra-preflight-walkthrough.gif">
+    <img src="docs/desktop/media/orchestra-preflight-walkthrough.gif" alt="Actual blocked Agent Preflight: missing requirements, implementation boundaries and exact-pack handoff controls" width="900" />
+  </a>
+</p>
+
+*Edited detail views of a real blocked preflight. The demo does not claim that an agent completed the task.*
 
 1. Describe the implementation task.
 2. Review the context pack and any blockers.
