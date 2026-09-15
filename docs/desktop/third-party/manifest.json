@@ -1,0 +1,37 @@
+[
+  {
+    "package": "@esbuild/darwin-arm64",
+    "version": "0.28.1",
+    "file": "esbuild.txt",
+    "sha256": "b40ec5baec7bb34fa5b1c09521fa3cd52d5fad7adafed74932a2010d3612a681",
+    "source": "https://raw.githubusercontent.com/evanw/esbuild/bb9db84c02433fbe37b3509f53f9f3e3cc48725e/LICENSE.md"
+  },
+  {
+    "package": "@msgpackr-extract/msgpackr-extract-darwin-arm64",
+    "version": "3.0.3",
+    "file": "msgpackr-extract.txt",
+    "sha256": "d00470775464c789c7ac04cfba3bf1b79ef149790eb72556d1c51d8f50c8e7f3",
+    "source": "https://raw.githubusercontent.com/kriszyp/msgpackr-extract/db8f5b97e7aaab0bcad95f10582915d417153689/LICENSE"
+  },
+  {
+    "package": "@napi-rs/canvas-darwin-arm64",
+    "version": "0.1.80",
+    "file": "canvas.txt",
+    "sha256": "8802fecf9da4367bc23bcf20b21cc143785fc6c92b152f3fa7fbe6ce08d344d6",
+    "source": "https://raw.githubusercontent.com/Brooooooklyn/canvas/dda1b258dac667b4c66b94bbd4d70aa79ea4503a/LICENSE"
+  },
+  {
+    "package": "@nodable/entities",
+    "version": "2.1.0",
+    "file": "nodable-entities.txt",
+    "sha256": "750cb3fb6362804957ef52caaf9b5c824015be44d494637330d7cd8834d31d40",
+    "source": "https://raw.githubusercontent.com/nodable/val-parsers/f1c61a65e7b967c17b13822ef71e91bd25f17ce2/LICENSE"
+  },
+  {
+    "package": "undici-types",
+    "version": "5.26.5",
+    "file": "undici-types.txt",
+    "sha256": "a6db8096b2707bc0102d256917d4d33f298ba36d8c3f25de067a2b5bb379db27",
+    "source": "https://raw.githubusercontent.com/nodejs/undici/9197790ae0d015b40b75fd0c5cdb7420704b5272/LICENSE"
+  }
+]

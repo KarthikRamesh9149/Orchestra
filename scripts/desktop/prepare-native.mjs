@@ -36,6 +36,8 @@ await cp(join(root,'node_modules'),join(runtime,'backend/node_modules'),{recursi
 await cp(join(root,'prisma'),join(runtime,'backend/prisma'),{recursive:true});
 await writeFile(join(runtime,'backend/package.json'),JSON.stringify({private:true,type:'module'}));
 await cp(join(root,'apps/beta-web/dist'),join(runtime,'ui'),{recursive:true});
+// Preserve pinned supplemental upstream notices alongside the internal runtime.
+await cp(join(root,'docs/desktop/third-party'),join(runtime,'third-party-notices'),{recursive:true});
 await normalizeRuntimeLinks(runtime);
 const inventory=[];for(const file of await files(join(runtime,'native')))inventory.push({path:relative(runtime,file),sha256:createHash('sha256').update(await readFile(file)).digest('hex')});
 await writeFile(join(runtime,'native-manifest.json'),JSON.stringify({platform:'darwin-arm64',node:'24.19.0',postgres:'17.11',pgvector:'0.8.6',internal:true,files:inventory},null,2));
