@@ -21,7 +21,7 @@ From scattered requirements to inspectable evidence and clearer agent context, i
 
 https://github.com/user-attachments/assets/9dd87791-42be-4801-8bad-c71fe8ddcd7e
 
-*60-second original film: illustrative framing and real captures of a fictional project. The demo shows evidence-only mode, not AI synthesis, and retains preflight blockers. [Film details](docs/desktop/media/PRODUCT-FILM.md) · [Focused 24-second walkthrough](https://github.com/user-attachments/assets/743f1442-8824-47b5-beb2-ceb75e8a30b1)*
+*60-second original film: illustrative framing and real captures of a fictional project. The demo shows evidence-only mode, not AI synthesis, and retains preflight blockers. [Film details](docs/desktop/media/PRODUCT-FILM.md) · [Focused 24-second walkthrough](https://github.com/user-attachments/assets/9adb1381-e826-4760-a853-e979ece3fd7b)*
 
 ## Keep the source one click away
 

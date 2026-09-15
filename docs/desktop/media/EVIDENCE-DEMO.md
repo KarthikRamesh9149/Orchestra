@@ -14,7 +14,9 @@ The demonstrated journey is:
 
 The 24-second H.264 video and four-state looping GIF are an **edited walkthrough
 of real app captures**, not continuous screen recording or a speed benchmark.
-They do not demonstrate real AI synthesis, connected external providers or a
+The revised first scene crops to the real question composer instead of freezing
+the animated wordmark mid-letter. No UI text is changed. They do not demonstrate
+real AI synthesis, connected external providers or a
 successful approval. The visible PARTIAL state is retained honestly.
 
 Rebuild with macOS system frameworks, without a paid renderer:

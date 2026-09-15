@@ -63,7 +63,14 @@ func draw(_ scene: Int, _ progress: Double, _ context: CGContext) {
     context.saveGState()
     NSBezierPath(roundedRect: frame, xRadius: 15, yRadius: 15).addClip()
     // The source capture itself is not retouched or relabelled.
-    image.draw(in: frame, from: .zero, operation: .sourceOver, fraction: 1)
+    if scene == 0 {
+        // A detail view avoids freezing the animated Socrates wordmark mid-letter.
+        // The captured composer pixels and selected source remain unchanged.
+        let composer = NSRect(x:frame.minX+40,y:frame.midY-135,width:frame.width-80,height:(frame.width-80)*170/780)
+        image.draw(in:composer,from:NSRect(x:360,y:25,width:780,height:170),operation:.sourceOver,fraction:1)
+    } else {
+        image.draw(in: frame, from: .zero, operation: .sourceOver, fraction: 1)
+    }
     context.restoreGState()
     text("REAL APP CAPTURES · SYNTHETIC PROJECT · EDITED WALKTHROUGH, NOT A LATENCY TEST", NSRect(x: 64, y: 28, width: 1312, height: 24), size: 14, color: muted)
     accent.setFill()
