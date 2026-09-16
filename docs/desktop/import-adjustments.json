@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 764,
+  "unchangedImportedFiles": 762,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -279,6 +279,12 @@
       "reason": "Step 4 truthful desktop capability readiness; provider qualification stays Step 5."
     },
     {
+      "path": "src/modules/socrates/service.ts",
+      "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
+      "importedSha256": "76a80b6d64b005abe69ced441149313e92f1cae45bfd0d2e6002693146ff8c0b",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged."
+    },
+    {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
       "sourceSha256": "add6f4df391aacd88b1b7a2806564a3cce10a8a77eb8096c58351d614793448b",
       "importedSha256": "5aefdad6a8ba349ef02b33b0d7e89b95695494fb09a81dfc6d0cc3d05bb61a98",
@@ -307,6 +313,12 @@
       "sourceSha256": "25fadc1fae652c8eb745faaad8897458cb93121460ef0650ca04d267c65dc7c5",
       "importedSha256": "f646b1f7eccc044e05d8d28a636d445f507d67844f9f5a7bb3749a5c4d303959",
       "reason": "Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities."
+    },
+    {
+      "path": "tests/socrates-v1-service.test.ts",
+      "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
+      "importedSha256": "19443c8f92f1779d9a7673e93e57d41a682f3cc46ceaf6b2f4d3f44b5587282b",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget."
     }
   ]
 }

@@ -656,20 +656,55 @@ function explicitSocratesV1DocumentTitleMatches(question: string, title: string)
   return normalizedTitle.split(" ").length >= 2 && normalizeSocratesV1DocumentTitle(question).includes(normalizedTitle);
 }
 
-export function buildSocratesV1EvidenceExcerpt(content: string, query: string, maxChars = 900) {
+export function buildSocratesV1EvidenceExcerpt(content: string, query: string, maxChars = 900, documentTitle?: string | null) {
   const trimmed = content.trim();
   if (trimmed.length <= maxChars) return trimmed;
+  // The title already selected the document. Do not let it rank boilerplate
+  // above the facts requested inside that document.
+  const titleIndex = documentTitle ? query.toLowerCase().indexOf(documentTitle.toLowerCase()) : -1;
+  const contentQuery = titleIndex >= 0
+    ? query.slice(0, titleIndex) + query.slice(titleIndex + documentTitle!.length)
+    : query;
   const terms = Array.from(new Set(
-    socratesV1Terms(query)
+    socratesV1Terms(contentQuery.replace(/[-_]/g, " "))
       .map((term) => term.replace(/^[._]+|[._]+$/g, ""))
-      .filter((term) => term.length > 0 && !SOCRATES_V1_DOCUMENT_SCOPE_IGNORED_TERMS.has(term))
+      .filter((term) => term.length > 0 && !SOCRATES_V1_DOCUMENT_SCOPE_IGNORED_TERMS.has(term)
+        && !["source", "exact", "including", "missing", "details", "list"].includes(term))
   ));
   const lower = trimmed.toLowerCase();
   const hits = terms.flatMap((term) => allTermIndexes(lower, term)).sort((a, b) => a - b);
   if (hits.length === 0) return `${trimmed.slice(0, Math.max(0, maxChars - 3))}...`;
+  // Prefer intact sentences: evenly spaced character windows can discard the
+  // middle of a field list while leaving a later "all four columns" reference.
+  // Keep source order and explicitly mark gaps; never reconstruct source facts.
+  const sentences = trimmed.split(/(?<=[.!?])\s+/);
+  if (sentences.length > 1 && sentences.every((sentence) => sentence.length <= maxChars)) {
+    const ranked = sentences.map((text, index) => ({
+      text, index,
+      score: terms.filter((term) => allTermIndexes(text.toLowerCase(), term).length > 0).length / Math.sqrt(text.length)
+    })).sort((a, b) => b.score - a.score || a.index - b.index);
+    const selected = new Set<number>();
+    const render = () => Array.from(selected).sort((a, b) => a - b).map((index, position, indexes) =>
+      `${position > 0 ? (index === indexes[position - 1] + 1 ? " " : "\n…\n") : index > 0 ? "…\n" : ""}${sentences[index]}`
+    ).join("");
+    for (const candidate of ranked) {
+      if (candidate.score === 0) continue;
+      selected.add(candidate.index);
+      if (render().length > maxChars) selected.delete(candidate.index);
+    }
+    // Remaining space gives selected facts their neighbouring qualifications.
+    const neighbours = ranked.filter((candidate) => !selected.has(candidate.index))
+      .sort((a, b) => Math.min(...Array.from(selected, (index) => Math.abs(a.index - index)))
+        - Math.min(...Array.from(selected, (index) => Math.abs(b.index - index))) || a.index - b.index);
+    for (const candidate of neighbours) {
+      selected.add(candidate.index);
+      if (render().length > maxChars) selected.delete(candidate.index);
+    }
+    if (selected.size > 0) return render();
+  }
   const partCount = Math.min(3, hits.length);
   const separator = "\n…\n";
-  const partBudget = Math.max(80, Math.floor((maxChars - separator.length * (partCount - 1)) / partCount));
+  const partBudget = Math.max(1, Math.floor((maxChars - separator.length * (partCount - 1) - 6 * partCount) / partCount));
   const anchors = Array.from(new Set(Array.from({ length: partCount }, (_, index) =>
     hits[Math.round(index * (hits.length - 1) / Math.max(1, partCount - 1))]
   )));
@@ -4622,7 +4657,7 @@ Return only the answer markdown, with no JSON wrapper or markdown fence.`;
         item.explicitDocumentScopeTitle ? `explicitDocumentScope: ${item.explicitDocumentScopeTitle}` : null,
         `truthStatus: ${item.truthStatus}`,
         `observedAt: ${isoOrNull(item.createdAt) ?? "unknown"}`,
-        `excerpt: ${buildSocratesV1EvidenceExcerpt(item.text, input.question, promptExcerptChars)}`
+        `excerpt: ${buildSocratesV1EvidenceExcerpt(item.text, input.question, promptExcerptChars, item.explicitDocumentScopeTitle)}`
       ].filter(Boolean).join("\n");
     }).join("\n\n");
     const artifact = input.artifact
@@ -4650,6 +4685,7 @@ ${evidence || "No evidence retrieved."}${artifact}
 - For implementation facts, rely on GitHub evidence. For product intent and requirements, rely on PRD/document evidence.
 - For current/latest/now/today/recently questions, compare exact observedAt timestamps with requestAt and distinguish historical evidence from verified current state. If no supplied item proves the present state, say so explicitly. Do not estimate an elapsed duration or label dates as today/yesterday unless the supplied timestamps prove it.
 - If evidence is missing or weak, state the gap instead of guessing.
+- Preserve exact field names, quantities, lists and exclusions from the source. Never infer missing list members from a count such as "all four columns"; if the full list is absent, say it is absent.
 - When an evidence item has explicitDocumentScope, answer its facts only from that item's excerpt; do not borrow a missing answer from another document or source.
 - Put an evidence marker such as [E1] immediately after every factual project claim. Never cite an evidence label that does not support that claim.
 - Keep the answer concise but useful: usually 3-6 bullets or 2-3 short sections.

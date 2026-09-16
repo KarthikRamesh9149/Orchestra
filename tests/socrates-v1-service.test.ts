@@ -449,6 +449,49 @@ function makeService(
 }
 
 describe("SocratesService.askV1ProjectMemory", () => {
+  it("preserves complete source lists and acceptance sentences instead of cutting arbitrary windows", () => {
+    const content = [
+      "Northstar launch requirements. Demo project.",
+      "Synthetic product-demo content. Northstar is a fictional team analytics product.",
+      "This document is source evidence, not automatically accepted Product Brain truth.",
+      "Team leads spend their Monday mornings assembling status updates from scattered project information.",
+      "Northstar creates a weekly summary they can review and share.",
+      "Launch scope: Email and password sign-in. A project overview. Weekly summaries.",
+      "CSV export with item_id, title, owner and status columns.",
+      "Google sign-in, PDF export and automated email delivery are outside the launch scope.",
+      "Any change requires product-owner approval.",
+      "Acceptance criteria: CSV export includes only the selected project. All four columns are present.",
+      "Unauthorized users cannot export another project.",
+      "Empty projects return column headers without invented rows.",
+      "The product lead approves scope. Engineering implements approved requirements.",
+      "QA verifies tenant isolation and export accuracy. Deployment evidence is recorded separately."
+    ].join("\n");
+    const result = buildSocratesV1EvidenceExcerpt(content,
+      "According to Northstar-Launch-PRD, what is in launch scope, is PDF export included, and what are the CSV acceptance criteria? Cite the document.", 800);
+    expect(result.length).toBeLessThanOrEqual(800);
+    expect(result).toContain("CSV export with item_id, title, owner and status columns.");
+    expect(result).toContain("Google sign-in, PDF export and automated email delivery are outside the launch scope.");
+    expect(result).toContain("Acceptance criteria: CSV export includes only the selected project.");
+    const focused = buildSocratesV1EvidenceExcerpt(content,
+      "From Northstar-Launch-PRD, list the exact CSV columns and all CSV acceptance criteria, including empty-project behavior. Cite the source and do not infer missing details.", 800);
+    expect(focused).toContain("Empty projects return column headers without invented rows.");
+    // PDF extraction wraps sentences mid-line and does not punctuate headings.
+    const pdfText = content.replace("Northstar launch requirements. Demo project.",
+      "ORCHESTRA / SYNTHETIC DEMO\nNorthstar launch requirements\nDemo project")
+      .replace("Launch scope:", "Launch scope\n")
+      .replace("Acceptance criteria:", "Acceptance criteria\n")
+      .replace("title, owner", "title,\nowner")
+      .replace("users cannot", "users\ncannot");
+    const pdfResult = buildSocratesV1EvidenceExcerpt(pdfText,
+      "From Northstar-Launch-PRD, list the exact CSV columns and all CSV acceptance criteria, including empty-project behavior. Cite the source and do not infer missing details.", 800, "Northstar-Launch-PRD");
+    expect(pdfResult).toContain("Empty projects return column headers without invented rows.");
+    const normalizedPdfResult = pdfResult.replace(/\s+/g, " ");
+    expect(normalizedPdfResult).toContain("item_id, title, owner and status columns.");
+    expect(normalizedPdfResult).toContain("CSV export includes only the selected project.");
+    expect(normalizedPdfResult).toContain("All four columns are present.");
+    expect(normalizedPdfResult).toContain("Unauthorized users cannot export another project.");
+    expect(pdfResult.length).toBeLessThanOrEqual(800);
+  });
   it("keeps separated answer-bearing regions inside the fixed prompt excerpt budget", () => {
     const filler = " background context".repeat(70);
     const result = buildSocratesV1EvidenceExcerpt(
