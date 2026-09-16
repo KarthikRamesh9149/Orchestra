@@ -107,3 +107,33 @@ its private local JSON records answers and failures without credentials.
 Still required: new-package count verification, full-chain multi-document and
 adversarial tests, and repeated end-to-end latency measurements. Do not turn
 these partial benchmarks into a claim of product-wide completion.
+
+## Packaged count and product-prompt verification
+
+Package `1bc0d351-aa3b-456f-85b6-d57cde5a5163` was built successfully and
+tested through the native UI. Repeating the research focus displayed **1 doc**
+(previously 5), with all four CSV fields and acceptance criteria, exclusions,
+owner roles and missing date/budget correctly reported. The UI reported 9s;
+this is one report-duration sample, not a latency distribution. It still showed
+5 evidence sources and a second PRD-labelled link without a document ID.
+That remaining provenance/display issue is not considered closed.
+
+The benchmark now calls the actual Socrates prompt builders rather than its
+own abbreviated prompt. Six real-provider cases passed, including bracketed
+citations, conflicts, missing facts, history, injection and multi-source facts.
+First-text samples (ms): 1508, 845, 549, 721, 725, 566.
+Completion samples (ms): 1733, 1873, 1233, 1684, 1272, 1219.
+These are supplied-context generation measurements, not retrieval or p95.
+The earlier bare-marker failure was in the abbreviated harness; this run is
+better aligned with the application, not evidence of a new application patch.
+
+The native UI then imported the synthetic Northstar change-request PDF and
+answered a two-document comparison with both document links. It correctly
+identified PDF export as outside PRD scope and the request as unapproved,
+requiring an add/defer/reject decision. A subsequent exact-field question
+returned item_id, title, owner and status with a document citation.
+
+An attempted repeated UI timing run failed with a macOS ScreenCaptureKit error.
+Its incomplete/stale accessibility observations are discarded, not counted as
+latency passes. Full retrieval benchmarks, larger-corpus/adversarial retrieval
+qualification and the remaining duplicate-labelled source remain outstanding.
