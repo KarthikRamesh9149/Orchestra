@@ -1,11 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { groundDeepResearchOutput, assertDeepResearchRetrievalAvailable } from "../src/modules/deep-research/service.js";
+import { groundDeepResearchOutput, assertDeepResearchRetrievalAvailable, computeStats, buildDeepResearchSources } from "../src/modules/deep-research/service.js";
 import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt } from "../src/modules/deep-research/prompts.js";
 
 const card = { evidenceId: "ev_1", title: "Delivery PRD", sourceType: "document_chunk", excerpt: "Product Lead: Maya. Backend Lead: Dev.", citationRef: { type: "document_chunk", id: "chunk-1" } } as any;
 const report = { executiveSummary: "Maya is Product Lead.", findings: [{ category: "PROJECT FACT", severity: "MEDIUM" as const, title: "Owner", description: "Maya is Product Lead.", sources: "Delivery PRD" }], recommendedActions: [], marketContext: [], expansionOpportunities: [] };
 
 describe("Deep Research citation contract", () => {
+  it("counts source documents, not chunks or derived Product Brain cards", () => {
+    const a = { ...card, openTarget: { targetRef: { documentId: "doc-a" } } };
+    const b = { ...card, evidenceId: "chunk-2", openTarget: { targetRef: { documentId: "doc-a" } } };
+    const c = { ...card, evidenceId: "chunk-3", openTarget: { targetRef: { documentId: "doc-b" } } };
+    expect(computeStats([a, b, c, { ...card, sourceType: "product_brain" }], [], Date.now())).toMatchObject({ docs: 2, totalSources: 3 });
+    expect(computeStats([{ ...card, sourceType: "brain_node" }], [], Date.now()).docs).toBe(0);
+    const section = { ...a, citationRef: { ...card.citationRef, label: "Delivery PRD - requirements" } };
+    expect(buildDeepResearchSources([a, section, c], [])).toHaveLength(2);
+  });
   it("does not present failed retrieval branches as a successful empty search", () => {
     expect(() => assertDeepResearchRetrievalAvailable({ candidates: [], telemetry: { retrievalBranchFailureCount: 1 } })).toThrow(/retrieval/i);
     expect(() => assertDeepResearchRetrievalAvailable({ candidates: [], telemetry: { retrievalBranchFailureCount: 0 } })).not.toThrow();

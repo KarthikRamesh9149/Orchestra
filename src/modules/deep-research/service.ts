@@ -831,7 +831,10 @@ export function buildDeepResearchSources(cards: EvidenceCard[], webResults: Sear
     if (!href) continue;
     items.push({ provider: "Web", ref: `W${index + 1}`, label: safeSourceLabel(result.title, "Public source"), kind: "web", href });
   }
-  return Array.from(new Map(items.map((item) => [`${item.kind}:${item.href}:${item.label}`, item])).values()).slice(0, 40);
+  return Array.from(new Map(items.map((item) => {
+    const documentPath = item.kind === "internal" && item.href?.match(/^\/memory\/docs\/[^/?#]+\/view/);
+    return [documentPath ? `document:${documentPath[0]}` : `${item.kind}:${item.href}:${item.label}`, item];
+  })).values()).slice(0, 40);
 }
 
 export function assertDeepResearchRetrievalAvailable(retrieval: { candidates: unknown[]; telemetry: { retrievalBranchFailureCount: number } }) {
@@ -930,25 +933,34 @@ function safeInternalHref(card: EvidenceCard) {
   return source === "all" ? "/memory" : `/timeline?source=${source}`;
 }
 
-function computeStats(cards: EvidenceCard[], webResults: SearchResult[], startedAtMs: number): DeepResearchStats {
-  let slackMessages = 0;
-  let docs = 0;
-  let commits = 0;
+export function computeStats(cards: EvidenceCard[], webResults: SearchResult[], startedAtMs: number): DeepResearchStats {
+  const messages = new Set<string>();
+  const documents = new Set<string>();
+  const engineering = new Set<string>();
+  const sources = new Set<string>();
   for (const card of cards) {
     const t = card.sourceType.toLowerCase();
-    if (/message|thread|comm|slack|teams|chat/.test(t)) slackMessages += 1;
-    else if (/document|doc|section|chunk|brain|live_doc|product_brain/.test(t)) docs += 1;
-    else if (/github|commit|pull_request|pr\b/.test(t)) commits += 1;
+    const ref = card.openTarget?.targetRef ?? {};
+    const id = card.citationRef?.id ?? card.evidenceId;
+    const documentId = typeof ref.documentId === "string" ? ref.documentId : null;
+    const key = documentId ? `document:${documentId}` : `${t}:${id}`;
+    sources.add(key);
+    if (/message|thread|comm|slack|teams|chat/.test(t)) messages.add(String(card.trace?.messageId ?? ref.messageId ?? id));
+    else if (/github|commit|pull_request|pr\b/.test(t)) engineering.add(id);
+    // Derived Product Brain/Live Doc cards and unidentified chunks are not
+    // additional uploaded documents. Never deduplicate by a display title.
+    else if (documentId && /document|doc|section|chunk/.test(t) && !/brain|live_doc/.test(t)) documents.add(documentId);
   }
+  const web = new Set(webResults.map(result => safeExternalHref(result.url)).filter(Boolean));
   const elapsedSec = Math.max(1, Math.round((Date.now() - startedAtMs) / 1000));
   const mins = Math.floor(elapsedSec / 60);
   const secs = elapsedSec % 60;
   return {
-    totalSources: cards.length + webResults.length,
-    slackMessages,
-    commits,
-    docs,
-    webSources: webResults.length,
+    totalSources: sources.size + web.size,
+    slackMessages: messages.size,
+    commits: engineering.size,
+    docs: documents.size,
+    webSources: web.size,
     duration: mins > 0 ? `${mins}m ${secs}s` : `${secs}s`
   };
 }

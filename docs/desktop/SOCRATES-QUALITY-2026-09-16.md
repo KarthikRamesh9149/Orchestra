@@ -79,3 +79,31 @@ despite this being one uploaded source plus derived context. Duplicate source
 labels remain. Multi-document/conflict/adversarial/performance benchmarking and
 saved-report restart/download verification were not completed in this pass.
 These results do not certify absolute perfection or best-in-market quality.
+
+## Source counting and bounded adversarial benchmark
+
+Document statistics now use distinct document IDs, not chunk count; derived
+Product Brain/Live Doc cards do not increase uploaded-document counts. Source
+links to the same document viewer are grouped even when section labels differ.
+Distinct documents with identical titles remain distinct. This change has
+targeted regression coverage but has not yet been verified in a new package.
+
+Six real `gpt-5.4-mini` calls used supplied synthetic multi-document evidence:
+exact fields, conflicting proposal, missing facts, superseded history, embedded
+prompt injection and multi-source synthesis. Manual inspection found correct
+facts in all six; the conflicting-proposal answer used bare E1/E2 rather than
+required bracketed markers, so citation formatting failed. The missing-fact
+checker initially rejected the correct wording "No launch date or budget is
+recorded"; its matcher was corrected, without claiming another model run.
+
+Provider-only first-text samples (ms): 1850, 724, 644, 701, 905, 884.
+Completion samples (ms): 2276, 1412, 853, 1364, 1089, 1241.
+These exclude database retrieval, UI rendering and persistence and are not p95
+measurements. They also bypass the production Socrates prompt/retrieval chain,
+so they qualify the model with supplied context, not end-to-end application
+retrieval. The runnable script is `scripts/desktop/benchmark-socrates-grounding.ts`;
+its private local JSON records answers and failures without credentials.
+
+Still required: new-package count verification, full-chain multi-document and
+adversarial tests, and repeated end-to-end latency measurements. Do not turn
+these partial benchmarks into a claim of product-wide completion.

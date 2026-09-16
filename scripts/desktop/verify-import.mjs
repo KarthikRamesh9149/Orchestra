@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'tests/deep-research-citation-contract.test.ts':'Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads.',
  'src/modules/deep-research/evidence.ts':'Real OpenAI research regression: retain retrieved source content instead of substituting a contextual summary; preserve evidence budgets and authorization.',
  'tests/deep-research-evidence-coverage.test.ts':'Regression proving a short contextual summary cannot replace complete retrieved source facts.',
  'src/modules/socrates/service.ts':'Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged.',
