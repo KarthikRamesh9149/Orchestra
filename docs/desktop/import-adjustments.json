@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 762,
+  "unchangedImportedFiles": 760,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -255,6 +255,12 @@
       "reason": "Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked."
     },
     {
+      "path": "src/modules/deep-research/evidence.ts",
+      "sourceSha256": "16ea50c08c7ae2f49a5fc110ae28491c73ca618e8f0225ec3ad1b1bc9e63c60d",
+      "importedSha256": "650b5a9ccc9d708f81187b7bd38a934a328ba2becb5496cd2af205994df02b6e",
+      "reason": "Real OpenAI research regression: retain retrieved source content instead of substituting a contextual summary; preserve evidence budgets and authorization."
+    },
+    {
       "path": "src/modules/deep-research/schemas.ts",
       "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
       "importedSha256": "a0a9b4e1837748146a95d99db416d4baa1eae99781c03e58eacc25259795c4f3",
@@ -263,7 +269,7 @@
     {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "dd02784cd561b4dac639932a45f6aa3325ca845b8150ea4a60fe5ef81cd05319",
+      "importedSha256": "567329dec2b92b271d04502e6623e829923141f1e162a5c35b7ec2bae6468c05",
       "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts."
     },
     {
@@ -301,6 +307,12 @@
       "sourceSha256": "ace44a3e8ee112a041f08a30ac32e5a00bbe6b64f294e51f59bb8678c793ea01",
       "importedSha256": "7ccc7cc0d04334cbd6c1d44a43f8f528a1ca38d2fdd6c0c06aa3771101938cd5",
       "reason": "Step 6 regression for revoked connector reconnect, missing credentials and release gates."
+    },
+    {
+      "path": "tests/deep-research-evidence-coverage.test.ts",
+      "sourceSha256": "6aa7323c2c607eed8268a41f7120b6da2da82f71556ad7aaa0552ca810297e81",
+      "importedSha256": "1a5dc6db9fe7adeaf71c38fef41f89ec8dbcee2c28c4520e84b6468d3f5eecba",
+      "reason": "Regression proving a short contextual summary cannot replace complete retrieved source facts."
     },
     {
       "path": "tests/document-service.test.ts",

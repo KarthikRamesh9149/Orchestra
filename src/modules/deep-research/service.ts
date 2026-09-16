@@ -522,6 +522,9 @@ export async function collectExplicitDeepResearchSourceCards(
   selected: Set<string>
 ): Promise<EvidenceCard[]> {
   const tasks: Array<Promise<EvidenceCard[]>> = [];
+  if (selected.has("docs") && typeof prisma.document?.findMany === "function" && typeof prisma.documentChunk?.findMany === "function") {
+    tasks.push(collectNamedDocumentCards(prisma, projectId, focus));
+  }
 
   if (selected.has("slack")) {
     tasks.push(collectCommunicationCards(prisma, env, projectId, focus));
@@ -531,6 +534,34 @@ export async function collectExplicitDeepResearchSourceCards(
   }
 
   return (await Promise.all(tasks)).flat();
+}
+
+async function collectNamedDocumentCards(prisma: PrismaClient, projectId: string, focus: string): Promise<EvidenceCard[]> {
+  const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const normalizedFocus = normalize(focus);
+  const documents = await prisma.document.findMany({
+    where: { projectId, archivedAt: null, currentVersionId: { not: null } },
+    select: { id: true, title: true, currentVersionId: true }
+  });
+  const named = documents.filter(document => normalize(document.title).split(" ").length >= 2
+    && normalizedFocus.includes(normalize(document.title)));
+  if (!named.length) return [];
+  const rows = await prisma.documentChunk.findMany({
+    where: { projectId, documentVersionId: { in: named.map(document => document.currentVersionId!) },
+      documentVersion: { status: { in: ["ready", "partial"] } } },
+    include: { section: true, documentVersion: { include: { document: true } } },
+    orderBy: { chunkIndex: "asc" }, take: 40
+  });
+  return rows.filter(row => row.parseRevision === row.documentVersion.parseRevision).slice(0, 8).map(row => ({
+    evidenceId: `document:${row.id}`, sourceType: "document_chunk", title: row.documentVersion.document.title,
+    excerpt: cleanExcerpt(row.content), whySelected: "Explicitly named current document source text",
+    confidence: 0.9, sourcePrecedence: "source_evidence", trace: { documentChunkId: row.id },
+    citationRef: { type: "document_chunk", id: row.id, label: row.documentVersion.document.title },
+    openTarget: row.section ? { targetType: "document_section", targetRef: {
+      documentId: row.documentVersion.document.id, documentVersionId: row.documentVersionId,
+      anchorId: row.section.anchorId
+    } } : undefined
+  }));
 }
 
 async function collectCommunicationCards(

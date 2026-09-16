@@ -3,6 +3,8 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'src/modules/deep-research/evidence.ts':'Real OpenAI research regression: retain retrieved source content instead of substituting a contextual summary; preserve evidence budgets and authorization.',
+ 'tests/deep-research-evidence-coverage.test.ts':'Regression proving a short contextual summary cannot replace complete retrieved source facts.',
  'src/modules/socrates/service.ts':'Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged.',
  'tests/socrates-v1-service.test.ts':'Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget.',
  'apps/beta-web/src/lib/api/memory.ts':'Step 7 exposes existing authorized document read/reprocess contracts for bounded status refresh and explicit failed-work retry.',

@@ -54,3 +54,28 @@ facts, missing facts, conflicts, older evidence, prompt injection and follow-up
 resolution; record first-text and completion latency separately. Keep live
 model tests separate from deterministic tests and report failures explicitly.
 The launch videos are not completed by this verification.
+
+## Deep Research follow-up
+
+Three real document-only research runs exposed and then verified a separate
+retrieval defect. The first two reports received only introductions/summaries
+and incorrectly reported missing requirements. Neither was saved to Memory.
+
+Corrections preserve raw candidate content over contextual summaries and fetch
+current parsed chunks for explicitly named documents, with project/current
+version/parse-revision constraints and bounded retrieval. Regression tests cover
+source-text preservation and stale-parse exclusion. Full suite: 1,661 passed,
+13 skipped. TypeScript compilation and native packaging passed.
+
+Package `1ca80cc6-9a7a-416c-a894-ac631a3b73c4` repeated the identical question.
+The report included exact CSV fields, all four acceptance criteria, exclusions,
+owner roles and missing date/budget. UI displayed completion in six seconds;
+this is one app-reported sample, not first-text timing or p95.
+Saving returned: "Saved to Project Memory as a generated research note. It is
+not accepted Product Brain truth."
+
+Remaining quality limits: the UI counted five evidence cards as five documents
+despite this being one uploaded source plus derived context. Duplicate source
+labels remain. Multi-document/conflict/adversarial/performance benchmarking and
+saved-report restart/download verification were not completed in this pass.
+These results do not certify absolute perfection or best-in-market quality.

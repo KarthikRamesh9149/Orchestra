@@ -6,6 +6,11 @@ import { buildSocratesEvidencePack } from "../socrates/evidence.js";
 export function buildDeepResearchEvidencePack(input: Parameters<typeof buildSocratesEvidencePack>[0]) {
   return buildSocratesEvidencePack({
     ...input,
+    // Contextual retrieval text may be a generated heading/summary, not the
+    // source itself. Research must synthesize the retrieved source bytes.
+    candidates: input.candidates.map((candidate) => candidate.content.trim()
+      ? { ...candidate, contextualContent: candidate.content }
+      : candidate),
     budget: { ...input.budget, maxEvidenceExcerptChars: 4000 }
   });
 }
