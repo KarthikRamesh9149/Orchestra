@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { assessCase, assessPersistence, CASES, FIXTURES, parseArgs } from '../scripts/desktop/benchmark-retrieval-chain.mjs';
+import { assessCase, assessPersistence, assessAuthorityWording, assessResearchCoverage, CASES, FIXTURES, parseArgs } from '../scripts/desktop/benchmark-retrieval-chain.mjs';
 
 const documents = FIXTURES.map((fixture, index) => ({ key: fixture.key, documentId: `doc-${index}` }));
 function answer() {
@@ -40,11 +40,42 @@ test('offline default cannot accidentally enable provider ingestion', () => {
   assert.throws(() => parseArgs(['--ingestion', 'provider']), /explicit dedicated/);
 });
 
+test('research is explicitly enabled, credential-bound and bounded', () => {
+  assert.equal(parseArgs([]).researchRounds, 0);
+  assert.throws(() => parseArgs(['--research-rounds', '1']), /explicit dedicated/);
+  assert.throws(() => parseArgs(['--research-rounds', '3']), /between 0 and 2/);
+  assert.equal(parseArgs(['--key-file', '/private/tmp/dedicated.env', '--research-rounds', '2']).researchRounds, 2);
+  assert.equal(parseArgs(['--key-file', '/private/tmp/dedicated.env', '--research-rounds', '2', '--rounds', '0']).rounds, 0);
+  assert.throws(() => parseArgs(['--rounds', '0']), /zero requires research/);
+});
+
+test('recorded bad answers fail narrow authority and completeness regression signals', () => {
+  assert.equal(assessAuthorityWording('The only other supplied document is the PDF request.').noUnsupportedExclusivity, false);
+  assert.equal(assessAuthorityWording('The approved Northstar launch scope includes CSV export.').noUnattributedApprovedScope, false);
+  assert.equal(assessAuthorityWording('PDF export is approved [E1].').noUnattributedApprovedScope, false);
+  assert.equal(assessAuthorityWording('CSV export is the approved scope described in E1 [E1].').noUnattributedApprovedScope, true);
+  assert.deepEqual(assessAuthorityWording('The PRD specifies exactly four CSV columns and headers only. The request describes PDF as pending. Recorded approval cannot be verified from these excerpts.'), { noUnsupportedExclusivity: true, noUnattributedApprovedScope: true });
+});
+
+test('research cannot skip a requested part when its evidence is missing', () => {
+  const incomplete = 'CSV has item_id, title, owner, status. No confirmed launch date or budget is recorded. No authorised acceptance decision exists for PDF export.';
+  assert.equal(assessResearchCoverage(incomplete).authorisationGapAnswered, false);
+  for (const gap of [
+    'Authorisation requirements are not established by the supplied excerpts.',
+    'No authorisation requirements are recorded in the excerpts.',
+    'The specification does not specify authorization requirements.',
+    'Access-control requirements are not established by these excerpts.',
+    'The sources do not specify who may download the CSV.',
+  ]) assert.deepEqual(assessResearchCoverage(`${incomplete} ${gap}`), {
+    authorisationGapAnswered: true, launchDateAnswered: true, budgetAnswered: true,
+  });
+});
+
 test('real provider is explicit and ceiling cannot be raised above 30', () => {
   assert.equal(parseArgs(['--key-file', '/private/tmp/dedicated-desktop.env']).ingestion, 'provider');
   assert.throws(() => parseArgs(['--max-requests', '31']), /between 1 and 30/);
   assert.throws(() => parseArgs(['--max-requests', '0']), /between 1 and 30/);
-  assert.throws(() => parseArgs(['--rounds', '4']), /between 1 and 3/);
+  assert.throws(() => parseArgs(['--rounds', '4']), /between 0 and 3/);
   assert.throws(() => parseArgs(['--key-file', '.env']), /must be absolute/);
   assert.throws(() => parseArgs(['--profile', '/existing/profile']), /Unknown/);
   assert.throws(() => parseArgs(['--rounds', '1', '--rounds', '2']), /repeated/);

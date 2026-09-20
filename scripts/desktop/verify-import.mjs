@@ -16,7 +16,7 @@ const adjustments={
  'tests/parser-file-safety.test.ts':'Regression fixtures for forged decompressed sizes and inconsistent ZIP names, headers and payload spans.',
  'src/lib/retrieval/hybrid.ts':'Preserve document and version identity for citation targets without section anchors.',
  'tests/retrieval-hybrid-lexical.test.ts':'Regression coverage for sectionless document citation provenance.',
- 'src/modules/deep-research/prompts.ts':'Require claim-local citations for summaries, market context and proposed expansion without converting suggestions into truth.',
+ 'src/modules/deep-research/prompts.ts':'Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls.',
  'src/modules/deep-research/report-render.ts':'Render all citation aliases for each safely deduplicated research source in Markdown and PDF.',
  'tests/fix22-deep-research.test.ts':'Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage.',
  'tests/deep-research-citation-contract.test.ts':'Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads.',
@@ -92,6 +92,8 @@ adjustments['src/modules/deep-research/service.ts']+=' Packaged natural-question
 const changes=[];
 adjustments['.gitattributes']='Readiness follow-up: preserve the exact hash-pinned upstream Unicode Zapf Dingbats notice bytes and intentional trailing whitespace; no broad whitespace exemption.';
 adjustments['src/modules/socrates/service.ts']+=' Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches.';
+adjustments['src/modules/socrates/service.ts']+=' Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording.';
+adjustments['tests/socrates-v1-service.test.ts']+=' Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence.';
 adjustments['prisma/schema.prisma']+=' Readiness follow-up: additive database-maintained document search vector; original migration history and hosted deployment state remain untouched.';
 adjustments['src/modules/deep-research/report-render.ts']+=' Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative.';
 adjustments['tests/p2-negative-inputs.test.ts']='Readiness follow-up: generate the existing PDF parser fixture using the replacement PDF library; preserve parser assertions.';

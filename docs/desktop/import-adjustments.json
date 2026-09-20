@@ -371,8 +371,8 @@
     {
       "path": "src/modules/deep-research/prompts.ts",
       "sourceSha256": "0ebded6cddccb4e9e376ae2d53b2dbd7a204b58d10f5f5be339291dcbab16bfc",
-      "importedSha256": "64d86bf8199afaa4c18a9b0502cd58c94109897f299edd6e0e4b3397c21ceb8a",
-      "reason": "Require claim-local citations for summaries, market context and proposed expansion without converting suggestions into truth."
+      "importedSha256": "b99aaca7adc595aa5d9613564343add213702734b5680da74e92c7c305f89099",
+      "reason": "Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls."
     },
     {
       "path": "src/modules/deep-research/report-render.ts",
@@ -407,8 +407,8 @@
     {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "6d0b71aef5491a2f45be0c9577203928c6206fdb918436be5631fc1772974c48",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches."
+      "importedSha256": "ccac0dca63779eb6daf13a8fef90c843b47cd5bad5bf1b1ee436d5ec16c8f8dc",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
@@ -479,8 +479,8 @@
     {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "962dae561579e6037b123d3a8cfaf428c231b25fd2762dc2a46521af66c987e9",
-      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "0ab6e33a81104411b42d39cd0e0bb84fa619fb9e7a1f47d6fb4eba39a5ffde4b",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence."
     }
   ]
 }

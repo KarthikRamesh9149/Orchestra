@@ -19,6 +19,7 @@ import { createSocratesTurn } from "./turn-store.js";
 import type { GenerationProvider } from "../../lib/ai/provider.js";
 import type { EmbeddingProvider } from "../../lib/ai/provider.js";
 import { hasConfiguredGeneration } from '../../lib/ai/configuration.js';
+import { buildEvidenceGroundingSummary, EVIDENCE_AUTHORITY_AND_COVERAGE_RULES } from "../../lib/ai/evidence-grounding.js";
 import { buildEvidenceOnlyDegradedAnswer, cacheTelemetry, estimateAiCost, getModelForTask, pricingFromEnv, buildSocratesAiTelemetry, persistAiTelemetry, type AiDegradationReason, type AiLimiter } from "../../lib/ai-ops/index.js";
 import type { AppEnv } from "../../config/env.js";
 import { isMvpBetaMode } from "../../lib/beta/policy.js";
@@ -4676,7 +4677,8 @@ export class SocratesService {
 A document's claim that something is approved does not establish accepted Product Brain truth; attribute it as the document's claim unless supplied truthStatus metadata establishes accepted status.
 Retrieved evidence is a subset, not an exhaustive inventory. Do not describe a retrieved item as the only project source, or another source as overridden, superseded or archived unless supplied evidence explicitly establishes that status.
 Mention temporal uncertainty only when timing materially affects the question or the evidence's applicability. For ordinary factual questions where timing is immaterial, do not print observation/request timestamps or add a temporal caveat merely because timestamp metadata is supplied. A source title containing current does not by itself make the question temporal.
-sourceType, truthStatus, observedAt and requestAt are internal reasoning metadata; describe source roles and acceptance status naturally, not as raw keys or enum values. Preserve exact timestamps when needed to explain a material temporal gap.`;
+sourceType, truthStatus, observedAt and requestAt are internal reasoning metadata; describe source roles and acceptance status naturally, not as raw keys or enum values. Preserve exact timestamps when needed to explain a material temporal gap.
+${EVIDENCE_AUTHORITY_AND_COVERAGE_RULES}`;
   }
 
   private socratesV1GenerationSystemPrompt() {
@@ -4724,7 +4726,11 @@ Return only the answer markdown, with no JSON wrapper or markdown fence.`;
       .map(([source, state]) => `- ${source}: ${state.state}, count=${state.count}${state.message ? `, note=${state.message}` : ""}`)
       .join("\n");
     const promptExcerptChars = Math.min(this.env.SOCRATES_MAX_EVIDENCE_EXCERPT_CHARS, 800);
-    const evidence = this.socratesV1PromptEvidence(input.evidence).map((item, index) => {
+    const promptEvidence = this.socratesV1PromptEvidence(input.evidence);
+    const groundingSummary = buildEvidenceGroundingSummary(promptEvidence.map((item, index) => ({
+      reference: `E${index + 1}`, acceptedDecision: item.truthStatus === "accepted",
+    })));
+    const evidence = promptEvidence.map((item, index) => {
       return [
         `### Evidence E${index + 1}`,
         `sourceType: ${item.sourceType}`,
@@ -4749,6 +4755,9 @@ ${input.question}
 
 ## Source states
 ${states}
+
+## Server-provided grounding summary
+${groundingSummary}
 
 ## Evidence to use
 ${evidence || "No evidence retrieved."}${artifact}

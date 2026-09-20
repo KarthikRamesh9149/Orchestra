@@ -2226,10 +2226,14 @@ describe("SocratesService.askV1ProjectMemory", () => {
       expect(prompt).toContain("does not establish accepted Product Brain truth");
       expect(prompt).toContain("Retrieved evidence is a subset, not an exhaustive inventory");
       expect(prompt).toContain("overridden, superseded or archived unless supplied evidence explicitly establishes that status");
+      expect(prompt).toContain('Avoid source-exclusivity phrases such as "the only other supplied document"');
+      expect(prompt).toContain('Prefer "The PRD specifies CSV export"');
     }
     expect(call.prompt).toContain("title: Backend Contract - Backend API");
     expect(call.prompt).toContain("sourceType: document");
     expect(call.prompt).toContain("truthStatus: evidence");
+    expect(call.prompt).toContain('"acceptedDecisionReferences":[]');
+    expect(call.prompt).toContain('"completeProjectInventory":false');
   });
 
   it.each(["object", "streaming"])("keeps temporal safeguards without demanding irrelevant timestamp prose in the %s prompt path", async (path) => {

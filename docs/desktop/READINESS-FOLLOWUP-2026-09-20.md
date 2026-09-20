@@ -1,5 +1,10 @@
 # Desktop readiness follow-up — 20 September 2026
 
+Follow-up: the approval/completeness wording findings recorded below were
+addressed in [the 21 September correction](AI-AUTHORITY-COVERAGE-2026-09-21.md),
+with repeated real OpenAI checks and rebuilt-app verification. The original
+observations below remain historical evidence, not current universal claims.
+
 Scope: private `KarthikRamesh9149/Orchestra`, `main`, starting at
 `bdc131596dc9c261c487870cd4566ca91d580e9a`. No changes to `orchestrav2`,
 managed production, repository visibility or paid infrastructure are authorised
