@@ -1,7 +1,13 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 748,
+  "unchangedImportedFiles": 735,
   "changes": [
+    {
+      "path": ".gitattributes",
+      "sourceSha256": "0fb7f57b6cd9ef7086bfdac62ec57ecd15abe4733544cdd20674385a7de1fde0",
+      "importedSha256": "0b962b21adb89ad5a92e6aac8dd08ba2afc6bd73248e7aac91281958c9603687",
+      "reason": "Readiness follow-up: preserve the exact hash-pinned upstream Unicode Zapf Dingbats notice bytes and intentional trailing whitespace; no broad whitespace exemption."
+    },
     {
       "path": "apps/beta-web/src/App.tsx",
       "sourceSha256": "335aa4d5e5cecef1a7a1463c2a395a9756eb36bf17b2858fa72be9e23885e144",
@@ -29,14 +35,14 @@
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
       "sourceSha256": "142cb4169d9a8500a9b9e4f7bbffaf3c4b70fc6965e52a77cef79b09df86d9e4",
-      "importedSha256": "a3d09c3f2280c3427632f987ba97557dbeb80a304966ef102c2c8824a56b45ca",
-      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "f7973db38c1bd6772f8bac7459de0da90611f36794d2b2bbee5ddb6956920301",
+      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions."
     },
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
       "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
-      "importedSha256": "8cc9775ae4e30a2db86d24aaf1d06d408a6360bf3aee16a1a1f82c5d22a28614",
-      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "6878de85b0ca2cbb55b9c35389bbeabe7807eada6a16d75604e14b7faf923b52",
+      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions."
     },
     {
       "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
@@ -51,16 +57,28 @@
       "reason": "Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged."
     },
     {
+      "path": "apps/beta-web/src/lib/api/client.test.ts",
+      "sourceSha256": "0031cd86344f87dff315c8990611fb72509c78650d470ab118f76fa9ba5134ea",
+      "importedSha256": "56d05492abe85136b7c937c6b6ffb9d46d19dc88d523adccd76c9301629fe4a4",
+      "reason": "September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
+    },
+    {
       "path": "apps/beta-web/src/lib/api/client.ts",
       "sourceSha256": "ba5e5737fdb4a7c3a412336505eddbd3070c3e7dc48a6c1dd273aef8eb8d9361",
-      "importedSha256": "348b5e39386f4028c34d19fb5fb91db63feb3a5de337b4ea3fb7bca434117136",
-      "reason": "Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior."
+      "importedSha256": "fc0c1d1262b430a172d92886c45e3abf6de3ec811efa5658d17315f2251eb47c",
+      "reason": "Step 4 credential-free local bootstrap; Step 6 disables the cross-request read cache only for isolated shared desktop windows, retaining hosted browser behavior. September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
     },
     {
       "path": "apps/beta-web/src/lib/api/memory.ts",
       "sourceSha256": "dd42a29356ac87a1cdf0319724d6edcc4b9b4627f41d124aa1498dcc128210b0",
       "importedSha256": "f528c163348025a49469644705f3afcc417cbf95a7c014c926a6a20e3143e7be",
       "reason": "Step 7 exposes existing authorized document read/reprocess contracts for bounded status refresh and explicit failed-work retry."
+    },
+    {
+      "path": "apps/beta-web/src/lib/api/research.ts",
+      "sourceSha256": "0f257c488076ab481d357664722d21451a9f5bb1205b3a1289280f8eb96d236c",
+      "importedSha256": "94a000b05b3bfca509c420c1f6155cd36e057948a697f650c6c58052dc33d942",
+      "reason": "September 20 readiness follow-up: expose the existing authorized paginated saved-research read with bounded page size, metadata validation and the shared API transport."
     },
     {
       "path": "apps/beta-web/src/lib/api.auth.test.ts",
@@ -79,6 +97,12 @@
       "sourceSha256": "96ed837e1c2e230bd439e7a9bddfb19343cc8b8f561b117c039cf9af8db7f088",
       "importedSha256": "4db0f8ddb4af3ba60fa9ab6fabf9c2812e60e00fa2df1e43784308661c96d5aa",
       "reason": "Step 6 regression preserves authoritative Drive document provenance and partial processing."
+    },
+    {
+      "path": "apps/beta-web/src/lib/api.research.test.ts",
+      "sourceSha256": "3aa597398d695580d60a3e8c053eadd6efafe7de1c970777188cbeafb5a7f2a7",
+      "importedSha256": "a96c17d5c7bad8b11b24e1ffba6527ea78766a4b13cbdf353566d83eea17a276",
+      "reason": "September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
     },
     {
       "path": "apps/beta-web/src/lib/api.ts",
@@ -123,16 +147,28 @@
       "reason": "Step 4 user-selected native original-document save; web download remains unchanged."
     },
     {
+      "path": "apps/beta-web/src/pages/MemoryContextPage.test.tsx",
+      "sourceSha256": "afb99efa20f3222bed7fb11e1ae69885a919710992d12b652482ac4c80ad1992",
+      "importedSha256": "626914855bc0c6e9437ae0f2b2908ee9582a8dad961c408bd59c455409e0c4aa",
+      "reason": "Regressions for duplicate headings, evidence preservation, workspace clearing, late responses and denied saved-report reads."
+    },
+    {
+      "path": "apps/beta-web/src/pages/MemoryContextPage.tsx",
+      "sourceSha256": "e0d93ac01e186bb1065c88a0c345884545798efa8c2e8c807cf747e150bf4588",
+      "importedSha256": "08009944dda8d1ba51492bb61e7e3adfe9092f058c66d4464c0956b2b9584aa3",
+      "reason": "September 20 readiness follow-up: remove only a repeated display title, preserve stored Markdown and citations, and prevent stale workspace/route reports from rendering."
+    },
+    {
       "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",
       "sourceSha256": "c4e17f06fa5564d83f0a280ce3e0115e7c52f8c32aa9e38c4bd9062f846f7eec",
-      "importedSha256": "50b581b13223a4797d46ed8af3cea48874eab16ef6de76604cea36a2dfa145e7",
-      "reason": "Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation."
+      "importedSha256": "3e27c165291bcd57628e24cb407e1ae6acb65b769683748dfe79c6beb5543766",
+      "reason": "Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation. September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
       "sourceSha256": "eeb88dfd3a9968711b67e4995f9da62f901f463f1a4903ad5c5d8c0691036985",
-      "importedSha256": "fa49f986ed111af154d34770fbb84b98d586bbe3025ca0dc4b0bbd7365e7e793",
-      "reason": "Steps 4/6 partial processing, native clipboard, honest downloads and send-only Gmail exclusion; Step 7 bounded pending-document refresh with cancellation. No redesign."
+      "importedSha256": "d45ca42762f20c43770ff29b829706a2cb7aacbe1c941933aa65d4257f5b50d1",
+      "reason": "Steps 4/6 partial processing, native clipboard, honest downloads and send-only Gmail exclusion; Step 7 bounded pending-document refresh with cancellation. No redesign. September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
     },
     {
       "path": "apps/beta-web/src/pages/SettingsPage.test.tsx",
@@ -189,6 +225,12 @@
       "reason": "Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged."
     },
     {
+      "path": "apps/beta-web/vite.config.ts",
+      "sourceSha256": "c9f2b1d8adb74ccdf5b3279875524ab2f6c1dccf88474c85e96d02aec6964910",
+      "importedSha256": "c50a21cd9ca628ada55dc179b710325b33a962c8bd9f1890431cca9f421a347a",
+      "reason": "September 20 build-only exact-output dependency/notice sidecars; no application runtime or visual styling change."
+    },
+    {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
       "importedSha256": "16a49c5b0ad1204840478785279505683d2efb65bbbcd29c8420340cc145d0f0",
@@ -201,10 +243,34 @@
       "reason": "Explicit Node/VS Code ambient types prevent accidental parent-workspace type loading."
     },
     {
+      "path": "package-lock.json",
+      "sourceSha256": "33714f0d9de659613f0d5112a9bd1f41b4e2ce1a71981e645eb2e5f829225782",
+      "importedSha256": "40ed310d9f3153e372612fdf650e24b6fc4b5a9313169d190c76b51ee951fa40",
+      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades."
+    },
+    {
+      "path": "package.json",
+      "sourceSha256": "dc9bca392bfa6997c3db4c32de7362f7947cfa3ba96fb1bc91812e7f3dc1a984",
+      "importedSha256": "debfc98a4fd57323186e3bdcb71d2e973a5f88a194721893e5676d98e122dd13",
+      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool."
+    },
+    {
       "path": "prisma/schema.prisma",
       "sourceSha256": "776a3110bde758919bce00a05942b5660cfef525b7df49e7f59eb84b15b586cb",
-      "importedSha256": "ab217ff850db06feae9752b72028a3e2e8aaf962cf7b3779935cef61115ffa2b",
-      "reason": "Step 2 desktop queue, cancellation and limiter models; original migrations unchanged."
+      "importedSha256": "43e0b631a6fc8e34f76e8775443ebb0271236eb117884965ffa5b4e1427cac5a",
+      "reason": "Step 2 desktop queue, cancellation and limiter models; original migrations unchanged. Readiness follow-up: additive database-maintained document search vector; original migration history and hosted deployment state remain untouched."
+    },
+    {
+      "path": "scripts/diag-socrates-v1.ts",
+      "sourceSha256": "1236ac18ed995440160b2cde6f6183b1c4e5532d0a6f4b5981a4551dc8c8ec89",
+      "importedSha256": "22cbd74ac6ed080eadf5082e067b743bebdbccc8dc1f6d297cb32fb104d9d0c8",
+      "reason": "Readiness follow-up: preserve the existing synthetic PDF fixture contents using the replacement PDF library so retained diagnostic tools remain buildable; no hosted runtime execution or deployment is performed."
+    },
+    {
+      "path": "scripts/ops/verify-staging-runtime.ts",
+      "sourceSha256": "2080ea4c874e2991a9ee947e410c0326f5561c1a79d11cb98fb375ac6b4724dd",
+      "importedSha256": "f1714eb3647f8895e8a7ad11c4d78897ed984424f09f5f04191aa92df61a20c7",
+      "reason": "Readiness follow-up: preserve the existing synthetic PDF fixture contents using the replacement PDF library so retained diagnostic tools remain buildable; no hosted runtime execution or deployment is performed."
     },
     {
       "path": "scripts/smoke/beta-browser-product-walkthrough.mjs",
@@ -217,6 +283,12 @@
       "sourceSha256": "3ab4bfdae3ce99ea6e5d4d32474985f34a55adc03b658eb1efc6a4a3f131c726",
       "importedSha256": "e4a0432562bceb899ba9230196651e55c99bb586b4d421c47d2a6d193217ae6b",
       "reason": "Replace hosted production smoke defaults with localhost; application source unchanged."
+    },
+    {
+      "path": "scripts/smoke/beta-smoke.ts",
+      "sourceSha256": "04c34b76d180b0dcb2a5da8dc1dd83ad5625c11417b9392a5578e3c78dc4fa1d",
+      "importedSha256": "ccf890a42de88497f39c8436911936e0836a1e51256d18dbb7b79c94bc091189",
+      "reason": "Readiness follow-up: preserve the existing synthetic PDF fixture contents using the replacement PDF library so retained diagnostic tools remain buildable; no hosted runtime execution or deployment is performed."
     },
     {
       "path": "src/app/build-app.ts",
@@ -305,8 +377,8 @@
     {
       "path": "src/modules/deep-research/report-render.ts",
       "sourceSha256": "71e3145bcdc018ee0f325e14b59a41f778f89c01029f8db1b3b6dba46906d20a",
-      "importedSha256": "a887982879c1dbee84d31940ac63af71f59d23d30d21a5ceed9e9b572e2549af",
-      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF."
+      "importedSha256": "c221e386075ddb6c62fa857e69c2bb1f59f14a27f274a486ba86930433ea0ef5",
+      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF. Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative."
     },
     {
       "path": "src/modules/deep-research/schemas.ts",
@@ -335,8 +407,8 @@
     {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "2e24d7264fdb29abc4ed012b898fe34df3898f9b41c4c8542b4bbff2a643b72a",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "6d0b71aef5491a2f45be0c9577203928c6206fdb918436be5631fc1772974c48",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
@@ -387,6 +459,12 @@
       "reason": "Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities."
     },
     {
+      "path": "tests/p2-negative-inputs.test.ts",
+      "sourceSha256": "8fffa8079f9769753bc33dd72c8084dfd62e637ef45b53c8e145d0076be71321",
+      "importedSha256": "b86c40d089716b0db7776139b90a7a8c8ea01e408aaf3504c380aa3a8b73ca30",
+      "reason": "Readiness follow-up: generate the existing PDF parser fixture using the replacement PDF library; preserve parser assertions."
+    },
+    {
       "path": "tests/parser-file-safety.test.ts",
       "sourceSha256": "41851b50b5d788f65d6805d7f797aaa4508ef2c2f8c5f9afd02291b86470b2c9",
       "importedSha256": "003f9fbbd6b8ac65746911984326cb17a8969226cd6e163ce36994a0a67c3a3e",
@@ -401,7 +479,7 @@
     {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "f21522f8b6aa89b620207884c851eb9a7cd7630d54e47b752e0ecd2d22562a2f",
+      "importedSha256": "962dae561579e6037b123d3a8cfaf428c231b25fd2762dc2a46521af66c987e9",
       "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     }
   ]

@@ -1,13 +1,13 @@
 // Synthetic packaged-Mac acceptance. No production accounts or external AI.
 import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
-import PDFDocument from 'pdfkit';
+import {createDesktopSmokePdf} from './pdf-fixtures.mjs';
 import {readFile,mkdtemp,writeFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 const repo=resolve(import.meta.dirname,'../..');
 const packageRoot=process.argv[2]?resolve(process.argv[2]):(await readFile(join(repo,'.desktop/latest-package.txt'),'utf8')).trim();
 const data=await mkdtemp('/private/tmp/orchestra-step4-acceptance-');
-const pdf=await new Promise(resolve=>{const chunks=[],document=new PDFDocument();document.on('data',chunk=>chunks.push(chunk));document.on('end',()=>resolve(Buffer.concat(chunks)));document.fontSize(18).text('Orchestra Desktop Pilot Requirements');document.fontSize(12).text('The pilot launch date is 21 October 2026. Local workspaces need no hosted account. Evidence remains on this Mac. Acceptance requires upload, cited search, persistent chats and drafts, and restart recovery. The responsible owner is the local product manager. Changes require human approval; generated suggestions are not accepted truth.');document.end();});
+const pdf=await createDesktopSmokePdf();
 const results={profile:data,packageRoot,passed:[],errors:[],httpFailures:[]};
 const launch=()=>_electron.launch({executablePath:join(packageRoot,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+data],env:{PATH:'',TMPDIR:process.env.TMPDIR??'',HOME:process.env.HOME},timeout:60000});
 let app=await launch(),page=await app.firstWindow();

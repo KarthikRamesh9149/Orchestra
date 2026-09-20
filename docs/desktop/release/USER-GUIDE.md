@@ -39,6 +39,13 @@ by this adapter. A connection test checks a small synthetic structured request a
 optional embedding request, not every model capability or workflow. It can incur
 up to two small provider charges, separately from the saved request allowance.
 
+Qualification as of 20 September 2026: OpenAI has passed real-account Socrates,
+Deep Research, streaming and restart checks on the tested Mac configuration.
+Anthropic, Gemini and custom endpoints have adapter/security tests but have **not
+been qualified with real accounts**. They remain preview integrations. Only an
+OpenAI key is currently available for release testing; a successful small
+connection test is not full product qualification for another provider or model.
+
 Generation and embeddings can use different providers. With embeddings disabled,
 Socrates can still generate answers using lexical evidence retrieval. Changing an
 existing index's provider, endpoint or model does not relabel old vectors; semantic

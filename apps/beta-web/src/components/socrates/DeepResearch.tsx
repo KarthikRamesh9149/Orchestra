@@ -5,6 +5,7 @@ import { TbBrain, TbDownload, TbLock } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 import { useAccessibleDialog } from "../../hooks/useAccessibleDialog";
 import { safeMarkdownUrl } from "../../lib/socratesPresentation";
+import { ApiError } from "../../lib/api/client";
 import {
   addDeepResearchToMemory,
   downloadDeepResearchReport,
@@ -20,6 +21,7 @@ import {
 
 export type DeepResearchPhase = "configure" | "running" | "results" | "error";
 type DeepOutputFormat = "Executive Summary" | "Full Report" | "Action Items Only";
+type ReportDownloadFormat = "pdf" | "markdown";
 type PrivacyMode = "internal_only" | "internal_plus_web";
 type SavedArtifact = Awaited<ReturnType<typeof addDeepResearchToMemory>>;
 
@@ -66,6 +68,8 @@ function DeepResearchResults({
   onClose,
   onAddToMemory,
   onDownload,
+  downloadFormat,
+  onDownloadFormatChange,
   addingToMemory,
   downloading,
   savedArtifact,
@@ -78,6 +82,8 @@ function DeepResearchResults({
   onClose: () => void;
   onAddToMemory: () => void;
   onDownload: () => void;
+  downloadFormat: ReportDownloadFormat;
+  onDownloadFormatChange: (format: ReportDownloadFormat) => void;
   addingToMemory: boolean;
   downloading: boolean;
   savedArtifact: SavedArtifact | null;
@@ -106,6 +112,12 @@ function DeepResearchResults({
           <p className="mt-1 font-mono text-[11px] text-[var(--text-muted)]">Completed in {s.duration}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 lg:mr-8 lg:flex-shrink-0">
+          <label className="inline-flex items-center gap-2 font-sans text-[12px] text-[var(--text-muted)]">Report format
+            <select value={downloadFormat} onChange={(event) => onDownloadFormatChange(event.target.value === "markdown" ? "markdown" : "pdf")} disabled={downloading} className="rounded-full border border-[var(--border-soft)] bg-[var(--bg-card)] px-3 py-2 font-sans text-[13px] text-[var(--text-default)] disabled:opacity-60">
+              <option value="pdf">PDF (.pdf)</option>
+              <option value="markdown">Markdown (.md)</option>
+            </select>
+          </label>
           <button type="button" onClick={onDownload} disabled={downloading} className="inline-flex items-center gap-2 rounded-full border border-[var(--teal)] px-4 py-2 font-sans text-[13px] text-[var(--teal-text)] transition-opacity hover:opacity-80 disabled:opacity-60">
             <TbDownload size={15} /> {downloading ? "Downloading…" : "Download Report"}
           </button>
@@ -267,14 +279,23 @@ export function DeepResearchModal({
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [addingToMemory, setAddingToMemory] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [downloadSelection, setDownloadSelection] = useState<{projectId: string; runId: string; format: ReportDownloadFormat} | null>(null);
   const [savedArtifact, setSavedArtifact] = useState<SavedArtifact | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [configError, setConfigError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
   const startInFlightRef = useRef(false);
+  const downloadInFlightRef = useRef(false);
+  const downloadScopeRef = useRef(0);
   const dialogRef = useAccessibleDialog<HTMLElement>(onClose, false, open && !minimized);
 
   const limitReached = usage ? usage.used >= usage.limit : false;
+  const downloadFormat = downloadSelection?.projectId === projectId && downloadSelection.runId === runId ? downloadSelection.format : "pdf";
+
+  useEffect(() => {
+    downloadScopeRef.current += 1;
+    return () => { downloadScopeRef.current += 1; };
+  }, [open, projectId, runId]);
 
   useEffect(() => {
     if (!open) return;
@@ -290,6 +311,7 @@ export function DeepResearchModal({
     setResults(null);
     setErrorMsg(null);
     setActionError(null);
+    setDownloadSelection(null);
     setConfigError(null);
     setStarting(false);
     startInFlightRef.current = false;
@@ -412,14 +434,22 @@ export function DeepResearchModal({
   };
 
   const handleDownload = async () => {
-    if (!runId) return;
+    if (!runId || downloadInFlightRef.current) return;
+    downloadInFlightRef.current = true;
+    const downloadScope = downloadScopeRef.current;
+    const selectedFormat = downloadFormat;
     setDownloading(true);
     setActionError(null);
     try {
-      await downloadDeepResearchReport(projectId, runId, "pdf");
+      await downloadDeepResearchReport(projectId, runId, selectedFormat);
     } catch (error) {
-      setActionError(error instanceof Error ? error.message : "Could not download this report.");
+      if (downloadScope === downloadScopeRef.current) {
+        setActionError(selectedFormat === "pdf" && error instanceof ApiError && error.status === 422 && error.code === "report_pdf_unsupported_characters"
+          ? "PDF cannot represent every character in this report. Choose Markdown (.md) to download the complete report."
+          : error instanceof Error ? error.message : "Could not download this report.");
+      }
     } finally {
+      downloadInFlightRef.current = false;
       setDownloading(false);
     }
   };
@@ -641,6 +671,8 @@ export function DeepResearchModal({
               onClose={onClose}
               onAddToMemory={handleAddToMemory}
               onDownload={handleDownload}
+              downloadFormat={downloadFormat}
+              onDownloadFormatChange={(selectedFormat) => { if (runId && !downloadInFlightRef.current) setDownloadSelection({projectId,runId,format:selectedFormat}); }}
               addingToMemory={addingToMemory}
               downloading={downloading}
               savedArtifact={savedArtifact}

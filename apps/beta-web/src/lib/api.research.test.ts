@@ -9,6 +9,7 @@ import {
   getProjectContextEntry,
   startDeepResearch,
 } from "./api";
+import { listSavedResearch } from "./api/research";
 
 const api = "http://localhost:3000";
 const projectId = "11111111-1111-4111-8111-111111111111";
@@ -87,5 +88,37 @@ describe("[FIX-22] Deep Research frontend API contracts", () => {
     expect(createUrl).toHaveBeenCalled();
     expect(click).toHaveBeenCalled();
     await expect(getProjectContextEntry(projectId, contextId)).resolves.toMatchObject({ title: "Deep Research — release readiness" });
+  });
+
+  it("preserves context pagination for saved generated research", async () => {
+    server.use(http.get(`${api}/v1/projects/${projectId}/context`, ({ request }) => {
+      const query = new URL(request.url).searchParams;
+      expect(query.get("tag")).toBe("deep-research");
+      expect(query.get("type")).toBe("manual_note");
+      expect(query.get("page")).toBe("2");
+      expect(query.get("pageSize")).toBe("10");
+      return HttpResponse.json({
+        data: [{ id: contextId, projectId, title: "Deep Research — release readiness", body: "# Report", type: "manual_note", source: "generated", status: "active", tags: ["deep-research"], createdAt: "2026-08-20T00:00:00.000Z", updatedAt: "2026-08-20T00:00:00.000Z" }],
+        meta: { page: 2, pageSize: 10, totalCount: 11, totalPages: 2 },
+        error: null,
+      });
+    }));
+
+    await expect(listSavedResearch(projectId, 2)).resolves.toMatchObject({
+      items: [{ id: contextId, source: "generated" }],
+      meta: { page: 2, totalCount: 11, totalPages: 2 },
+    });
+  });
+
+  it("rejects malformed context pagination or entries outside the requested project", async () => {
+    server.use(http.get(`${api}/v1/projects/${projectId}/context`, () =>
+      HttpResponse.json({
+        data: [{ id: contextId, projectId: "other-project", title: "Deep Research — release readiness", body: "# Report", type: "manual_note", source: "generated", status: "active", tags: ["deep-research"], createdAt: "2026-08-20T00:00:00.000Z", updatedAt: "2026-08-20T00:00:00.000Z" }],
+        meta: { page: 1, pageSize: 10, totalCount: 1, totalPages: 0 },
+        error: null,
+      })
+    ));
+
+    await expect(listSavedResearch(projectId)).rejects.toMatchObject({ code: "invalid_response" });
   });
 });

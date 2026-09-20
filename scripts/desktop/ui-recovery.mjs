@@ -1,7 +1,7 @@
 // Real local UI cancellation/reconciliation and explicitly injected transport
 // failures. Responses are never replaced with fabricated success data.
 import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
-import PDFDocument from 'pdfkit';
+import {createDesktopRecoveryPdf} from './pdf-fixtures.mjs';
 import {readFile,writeFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
@@ -15,7 +15,7 @@ try{
  await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
  // A real upload whose transport is stopped before the request is sent. The
  // normal retry must reconcile the operation ID before sending the file once.
- const pdf=await new Promise(resolve=>{const doc=new PDFDocument(),chunks=[];doc.on('data',c=>chunks.push(c));doc.on('end',()=>resolve(Buffer.concat(chunks)));doc.text('Disposable recovery evidence. Offline acceptance requires human review.');doc.end();});const name='Recovery-'+Date.now();
+ const pdf=await createDesktopRecoveryPdf();const name='Recovery-'+Date.now();
  await page.evaluate(()=>{const send=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.send=function(body){const xhr=this;setTimeout(()=>{if(xhr.readyState===XMLHttpRequest.OPENED)send.call(xhr,body);},800);};});
  await page.locator('input[type=file]').first().setInputFiles({name:name+'.pdf',mimeType:'application/pdf',buffer:pdf});await page.getByRole('button',{name:'Upload',exact:true}).click();await page.getByRole('button',{name:'Stop upload',exact:true}).click();await page.getByText('Upload stopped. We will check its status before another upload.',{exact:true}).waitFor();record('stopping an upload gives an honest reconciliation state');
  await page.getByRole('button',{name:'Upload',exact:true}).click();await page.getByRole('button',{name:'Open actions for '+name,exact:true}).waitFor({timeout:30000});await page.reload();await page.getByRole('button',{name:'Open actions for '+name,exact:true}).waitFor();assert.equal(await page.getByRole('button',{name:'Open actions for '+name,exact:true}).count(),1);record('retry reconciles and retains exactly one document');

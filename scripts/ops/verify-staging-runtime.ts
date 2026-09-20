@@ -1,6 +1,6 @@
 import { File } from "node:buffer";
 import JSZip from "jszip";
-import PDFDocument from "pdfkit";
+import { createStagingPdfFixture as createPdfFixture } from "../lib/pdf-fixtures.js";
 
 type ApiEnvelope = {
   data?: unknown;
@@ -200,18 +200,6 @@ async function createDocxFixture() {
 </w:document>`
   );
   return zip.generateAsync({ type: "nodebuffer" });
-}
-
-async function createPdfFixture() {
-  return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    const document = new PDFDocument({ size: "A4", margin: 48 });
-    document.on("data", (chunk: Buffer) => chunks.push(chunk));
-    document.on("end", () => resolve(Buffer.concat(chunks)));
-    document.on("error", reject);
-    document.text("Isolated staging safely parses PDF evidence through its worker queue.");
-    document.end();
-  });
 }
 
 await main();

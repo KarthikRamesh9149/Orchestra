@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, useLocation } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { DeepResearchModal } from "./DeepResearch";
+import { ApiError } from "../../lib/api/client";
 
 const mocks = vi.hoisted(() => ({
   startDeepResearch: vi.fn(),
@@ -51,13 +52,21 @@ function LocationProbe() {
   return <output aria-label="Current route">{location.pathname}</output>;
 }
 
-function renderModal() {
-  return render(
+function modalView(open = true, minimized = false) {
+  return (
     <MemoryRouter initialEntries={["/chat"]}>
-      <DeepResearchModal projectId="project-1" open minimized={false} onClose={vi.fn()} onMinimize={vi.fn()} onElapsedChange={vi.fn()} />
+      <DeepResearchModal projectId="project-1" open={open} minimized={minimized} onClose={vi.fn()} onMinimize={vi.fn()} onElapsedChange={vi.fn()} />
       <LocationProbe />
     </MemoryRouter>
   );
+}
+function renderModal() { return render(modalView()); }
+async function showResults() {
+  const user = userEvent.setup(), view = renderModal();
+  await user.type(screen.getByRole("textbox"), "release readiness");
+  await user.click(screen.getByRole("button", { name: "Run Research" }));
+  await screen.findByText("Deep Research Complete");
+  return { user, view };
 }
 
 describe("[FIX-22] Deep Research truthful UI", () => {
@@ -75,6 +84,7 @@ describe("[FIX-22] Deep Research truthful UI", () => {
     mocks.getDeepResearchUsage.mockResolvedValue({ used: 0, limit: 20, resetLabel: "Sep 1" });
     mocks.startDeepResearch.mockResolvedValue({ ...completedRun, status: "running", results: null, progress: { percent: 10, stage: "retrieving_evidence" } });
     mocks.getDeepResearchRun.mockResolvedValue(completedRun);
+    mocks.downloadDeepResearchReport.mockReset().mockResolvedValue(undefined);
   });
 
   it("rejects blank focus and sends explicit source, privacy, and web choices", async () => {
@@ -152,6 +162,85 @@ describe("[FIX-22] Deep Research truthful UI", () => {
     expect(screen.getByText(/not accepted Product Brain truth/i)).toBeVisible();
     await user.click(screen.getAllByRole("button", { name: "Open saved report" })[0]);
     expect(screen.getByLabelText("Current route")).toHaveTextContent(`/memory/context/${contextId}`);
+  });
+
+  it.each(["pdf", "markdown"] as const)("downloads the selected %s report format", async (format) => {
+    const { user } = await showResults();
+    const selector = screen.getByRole("combobox", { name: "Report format" });
+    expect(selector).toHaveValue("pdf");
+    expect(screen.getByRole("option", { name: "PDF (.pdf)" })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: "Markdown (.md)" })).toBeInTheDocument();
+    await user.selectOptions(selector, format);
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    expect(mocks.downloadDeepResearchReport).toHaveBeenCalledExactlyOnceWith("project-1", runId, format);
+  });
+
+  it("prevents duplicate exports and format changes while a download is pending", async () => {
+    let resolveDownload!: () => void;
+    mocks.downloadDeepResearchReport.mockReturnValueOnce(new Promise<void>((resolve) => { resolveDownload = resolve; }));
+    const { user } = await showResults();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Report format" }), "markdown");
+    const button = screen.getByRole("button", { name: "Download Report" });
+    act(() => { button.click(); button.click(); });
+    expect(mocks.downloadDeepResearchReport).toHaveBeenCalledExactlyOnceWith("project-1", runId, "markdown");
+    expect(screen.getByRole("button", { name: "Downloading…" })).toBeDisabled();
+    expect(screen.getByRole("combobox", { name: "Report format" })).toBeDisabled();
+    await act(async () => resolveDownload());
+    expect(screen.getByRole("button", { name: "Download Report" })).toBeEnabled();
+    expect(screen.getByRole("combobox", { name: "Report format" })).toBeEnabled();
+  });
+
+  it("offers explicit Markdown recovery for unsupported PDF characters without exposing renderer details", async () => {
+    mocks.downloadDeepResearchReport.mockRejectedValueOnce(new ApiError({ status: 422, code: "report_pdf_unsupported_characters", message: "Internal renderer detail U+1234" }));
+    const { user } = await showResults();
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("Choose Markdown (.md) to download the complete report");
+    expect(screen.queryByText(/Internal renderer detail/)).not.toBeInTheDocument();
+    expect(screen.getByRole("combobox", { name: "Report format" })).toHaveValue("pdf");
+    expect(mocks.downloadDeepResearchReport).toHaveBeenCalledTimes(1);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Report format" }), "markdown");
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    expect(mocks.downloadDeepResearchReport).toHaveBeenLastCalledWith("project-1", runId, "markdown");
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("preserves format while minimized and resets it for a new research run", async () => {
+    const { user, view } = await showResults();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Report format" }), "markdown");
+    view.rerender(modalView(true, true));view.rerender(modalView());
+    expect(screen.getByRole("combobox", { name: "Report format" })).toHaveValue("markdown");
+    const nextRunId = "44444444-4444-4444-8444-444444444444";
+    mocks.startDeepResearch.mockResolvedValue({ ...completedRun, id: nextRunId });
+    mocks.getDeepResearchRun.mockResolvedValue({ ...completedRun, id: nextRunId });
+    view.rerender(modalView(false));view.rerender(modalView());
+    await user.type(screen.getByRole("textbox"), "new research focus");
+    await user.click(screen.getByRole("button", { name: "Run Research" }));
+    await screen.findByText("Deep Research Complete");
+    expect(screen.getByRole("combobox", { name: "Report format" })).toHaveValue("pdf");
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    expect(mocks.downloadDeepResearchReport).toHaveBeenLastCalledWith("project-1", nextRunId, "pdf");
+  });
+
+  it("keeps one export in flight across reopening and ignores an old run's late download error", async () => {
+    let rejectDownload!: (reason: Error) => void;
+    mocks.downloadDeepResearchReport.mockReturnValueOnce(new Promise<void>((_resolve, reject) => { rejectDownload = reject; }));
+    const { user, view } = await showResults();
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    const nextRunId = "55555555-5555-4555-8555-555555555555";
+    mocks.startDeepResearch.mockResolvedValue({ ...completedRun, id: nextRunId });
+    mocks.getDeepResearchRun.mockResolvedValue({ ...completedRun, id: nextRunId });
+    view.rerender(modalView(false));view.rerender(modalView());
+    await user.type(screen.getByRole("textbox"), "different research focus");
+    await user.click(screen.getByRole("button", { name: "Run Research" }));
+    await screen.findByText("Deep Research Complete");
+    expect(screen.getByRole("button", { name: "Downloading…" })).toBeDisabled();
+    expect(mocks.downloadDeepResearchReport).toHaveBeenCalledTimes(1);
+    await act(async () => rejectDownload(new Error("Old run export failed")));
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Download Report" })).toBeEnabled();
+    await user.selectOptions(screen.getByRole("combobox", { name: "Report format" }), "markdown");
+    await user.click(screen.getByRole("button", { name: "Download Report" }));
+    expect(mocks.downloadDeepResearchReport).toHaveBeenLastCalledWith("project-1", nextRunId, "markdown");
   });
 
   it("renders an unsafe provider source as inert text", async () => {

@@ -12,7 +12,7 @@ export async function inventoryNotices(input) {
       const folder=join(directory,entry.name);
       if(entry.name==='node_modules'||entry.name.startsWith('@')) {await walk(folder);continue;}
       let metadata;
-      try {metadata=JSON.parse(await readFile(join(folder,'package.json'),'utf8'));}
+      try {if(!(await lstat(join(folder,'package.json'))).isFile())continue;metadata=JSON.parse(await readFile(join(folder,'package.json'),'utf8'));}
       catch(error) {if(error.code==='ENOENT')continue;throw error;}
       const notices=[],embeddedNotices=[];
       for(const file of await readdir(folder)) {

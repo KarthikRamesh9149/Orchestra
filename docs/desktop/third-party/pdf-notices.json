@@ -1,0 +1,217 @@
+{
+  "formatVersion": 1,
+  "reviewDate": "2026-09-20",
+  "scope": "Supplemental component notices for exact pdf-lib 1.17.1 / @pdf-lib/standard-fonts 1.0.0 / pako 1.0.11 candidate. Root package notices remain separately required. Presence is not a public-release approval.",
+  "notices": [
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "Adobe Core14 AFM permission",
+      "license": "LicenseRef-Adobe-Core14-AFM",
+      "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/MustRead.html",
+      "sourceSha256": "b226bfc00e1b8b8a80c7b3cfbbc322d13b4b0401f94cdeafdd93b2210ad802eb",
+      "basis": "Unchanged HTML retained as inert text. All 14 published inflated metric JSON files were reproduced byte-for-byte from the accompanying upstream AFMs. The 14 upstream AFMs and MustRead tree blobs also equal chbrown/afm commit a1b78e92dc7aa5348d3c5b3700e8ad833ba24238 vendor/Adobe/Core14. This permission is separate from the JavaScript wrapper MIT licence.",
+      "file": "pdf-adobe-core14-mustread.html.txt",
+      "sha256": "b226bfc00e1b8b8a80c7b3cfbbc322d13b4b0401f94cdeafdd93b2210ad802eb"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "Adobe Core14 original font notices and transformation explanation",
+      "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/",
+      "sources": [
+        {
+          "font": "Courier-Bold",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Courier-Bold.afm",
+          "sourceSha256": "ad0150d4bedcc8877742bf94251fcec13e348dd599d4603f679d92027d1e6e99"
+        },
+        {
+          "font": "Courier-BoldOblique",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Courier-BoldOblique.afm",
+          "sourceSha256": "cb82e69ef5f6d421e8f404fe00bb0d993425aae79725331d0ebf847e94e97e92"
+        },
+        {
+          "font": "Courier-Oblique",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Courier-Oblique.afm",
+          "sourceSha256": "b27103b2a2ef6030c110626597e2ab47bb8279075a039ab9170facb0aa1f70e1"
+        },
+        {
+          "font": "Courier",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Courier.afm",
+          "sourceSha256": "521e0d7c7521efd4be78a5a9c5398e4c67d0771e396115b0346bc4ef74ada53d"
+        },
+        {
+          "font": "Helvetica-Bold",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Helvetica-Bold.afm",
+          "sourceSha256": "b880d96baf56d0cc059f258f60b4d764ef49b555ab9db294b959c0016dee41f2"
+        },
+        {
+          "font": "Helvetica-BoldOblique",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Helvetica-BoldOblique.afm",
+          "sourceSha256": "69984a35ca26973a39f261cf83e0d367ea2e6517c590b0b030d4d4a219d9c269"
+        },
+        {
+          "font": "Helvetica-Oblique",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Helvetica-Oblique.afm",
+          "sourceSha256": "b4609b71b660a392ac09df35060271a876c2ce66617dd83bf826f742bb9d9721"
+        },
+        {
+          "font": "Helvetica",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Helvetica.afm",
+          "sourceSha256": "da33f1870474c8e68bfe3e2353ff107ab6c6eea1f9836ce2aaf1e1a07b17982f"
+        },
+        {
+          "font": "Symbol",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Symbol.afm",
+          "sourceSha256": "3d2128a820375a10de9bc8bf6cfb15ded482c01ca0f95cc0b3277f37ec8bde66"
+        },
+        {
+          "font": "Times-Bold",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Times-Bold.afm",
+          "sourceSha256": "b4a000ed85cb22c6cdd985aa0fd3f6f78ed5079b7c6860dc4f0234e0d0e3c522"
+        },
+        {
+          "font": "Times-BoldItalic",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Times-BoldItalic.afm",
+          "sourceSha256": "93c4744ba955215de02c4aae0b777133442ada2f7ab5a2af30a040b792b3c55d"
+        },
+        {
+          "font": "Times-Italic",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Times-Italic.afm",
+          "sourceSha256": "ed37fa2e6a67b5b17dfd47f36fc7e90df32891a4408860dbc8d4cbbe9959e242"
+        },
+        {
+          "font": "Times-Roman",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/Times-Roman.afm",
+          "sourceSha256": "768e1cabea085d489a63da3e80b96bc5abf0ec98d3073c9b4d6ba76e7bccba64"
+        },
+        {
+          "font": "ZapfDingbats",
+          "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/font_metrics/ZapfDingbats.afm",
+          "sourceSha256": "a32565c90afd1b57a7008fc567b78d95cf1c22adff5e086094d666d88b039859"
+        }
+      ],
+      "basis": "Original Notice lines copied from all 14 source AFMs and checked against installed decoded metric objects. Explanatory text explicitly labels upstream representation changes and the separately authorised staging-only metadata addition. This is not a replacement or alteration of the Adobe permission paragraph.",
+      "file": "pdf-adobe-core14-notices.txt",
+      "sha256": "f947a04a286e841ef67944dbbda6f4d56e90062a39f7e3b99d9306d8cb32653c"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "symbol encoding table copyright and permission",
+      "license": "Unicode per-file permission",
+      "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/encoding_metrics/symbol.txt",
+      "sourceSha256": "f1df222756a135a0a21e6ce995b24c6ff9cdace3c6916ade59f6ad7dfb6afd51",
+      "extraction": "Unchanged leading header, excluding the mapping rows beginning with 0020.",
+      "basis": "The complete combined encoding JSON was reproduced byte-for-byte from the three pinned input tables and the separately attributed PDFKit WinAnsi glyph-name table. Mapping rows were additionally compared with the corresponding current unicode.org source. Retains the specific 1991-2011 Unicode notice instead of assuming wrapper MIT covers data.",
+      "file": "pdf-unicode-symbol.txt",
+      "sha256": "04daa68a940b15f1c02a2bb2288cbe6b8e6711d53e5ce9e4469efb1d8a94fefa"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "zapfdingbats encoding table copyright and permission",
+      "license": "Unicode per-file permission",
+      "source": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/encoding_metrics/zapfdingbats.txt",
+      "sourceSha256": "39d84d440a79ad8d73527ef82fe3077064252929d7e520a01967d4747635cf46",
+      "extraction": "Unchanged leading header, excluding the mapping rows beginning with 0020.",
+      "basis": "The complete combined encoding JSON was reproduced byte-for-byte from the three pinned input tables and the separately attributed PDFKit WinAnsi glyph-name table. Mapping rows were additionally compared with the corresponding current unicode.org source. Retains the specific 1991-2011 Unicode notice instead of assuming wrapper MIT covers data.",
+      "file": "pdf-unicode-zapfdingbats.txt",
+      "sha256": "276c3bcb4d39926d0acf37bb462c592b140d45b83565b2c7d23d48dcbe070a71"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "CP1252 Unicode mapping data",
+      "license": "Unicode-3.0",
+      "source": "https://www.unicode.org/license.txt",
+      "sourceSha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+      "dataSource": "https://www.unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1252.TXT",
+      "dataSourceSha256": "f607ae328b4dff5e9bfef725f5fff0ae23f38797f8a5b95998a0d2735c0e8fad",
+      "vendoredSource": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/encoding_metrics/win1252.txt",
+      "vendoredSourceSha256": "46c675bc5b248140232f183d53b675df671c6b202bd12b81a56d5d155da8fe42",
+      "termsSource": "https://www.unicode.org/copyright.html",
+      "basis": "Current Unicode terms define computer data files under /Public/ as Unicode Data Files governed by Unicode License v3 unless specifically otherwise licensed. CP1252 contains no competing permission header. All 256 mapping rows equal the pinned input after comment and line-ending normalization. Generated WinAnsi keeps 218 mappings; PDFKit supplies separately licensed glyph names. This is current source permission, not a reconstructed historical licence.",
+      "file": "pdf-unicode-cp1252.txt",
+      "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "Christopher Brown original afm licence evidence",
+      "license": "MIT",
+      "source": "https://chbrown.github.io/licenses/MIT/#2015-2018",
+      "sourceSha256": "e03c2f13f8a96d630177421ed460320415b7f854100ffe5238f964d860559ed0",
+      "packageSource": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/README.md",
+      "packageSourceSha256": "3d90382b943272684c0387f6a25fc22ba93b823bbb5836b899a624b4a848450b",
+      "basis": "Exact author-maintained linked HTML retained as inert text. The npm README explicitly attributes Copyright 2015–2018 Christopher Brown and links #2015-2018. The HTML script replaces its default 2017 date with that fragment; the default static HTML date is not used as the applicable package date.",
+      "file": "pdf-chbrown-linked-license.html.txt",
+      "sha256": "e03c2f13f8a96d630177421ed460320415b7f854100ffe5238f964d860559ed0"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "Christopher Brown original afm code",
+      "license": "MIT",
+      "source": "https://chbrown.github.io/licenses/MIT/#2015-2018",
+      "sourceSha256": "e03c2f13f8a96d630177421ed460320415b7f854100ffe5238f964d860559ed0",
+      "packageSource": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/README.md",
+      "packageSourceSha256": "3d90382b943272684c0387f6a25fc22ba93b823bbb5836b899a624b4a848450b",
+      "basis": "Inert plain-text rendering of the linked HTML paragraphs with the exact README fragment #2015-2018 applied as the author page script specifies; HTML tags removed and entities decoded. Permission and disclaimer wording unchanged. The corresponding unchanged HTML is retained alongside for auditability.",
+      "file": "pdf-chbrown.txt",
+      "sha256": "fc7105282f5c4ffc77e044a99f689965b0c1122911584e917e4411ecd7b42d2a"
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "additionalPackages": [
+        {
+          "package": "pdf-lib",
+          "version": "1.17.1"
+        }
+      ],
+      "component": "Borrowed PDFKit WinAnsi glyph names and StandardFontEmbedder implementation",
+      "license": "MIT",
+      "source": "https://raw.githubusercontent.com/foliojs/pdfkit/83f5f7243172a017adcf6a7faa5547c55982c57b/LICENSE",
+      "sourceSha256": "5f0d5197d2b5d91f41de43143b0be42fb55515bc2b894f2a9b62de9f7056c0f8",
+      "additionalSources": [
+        {
+          "source": "https://raw.githubusercontent.com/foliojs/pdfkit/f91bdd61c164a72ea06be1a43dc0a412afc3925f/LICENSE",
+          "sourceSha256": "5f0d5197d2b5d91f41de43143b0be42fb55515bc2b894f2a9b62de9f7056c0f8"
+        }
+      ],
+      "attributionSources": [
+        "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/scripts/encodings/parseWin1252.ts",
+        "https://raw.githubusercontent.com/Hopding/pdf-lib/v1.17.1/src/core/embedders/StandardFontEmbedder.ts"
+      ],
+      "basis": "The standard-fonts parser explicitly cites the first PDFKit commit and all 256 glyph-name entries equal that source. pdf-lib StandardFontEmbedder explicitly cites the second commit. Both historical LICENSE files are byte-identical, including Copyright (c) 2014 Devon Govett; this one notice with only a terminal newline added records both uses even when the PDFKit npm wrapper is absent.",
+      "file": "pdf-pdfkit.txt",
+      "sha256": "6280262da3f2d6a51605f96480cc6433f9764f9cd9c0f80aa570fe0832f75655",
+      "normalization": "Only one terminal newline added to the otherwise unchanged source notice."
+    },
+    {
+      "package": "@pdf-lib/standard-fonts",
+      "version": "1.0.0",
+      "component": "Borrowed base64-arraybuffer decode implementation",
+      "license": "MIT",
+      "source": "https://raw.githubusercontent.com/niklasvh/base64-arraybuffer/e9457ccb7b140f5ae54a2880c8e9b967ffb03a7d/LICENSE-MIT",
+      "sourceSha256": "f3eca6ff762533fa5a77caf954a143e48afa204668cf97dce758c45a9e006be3",
+      "packageSource": "https://raw.githubusercontent.com/Hopding/standard-fonts/41a6440267de5456042c7bcbac5ec65065e2ef69/src/utils.ts",
+      "basis": "The installed es/lib utils module explicitly identifies its chars, lookup and decodeFromBase64 members as base64-arraybuffer, Copyright (c) 2012 Niklas von Hertzen, MIT. The pinned standard-fonts package lists base64-arraybuffer ^0.1.5 as a development dependency. This unchanged notice is from the npm 0.1.5 gitHead and matches its LICENSE-MIT archive entry. The decode algorithm is adapted to return Uint8Array instead of ArrayBuffer; this is component attribution, not a claim the whole upstream package is a runtime dependency.",
+      "file": "pdf-base64-arraybuffer.txt",
+      "sha256": "f3eca6ff762533fa5a77caf954a143e48afa204668cf97dce758c45a9e006be3"
+    },
+    {
+      "package": "pako",
+      "version": "1.0.11",
+      "component": "zlib 1.2.8 JavaScript port",
+      "license": "Zlib AND MIT",
+      "source": "https://raw.githubusercontent.com/nodeca/pako/a718e4f6e5ce87b0964d8f84541d92a23263365b/lib/zlib/README",
+      "sourceSha256": "d8b499598e43d755ea8918448128259ff01820c50d94d5a48c8883d0a594ddb1",
+      "packageFile": "lib/zlib/README",
+      "basis": "Exact notice from the npm 1.0.11 archive and its registry gitHead; also equals the installed file. All 11 lib/zlib JavaScript files retain the same Gailly/Adler 1995-2013 and Puzrin/Tupitsin 2014-2017 attribution plus all three zlib restrictions. The root MIT notice is separately retained by package-root scanning and does not replace this component notice.",
+      "file": "pako-zlib.txt",
+      "sha256": "d8b499598e43d755ea8918448128259ff01820c50d94d5a48c8883d0a594ddb1"
+    }
+  ]
+}

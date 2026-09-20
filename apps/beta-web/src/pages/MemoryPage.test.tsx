@@ -34,6 +34,9 @@ vi.mock("../lib/api/memory", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../lib/api/memory")>();
   return { ...actual, ...mocks };
 });
+vi.mock("../components/memory/SavedResearchSection", () => ({
+  SavedResearchSection: () => <div data-testid="saved-research-section" />,
+}));
 
 const doc: Doc = {
   id: "document-1",
@@ -138,7 +141,7 @@ describe("[FIX-20] Memory document persistence", () => {
   it("does not count a send-only Gmail account as communication evidence", async () => {
     mocks.listCommunicationConnectors.mockResolvedValue([{id:'sender',provider:'gmail',accountLabel:'Synthetic sender',status:'connected',readiness:{deferredFeatures:['gmail_mailbox_sync_disabled_for_invitation_sender']}}]);
     render(<MemoryRouter><MemoryPage /></MemoryRouter>);
-    await waitFor(()=>expect(screen.getByText('1 docs · 0 connectors')).toBeVisible());
+    await waitFor(()=>expect(screen.getByText('1 doc · 0 connectors')).toBeVisible());
     expect(screen.queryByText('Synthetic sender')).not.toBeInTheDocument();
   });
 

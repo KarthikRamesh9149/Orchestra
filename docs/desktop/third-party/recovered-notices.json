@@ -1,6 +1,6 @@
 {
   "complete": false,
-  "reviewDate": "2026-09-16",
+  "reviewDate": "2026-09-20",
   "notices": [
     {
       "package": "xml-naming",
@@ -22,7 +22,33 @@
       "source": "https://jsumners.mit-license.org/",
       "packageSource": "https://raw.githubusercontent.com/jsumners/abstract-logging/80dfaef91ee87008f4ed2b6e78921d383bccd406/Readme.md",
       "basis": "Published README explicitly links this author-maintained MIT notice. Captured HTML as inert text, not executable content. The site displays a dynamic 2026 year; this is the current linked notice, not a claimed historical release-year reconstruction. Trailing whitespace normalized."
+    },
+    {
+      "package": "dingbat-to-unicode",
+      "version": "1.0.1",
+      "license": "BSD-2-Clause",
+      "file": "dingbat-to-unicode.txt",
+      "sha256": "1013cef4b629a3c7eaf737c110fb5bebbf3abbc16e154d769468d71c3653fa37",
+      "source": "https://raw.githubusercontent.com/mwilliamson/dingbat-to-unicode/9eb2d1d8b8463b7bd3cd125597eabcfa9df42128/js/LICENSE",
+      "clarification": "https://github.com/mwilliamson/dingbat-to-unicode/issues/1#issuecomment-5740760399",
+      "clarificationAuthor": "mwilliamson",
+      "clarificationDate": "2026-09-19T09:27:29Z",
+      "basis": "The repository owner explicitly states that the license added to 1.0.2 also applies to any previous versions. This is that BSD-2-Clause license, retained byte for byte, applied to installed 1.0.1 on the owner's express clarification, not inferred from a newer release. No dependency was upgraded."
+    },
+    {
+      "package": "tr46",
+      "version": "0.0.3",
+      "license": "MIT",
+      "file": "tr46.txt",
+      "sha256": "eeed1ca176eebad5c73870e233cfff03981fecd319c969475dfa3633036c336b",
+      "source": "https://raw.githubusercontent.com/jsdom/tr46/3a6f29721e7063b9ffd421e461a54beae6170001/LICENSE.md",
+      "packageSourceRevision": "a8009f9ce80ff5dbe71dd71e203afe4e4c878d28",
+      "basis": "Author Sebmaster's license-only commit directly parents the npm 0.0.3 gitHead a8009f9ce80ff5dbe71dd71e203afe4e4c878d28. It adds only LICENSE.md and retains package version 0.0.3. Installed implementation index.js and package.json match the licensed revision byte for byte. The generated Unicode mapping data is separately attributed in unicode-tr46.txt; it is not represented as Sebastian Mayr's original data.",
+      "matchedSourceHashes": {
+        "index.js": "8194f9425ce9ab06ea9aebcd64a85ec064d95d61bb349f8f1c98762ad256638e",
+        "package.json": "615087f58ee138fd35c2b414c355b72e36e5919725b8aecc1c34f6a5585b9779"
+      }
     }
   ],
-  "unresolved": ["@swc/helpers@0.3.17", "brotli@1.3.3", "dfa@1.2.0", "dingbat-to-unicode@1.0.1", "fontkit@1.9.0", "stackback@0.0.2", "tr46@0.0.3"]
+  "unresolved": ["@swc/helpers@0.3.17", "brotli@1.3.3", "dfa@1.2.0", "fontkit@1.9.0", "stackback@0.0.2"]
 }

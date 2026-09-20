@@ -1,7 +1,7 @@
 // Packaged, offline, synthetic 150-page corpus and 80-message conversation.
 // No SQL seeding, simulated answers, provider credentials or paid model calls.
 import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
-import PDFDocument from 'pdfkit';
+import {createDesktopCorpusChatPdf} from './pdf-fixtures.mjs';
 import {readFile,writeFile,mkdtemp} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
@@ -11,15 +11,7 @@ assert.equal(JSON.parse(await readFile(join(profile,'result.json'),'utf8')).prof
 const packageRoot=(await readFile(join(resolve(import.meta.dirname,'../..'),'.desktop/latest-package.txt'),'utf8')).trim();
 const output=await mkdtemp('/private/tmp/orchestra-step7-corpus-');
 const proof={profile,packageRoot,output,pages:150,turns:40,passed:[],errors:[]};
-const pdf=await new Promise(resolve=>{
- const doc=new PDFDocument({autoFirstPage:false}),chunks=[];
- doc.on('data',c=>chunks.push(c));doc.on('end',()=>resolve(Buffer.concat(chunks)));
- for(let n=0;n<150;n++){
-  doc.addPage();doc.fontSize(9).text(`Synthetic corpus section ${n}. The ZEPHYR acceptance code is ORCHESTRA-${n}. `+
-   Array.from({length:18},(_,k)=>`Requirement ${n}-${k}: all product changes require explicit human approval, attributable evidence, tested persistence and bounded local access. `).join(''));
- }
- doc.end();
-});
+const pdf=await createDesktopCorpusChatPdf();
 proof.sourceBytes=pdf.length;
 const app=await _electron.launch({executablePath:join(packageRoot,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{PATH:'',HOME:process.env.HOME,TMPDIR:process.env.TMPDIR??''},timeout:60000});
 const page=await app.firstWindow();page.on('pageerror',e=>proof.errors.push(e.message));page.setDefaultTimeout(30000);

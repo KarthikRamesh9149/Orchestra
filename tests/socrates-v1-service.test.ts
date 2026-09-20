@@ -2207,6 +2207,65 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(result.limitations).toContainEqual(expect.stringMatching(/fast chat model is unavailable/i));
   });
 
+  it.each(["object", "streaming"])("preserves source identity, approval provenance and subset limits in the %s prompt path", async (path) => {
+    const { service, generationProvider } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key" },
+      { answer_md: "The backend contract documents the API routes. [E1]", confidence: "medium", limitations: [], suggested_prompts: [] }
+    );
+    await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "What backend API routes are documented?", selectedSources: ["documents"], includeArtifacts: false,
+      ...(path === "streaming" ? { onDelta: () => undefined } : {})
+    });
+    const call = (path === "streaming" ? generationProvider.streamText : generationProvider.generateObject).mock.calls[0]![0];
+    for (const prompt of [call.systemPrompt, call.prompt]) {
+      expect(prompt).toContain("title, sourceType and truthStatus metadata");
+      expect(prompt).toContain("Never equate a user-mentioned absent or archived source with another retrieved source");
+      expect(prompt).toContain("If a requested source appears only in the question, with no supplied item or attributed excerpt from that source, explicitly say it was not supplied; never merge it with another item using archived/other shorthand");
+      expect(prompt).toContain("Do not claim the contents of an unretrieved source");
+      expect(prompt).toContain("does not establish accepted Product Brain truth");
+      expect(prompt).toContain("Retrieved evidence is a subset, not an exhaustive inventory");
+      expect(prompt).toContain("overridden, superseded or archived unless supplied evidence explicitly establishes that status");
+    }
+    expect(call.prompt).toContain("title: Backend Contract - Backend API");
+    expect(call.prompt).toContain("sourceType: document");
+    expect(call.prompt).toContain("truthStatus: evidence");
+  });
+
+  it.each(["object", "streaming"])("keeps temporal safeguards without demanding irrelevant timestamp prose in the %s prompt path", async (path) => {
+    const { service, generationProvider } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key" },
+      { answer_md: "The backend contract documents the API routes. [E1]", confidence: "medium", limitations: [], suggested_prompts: [] }
+    );
+    await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "What backend API routes are documented?", selectedSources: ["documents"], includeArtifacts: false,
+      ...(path === "streaming" ? { onDelta: () => undefined } : {})
+    });
+    const call = (path === "streaming" ? generationProvider.streamText : generationProvider.generateObject).mock.calls[0]![0];
+    for (const prompt of [call.systemPrompt, call.prompt]) {
+      expect(prompt).toContain("For ordinary factual questions where timing is immaterial, do not print observation/request timestamps or add a temporal caveat");
+      expect(prompt).toContain("A source title containing current does not by itself make the question temporal");
+      expect(prompt).toContain("sourceType, truthStatus, observedAt and requestAt are internal reasoning metadata; describe source roles and acceptance status naturally, not as raw keys or enum values. Preserve exact timestamps when needed to explain a material temporal gap");
+      expect(prompt).toMatch(/(?:Never invent or approximate|Do not estimate) an elapsed duration/);
+    }
+    expect(call.prompt).toContain("observedAt: 2026-05-28T10:00:00.000Z");
+    expect(call.prompt).toMatch(/requestAt: \d{4}-\d{2}-\d{2}T/);
+  });
+
+  it("labels offline excerpts as unconfirmed answers without discarding retrieved evidence", async () => {
+    const { service } = makeService();
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "What backend API routes are documented?", selectedSources: ["documents"], includeArtifacts: false
+    });
+    expect(result.answer_md).toContain("I cannot confirm this answers your question");
+    expect(result.answer_md).toContain("Backend Contract - Backend API");
+    expect(result.citations.length).toBeGreaterThan(0);
+    expect(result.retrievalSummary.evidenceCount).toBeGreaterThan(0);
+    expect(result.modelMetadata.provider).toBe("deterministic");
+  });
+
   it("uses AI synthesis for Socrates v1 when OpenAI is configured while keeping deterministic citations", async () => {
     const { service, generationProvider } = makeService(
       {

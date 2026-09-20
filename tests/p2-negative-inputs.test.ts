@@ -1,4 +1,4 @@
-import { createRequire } from "node:module";
+import { PDFDocument, StandardFonts } from "pdf-lib";
 import { describe, expect, it } from "vitest";
 import {
   betaMultipartUploadMetadataSchema,
@@ -20,15 +20,6 @@ import {
 import { openTargetRefSchema } from "../src/modules/socrates/schemas.js";
 import { verifyFirefliesSignature } from "../src/modules/communications/providers/fireflies.provider.js";
 import { parseDocumentBuffer } from "../src/lib/parsers/index.js";
-
-const require = createRequire(import.meta.url);
-const PDFDocument = require("pdfkit") as new (options?: Record<string, unknown>) => {
-  on: (event: string, callback: (...args: any[]) => void) => void;
-  fontSize: (size: number) => { text: (text: string, options?: Record<string, unknown>) => void };
-  text: (text: string, options?: Record<string, unknown>) => void;
-  moveDown: () => void;
-  end: () => void;
-};
 
 describe("P2 negative payload and path schema hardening", () => {
   it("rejects malformed public client-token paths before lookup", () => {
@@ -135,20 +126,10 @@ describe("P2 negative payload and path schema hardening", () => {
 });
 
 async function createGeneratedPdfBuffer(text: string) {
-  const document = new PDFDocument({
-    size: "LETTER",
-    margin: 56,
-    compress: false,
-    info: { Title: "Parser QA PRD", Creator: "Orchestra parser test" }
-  });
-  const chunks: Buffer[] = [];
-  const done = new Promise<Buffer>((resolve, reject) => {
-    document.on("data", (chunk: Buffer | Uint8Array) => chunks.push(Buffer.from(chunk)));
-    document.on("end", () => resolve(Buffer.concat(chunks)));
-    document.on("error", reject);
-  });
-
-  document.fontSize(18).text(text, { lineGap: 4 });
-  document.end();
-  return done;
+  const document = await PDFDocument.create();
+  document.setTitle("Parser QA PRD");
+  document.setCreator("Orchestra parser test");
+  const font = document.embedStandardFont(StandardFonts.Helvetica);
+  document.addPage([612, 792]).drawText(text, { x: 56, y: 718, size: 18, lineHeight: 22, font });
+  return Buffer.from(await document.save({ useObjectStreams: false }));
 }

@@ -3,6 +3,12 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'package.json':'September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool.',
+ 'package-lock.json':'September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades.',
+ 'apps/beta-web/src/pages/MemoryContextPage.tsx':'September 20 readiness follow-up: remove only a repeated display title, preserve stored Markdown and citations, and prevent stale workspace/route reports from rendering.',
+ 'apps/beta-web/src/pages/MemoryContextPage.test.tsx':'Regressions for duplicate headings, evidence preservation, workspace clearing, late responses and denied saved-report reads.',
+ 'apps/beta-web/src/lib/api/research.ts':'September 20 readiness follow-up: expose the existing authorized paginated saved-research read with bounded page size, metadata validation and the shared API transport.',
+ 'apps/beta-web/vite.config.ts':'September 20 build-only exact-output dependency/notice sidecars; no application runtime or visual styling change.',
  'src/lib/ai-ops/ai-model-strategy.ts':'Provider-neutral desktop generation readiness and honest vendor metadata; hosted configuration remains separate.',
  'src/lib/parsers/file-safety.ts':'Security audit: bound actual ZIP inflation and validate archive interpretations before materialising DOCX/XLSX contents.',
  'src/lib/parsers/docx.ts':'Await bounded ZIP payload verification before handing document contents to Mammoth.',
@@ -84,6 +90,16 @@ for (const file of [
 ]) adjustments[file]+=' September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged.';
 adjustments['src/modules/deep-research/service.ts']+=' Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence.';
 const changes=[];
+adjustments['.gitattributes']='Readiness follow-up: preserve the exact hash-pinned upstream Unicode Zapf Dingbats notice bytes and intentional trailing whitespace; no broad whitespace exemption.';
+adjustments['src/modules/socrates/service.ts']+=' Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches.';
+adjustments['prisma/schema.prisma']+=' Readiness follow-up: additive database-maintained document search vector; original migration history and hosted deployment state remain untouched.';
+adjustments['src/modules/deep-research/report-render.ts']+=' Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative.';
+adjustments['tests/p2-negative-inputs.test.ts']='Readiness follow-up: generate the existing PDF parser fixture using the replacement PDF library; preserve parser assertions.';
+for (const file of ['apps/beta-web/src/components/socrates/DeepResearch.tsx','apps/beta-web/src/components/socrates/DeepResearch.test.tsx']) adjustments[file]+=' Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions.';
+for (const file of ['scripts/ops/verify-staging-runtime.ts','scripts/diag-socrates-v1.ts','scripts/smoke/beta-smoke.ts']) adjustments[file]='Readiness follow-up: preserve the existing synthetic PDF fixture contents using the replacement PDF library so retained diagnostic tools remain buildable; no hosted runtime execution or deployment is performed.';
+for (const file of ['apps/beta-web/src/lib/api/client.ts','apps/beta-web/src/lib/api/client.test.ts','apps/beta-web/src/lib/api.research.test.ts','apps/beta-web/src/pages/MemoryPage.tsx','apps/beta-web/src/pages/MemoryPage.test.tsx']) {
+ adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+'September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate.';
+}
 // User-authorized UI copy cleanup during Step 8; no styling or behavior changes.
 for (const file of ['ChatPage.tsx','ChatPage.test.tsx','DeliveryPage.tsx','TruthInboxPage.tsx','TruthChangePacketPage.tsx','WatchtowerPage.tsx']) {
  const key=`apps/beta-web/src/pages/${file}`;

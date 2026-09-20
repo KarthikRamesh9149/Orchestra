@@ -23,3 +23,6 @@
 *.pdf binary
 *.docx binary
 *.zip binary
+
+# Preserve the hash-pinned upstream Unicode notice, including its spacing.
+docs/desktop/third-party/pdf-unicode-zapfdingbats.txt -text -whitespace

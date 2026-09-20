@@ -1,7 +1,7 @@
 import { http, HttpResponse } from "msw";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { server } from "../../test/server";
-import { apiBlob, apiJson, clearApiReadCache, resetApiSession, resolveApiBaseUrl } from "./client";
+import { apiBlob, apiEnvelope, apiJson, clearApiReadCache, resetApiSession, resolveApiBaseUrl } from "./client";
 
 const api = "http://localhost:3000";
 
@@ -11,6 +11,42 @@ describe("API read-through performance cache", () => {
   it.each([{}, { meta: null }, { error: null }])("rejects incomplete success envelopes %j", async (body) => {
     server.use(http.get(`${api}/v1/malformed`, () => HttpResponse.json(body)));
     await expect(apiJson("/v1/malformed")).rejects.toMatchObject({ code: "invalid_response" });
+  });
+
+  it("preserves response metadata without joining apiJson's read cache", async () => {
+    const reads = vi.fn();
+    server.use(http.get(`${api}/v1/page-probe`, () => {
+      reads();
+      return HttpResponse.json({ data: [{ id: "row-1" }], meta: { page: 1, totalPages: 2 }, error: null });
+    }));
+
+    await expect(apiEnvelope<Array<{ id: string }>, { page: number; totalPages: number }>("/v1/page-probe", { cache: "force-cache" }))
+      .resolves.toEqual({ data: [{ id: "row-1" }], meta: { page: 1, totalPages: 2 } });
+    await apiEnvelope("/v1/page-probe", { cache: "force-cache" });
+    expect(reads).toHaveBeenCalledTimes(2);
+  });
+
+  it("invalidates a cached GET after an envelope mutation", async () => {
+    let version = 1;
+    const reads = vi.fn();
+    server.use(
+      http.get(`${api}/v1/auth/csrf`, () =>
+        HttpResponse.json({ data: { csrfToken: "envelope-csrf" }, meta: null, error: null })
+      ),
+      http.get(`${api}/v1/envelope-probe`, () => {
+        reads();
+        return HttpResponse.json({ data: { version }, meta: null, error: null });
+      }),
+      http.post(`${api}/v1/envelope-probe`, () => {
+        version = 2;
+        return HttpResponse.json({ data: { updated: true }, meta: { persisted: true }, error: null });
+      })
+    );
+
+    await apiJson<{ version: number }>("/v1/envelope-probe", { cache: "force-cache" });
+    await apiEnvelope("/v1/envelope-probe", { method: "POST", body: "{}" });
+    await expect(apiJson<{ version: number }>("/v1/envelope-probe", { cache: "force-cache" })).resolves.toEqual({ version: 2 });
+    expect(reads).toHaveBeenCalledTimes(2);
   });
 
   it("[FIX-36] deduplicates concurrent reads and serves an immediate route revisit", async () => {

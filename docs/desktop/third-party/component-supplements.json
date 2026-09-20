@@ -1,0 +1,45 @@
+[
+  {
+    "package": "brotli",
+    "version": "1.3.3",
+    "component": "vendored Google Brotli",
+    "file": "brotli-vendored.txt",
+    "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+    "source": "https://raw.githubusercontent.com/google/brotli/5ce9bf11b3fe0924d87b2a2d47eb7a53a76a4421/LICENSE",
+    "packageSource": "https://github.com/foliojs/brotli.js/tree/e36051345f6d27a56e5f39ea70d2f789b8574046/vendor/brotli",
+    "basis": "The npm gitHead records vendor/brotli as submodule 5ce9bf11b3fe0924d87b2a2d47eb7a53a76a4421. This is that submodule notice. Does not resolve the JavaScript wrapper attribution or reconstruct the unpinned Emscripten toolchain that generated build/encode.js."
+  },
+  {
+    "package": "react-icons",
+    "version": "5.6.0",
+    "component": "Tabler icon designs",
+    "modulePrefix": "tb/",
+    "file": "tabler-icons.txt",
+    "sha256": "5a3b65e1ad6a081759fde376fe14e2cd88552a9ebea89a8168f34eab1e96109f",
+    "source": "https://raw.githubusercontent.com/tabler/tabler-icons/147130cd0e67a9cfc70538f8b3a14a48a695d90b/LICENSE",
+    "packageSource": "https://github.com/react-icons/react-icons/blob/6501a4156153b396d062deffed5ed2c8eb64a458/packages/react-icons/src/icons/index.ts",
+    "basis": "The react-icons v5.6.0 build configuration pins this icon family to this exact upstream source revision. Retained verbatim for the rendered family; wrapper MIT does not replace these design notices. Trademark rights and icon-level exceptions require separate consideration. The published README version table is stale relative to the tagged build configuration; that table was not used as version proof."
+  },
+  {
+    "package": "react-icons",
+    "version": "5.6.0",
+    "component": "BoxIcons designs",
+    "modulePrefix": "bi/",
+    "file": "boxicons.txt",
+    "sha256": "9da87f12e0cc2ddd3cd689ac4946a0508fc09b8d882e1430eb5ec16762b057a5",
+    "source": "https://raw.githubusercontent.com/atisawd/boxicons/9ffa9136e8681886bb7bd2145cd4098717ce1c11/LICENSE",
+    "packageSource": "https://github.com/react-icons/react-icons/blob/6501a4156153b396d062deffed5ed2c8eb64a458/packages/react-icons/src/icons/index.ts",
+    "basis": "The react-icons v5.6.0 build configuration pins this icon family to this exact upstream source revision. Retained verbatim for the rendered family; wrapper MIT does not replace these design notices. Trademark rights and icon-level exceptions require separate consideration. The published README version table is stale relative to the tagged build configuration; that table was not used as version proof."
+  },
+  {
+    "package": "react-icons",
+    "version": "5.6.0",
+    "component": "Simple Icons designs",
+    "modulePrefix": "si/",
+    "file": "simple-icons.txt",
+    "sha256": "9046848b63a5c92bff14e4accca80bd987e0623b74adf9226ce5198d312b79d5",
+    "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/8e950097ab208f27a96a8c01a523f273f90c41fd/LICENSE.md",
+    "packageSource": "https://github.com/react-icons/react-icons/blob/6501a4156153b396d062deffed5ed2c8eb64a458/packages/react-icons/src/icons/index.ts",
+    "basis": "The react-icons v5.6.0 build configuration pins this icon family to this exact upstream source revision. Retained verbatim for the rendered family; wrapper MIT does not replace these design notices. Trademark rights and icon-level exceptions require separate consideration. The published README version table is stale relative to the tagged build configuration; that table was not used as version proof."
+  }
+]

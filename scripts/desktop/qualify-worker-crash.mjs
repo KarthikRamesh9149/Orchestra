@@ -1,7 +1,7 @@
 // Kill only our owned native runtime after observing its durable parse claim.
 // A real PDF, PostgreSQL lease and retry are used. No customer data or SQL writes.
 import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
-import PDFDocument from 'pdfkit';
+import {createDesktopWorkerCrashPdf} from './pdf-fixtures.mjs';
 import {execFileSync} from 'node:child_process';
 import {readFile,writeFile,mkdtemp} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
@@ -11,7 +11,7 @@ assert.equal(JSON.parse(await readFile(join(profile,'result.json'),'utf8')).prof
 const packageRoot=(await readFile(join(resolve(import.meta.dirname,'../..'),'.desktop/latest-package.txt'),'utf8')).trim();
 const output=await mkdtemp('/private/tmp/orchestra-step7-worker-crash-');
 const proof={profile,packageRoot,output,passed:[]};
-const pdf=await new Promise(resolve=>{const doc=new PDFDocument({autoFirstPage:false}),chunks=[];doc.on('data',c=>chunks.push(c));doc.on('end',()=>resolve(Buffer.concat(chunks)));for(let n=0;n<150;n++){doc.addPage();doc.fontSize(9).text(`Synthetic crash requirement ${n}. Human approval must survive worker recovery. `.repeat(25));}doc.end();});
+const pdf=await createDesktopWorkerCrashPdf();
 const launch=()=>_electron.launch({executablePath:join(packageRoot,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{PATH:'',HOME:process.env.HOME,TMPDIR:process.env.TMPDIR??''},timeout:60000});
 let app=await launch(),page=await app.firstWindow();page.setDefaultTimeout(60000);
 const query=sql=>app.evaluate(async({app,safeStorage},sql)=>{

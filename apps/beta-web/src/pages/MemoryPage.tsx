@@ -21,6 +21,7 @@ import { TbChevronDown } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../components/ui/Avatar";
 import { OperationalStateNotice } from "../components/ui/OperationalStateNotice";
+import { SavedResearchSection } from "../components/memory/SavedResearchSection";
 import { useAuth } from "../context/AuthContext";
 import { useAccessibleDialog } from "../hooks/useAccessibleDialog";
 import { clearApiReadCache } from "../lib/api/client";
@@ -956,7 +957,7 @@ export function MemoryPage() {
                 </p>
               </div>
               <p className="flex-shrink-0 font-mono text-[10px] text-[var(--text-muted)] sm:mt-2">
-                {docsLoading || commsLoading ? "Loading memory…" : `${docs.length} docs · ${commsCount} connectors`}
+                {docsLoading || commsLoading ? "Loading memory…" : `${docs.length} ${docs.length === 1 ? "doc" : "docs"} · ${commsCount} ${commsCount === 1 ? "connector" : "connectors"}`}
               </p>
             </div>
 
@@ -1023,6 +1024,8 @@ export function MemoryPage() {
               />
               <kbd className="flex-shrink-0 rounded-md border border-[var(--border-soft)] bg-[var(--bg-inset)] px-2.5 py-1 font-mono text-[11px] text-[var(--text-muted)]">⌘K</kbd>
             </div>
+
+            <SavedResearchSection key={projectId ?? "no-project"} projectId={projectId} />
 
             {/* Tabs */}
             <div role="tablist" aria-label="Memory sources" className="mb-7 grid grid-cols-3 border-b border-[var(--border-soft)]">

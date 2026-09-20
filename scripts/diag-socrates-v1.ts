@@ -8,10 +8,7 @@
  * with a real OPENAI_API_KEY and BETA flags enabled.
  */
 import { File } from "node:buffer";
-import { createRequire } from "node:module";
-
-const require = createRequire(import.meta.url);
-const PDFDocument = require("pdfkit") as new (o?: Record<string, unknown>) => any;
+import { createSocratesPdfFixture as makePdf } from "./lib/pdf-fixtures.js";
 
 const BASE = process.env.BASE ?? "http://localhost:3030";
 
@@ -41,29 +38,6 @@ async function req(method: string, path: string, body?: unknown, token?: string)
     throw new Error(`HTTP ${method} ${path} → ${res.status}: ${JSON.stringify(parsed?.error ?? parsed)?.slice(0, 300)}`);
   }
   return parsed?.data ?? parsed;
-}
-
-async function makePdf(): Promise<Buffer> {
-  const doc = new PDFDocument({ size: "LETTER", margin: 56, compress: false });
-  const chunks: Buffer[] = [];
-  const done = new Promise<Buffer>((resolve, reject) => {
-    doc.on("data", (c: Buffer) => chunks.push(Buffer.from(c)));
-    doc.on("end", () => resolve(Buffer.concat(chunks)));
-    doc.on("error", reject);
-  });
-  const sections: [string, string][] = [
-    ["Product Overview", "Orchestra is an agentic collaborative workspace that keeps product and engineering aligned. The beta lets a team upload docs and ask Socrates over shared project memory."],
-    ["Authentication Decision", "OAuth was deferred to v2. Magic-link is the sole authentication mechanism for the beta launch. This decision was approved in the April RFC."],
-    ["Delivery Workflow", "Work flows from evidence to derived truth. Change proposals become accepted truth only through a decision record approved by a truth approver."],
-    ["Open Questions", "The Pro subscription tier and client portal MVP remain out of scope for the beta and are pending review before the next release."]
-  ];
-  for (let pass = 0; pass < 3; pass++) {
-    for (const [h, b] of sections) {
-      doc.moveDown(0.5); doc.fontSize(13).text(h); doc.moveDown(0.2); doc.fontSize(10.5).text(b, { width: 500, lineGap: 2 });
-    }
-  }
-  doc.end();
-  return done;
 }
 
 async function main() {

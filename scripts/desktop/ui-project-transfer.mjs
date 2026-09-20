@@ -1,7 +1,7 @@
 // Synthetic packaged local -> isolated self-host transfer. Native dialogs/clipboard
 // are substituted; file IO, encryption, API authorization, DB and renderer are real.
 import {_electron} from '../../apps/beta-web/node_modules/playwright/index.mjs';
-import PDFDocument from 'pdfkit';
+import {createDesktopTransferPdf} from './pdf-fixtures.mjs';
 import {readFile,mkdtemp,writeFile} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
@@ -9,7 +9,7 @@ const repo=resolve(import.meta.dirname,'../..'),packaged=(await readFile(join(re
 const profile=await mkdtemp('/private/tmp/orchestra-transfer-ui-'),archive=join(profile,'core.orchestra-transfer');
 const account=JSON.parse(await readFile(join(repo,'.desktop/self-host-v1-qualification/bootstrap-account.json'),'utf8'));assert.equal(account.email,'owner@qualification.invalid');
 const proof={package:packaged,profile,passed:[],errors:[],simulated:['native confirmation/file selection','private synthetic clipboard, never system clipboard'],scope:'one Mac, two independent runtimes; not two computers'};
-const pdf=await new Promise(resolve=>{const parts=[],doc=new PDFDocument();doc.on('data',part=>parts.push(part));doc.on('end',()=>resolve(Buffer.concat(parts)));doc.text('Synthetic transfer requirement: approval requires three reviewers.');doc.end();});
+const pdf=await createDesktopTransferPdf();
 const previous=join(repo,'.desktop/packages/95e81595-cd24-433e-b211-a8b43edd2af2/Orchestra Desktop Internal-darwin-arm64');
 const launch=directory=>_electron.launch({executablePath:join(directory,'Orchestra Desktop Internal.app/Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{HOME:process.env.HOME,PATH:'',TMPDIR:process.env.TMPDIR,NODE_EXTRA_CA_CERTS:join(repo,'.desktop/self-host-v1-qualification/tls-certificate.pem')},timeout:60000});
 let app=await launch(previous);

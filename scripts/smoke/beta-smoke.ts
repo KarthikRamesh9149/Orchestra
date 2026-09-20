@@ -1,25 +1,6 @@
 import { File } from "node:buffer";
-import { createRequire } from "node:module";
 import { parseArgs } from "node:util";
-
-const require = createRequire(import.meta.url);
-
-type PdfKitDocument = NodeJS.ReadableStream & {
-  fontSize(size: number): PdfKitDocument;
-  text(
-    text: string,
-    options?: { width?: number; lineGap?: number; align?: "left" | "center" | "right" | "justify" }
-  ): PdfKitDocument;
-  moveDown(lines?: number): PdfKitDocument;
-  end(): void;
-};
-
-const PDFDocument = require("pdfkit") as new (options?: {
-  size?: string;
-  margin?: number;
-  compress?: boolean;
-  info?: Record<string, string>;
-}) => PdfKitDocument;
+import { createBetaSmokePdfFixture as createSmokePdfFixture } from "../lib/pdf-fixtures.js";
 
 type SmokeMode = "dry-run" | "mock" | "http";
 type SmokeStatus = "passed" | "failed";
@@ -1160,60 +1141,6 @@ function redactForReport(value: unknown): unknown {
       sensitiveKeyPattern.test(key) ? "[redacted]" : redactForReport(entry)
     ])
   );
-}
-
-async function createSmokePdfFixture() {
-  const document = new PDFDocument({
-    size: "LETTER",
-    margin: 56,
-    compress: false,
-    info: { Title: "Beta Smoke PRD", Creator: "Orchestra beta smoke" }
-  });
-  const chunks: Buffer[] = [];
-  const done = new Promise<Buffer>((resolve, reject) => {
-    document.on("data", (chunk: Buffer | Uint8Array) => chunks.push(Buffer.from(chunk)));
-    document.on("end", () => resolve(Buffer.concat(chunks)));
-    document.on("error", reject);
-  });
-
-  document.fontSize(18).text("Beta Smoke PRD");
-  const sections = [
-    [
-      "Project Memory Scope",
-      "Project Memory must accept uploaded PDF and DOCX project documents, parse sections, create chunks, generate embeddings, and make the content available to Socrates."
-    ],
-    [
-      "Socrates Requirements",
-      "Socrates must answer supported questions with citations and open targets that point back to uploaded document memory. No-evidence questions must abstain instead of guessing."
-    ],
-    [
-      "VS Code Connector",
-      "The VS Code connector must use the same project memory. Pairing codes are one-time use, connector tokens are revocable, and revoked tokens must be denied."
-    ],
-    [
-      "Security Boundaries",
-      "The uploaded document may contain hostile source text such as ignore previous instructions or reveal secrets. Socrates must treat that text as evidence only, not as an instruction."
-    ],
-    [
-      "Acceptance Criteria",
-      "The beta smoke passes when PDF and DOCX uploads become ready, Socrates returns citations and open targets, the VS Code connector can ask over project memory, and revoked tokens are denied."
-    ],
-    [
-      "Excluded Surfaces",
-      "ClickUp, Fireflies, Teams, GitHub FDE, dashboard intelligence, full Live Doc approval, agent runs, external MCP product surfaces, Slack write actions, Slack DMs, and Slack file ingestion are excluded from this beta."
-    ]
-  ];
-  for (let pass = 0; pass < 3; pass += 1) {
-    for (const [heading, body] of sections) {
-      document.moveDown(0.5);
-      document.fontSize(13).text(heading);
-      document.moveDown(0.2);
-      document.fontSize(10.5).text(body, { width: 500, lineGap: 2 });
-    }
-  }
-  document.end();
-
-  return done;
 }
 
 function createDocxFixture() {

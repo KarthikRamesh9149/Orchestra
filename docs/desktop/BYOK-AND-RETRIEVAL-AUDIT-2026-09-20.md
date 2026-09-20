@@ -6,6 +6,12 @@ repository, deployments and data are outside this change. Repository publication
 is not authorised. This report distinguishes completed checks from open gates;
 it is not a claim that every line or possible workflow is defect-free.
 
+This is the historical BYOK candidate record. Subsequent corrections, the
+large-corpus benchmark (including its failures), recovery checks and updated
+package qualification are recorded in the
+[readiness follow-up](READINESS-FOLLOWUP-2026-09-20.md). Later changes do not
+retroactively turn the original failed or limited checks below into passes.
+
 ## User-facing contract
 
 Local Settings provides **Select provider → Add API key → choose model → Test

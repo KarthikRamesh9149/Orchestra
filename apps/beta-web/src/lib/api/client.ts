@@ -40,6 +40,11 @@ export class ApiError extends Error {
   }
 }
 
+export type ApiEnvelope<T, Meta = unknown> = {
+  data: T;
+  meta: Meta | null;
+};
+
 export type UploadProgress = {
   loaded: number;
   total: number | null;
@@ -129,6 +134,7 @@ async function parsePayload(response: Response) {
   }
   return payload as {
     data?: unknown;
+    meta?: unknown;
     error?: ApiErrorPayload | null;
   } | null;
 }
@@ -414,7 +420,7 @@ export async function refreshAccessToken() {
   return refreshRequest;
 }
 
-async function executeApiJson<T>(path: string, init?: RequestInit, retry = true, deadlineAtMs = Date.now() + DEFAULT_REQUEST_TIMEOUT_MS): Promise<T> {
+async function executeApiEnvelope<T, Meta = unknown>(path: string, init?: RequestInit, retry = true, deadlineAtMs = Date.now() + DEFAULT_REQUEST_TIMEOUT_MS): Promise<ApiEnvelope<T, Meta>> {
   const headers = requestHeaders(init);
   const method = (init?.method ?? "GET").toUpperCase();
   if (!["GET", "HEAD", "OPTIONS"].includes(method)) {
@@ -436,14 +442,27 @@ async function executeApiJson<T>(path: string, init?: RequestInit, retry = true,
   }
   if (response.status === 401 && retry) {
     const refreshed = await raceAbort(refreshAccessToken(), request.signal, { signal: init?.signal, deadline: request.deadline });
-    if (refreshed) return executeApiJson<T>(path, init, false, deadlineAtMs);
+    if (refreshed) return executeApiEnvelope<T, Meta>(path, init, false, deadlineAtMs);
   }
   let payload: Awaited<ReturnType<typeof parsePayload>>;
   try { payload = await parsePayload(response); }
   catch (cause) { throw requestFailure(cause, { signal: init?.signal, deadline: request.deadline }); }
   if (!response.ok || payload?.error) throw errorFrom(response, payload);
   if (!["GET", "HEAD", "OPTIONS"].includes(method)) clearApiReadCache();
-  return payload?.data as T;
+  return { data: payload?.data as T, meta: (payload?.meta ?? null) as Meta | null };
+}
+
+async function executeApiJson<T>(path: string, init?: RequestInit, retry = true, deadlineAtMs = Date.now() + DEFAULT_REQUEST_TIMEOUT_MS): Promise<T> {
+  const result = await executeApiEnvelope<T>(path, init, retry, deadlineAtMs);
+  return result.data;
+}
+
+/**
+ * Read an API response without discarding its metadata. It deliberately skips
+ * apiJson's read cache, which is appropriate for independently paginated UI.
+ */
+export async function apiEnvelope<T, Meta = unknown>(path: string, init?: RequestInit, retry = true): Promise<ApiEnvelope<T, Meta>> {
+  return executeApiEnvelope<T, Meta>(path, { ...init, cache: "no-store" }, retry);
 }
 
 export async function apiJson<T>(path: string, init?: RequestInit, retry = true): Promise<T> {

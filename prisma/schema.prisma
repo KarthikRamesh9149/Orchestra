@@ -1639,6 +1639,8 @@ model DocumentChunk {
   content           String
   contextualContent String?                      @map("contextual_content")
   lexicalContent    String                       @map("lexical_content")
+  // SQL migration owns the STORED generated expression; never supplied by application writes.
+  lexicalSearchVector Unsupported("tsvector")? @default(dbgenerated("to_tsvector('english'::regconfig, lexical_content)")) @map("lexical_search_vector")
   embedding         Unsupported("vector(1536)")?
   tokenCount        Int                          @map("token_count")
   pageNumber        Int?                         @map("page_number")
