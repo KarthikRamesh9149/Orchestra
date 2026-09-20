@@ -149,14 +149,14 @@
     {
       "path": "apps/beta-web/src/pages/MemoryContextPage.test.tsx",
       "sourceSha256": "afb99efa20f3222bed7fb11e1ae69885a919710992d12b652482ac4c80ad1992",
-      "importedSha256": "626914855bc0c6e9437ae0f2b2908ee9582a8dad961c408bd59c455409e0c4aa",
-      "reason": "Regressions for duplicate headings, evidence preservation, workspace clearing, late responses and denied saved-report reads."
+      "importedSha256": "1892a877488060d39f15524efbdcec2f19a2cd8bce5723fea6a0908503f22847",
+      "reason": "Regressions for duplicate and capped generated headings, non-generated/distinct prefix preservation, evidence preservation, workspace clearing, late responses and denied saved-report reads."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryContextPage.tsx",
       "sourceSha256": "e0d93ac01e186bb1065c88a0c345884545798efa8c2e8c807cf747e150bf4588",
-      "importedSha256": "08009944dda8d1ba51492bb61e7e3adfe9092f058c66d4464c0956b2b9584aa3",
-      "reason": "September 20 readiness follow-up: remove only a repeated display title, preserve stored Markdown and citations, and prevent stale workspace/route reports from rendering."
+      "importedSha256": "ea27ce9e6ba34a9c20cf7163435851706de8015e80df4c2d4a39e0c0cdd0627c",
+      "reason": "September 20 readiness follow-up: remove a repeated display title, including proven 200-character generated-title truncation; preserve the complete title, stored Markdown and citations, and prevent stale workspace/route reports from rendering."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",

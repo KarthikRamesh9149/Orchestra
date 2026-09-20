@@ -89,6 +89,28 @@ describe("[FIX-22] saved Deep Research artifact", () => {
     expect(screen.getByText("Context matters.")).toBeVisible();
   });
 
+  it("uses the full generated report title once when its stored title was capped at 200 characters", async () => {
+    const title = `Deep Research — ${"Review export requirements and approval evidence. ".repeat(6).trim()}`;
+    const savedEntry = { ...contextEntry, title: title.slice(0, 200), body: `# ${title}\n\n## Findings\n\nComplete evidence [E1].\n\n[Source](/memory/docs/doc-1/view)` };
+    getProjectContextEntry.mockResolvedValue(savedEntry);
+    render(<MemoryRouter initialEntries={["/memory/context/context-1"]}><Routes><Route path="/memory/context/:contextId" element={<MemoryContextPage />} /></Routes></MemoryRouter>);
+    expect(await screen.findByRole("heading", { level: 1, name: title })).toBeVisible();
+    expect(screen.getAllByRole("heading").map((heading) => heading.textContent)).toEqual([title, "Findings"]);
+    expect(screen.getByRole("link", { name: "Source" })).toHaveAttribute("href", "/memory/docs/doc-1/view");
+    expect(savedEntry.title).toBe(title.slice(0, 200));
+    expect(savedEntry.body).toContain(`# ${title}\n`);
+  });
+
+  it.each(["short-prefix", "not-generated", "unrelated-heading"])("does not treat %s as a server-truncated research title", async (kind) => {
+    const title = `Deep Research — ${"Review export requirements and approval evidence. ".repeat(6).trim()}`;
+    const savedTitle = kind === "short-prefix" ? title.slice(0, 80) : title.slice(0, 200);
+    const heading = kind === "unrelated-heading" ? `${title.slice(0, 100)}Different report` : title;
+    getProjectContextEntry.mockResolvedValue({ ...contextEntry, source: kind === "not-generated" ? "manual" : "generated", title: savedTitle, body: `# ${heading}\n\nComplete evidence.` });
+    render(<MemoryRouter initialEntries={["/memory/context/context-1"]}><Routes><Route path="/memory/context/:contextId" element={<MemoryContextPage />} /></Routes></MemoryRouter>);
+    expect(await screen.findByRole("heading", { level: 1, name: savedTitle.trim() })).toBeVisible();
+    expect(screen.getByRole("heading", { level: 2, name: heading })).toBeVisible();
+  });
+
   it("does not strip an apparent title from a fenced evidence excerpt", async () => {
     getProjectContextEntry.mockResolvedValue({ ...contextEntry, body: `\`\`\`text\n# ${contextEntry.title}\n\`\`\`\n\nQuoted source.` });
     render(<MemoryRouter initialEntries={["/memory/context/context-1"]}><Routes><Route path="/memory/context/:contextId" element={<MemoryContextPage />} /></Routes></MemoryRouter>);

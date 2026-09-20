@@ -5,8 +5,8 @@ const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','u
 const adjustments={
  'package.json':'September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool.',
  'package-lock.json':'September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades.',
- 'apps/beta-web/src/pages/MemoryContextPage.tsx':'September 20 readiness follow-up: remove only a repeated display title, preserve stored Markdown and citations, and prevent stale workspace/route reports from rendering.',
- 'apps/beta-web/src/pages/MemoryContextPage.test.tsx':'Regressions for duplicate headings, evidence preservation, workspace clearing, late responses and denied saved-report reads.',
+ 'apps/beta-web/src/pages/MemoryContextPage.tsx':'September 20 readiness follow-up: remove a repeated display title, including proven 200-character generated-title truncation; preserve the complete title, stored Markdown and citations, and prevent stale workspace/route reports from rendering.',
+ 'apps/beta-web/src/pages/MemoryContextPage.test.tsx':'Regressions for duplicate and capped generated headings, non-generated/distinct prefix preservation, evidence preservation, workspace clearing, late responses and denied saved-report reads.',
  'apps/beta-web/src/lib/api/research.ts':'September 20 readiness follow-up: expose the existing authorized paginated saved-research read with bounded page size, metadata validation and the shared API transport.',
  'apps/beta-web/vite.config.ts':'September 20 build-only exact-output dependency/notice sidecars; no application runtime or visual styling change.',
  'src/lib/ai-ops/ai-model-strategy.ts':'Provider-neutral desktop generation readiness and honest vendor metadata; hosted configuration remains separate.',

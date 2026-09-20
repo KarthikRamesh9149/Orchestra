@@ -5132,11 +5132,11 @@
     {
       "id": "UI-0240",
       "source": "apps/beta-web/src/pages/MemoryContextPage.tsx",
-      "line": 36,
+      "line": 47,
       "component": "Link",
       "label": "← Project Memory",
       "existingTestFile": "apps/beta-web/src/pages/MemoryContextPage.test.tsx",
-      "desktopTestId": "desktop-MemoryContextPage-36",
+      "desktopTestId": "desktop-MemoryContextPage-47",
       "bindings": [
         {
           "property": "to",
@@ -5147,7 +5147,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/MemoryContextPage.tsx:36: exercise ← Project Memory in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/MemoryContextPage.tsx:47: exercise ← Project Memory in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0241",

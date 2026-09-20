@@ -236,10 +236,62 @@ rendered checks are not passed by these results.
   `322ca80b8674b4f7c95effcc55880122d6b5999c7f2a04beb67add449137ae95`.
   This closes those technical notice gaps for this artifact, not blanket legal
   certification or permission to distribute it publicly.
-- The Mac remained locked when Computer Use was rechecked. No alternate UI-control
-  method or host-security bypass was attempted. Final saved-research discovery,
-  single-heading display, PDF/Markdown controls, chat/draft restart and returning-
-  user startup must still be verified through the rebuilt app after unlock.
+- The earlier Computer Use attempt reported a locked Mac. That was a temporary
+  verification blocker, not a current claim: the subsequent accessible-session
+  checks below supersede it. No host-security bypass was used.
+
+### Packaged UI follow-up after access was restored
+
+Computer Use opened the exact `d10b7427-486d-45b1-8a03-41ade013c40f` package,
+then the corrected `a2bed12a-fe25-4d55-b8c1-ca3dbc6f6794` package on the existing
+local synthetic Northstar profile. A private stopped-profile backup was retained
+before the upgrade at `/private/tmp/orchestra-ui-upgrade-backup-SsqX3Y/profile`.
+
+- The existing short saved report displayed one title, preserved its complete
+  executive summary and source links, and was discoverable in Memory.
+- One new real-OpenAI research run used only the two selected uploaded documents,
+  with public web disabled. The app reported nine seconds and two original
+  sources, not inflated chunk counts. The CSV fields, empty-project behaviour
+  and authorisation requirements matched the opened PRD. These are one-run
+  observations, not latency percentiles or semantic certification.
+- Both PDF and Markdown were downloaded through native save dialogs. The actual
+  two-page PDF was rendered and inspected: no clipping or missing sections was
+  observed; citations and source paths remained present. Markdown retained the
+  complete heading and report. Files remain in Downloads as
+  `Orchestra-Packaged-UI-Research-2026-09-20.pdf` and `.md`, with SHA-256
+  `27942d846bfd6a89e1bb7875ab958be895252adfda1d01aa57dd10ac7463f013`
+  and `781f58f9fe46675525da8b3ccdd4611f6b786c374ff8226500717b7631e8034f`.
+- The longer research focus exposed an additional duplicate-title case: the
+  backend caps metadata at 200 characters while Markdown retains the full title.
+  A red-first regression reproduced it. The display now promotes the full title
+  only for an exact generated-research truncation match. Unrelated headings,
+  shorter matching prefixes, manual notes and stored/exported Markdown remain
+  unchanged. Four new cases bring the focused suite to 12 and full frontend
+  suite to 284 passing tests. Typecheck/build, import provenance and inventory
+  checks passed. Existing visual classes and network request behaviour are unchanged.
+- In the corrected package, the same persisted long report displayed its full
+  title exactly once. It survived normal quit/reopen and appeared once in Memory
+  under stable ID `eaa6c8bb-b25f-4b5d-b97b-df050a4da11e`. Saved research did not
+  inflate the original-document count, which remained two.
+- The three existing chats, original cited transcript, stable selected chat URL
+  and unsent draft survived navigation and both package launches. No draft was
+  submitted or overwritten. Returning startup showed the runtime-loading state
+  and then Memory; no first-run privacy page or error overlay was observed.
+- Exact rebuilt-artifact notices have zero integrity errors or notice gaps:
+  `/tmp/orchestra-ui-final-artifact-notices.json`. The unchanged app archive and
+  native-manifest hashes remain those listed above; the changed frontend outputs
+  were independently rehashed by that artifact check. No new backend or provider
+  code was introduced by this UI-only correction.
+
+Screenshots and accessibility states were inspected through Computer Use. This
+was not a renderer-console audit or a repeatable rendered-startup benchmark.
+The original profile still shows a partially processed PRD and a revoked Slack
+connection; no reconnection, reindex or external-provider qualification is claimed.
+The generated report also uses "approved scope" wording based on document text,
+despite that source not itself being accepted Product Brain truth. No approval
+was created: the save confirmation correctly labels it generated evidence. This
+semantic wording concern joins the existing AI-quality follow-up above rather
+than being hidden by successful display/download tests.
 
 The earlier failed artifact with pre-final-Vite chunk hashes and its incomplete
 staging directory were disposable outputs created by this run; they were removed
