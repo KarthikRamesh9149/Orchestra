@@ -128,7 +128,7 @@ async function bootstrap(){
  if(!engine||!owner)throw new Error('Runtime unavailable');
  const [user,projects,state]=await Promise.all([engine.context.prisma.user.findUniqueOrThrow({where:{id:owner.id},include:{organization:true}}),engine.context.services.projectService.listProjects(owner.id,owner.orgId),readLocalState(installationRoot)]);
  const workspaces=projects.map(project=>({projectId:project.id,name:project.name,slug:project.slug,organizationId:user.orgId,organizationName:user.organization.name,organizationSlug:user.organization.slug,role:'manager',current:project.id===state.projectId}));
- return {user:{id:user.id,orgId:user.orgId,email:user.email,displayName:user.displayName,globalRole:user.globalRole,workspaceRoleDefault:user.workspaceRoleDefault,emailVerified:false,emailVerifiedAt:null,organization:user.organization},workspaces,mode:'desktop-local',aiConfigured,onboarded:state.onboarded??false};
+ return {user:{id:user.id,orgId:user.orgId,email:user.email,displayName:user.displayName,globalRole:user.globalRole,workspaceRoleDefault:user.workspaceRoleDefault,emailVerified:false,emailVerifiedAt:null,organization:user.organization},workspaces,mode:'desktop-local',aiConfigured,semanticSearchAvailable:engine.semanticSearchAvailable,semanticSearchReason:engine.semanticSearchReason,onboarded:state.onboarded??false};
 }
 async function command(value:unknown,selection?:unknown){
  if(!engine||!owner||stopping)throw new Error('Runtime unavailable');

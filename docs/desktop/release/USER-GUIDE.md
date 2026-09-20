@@ -15,6 +15,40 @@ correct workspace. That server owns authorization and accepted changes. Connecti
 does not publish local data. Shared offline caching defaults off; enabled caches
 are bounded metadata-only, read-only and expire. Reconnect to make shared changes.
 
+## Add an API key
+
+In a local workspace, open **Settings → Desktop AI**:
+
+1. **Select provider**: OpenAI, Anthropic, Google Gemini or an OpenAI-compatible API.
+2. Copy the provider's key and choose **Add API key**. Confirm the native prompt; the key is not entered in the web renderer.
+3. Enter the exact generation model ID supported by your account. For a compatible API, enter its public HTTPS API base URL first.
+4. Optionally configure embeddings, then set request and output limits.
+5. Choose **Test connection**, then **Save and restart**. A change to the tested settings requires a new test.
+
+Keys are held temporarily in native memory and encrypted using macOS protection
+when saved. Pending imports and successful tests expire after 15 minutes. Saved
+keys are never reused for a different provider or API endpoint. **Remove AI
+access** removes the saved configuration, not the provider account or its key.
+
+Provider support is protocol-specific, not a promise that every API key works.
+Compatible generation requires Chat Completions, SSE streaming and strict
+JSON-schema output; compatible embeddings must return exactly 1536 dimensions.
+Custom destinations must use public HTTPS on port 443; local HTTP endpoints,
+custom authentication headers and providers with other protocols are not supported
+by this adapter. A connection test checks a small synthetic structured request and
+optional embedding request, not every model capability or workflow. It can incur
+up to two small provider charges, separately from the saved request allowance.
+
+Generation and embeddings can use different providers. With embeddings disabled,
+Socrates can still generate answers using lexical evidence retrieval. Changing an
+existing index's provider, endpoint or model does not relabel old vectors; semantic
+search remains unavailable until safe reindexing is completed. Original files and
+lexical search remain available. The request allowance is not a dollar spending cap.
+
+Shared-workspace AI remains configured by the selected server's administrator.
+Local keys neither configure that server nor get uploaded to it. Open the local
+Orchestra window to configure AI for local workspaces.
+
 ## Network and credentials
 
 Local does not mean every operation is offline. AI operations send required

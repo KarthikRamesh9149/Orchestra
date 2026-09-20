@@ -19,15 +19,15 @@ describe('native local API authority',()=>{
   const result=await service.getProjectIntegrationStatus(randomUUID(),{userId:randomUUID(),orgId:randomUUID()});
   for(const provider of result.providers)expect(provider).toMatchObject({status:'not_configured',configured:false,degraded:false,needsReauth:false,availableActions:[],capabilities:{canConnect:false,canSync:false,canDisconnect:false}});
  });
- it('rejects unconfigured research before recording usage or creating a job',async()=>{
+ it.each([undefined,'none'])('rejects unconfigured research (%s) before recording usage or creating a job',async(provider)=>{
   const prisma={$transaction:vi.fn()},projectService={ensureProjectAccess:vi.fn().mockResolvedValue({projectRole:'manager'})},jobs={enqueue:vi.fn()};
-  const service=new DeepResearchService(prisma as never,{RUNTIME_PROFILE:'desktop-local',BETA_DEEP_RESEARCH_ENABLED:true} as never,{} as never,{} as never,{} as never,projectService as never,{} as never,{} as never,jobs as never);
+  const service=new DeepResearchService(prisma as never,{RUNTIME_PROFILE:'desktop-local',BETA_DEEP_RESEARCH_ENABLED:true,DESKTOP_AI_PROVIDER:provider,OPENAI_API_KEY:'synthetic-stale-key'} as never,{} as never,{} as never,{} as never,projectService as never,{} as never,{} as never,jobs as never);
   await expect(service.startRun(randomUUID(),{userId:randomUUID(),orgId:randomUUID()},{researchFocus:'local evidence',sources:['docs'],outputFormat:'full_report',privacyMode:'internal_only',webSearchEnabled:false} as never)).rejects.toMatchObject({code:'ai_not_configured'});
   expect(projectService.ensureProjectAccess).toHaveBeenCalledOnce();expect(prisma.$transaction).not.toHaveBeenCalled();expect(jobs.enqueue).not.toHaveBeenCalled();
  });
- it('allows configured desktop research to enter the normal authorized quota transaction',async()=>{
+ it.each(['openai','openai-compatible','anthropic','google'])('allows configured desktop %s research to enter the normal authorized quota transaction',async(provider)=>{
   const prisma={$transaction:vi.fn().mockRejectedValue(new Error('quota-transaction-reached'))},projectService={ensureProjectAccess:vi.fn().mockResolvedValue({projectRole:'manager'})};
-  const service=new DeepResearchService(prisma as never,{RUNTIME_PROFILE:'desktop-local',BETA_DEEP_RESEARCH_ENABLED:true,OPENAI_API_KEY:'synthetic-configured-key'} as never,{} as never,{} as never,{} as never,projectService as never,{} as never,{} as never,{} as never);
+  const service=new DeepResearchService(prisma as never,{RUNTIME_PROFILE:'desktop-local',BETA_DEEP_RESEARCH_ENABLED:true,DESKTOP_AI_PROVIDER:provider} as never,{} as never,{} as never,{} as never,projectService as never,{} as never,{} as never,{} as never);
   await expect(service.startRun(randomUUID(),{userId:randomUUID(),orgId:randomUUID()},{researchFocus:'local evidence',sources:['docs'],outputFormat:'exec_summary',privacyMode:'internal_only',webSearchEnabled:false})).rejects.toThrow('quota-transaction-reached');
   expect(projectService.ensureProjectAccess).toHaveBeenCalledOnce();expect(prisma.$transaction).toHaveBeenCalledOnce();
  });

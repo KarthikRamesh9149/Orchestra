@@ -16,7 +16,7 @@ import { PostgresAiLimiter } from '../lib/ai-ops/postgres-limits.js';
 import { createJobHandlers } from '../lib/jobs/handlers.js';
 import { acquireDatabaseOwnership } from './database-ownership.js';
 import { requiresExternalGeneration } from './offline-jobs.js';
-import {DesktopAiProvider,desktopAiSchema,desktopAiEnvironment,type DesktopAi} from './ai-provider.js';
+import {DesktopAiProvider,desktopAiSchema,desktopAiEnvironment,resolveDesktopEmbeddingIdentity,type DesktopAi} from './ai-provider.js';
 import {ensureDesktopEmbeddingIdentity} from './embedding-identity.js';
 import {AppError} from '../app/errors.js';
 
@@ -51,9 +51,11 @@ export async function createLocalEngine(input:{databaseUrl:string; installationR
     if(roles.length!==1||roles[0]!.unsafe)throw new Error('Desktop runtime requires a non-owner, non-superuser database role');
     releaseOwnership=await acquireDatabaseOwnership(profile.databaseUrl);
     limiter=new PostgresAiLimiter(prisma);
-    let semanticReady=!!ai;
-    if(ai)try{await ensureDesktopEmbeddingIdentity(prisma);}catch(error){
-      if(error instanceof AppError&&error.code==='embedding_reindex_required')semanticReady=false;
+    const embeddingIdentity=ai?resolveDesktopEmbeddingIdentity(ai):null;
+    let semanticReady=!!embeddingIdentity;
+    let semanticSearchReason:'not_configured'|'embedding_reindex_required'|null=embeddingIdentity?null:'not_configured';
+    if(embeddingIdentity)try{await ensureDesktopEmbeddingIdentity(prisma,embeddingIdentity);}catch(error){
+      if(error instanceof AppError&&error.code==='embedding_reindex_required'){semanticReady=false;semanticSearchReason='embedding_reindex_required';}
       else throw error;
     }
     const externalAi=ai?new DesktopAiProvider(ai,limiter):undefined;
@@ -81,7 +83,7 @@ export async function createLocalEngine(input:{databaseUrl:string; installationR
       return handlers;
     });
     let closed=false;
-    return {app,context,worker,
+    return {app,context,worker,semanticSearchAvailable:semanticReady,semanticSearchReason,
       /** Privileged harness/supervisor only; never serialize this object. */
       localToken:secrets.loopback,
       async start(){if(closed)throw new Error('Engine is closed');await app.listen({host:profile.host,port});worker.start();},

@@ -9,7 +9,7 @@ const bridge:DesktopBridge={
  github:{inspect:()=>ipcRenderer.invoke('orchestra:github-inspect'),connect:()=>ipcRenderer.invoke('orchestra:github-connect'),cancel:()=>ipcRenderer.invoke('orchestra:github-cancel'),repositories:()=>ipcRenderer.invoke('orchestra:github-repositories'),disconnect:()=>ipcRenderer.invoke('orchestra:github-disconnect'),importRepository:input=>ipcRenderer.invoke('orchestra:github-import',input)},
  slack:{inspect:()=>ipcRenderer.invoke('orchestra:slack-inspect'),connect:()=>ipcRenderer.invoke('orchestra:slack-connect'),cancel:()=>ipcRenderer.invoke('orchestra:slack-cancel'),revoke:()=>ipcRenderer.invoke('orchestra:slack-revoke'),channels:()=>ipcRenderer.invoke('orchestra:slack-channels'),importChannel:input=>ipcRenderer.invoke('orchestra:slack-import',input)},
  mcp:{inspect:()=>ipcRenderer.invoke('orchestra:mcp-inspect'),pair:input=>ipcRenderer.invoke('orchestra:mcp-pair',input),revoke:id=>ipcRenderer.invoke('orchestra:mcp-revoke',id)},
- ai:{inspect:()=>ipcRenderer.invoke('orchestra:ai-inspect'),configure:preferences=>ipcRenderer.invoke('orchestra:ai-configure',preferences),revoke:()=>ipcRenderer.invoke('orchestra:ai-revoke')},
+ ai:{inspect:()=>ipcRenderer.invoke('orchestra:ai-inspect'),importKey:input=>ipcRenderer.invoke('orchestra:ai-import-key',input),test:preferences=>ipcRenderer.invoke('orchestra:ai-test',preferences),discardDraft:target=>ipcRenderer.invoke('orchestra:ai-discard-draft',target),configure:preferences=>ipcRenderer.invoke('orchestra:ai-configure',preferences),revoke:()=>ipcRenderer.invoke('orchestra:ai-revoke')},
  bootstrap:()=>invoke({operation:'local.bootstrap'}),
  completeOnboarding:()=>invoke({operation:'local.onboard'}),
  copyText:text=>ipcRenderer.invoke('orchestra:copy-text',text),

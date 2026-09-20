@@ -14,6 +14,25 @@ const baseInput = {
 };
 
 describe("hybrid retrieval independent lexical branches", () => {
+  it.each(["dense", "lexical"])("keeps document provenance for sectionless %s chunks", async (branch) => {
+    const prisma = {
+      $queryRawUnsafe: vi.fn(async (sql: string) => {
+        if ((branch === "dense") !== sql.includes("ORDER BY dc.embedding")) return [];
+        return [{ id: "chunk", section_id: null, anchor_id: null, content: "Release checklist approval",
+          contextual_content: null, lexical_content: "release checklist approval", page_number: 7,
+          document_version_id: "version-1", document_id: "document-1", metadata_json: {},
+          visibility: "internal", doc_title: "Release checklist", distance: 0.1 }];
+      })
+    } as any;
+    const result = await hybridRetrieveDetailed(prisma, {} as any, "org-1", {
+      ...baseInput, query: "Release checklist", intent: "doc_local",
+      domains: { includeDocuments: true, includeBrainNodes: false, includeProductBrain: false,
+        includeChanges: false, includeDecisions: false, includeDashboard: false, includeCommunications: false }
+    });
+    expect(result.candidates).toEqual(expect.arrayContaining([expect.objectContaining({
+      id: "chunk", openTarget: { targetType: "document", targetRef: { documentId: "document-1", documentVersionId: "version-1", pageNumber: 7 } }
+    })]));
+  });
   it("filters dense and lexical document retrieval to current parsed document versions", async () => {
     const plan = buildRetrievalPlan({
       intent: "original_source",

@@ -49,7 +49,7 @@ export function renderReportMarkdown(focus: string, results: DeepResearchResults
 
   if (results.sources.length) {
     lines.push("## Sources");
-    for (const source of results.sources) lines.push(`- ${source.ref ? `${source.ref} — ` : ""}[${source.label}](${source.href}) — ${source.provider}`);
+    for (const source of results.sources) lines.push(`- ${sourceRefsLabel(source)}[${source.label}](${source.href}) — ${source.provider}`);
     lines.push("");
   }
 
@@ -110,7 +110,7 @@ export function renderReportPdf(focus: string, results: DeepResearchResults): Pr
 
       if (results.sources.length) {
         h2("Sources");
-        for (const source of results.sources) body(`${source.ref ? `${source.ref} — ` : ""}${source.label} — ${source.provider}\n${source.href}`);
+        for (const source of results.sources) body(`${sourceRefsLabel(source)}${source.label} — ${source.provider}\n${source.href}`);
       }
 
       doc.end();
@@ -118,4 +118,9 @@ export function renderReportPdf(focus: string, results: DeepResearchResults): Pr
       reject(error as Error);
     }
   });
+}
+
+function sourceRefsLabel(source: DeepResearchResults["sources"][number]) {
+  const refs = source.refs?.length ? source.refs : source.ref ? [source.ref] : [];
+  return refs.length ? `${refs.join(" · ")} — ` : "";
 }

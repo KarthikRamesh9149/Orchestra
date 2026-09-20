@@ -1,6 +1,7 @@
 import type { AiModelTask, AiModelTier } from "./ai-ops-schemas.js";
+import { configuredGenerationProvider, type GenerationConfiguration } from '../ai/configuration.js';
 
-export interface AiModelStrategyEnv {
+export interface AiModelStrategyEnv extends GenerationConfiguration {
   SOCRATES_MODEL?: string;
   SOCRATES_ESCALATION_MODEL?: string;
   SOCRATES_ROUTER_MODEL?: string;
@@ -24,7 +25,7 @@ export interface AiModelSelection {
   task: AiModelTask;
   tier: AiModelTier;
   model: string;
-  provider: "openai" | "mock" | "deterministic";
+  provider: "openai" | "openai-compatible" | "anthropic" | "google" | "mock" | "deterministic";
   strategy: string;
   rationale: string[];
 }
@@ -121,8 +122,7 @@ function modelForTier(task: AiModelTask, tier: AiModelTier, env: AiModelStrategy
 
 function providerForTier(tier: AiModelTier, env: AiModelStrategyEnv): AiModelSelection["provider"] {
   if (tier === "deterministic_fallback") return "deterministic";
-  if (env.OPENAI_API_KEY) return "openai";
-  return "mock";
+  return configuredGenerationProvider(env) ?? 'mock';
 }
 
 export function validateProductionModelConfig(env: AiModelStrategyEnv) {

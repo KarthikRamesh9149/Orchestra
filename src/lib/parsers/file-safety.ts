@@ -1,4 +1,5 @@
 import { AppError } from "../../app/errors.js";
+import { createInflateRaw } from "node:zlib";
 
 export const MAX_DOCUMENT_PARSE_BYTES = 50 * 1024 * 1024;
 export const MAX_PARSED_TEXT_CHARS = 2_000_000;
@@ -76,44 +77,61 @@ export function consumeParsedTextBudget(budget: ParsedTextBudget, text: string) 
   budget.used += text.length;
 }
 
+const xlsxZipSafety = {
+  documentKind: "XLSX",
+  codePrefix: "document_xlsx",
+  maxEntries: MAX_XLSX_ZIP_ENTRIES,
+  maxTotalUncompressedBytes: MAX_XLSX_TOTAL_UNCOMPRESSED_BYTES,
+  maxEntryUncompressedBytes: MAX_XLSX_ENTRY_UNCOMPRESSED_BYTES,
+  maxCompressionRatio: MAX_XLSX_COMPRESSION_RATIO,
+  isCriticalEntry: isSpreadsheetXmlEntry,
+  requiredEntries: ["xl/workbook.xml"]
+};
+
+const docxZipSafety = {
+  documentKind: "DOCX",
+  codePrefix: "document_docx",
+  maxEntries: MAX_DOCX_ZIP_ENTRIES,
+  maxTotalUncompressedBytes: MAX_DOCX_TOTAL_UNCOMPRESSED_BYTES,
+  maxEntryUncompressedBytes: MAX_DOCX_ENTRY_UNCOMPRESSED_BYTES,
+  maxCompressionRatio: MAX_DOCX_COMPRESSION_RATIO,
+  isCriticalEntry: isWordprocessingEntry,
+  requiredEntries: ["word/document.xml", "[Content_Types].xml"]
+};
+
 export function assertXlsxZipStructureSafe(buffer: Buffer) {
-  assertZipStructureSafe(buffer, {
-    documentKind: "XLSX",
-    codePrefix: "document_xlsx",
-    maxEntries: MAX_XLSX_ZIP_ENTRIES,
-    maxTotalUncompressedBytes: MAX_XLSX_TOTAL_UNCOMPRESSED_BYTES,
-    maxEntryUncompressedBytes: MAX_XLSX_ENTRY_UNCOMPRESSED_BYTES,
-    maxCompressionRatio: MAX_XLSX_COMPRESSION_RATIO,
-    isCriticalEntry: isSpreadsheetXmlEntry,
-    requiredEntries: ["xl/workbook.xml"]
-  });
+  inspectZipStructure(buffer, xlsxZipSafety);
 }
 
 export function assertDocxZipStructureSafe(buffer: Buffer) {
-  assertZipStructureSafe(buffer, {
-    documentKind: "DOCX",
-    codePrefix: "document_docx",
-    maxEntries: MAX_DOCX_ZIP_ENTRIES,
-    maxTotalUncompressedBytes: MAX_DOCX_TOTAL_UNCOMPRESSED_BYTES,
-    maxEntryUncompressedBytes: MAX_DOCX_ENTRY_UNCOMPRESSED_BYTES,
-    maxCompressionRatio: MAX_DOCX_COMPRESSION_RATIO,
-    isCriticalEntry: isWordprocessingEntry,
-    requiredEntries: ["word/document.xml", "[Content_Types].xml"]
-  });
+  inspectZipStructure(buffer, docxZipSafety);
 }
 
-function assertZipStructureSafe(
+/** Validate actual output before JSZip/Mammoth can materialize an entry. ZIP
+ * size fields are attacker-controlled and are not a decompression budget. */
+export async function assertXlsxZipContentSafe(buffer: Buffer) {
+  await assertZipContentSafe(buffer, xlsxZipSafety);
+}
+
+export async function assertDocxZipContentSafe(buffer: Buffer) {
+  await assertZipContentSafe(buffer, docxZipSafety);
+}
+
+type ZipSafetyOptions = {
+  documentKind: string;
+  codePrefix: string;
+  maxEntries: number;
+  maxTotalUncompressedBytes: number;
+  maxEntryUncompressedBytes: number;
+  maxCompressionRatio: number;
+  isCriticalEntry: (name: string) => boolean;
+  requiredEntries: string[];
+};
+type ZipEntry = { critical: boolean; method: number; size: number; start: number; end: number };
+
+function inspectZipStructure(
   buffer: Buffer,
-  options: {
-    documentKind: "DOCX" | "XLSX";
-    codePrefix: "document_docx" | "document_xlsx";
-    maxEntries: number;
-    maxTotalUncompressedBytes: number;
-    maxEntryUncompressedBytes: number;
-    maxCompressionRatio: number;
-    isCriticalEntry: (name: string) => boolean;
-    requiredEntries: string[];
-  }
+  options: ZipSafetyOptions
 ) {
   const eocdOffset = findEndOfCentralDirectoryOffset(buffer);
   if (eocdOffset < 0 || eocdOffset + 22 > buffer.length) {
@@ -126,13 +144,17 @@ function assertZipStructureSafe(
   if (entryCount === 0 || entryCount > options.maxEntries) {
     throw new AppError(413, `${options.documentKind} contains too many zip entries`, `${options.codePrefix}_zip_entry_limit_exceeded`);
   }
-  if (centralDirectoryOffset + centralDirectorySize > buffer.length) {
+  if (buffer.readUInt16LE(eocdOffset + 4) !== 0 || buffer.readUInt16LE(eocdOffset + 6) !== 0 ||
+      buffer.readUInt16LE(eocdOffset + 8) !== entryCount ||
+      eocdOffset + 22 + buffer.readUInt16LE(eocdOffset + 20) !== buffer.length ||
+      centralDirectoryOffset + centralDirectorySize !== eocdOffset) {
     throw new AppError(422, `${options.documentKind} zip directory is invalid`, `${options.codePrefix}_zip_directory_invalid`);
   }
 
   let offset = centralDirectoryOffset;
   let totalUncompressedBytes = 0;
   const foundEntries = new Set<string>();
+  const payloadInspections: Array<() => ZipEntry> = [];
   for (let index = 0; index < entryCount; index += 1) {
     if (offset + 46 > buffer.length || buffer.readUInt32LE(offset) !== 0x02014b50) {
       throw new AppError(422, `${options.documentKind} zip directory is invalid`, `${options.codePrefix}_zip_directory_invalid`);
@@ -150,6 +172,8 @@ function assertZipStructureSafe(
     }
     const name = buffer.toString("utf8", offset + 46, offset + 46 + nameLength);
     assertSafeZipEntryName(name, options);
+    const isCriticalName = (candidate: string) => options.isCriticalEntry(candidate.replace(/\\/g, "/").split("/").filter(part => part && part !== ".").join("/"));
+    let critical = isCriticalName(name);
     if ((generalPurposeFlags & 0x1) === 0x1 || ![0, 8].includes(method)) {
       throw new AppError(422, `${options.documentKind} contains unsupported encrypted or compressed entries`, `${options.codePrefix}_zip_entry_unsupported`);
     }
@@ -160,19 +184,103 @@ function assertZipStructureSafe(
     if (totalUncompressedBytes > options.maxTotalUncompressedBytes) {
       throw new AppError(413, `${options.documentKind} expands beyond parser safety limits`, `${options.codePrefix}_inflation_limit_exceeded`);
     }
-    if (options.isCriticalEntry(name) && uncompressedSize > options.maxEntryUncompressedBytes) {
+    if (critical && uncompressedSize > options.maxEntryUncompressedBytes) {
       throw new AppError(413, `${options.documentKind} entry exceeds parser safety limits`, `${options.codePrefix}_entry_size_limit_exceeded`);
     }
     if (compressedSize > 0 && uncompressedSize > 1024 * 1024 && uncompressedSize / compressedSize > options.maxCompressionRatio) {
       throw new AppError(413, `${options.documentKind} compression ratio exceeds parser safety limits`, `${options.codePrefix}_inflation_limit_exceeded`);
     }
+    // Finish all metadata budget checks before inspecting local payloads.
+    const centralOffset = offset;
+    payloadInspections.push(() => {
+      // Use exactly the local payload offsets used by ZIP readers. Do not allow
+      // hidden central entries or a payload extending into the directory itself.
+      const localOffset = buffer.readUInt32LE(centralOffset + 42);
+      if (localOffset + 30 > centralDirectoryOffset || buffer.readUInt32LE(localOffset) !== 0x04034b50 ||
+          buffer.readUInt16LE(localOffset + 8) !== method ||
+          (buffer.readUInt16LE(localOffset + 6) & 1) !== 0) {
+        throw new AppError(422, `${options.documentKind} local zip entry is invalid`, `${options.codePrefix}_zip_directory_invalid`);
+      }
+      const localNameEnd = localOffset + 30 + buffer.readUInt16LE(localOffset + 26);
+      const start = localNameEnd + buffer.readUInt16LE(localOffset + 28);
+      if (start > centralDirectoryOffset || compressedSize > centralDirectoryOffset - start) {
+        throw new AppError(422, `${options.documentKind} zip payload is invalid`, `${options.codePrefix}_zip_directory_invalid`);
+      }
+      // JSZip uses the local filename and may replace it with a central Unicode
+      // path extra field. Apply safety and critical-entry limits to every name
+      // interpretation, not just the central directory's display name.
+      const checkName = (candidate: string) => {
+        assertSafeZipEntryName(candidate, options);
+        critical ||= isCriticalName(candidate);
+      };
+      checkName(buffer.toString("utf8", localOffset + 30, localNameEnd));
+      let extraOffset = centralOffset + 46 + nameLength;
+      const extraEnd = extraOffset + extraLength;
+      while (extraOffset < extraEnd) {
+        if (extraOffset + 4 > extraEnd) {
+          throw new AppError(422, `${options.documentKind} zip extra field is invalid`, `${options.codePrefix}_zip_directory_invalid`);
+        }
+        const kind = buffer.readUInt16LE(extraOffset), length = buffer.readUInt16LE(extraOffset + 2);
+        const end = extraOffset + 4 + length;
+        if (end > extraEnd || (kind === 0x7075 && length < 5)) {
+          throw new AppError(422, `${options.documentKind} zip extra field is invalid`, `${options.codePrefix}_zip_directory_invalid`);
+        }
+        if (kind === 0x7075) checkName(buffer.toString("utf8", extraOffset + 9, end));
+        extraOffset = end;
+      }
+      if (critical && uncompressedSize > options.maxEntryUncompressedBytes) {
+        throw new AppError(413, `${options.documentKind} entry exceeds parser safety limits`, `${options.codePrefix}_entry_size_limit_exceeded`);
+      }
+      return { critical, method, size: uncompressedSize, start, end: start + compressedSize };
+    });
     foundEntries.add(name);
     offset = entryEnd;
+  }
+  if (offset !== centralDirectoryOffset + centralDirectorySize) {
+    throw new AppError(422, `${options.documentKind} zip entry count is invalid`, `${options.codePrefix}_zip_directory_invalid`);
   }
 
   const missingEntry = options.requiredEntries.find((entry) => !foundEntries.has(entry));
   if (missingEntry) {
     throw new AppError(422, `${options.documentKind} required document metadata is missing`, `${options.codePrefix}_document_missing`);
+  }
+  return payloadInspections.map(inspect => inspect());
+}
+
+async function assertZipContentSafe(buffer: Buffer, options: ZipSafetyOptions) {
+  const entries = inspectZipStructure(buffer, options);
+  const deadline = Date.now() + PARSER_TIMEOUT_MS;
+  let total = 0;
+  for (const entry of entries) {
+    if (Date.now() >= deadline) throw new AppError(504, `${options.documentKind} inspection timed out`, "document_parse_timeout");
+    let size = 0;
+    const consume = (length: number) => {
+      size += length;
+      total += length;
+      if (size > entry.size || total > options.maxTotalUncompressedBytes ||
+          (entry.critical && size > options.maxEntryUncompressedBytes)) {
+        throw new AppError(413, `${options.documentKind} actual zip output exceeds safety limits`, `${options.codePrefix}_inflation_limit_exceeded`);
+      }
+    };
+    if (entry.method === 0) {
+      consume(entry.end - entry.start);
+    } else {
+      const inflate = createInflateRaw({ chunkSize: 16 * 1024 });
+      const timer = setTimeout(() => inflate.destroy(new AppError(504, `${options.documentKind} inspection timed out`, "document_parse_timeout")), Math.max(0, deadline - Date.now()));
+      try {
+        inflate.end(buffer.subarray(entry.start, entry.end));
+        for await (const chunk of inflate) consume((chunk as Buffer).length);
+      } catch (error) {
+        if (error instanceof AppError) throw error;
+        throw new AppError(422, `${options.documentKind} compressed content is invalid`, `${options.codePrefix}_zip_content_invalid`);
+      } finally {
+        clearTimeout(timer);
+        inflate.destroy();
+      }
+    }
+    if (size !== entry.size) {
+      throw new AppError(422, `${options.documentKind} zip size does not match its content`, `${options.codePrefix}_zip_content_invalid`);
+    }
   }
 }
 

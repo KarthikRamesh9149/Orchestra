@@ -319,6 +319,7 @@ const envSchema = z.object({
   SIGNUP_ALLOWED_EMAIL_DOMAINS: z.string().default(""),
   PASSWORD_HASH_COST: z.coerce.number().int().min(8).max(15).default(12),
   OPENAI_API_KEY: z.string().optional(),
+  DESKTOP_AI_PROVIDER: z.enum(['none', 'openai', 'openai-compatible', 'anthropic', 'google']).default('none'),
   OPENAI_GENERATION_MODEL: z.string().default("gpt-5.4-mini"),
   OPENAI_EMBEDDING_MODEL: z.string().default("text-embedding-3-small"),
   OPENAI_TRANSCRIPTION_MODEL: z.string().default("gpt-4o-mini-transcribe"),

@@ -35,6 +35,11 @@ A useful answer should take you back to the evidence. Socrates keeps source link
 
 With your AI provider configured, Socrates can synthesize answers from project context. Without it, reading and evidence search remain available, without pretending an AI answer was generated.
 
+In local Settings, **Select provider → Add API key → Test connection → Save**.
+Adapters support OpenAI, Anthropic, Google Gemini and compatible Chat Completions
+APIs. Models must support Orchestra's required response formats; an API key alone
+does not establish compatibility. [Setup and compatibility details](docs/desktop/release/USER-GUIDE.md#add-an-api-key).
+
 ## Turn a request into a deliberate decision
 
 “Can we add this before launch?” is new evidence, not automatic approval.

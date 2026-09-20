@@ -20,7 +20,7 @@ const results = {
   sources: [{ provider: "Documents", label: "Product brief", kind: "internal", href: "/memory" }]
 };
 
-function createService() {
+function createService(envOverrides: Record<string, unknown> = {}) {
   const run = {
     id: "11111111-1111-4111-8111-111111111111",
     orgId: "22222222-2222-4222-8222-222222222222",
@@ -66,7 +66,7 @@ function createService() {
   const audit = { record: vi.fn().mockResolvedValue(undefined) } as any;
   const service = new DeepResearchService(
     prisma,
-    { BETA_DEEP_RESEARCH_ENABLED: true, DEEP_RESEARCH_MONTHLY_LIMIT: 20 } as any,
+    { BETA_DEEP_RESEARCH_ENABLED: true, DEEP_RESEARCH_MONTHLY_LIMIT: 20, ...envOverrides } as any,
     {} as any,
     {} as any,
     {} as any,
@@ -80,6 +80,22 @@ function createService() {
 
 describe("[FIX-22] Deep Research authoritative contracts", () => {
   afterEach(() => vi.useRealTimers());
+
+  it.each(["openai", "openai-compatible", "anthropic", "google"])("accepts explicitly configured desktop %s generation without an OpenAI environment key", async (provider) => {
+    const { service, run, prisma } = createService({ RUNTIME_PROFILE: "desktop-local", DESKTOP_AI_PROVIDER: provider });
+    await service.startRun(run.projectId, { userId: run.createdByUserId, orgId: run.orgId }, {
+      researchFocus: "release readiness", sources: ["docs"], outputFormat: "full_report", privacyMode: "internal_only", webSearchEnabled: false
+    });
+    expect(prisma.deepResearchRun.create).toHaveBeenCalledOnce();
+  });
+
+  it("does not create or charge an unconfigured desktop run merely because a stale vendor key exists", async () => {
+    const { service, run, prisma } = createService({ RUNTIME_PROFILE: "desktop-local", DESKTOP_AI_PROVIDER: "none", OPENAI_API_KEY: "test-stale-placeholder" });
+    await expect(service.startRun(run.projectId, { userId: run.createdByUserId, orgId: run.orgId }, {
+      researchFocus: "release readiness", sources: ["docs"], outputFormat: "full_report", privacyMode: "internal_only", webSearchEnabled: false
+    })).rejects.toMatchObject({ code: "ai_not_configured" });
+    expect(prisma.deepResearchRun.create).not.toHaveBeenCalled();
+  });
 
   it("[LR-01] keeps a healthy owner alive through pending work and fences a late failure", async () => {
     vi.useFakeTimers();

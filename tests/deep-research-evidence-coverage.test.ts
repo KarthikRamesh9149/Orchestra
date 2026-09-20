@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildDeepResearchEvidencePack } from "../src/modules/deep-research/evidence.js";
-import { collectExplicitDeepResearchSourceCards } from "../src/modules/deep-research/service.js";
+import { collectExplicitDeepResearchSourceCards, mergeDeepResearchCards } from "../src/modules/deep-research/service.js";
 
 describe("Deep Research evidence coverage", () => {
   it("loads current chunks of an explicitly named document independently of summary retrieval", async () => {
@@ -34,6 +34,38 @@ describe("Deep Research evidence coverage", () => {
       budget: { maxContextTokens: 12000, maxHistoryTurns: 0, rerankTopK: 8, maxEvidenceItems: 8 }
     });
     expect(pack.evidenceCards[0].excerpt).toContain(content);
+  });
+  it("preserves document identity when a current chunk has no section anchor", async () => {
+    const prisma = {
+      document: { findMany: async () => [{ id: "doc", title: "Delivery PRD", currentVersionId: "version" }] },
+      documentChunk: { findMany: async () => [{ id: "chunk", content: "Product Lead: Maya.", parseRevision: 2,
+        documentVersionId: "version", documentVersion: { parseRevision: 2, document: { id: "doc", title: "Delivery PRD" } }, section: null }] }
+    };
+    const cards = await collectExplicitDeepResearchSourceCards(prisma as any, {} as any, "project", "Audit Delivery PRD", new Set(["docs"]));
+    expect(cards[0].openTarget).toEqual({ targetType: "document", targetRef: { documentId: "doc", documentVersionId: "version" } });
+  });
+  it("reserves relevant evidence from each named document before applying the card cap", async () => {
+    const documents = [
+      { id: "alpha", title: "Alpha PRD", currentVersionId: "alpha-version" },
+      { id: "beta", title: "Beta PRD", currentVersionId: "beta-version" }
+    ];
+    const prisma = {
+      document: { findMany: async () => documents },
+      documentChunk: { findMany: async (args: any) => {
+        expect(args.take).toBe(40);
+        const document = documents.find(doc => args.where.documentVersionId.in.includes(doc.currentVersionId))!;
+        return Array.from({ length: 12 }, (_, index) => ({ id: `${document.id}-${index}`,
+          content: index === 11 ? `Budget owner: ${document.id}.` : "Introduction and project overview.",
+          parseRevision: 2, documentVersionId: document.currentVersionId,
+          documentVersion: { parseRevision: 2, document }, section: null }));
+      } }
+    };
+    const focus = "Compare the budget owner in Alpha PRD and Beta PRD";
+    const cards = await collectExplicitDeepResearchSourceCards(prisma as any, {} as any, "project", focus, new Set(["docs"]));
+    expect(cards).toHaveLength(8);
+    expect(cards.slice(0, 2).map(card => card.excerpt)).toEqual(["Budget owner: alpha.", "Budget owner: beta."]);
+    const merged = mergeDeepResearchCards(Array.from({ length: 8 }, (_, index) => ({ ...cards[0], evidenceId: `ranked-${index}`, citationRef: { type: "document_chunk", id: `ranked-${index}` }, excerpt: `${focus} budget owner` })), cards, 2, focus);
+    expect(new Set(merged.map(card => card.openTarget?.targetRef.documentId))).toEqual(new Set(["alpha", "beta"]));
   });
   it("retains owners beyond the interactive chat excerpt boundary", () => {
     const content = "PRD introduction. ".repeat(60) + "Product Lead: Maya Reddy. Backend Lead: Devraj Patel. Non-goals: no provider writes.";

@@ -100,6 +100,20 @@ describe("[FIX-22] Deep Research truthful UI", () => {
     expect(screen.getByRole("link", { name: /Public release benchmark/i })).toHaveAttribute("href", "https://example.com/release");
     expect(screen.queryByText(new RegExp(contextId))).not.toBeInTheDocument();
   });
+  it("shows all citation aliases for one document without duplicating its source link", async () => {
+    mocks.getDeepResearchRun.mockResolvedValue({ ...completedRun, results: { ...completedRun.results, sources: [
+      { ...completedRun.results.sources[0], ref: "E1", refs: ["E1", "E2", "E3"] },
+      { ...completedRun.results.sources[1], ref: "W1" }
+    ] } });
+    const user = userEvent.setup();
+    renderModal();
+    await user.type(screen.getByRole("textbox"), "Release readiness");
+    await user.click(screen.getByRole("button", { name: "Run Research" }));
+    expect(await screen.findByText("Deep Research Complete")).toBeVisible();
+    expect(screen.getByRole("link", { name: /Release checklist/i })).toHaveTextContent("E1 · E2 · E3 — Documents");
+    expect(screen.getAllByRole("link", { name: /Release checklist/i })).toHaveLength(1);
+    expect(screen.getByRole("link", { name: /Public release benchmark/i })).toHaveTextContent("W1 — Web");
+  });
 
   it("starts exactly one run while the backend request is in flight", async () => {
     const user = userEvent.setup();

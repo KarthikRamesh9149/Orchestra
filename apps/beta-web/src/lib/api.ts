@@ -927,7 +927,7 @@ export interface DeepResearchResults {
   expansionOpportunities: string[];
   recommendedActions: { priority: "IMMEDIATE" | "THIS WEEK" | "THIS SPRINT"; action: string; source: string }[];
   stats: { totalSources: number; slackMessages: number; commits: number; docs: number; webSources: number; duration: string };
-  sources: { provider: string; label: string; kind: "internal" | "web"; href: string }[];
+  sources: { provider: string; label: string; kind: "internal" | "web"; href: string; ref?: string; refs?: string[] }[];
 }
 
 export interface DeepResearchRun {

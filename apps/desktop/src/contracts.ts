@@ -21,7 +21,7 @@ export interface DesktopBridge {
  github:{inspect():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;repositories():Promise<OperationResult>;disconnect():Promise<OperationResult>;importRepository(input:{projectId:string;repositoryId:number}):Promise<OperationResult>};
  slack:{inspect():Promise<OperationResult>;connect():Promise<OperationResult>;cancel():Promise<OperationResult>;revoke():Promise<OperationResult>;channels():Promise<OperationResult>;importChannel(input:{projectId:string;channelId:string}):Promise<OperationResult>};
  mcp:{inspect():Promise<OperationResult>;pair(input:unknown):Promise<OperationResult>;revoke(id:string):Promise<OperationResult>};
- ai:{inspect():Promise<OperationResult>;configure(preferences:unknown):Promise<OperationResult>;revoke():Promise<OperationResult>};
+ ai:{inspect():Promise<OperationResult>;importKey(input:{target:'generation'|'embedding';preferences:unknown}):Promise<OperationResult>;test(preferences:unknown):Promise<OperationResult>;discardDraft(target?:'generation'|'embedding'):Promise<OperationResult>;configure(preferences:unknown):Promise<OperationResult>;revoke():Promise<OperationResult>};
  bootstrap():Promise<OperationResult>;
  completeOnboarding():Promise<OperationResult>;
  copyText(text:string):Promise<OperationResult>;

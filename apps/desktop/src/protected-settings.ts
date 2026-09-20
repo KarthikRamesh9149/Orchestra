@@ -8,21 +8,11 @@ import {slackCredentialSchema} from './slack-oauth.js';
 import {githubCredentialSchema} from './github-oauth.js';
 import {driveCredentialSchema,driveClientSchema} from './drive-oauth.js';
 import {syncTargetSchema} from './connector-sync-state.js';
+import {desktopAiSchema,desktopAiPreferencesSchema} from '../../../src/desktop/ai-config.js';
 
-const model=z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,99}$/);
-export const aiPreferencesSchema=z.object({
- generationModel:model,
- // The installed database uses vector(1536). Never silently mix models.
- embeddingModel:z.literal('text-embedding-3-small'),
- embeddingDimensions:z.literal(1536),
- maxRequestsPerDay:z.number().int().min(1).max(1000),
- maxOutputTokens:z.number().int().min(128).max(8192)
-}).strict();
+export const aiPreferencesSchema=desktopAiPreferencesSchema;
 export const mcpPairingSchema=z.object({id:z.string().uuid(),projectId:z.string().uuid(),packId:z.string().uuid(),tokenId:z.string().uuid(),token:z.string().regex(/^mcp_[A-Za-z0-9_-]{43}$/),client:z.enum(['codex','claude','cursor','vscode']),expiresAt:z.string().datetime()}).strict();
-export const protectedSettingsSchema=z.object({version:z.literal(1),syncTargets:z.array(syncTargetSchema).max(16).optional(),driveClient:driveClientSchema.optional(),drive:driveCredentialSchema.nullable().optional(),github:githubCredentialSchema.nullable().optional(),slackRevokedTeamId:z.string().regex(/^T[A-Z0-9]+$/).optional(),slack:slackCredentialSchema.nullable().optional(),mcp:z.array(mcpPairingSchema).max(8).optional(),ai:z.object({
- preferences:aiPreferencesSchema,
- apiKey:z.string().min(20).max(512).regex(/^[\x21-\x7e]+$/)
-}).strict().nullable()}).strict();
+export const protectedSettingsSchema=z.object({version:z.literal(1),syncTargets:z.array(syncTargetSchema).max(16).optional(),driveClient:driveClientSchema.optional(),drive:driveCredentialSchema.nullable().optional(),github:githubCredentialSchema.nullable().optional(),slackRevokedTeamId:z.string().regex(/^T[A-Z0-9]+$/).optional(),slack:slackCredentialSchema.nullable().optional(),mcp:z.array(mcpPairingSchema).max(8).optional(),ai:desktopAiSchema.nullable()}).strict();
 export type ProtectedSettings=z.infer<typeof protectedSettingsSchema>;
 export type AiPreferences=z.infer<typeof aiPreferencesSchema>;
 const maxEnvelope=32768;

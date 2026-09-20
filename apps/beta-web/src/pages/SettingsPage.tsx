@@ -28,7 +28,7 @@ import {
 } from "react-icons/si";
 
 import { useAuth } from "../context/AuthContext";
-import { isDesktop } from "../lib/desktop";
+import { isDesktop, isSharedDesktop } from "../lib/desktop";
 import { OperationalStateNotice } from "../components/ui/OperationalStateNotice";
 import { useThemeStore } from "../store/themeStore";
 import { safeExternalUrl } from "../lib/socratesPresentation";
@@ -924,7 +924,7 @@ export function SettingsPage() {
         </header>
 
         <div className="flex flex-col gap-10">
-          {isDesktop()&&<Suspense fallback={<p role="status">Loading desktop AI settings…</p>}><DesktopAiSettings/></Suspense>}
+          {(isDesktop()||isSharedDesktop())&&<Suspense fallback={<p role="status">Loading desktop AI settings…</p>}><DesktopAiSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading shared servers…</p>}><DesktopSharedSettings/></Suspense>}
           {(window.orchestra||window.orchestraShared)&&<Suspense fallback={<p role="status">Loading project transfer…</p>}><DesktopTransferSettings/></Suspense>}
           {isDesktop()&&<Suspense fallback={<p role="status">Loading local sources…</p>}><DesktopSources/></Suspense>}

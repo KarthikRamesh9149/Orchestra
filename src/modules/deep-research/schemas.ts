@@ -71,6 +71,9 @@ export const deepResearchActionSchema = z.object({
 export const deepResearchSourceSchema = z.object({
   provider: z.string().trim().min(1).max(80),
   ref: z.string().trim().regex(/^[EW]\d+$/).optional(),
+  // Grouped bibliography entries retain every prompt ID; `ref` remains the
+  // primary alias for reports persisted before grouped citations were added.
+  refs: z.array(z.string().trim().regex(/^[EW]\d+$/)).min(1).max(100).optional(),
   label: z.string().trim().min(1).max(240),
   kind: z.enum(["internal", "web"]),
   href: z.string().trim().min(1).max(2000).refine((value) => {
@@ -184,6 +187,7 @@ export type DeepResearchStats = z.infer<typeof deepResearchStatsSchema>;
 /** Schema for stored/returned results (already-normalized report + computed stats). */
 export const deepResearchResultsSchema = deepResearchReportShape.extend({
   stats: deepResearchStatsSchema,
-  sources: z.array(deepResearchSourceSchema).max(40).default([])
+  // Current configuration permits 25 internal cards plus 24 web snippets.
+  sources: z.array(deepResearchSourceSchema).max(64).default([])
 });
 export type DeepResearchResults = z.infer<typeof deepResearchResultsSchema>;

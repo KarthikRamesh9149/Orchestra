@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 759,
+  "unchangedImportedFiles": 748,
   "changes": [
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -29,8 +29,14 @@
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
       "sourceSha256": "142cb4169d9a8500a9b9e4f7bbffaf3c4b70fc6965e52a77cef79b09df86d9e4",
-      "importedSha256": "ba68344646a23ec9a955ebd870a63f7d3fd888626dd88e8230d00c689387af68",
-      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered."
+      "importedSha256": "a3d09c3f2280c3427632f987ba97557dbeb80a304966ef102c2c8824a56b45ca",
+      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+    },
+    {
+      "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
+      "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
+      "importedSha256": "8cc9775ae4e30a2db86d24aaf1d06d408a6360bf3aee16a1a1f82c5d22a28614",
+      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
@@ -77,8 +83,8 @@
     {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "32487f28391a5467ae5d59f29015409b0ddae9555e567985efac8e891d9864e9",
-      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation."
+      "importedSha256": "556a567daae549e8099b15c6580fd383e219312db99fc193364df4b6e851b658",
+      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -137,8 +143,8 @@
     {
       "path": "apps/beta-web/src/pages/SettingsPage.tsx",
       "sourceSha256": "c8197eff86a9a166646bd72dea1b7e7c9fc52739f1924a9730a7a7bd7fc20807",
-      "importedSha256": "117ef20982dd411e1e768f29605088deec83ee5bb91ef17c7bfe5ba60305546f",
-      "reason": "Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking; Step 8 local native connector panels replace misleading retained hosted projections without changing shared/web panels or styling."
+      "importedSha256": "fa50be02862e6f61124e29c14eb30c6b59007d99e11f6565b56cf103e36f74dc",
+      "reason": "Steps 4/5 local protected AI/provider controls; Step 6 server connection, encrypted transfer and explicit authorized GitHub repository linking; Step 8 local native connector panels replace misleading retained hosted projections without changing shared/web panels or styling. September 20: explicit desktop provider selection and shared-server ownership; no production configuration or UI styling changes."
     },
     {
       "path": "apps/beta-web/src/pages/TimelinePage.tsx",
@@ -221,8 +227,8 @@
     {
       "path": "src/config/env.ts",
       "sourceSha256": "602cc1c4412cd1be30a9831d4ce4e1d188459c362cbd883fc6e2a8e286b2c995",
-      "importedSha256": "e278b784d903f64f2166d890c550c5a94a006420daaac62189f2e1b5a6cb0f3d",
-      "reason": "Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced."
+      "importedSha256": "385f1f70ef1fbc078c758e5135b01f9feab43e9e6a40a28b76561046f4563526",
+      "reason": "Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced. September 20: explicit desktop provider selection and shared-server ownership; no production configuration or UI styling changes."
     },
     {
       "path": "src/lib/ai/index.ts",
@@ -235,6 +241,36 @@
       "sourceSha256": "29e0e70c39cbc4182b637ea8cf282dd24a01a023d723ab3c1d642871c2b301e6",
       "importedSha256": "775cc1fd11619c61b75ce544448934ec17238b0cb5fcbd8a1f52d0b39c10cbc7",
       "reason": "Step 2 explicit unavailable embedding capability; no mock vectors in offline mode."
+    },
+    {
+      "path": "src/lib/ai-ops/ai-model-strategy.ts",
+      "sourceSha256": "33f887bafb7e445f554248db5aac80a84ae1be8b829f5fac36a1df008546e097",
+      "importedSha256": "11110126f4510e46b4c3aab3ed93e90ebf7b855eef157773da9f37b7c5956e1a",
+      "reason": "Provider-neutral desktop generation readiness and honest vendor metadata; hosted configuration remains separate."
+    },
+    {
+      "path": "src/lib/parsers/docx.ts",
+      "sourceSha256": "89c78a2f0008310ac6523bfc3161407fd176ac93c6021c62d108b6ea7b9a05f0",
+      "importedSha256": "a6e510193e59c4d9f4d63d3b9f803d5522acd3bf7a90ab8d6217d20830b992fe",
+      "reason": "Await bounded ZIP payload verification before handing document contents to Mammoth."
+    },
+    {
+      "path": "src/lib/parsers/file-safety.ts",
+      "sourceSha256": "97785ce7afc09f969e0e164c6e3a798bbe38c3cdf59eec2e6e583817b7abdc40",
+      "importedSha256": "7fcd2726deb0a50f3a115bd4cee0cf6b79c46e895e4e336337eed0b750261a2e",
+      "reason": "Security audit: bound actual ZIP inflation and validate archive interpretations before materialising DOCX/XLSX contents."
+    },
+    {
+      "path": "src/lib/parsers/xlsx.ts",
+      "sourceSha256": "2781d544330bda70f7aaacf27c9834d9dd78c967a97f7665da14211fcd5b7411",
+      "importedSha256": "70ac58db5777720c5ab508558415cdb4fc212d44e1c6bd26a23e0cfc33ac8873",
+      "reason": "Await bounded ZIP payload verification before handing workbook contents to JSZip."
+    },
+    {
+      "path": "src/lib/retrieval/hybrid.ts",
+      "sourceSha256": "da6bd59fe944bd3e18a75e5040d9d948e64bd087722f04f4a5d88550cf595a0a",
+      "importedSha256": "89e63d23e7e65a2835c3607c216b2b67840e78439373dbae2d1ce094dad55711",
+      "reason": "Preserve document and version identity for citation targets without section anchors."
     },
     {
       "path": "src/lib/storage/index.ts",
@@ -261,16 +297,28 @@
       "reason": "Real OpenAI research regression: retain retrieved source content instead of substituting a contextual summary; preserve evidence budgets and authorization."
     },
     {
+      "path": "src/modules/deep-research/prompts.ts",
+      "sourceSha256": "0ebded6cddccb4e9e376ae2d53b2dbd7a204b58d10f5f5be339291dcbab16bfc",
+      "importedSha256": "64d86bf8199afaa4c18a9b0502cd58c94109897f299edd6e0e4b3397c21ceb8a",
+      "reason": "Require claim-local citations for summaries, market context and proposed expansion without converting suggestions into truth."
+    },
+    {
+      "path": "src/modules/deep-research/report-render.ts",
+      "sourceSha256": "71e3145bcdc018ee0f325e14b59a41f778f89c01029f8db1b3b6dba46906d20a",
+      "importedSha256": "a887982879c1dbee84d31940ac63af71f59d23d30d21a5ceed9e9b572e2549af",
+      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF."
+    },
+    {
       "path": "src/modules/deep-research/schemas.ts",
       "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
-      "importedSha256": "a0a9b4e1837748146a95d99db416d4baa1eae99781c03e58eacc25259795c4f3",
-      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization."
+      "importedSha256": "54b86814f21264d213b2cd18c3d807a908559abf4e50755fbf661f9a147155b9",
+      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "768dfbc5dbd5538cb1ca4c9f670afe9531306d7224ca3f96f5465ac3566c0244",
-      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts."
+      "importedSha256": "d54bac04733b9ad5206ee5574f1a7d5d89b7d5c11a0f0c46e81622604264bd73",
+      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence."
     },
     {
       "path": "src/modules/documents/service.ts",
@@ -287,8 +335,8 @@
     {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "76a80b6d64b005abe69ced441149313e92f1cae45bfd0d2e6002693146ff8c0b",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged."
+      "importedSha256": "2e24d7264fdb29abc4ed012b898fe34df3898f9b41c4c8542b4bbff2a643b72a",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
@@ -311,14 +359,14 @@
     {
       "path": "tests/deep-research-citation-contract.test.ts",
       "sourceSha256": "d5042d1d41322eef6a61a78d54976569b2b13cbf7358effac22e0fc7e813eae0",
-      "importedSha256": "d6e3a70af144e966016be034ca0d857f02f1b729f95b24a50bbe08680bafced2",
-      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads."
+      "importedSha256": "6e9a0a7b370a3f219e9724bdf3668cff2fb89490995ac0968114bb5d300a8b72",
+      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "tests/deep-research-evidence-coverage.test.ts",
       "sourceSha256": "6aa7323c2c607eed8268a41f7120b6da2da82f71556ad7aaa0552ca810297e81",
-      "importedSha256": "1a5dc6db9fe7adeaf71c38fef41f89ec8dbcee2c28c4520e84b6468d3f5eecba",
-      "reason": "Regression proving a short contextual summary cannot replace complete retrieved source facts."
+      "importedSha256": "64f5f4b402ecc2213da4b0c36af794b3a7794c5cea12654e8bfc81433663f17d",
+      "reason": "Regression proving a short contextual summary cannot replace complete retrieved source facts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     },
     {
       "path": "tests/document-service.test.ts",
@@ -327,16 +375,34 @@
       "reason": "Step 5 regression coverage for native source identity and authoritative desktop Drive indexing completion; inherited document tests retained."
     },
     {
+      "path": "tests/fix22-deep-research.test.ts",
+      "sourceSha256": "fb96bdeb8d8cf407378d98a90ee920e679b1916eb814c4b3599a5aa79abef357",
+      "importedSha256": "ba9559317499014a23d357a92266834c64b1eed29fbdd51d68e0a047fd8e0b2e",
+      "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage."
+    },
+    {
       "path": "tests/gmail-invite-sender.test.ts",
       "sourceSha256": "25fadc1fae652c8eb745faaad8897458cb93121460ef0650ca04d267c65dc7c5",
       "importedSha256": "f646b1f7eccc044e05d8d28a636d445f507d67844f9f5a7bb3749a5c4d303959",
       "reason": "Step 6 regression distinguishes self-hosted send-only and mailbox-evidence capabilities."
     },
     {
+      "path": "tests/parser-file-safety.test.ts",
+      "sourceSha256": "41851b50b5d788f65d6805d7f797aaa4508ef2c2f8c5f9afd02291b86470b2c9",
+      "importedSha256": "003f9fbbd6b8ac65746911984326cb17a8969226cd6e163ce36994a0a67c3a3e",
+      "reason": "Regression fixtures for forged decompressed sizes and inconsistent ZIP names, headers and payload spans."
+    },
+    {
+      "path": "tests/retrieval-hybrid-lexical.test.ts",
+      "sourceSha256": "a3afe993c6e5313650fefd1d74c351ec4232b815d653e4d61fe4a476aad4cbb6",
+      "importedSha256": "3f93b761f5b50e8964a31937b74ea63ed69401b52a7a4f4f85f13ebc01aa088e",
+      "reason": "Regression coverage for sectionless document citation provenance."
+    },
+    {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "19443c8f92f1779d9a7673e93e57d41a682f3cc46ceaf6b2f4d3f44b5587282b",
-      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget."
+      "importedSha256": "f21522f8b6aa89b620207884c851eb9a7cd7630d54e47b752e0ecd2d22562a2f",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
     }
   ]
 }

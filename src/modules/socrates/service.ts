@@ -18,6 +18,7 @@ import { AppError } from "../../app/errors.js";
 import { createSocratesTurn } from "./turn-store.js";
 import type { GenerationProvider } from "../../lib/ai/provider.js";
 import type { EmbeddingProvider } from "../../lib/ai/provider.js";
+import { hasConfiguredGeneration } from '../../lib/ai/configuration.js';
 import { buildEvidenceOnlyDegradedAnswer, cacheTelemetry, estimateAiCost, getModelForTask, pricingFromEnv, buildSocratesAiTelemetry, persistAiTelemetry, type AiDegradationReason, type AiLimiter } from "../../lib/ai-ops/index.js";
 import type { AppEnv } from "../../config/env.js";
 import { isMvpBetaMode } from "../../lib/beta/policy.js";
@@ -489,8 +490,34 @@ type SocratesV1Evidence = {
   openTarget: OpenTargetRef | null;
   metadataSummary: string | null;
   datasetProfile?: TabularDatasetProfile | null;
+  documentId?: string | null;
   explicitDocumentScopeTitle?: string | null;
 };
+
+// Reserve coverage across documents before applying a chunk budget. Multiple
+// highly ranked chunks from one source must not crowd out another source.
+function selectSocratesV1DocumentCoverage<T>(items: T[], limit: number, documentKey: (item: T) => string): T[] {
+  const buckets = new Map<string, T[]>();
+  for (const item of items) {
+    const key = documentKey(item);
+    const bucket = buckets.get(key) ?? [];
+    bucket.push(item);
+    buckets.set(key, bucket);
+  }
+  const selected: T[] = [];
+  for (let index = 0; selected.length < limit; index += 1) {
+    let added = false;
+    for (const bucket of buckets.values()) {
+      if (selected.length >= limit) break;
+      if (index < bucket.length) {
+        selected.push(bucket[index]!);
+        added = true;
+      }
+    }
+    if (!added) break;
+  }
+  return selected;
+}
 
 type SocratesV1Artifact = {
   id: string;
@@ -1716,7 +1743,7 @@ export class SocratesService {
       } else if (shouldBypassLowEvidenceModel) {
         parsedAnswer = buildLowEvidenceAnswer(evidencePack.evidenceCards, retrievalConfidence.limitations);
         degradationReason = "low_evidence";
-      } else if (!this.env.OPENAI_API_KEY) {
+      } else if (!hasConfiguredGeneration(this.env)) {
         parsedAnswer = this.buildEvidenceOnlyAnswerFromCards(evidencePack.evidenceCards, "generation_provider_failed");
         schemaDegraded = true;
         degradationReason = "generation_provider_failed";
@@ -2581,11 +2608,13 @@ export class SocratesService {
       selectedSourceKeys
     );
     const retrievalMs = Date.now() - retrievalStartedAt;
-    const explicitDocumentScope = selectedSourceKeys.has("documents")
+    const explicitDocumentScope = ["documents", "google_drive", "notion"].some((source) => effectiveSources.has(source as SocratesV1SourceKey))
       ? await this.findSocratesV1ExplicitDocumentScope(input.projectId, question)
       : [];
     const explicitDocumentScopeHasEvidence = rankedEvidence.some((item) => Boolean(item.explicitDocumentScopeTitle));
-    const explicitDocumentScopeLacksEvidence = explicitDocumentScope.length > 0 && !explicitDocumentScopeHasEvidence;
+    const coveredDocumentIds = new Set(rankedEvidence.map((item) => item.documentId).filter(Boolean));
+    const missingExplicitDocuments = explicitDocumentScope.filter((document) => !coveredDocumentIds.has(document.id));
+    const explicitDocumentScopeLacksEvidence = missingExplicitDocuments.length > 0;
     const githubWasExplicitlyRequested =
       (selectedSourceKeys.size < 5 && selectedSourceKeys.has("github")) || this.queryRequestsGithubEvidence(question);
     const explicitDocumentComparisonInsufficient =
@@ -2600,9 +2629,13 @@ export class SocratesService {
     const generationStartedAt = Date.now();
     const generatedAnswer = explicitDocumentScopeLacksEvidence
       ? {
-          answer_md: "I don't have enough evidence in the explicitly requested document to answer that detail, so I will not infer it from another document.",
+          answer_md: explicitDocumentScope.length > 1
+            ? `I don't have enough evidence from every explicitly requested document to complete this comparison. Missing from the selected evidence: ${missingExplicitDocuments.map((document) => document.title).join(", ")}. I will not infer the missing details from another document.`
+            : "I don't have enough evidence in the explicitly requested document to answer that detail, so I will not infer it from another document.",
           confidence: "low" as const,
-          limitations: ["The named document was found, but no matching current excerpt was retrieved."],
+          limitations: [explicitDocumentScope.length > 1
+            ? "Every named document needs a matching current excerpt within the evidence budget before a comparison can be completed."
+            : "The named document was found, but no matching current excerpt was retrieved."],
           suggested_prompts: [], estimatedUsd: 0, modelCalls: 0, provider: "deterministic" as const, model: null, degraded: false
         }
       : explicitDocumentComparisonInsufficient
@@ -3045,9 +3078,11 @@ export class SocratesService {
     );
     const seen = new Set<string>();
     const enriched = [...indexed, ...recent].filter((row) => !seen.has(row.id) && Boolean(seen.add(row.id)));
-    const lexicalEvidence = this.filterRowsByTerms(enriched, query, (row) =>
+    const lexicalCandidates = this.filterRowsByTerms(enriched, query, (row) =>
       `${row.documentVersion?.document?.title ?? ""} ${row.section?.headingPath?.join(" ") ?? ""} ${row.lexicalContent ?? ""} ${row.content ?? ""}`
-    ).slice(0, 8).map((row) => ({
+    );
+    const documentKey = (row: any): string => row.documentVersion?.document?.id ?? row.documentVersionId ?? row.id;
+    const lexicalEvidence = selectSocratesV1DocumentCoverage(lexicalCandidates, 8, documentKey).map((row) => ({
       ...row,
       explicitDocumentScopeTitle: explicitDocumentTitles.get(row.documentVersion?.document?.id) ?? null
     }));
@@ -3077,7 +3112,7 @@ export class SocratesService {
     );
     const selectedIds = new Set(lexicalEvidence.map((row) => row.id));
     const semanticSupplement = semantic.filter((row) => !selectedIds.has(row.id) && Boolean(selectedIds.add(row.id)));
-    return [...lexicalEvidence, ...semanticSupplement].slice(0, 8);
+    return selectSocratesV1DocumentCoverage([...lexicalEvidence, ...semanticSupplement], 8, documentKey);
   }
 
   private async findSocratesV1ExplicitDocumentScope(projectId: string, query: string): Promise<Array<{ id: string; title: string }>> {
@@ -3465,6 +3500,7 @@ export class SocratesService {
         }
       },
       metadataSummary: "Fast tabular dataset profile generated at upload time.",
+      documentId: row.documentVersion?.document?.id ?? null,
       datasetProfile
     };
   }
@@ -3505,6 +3541,7 @@ export class SocratesService {
         : isNotion
           ? `Notion selected/shared document workspace evidence${row.notionResource.selectedResourceLabel ? ` from ${row.notionResource.selectedResourceLabel}` : ""}.`
           : "Uploaded document evidence.",
+      documentId: row.documentVersion?.document?.id ?? null,
       explicitDocumentScopeTitle: row.explicitDocumentScopeTitle ?? null
     };
   }
@@ -3777,7 +3814,12 @@ export class SocratesService {
     selectedSources: Set<string>
   ) {
     const ranked = this.rankSocratesV1Evidence(evidence, query, intent);
-    const explicitlyScopedDocumentEvidence = ranked.filter((item) =>
+    const documentEvidence = selectSocratesV1DocumentCoverage(
+      ranked.filter((item) => item.sourceType === "document" || item.sourceType === "google_drive_document"),
+      ranked.length,
+      (item) => item.documentId ?? item.evidenceId
+    );
+    const explicitlyScopedDocumentEvidence = documentEvidence.filter((item) =>
       (item.sourceType === "document" || item.sourceType === "google_drive_document") &&
       Boolean(item.explicitDocumentScopeTitle)
     );
@@ -3840,7 +3882,7 @@ export class SocratesService {
       }
     };
     const relevantBuckets = [
-      wantsDocuments ? ranked.filter((item) => item.sourceType === "document" || item.sourceType === "google_drive_document") : [],
+      wantsDocuments ? documentEvidence : [],
       wantsGithub ? ranked.filter((item) => item.sourceType === "github_evidence") : [],
       wantsCommunication
         ? providerCommunicationEvidence.length
@@ -3864,12 +3906,12 @@ export class SocratesService {
     }
 
     if (wantsDocuments && wantsGithub) {
-      add(ranked.filter((item) => item.sourceType === "document" || item.sourceType === "google_drive_document"), Math.min(3, maxEvidence));
+      add(documentEvidence, Math.min(3, maxEvidence));
       add(ranked.filter((item) => item.sourceType === "github_evidence"), Math.min(4, maxEvidence - selected.length));
     } else if (wantsGithub) {
       add(ranked.filter((item) => item.sourceType === "github_evidence"), Math.min(5, maxEvidence));
     } else if (wantsDocuments) {
-      add(ranked.filter((item) => item.sourceType === "document" || item.sourceType === "google_drive_document"), Math.min(4, maxEvidence));
+      add(documentEvidence, Math.min(4, maxEvidence));
     }
     if (wantsCommunication) {
       add(providerCommunicationEvidence, Math.min(3, maxEvidence - selected.length));
@@ -4268,7 +4310,7 @@ export class SocratesService {
         .filter((item): item is string => Boolean(item))
         .map((item) => `- ${item}`)
         .join("\n");
-      return `## Readiness verdict\n\n**The current evidence supports a controlled beta, but does not prove unrestricted production readiness.**\n\nThis is a deterministic evidence-only fallback, not an AI synthesis.\n\n## Confirmed evidence\n\n${confirmed}\n\n## Still unconfirmed\n\n${unconfirmed || "- No explicit gap was retrieved; validate live user journeys and operating metrics before widening rollout."}`;
+      return `## Readiness verdict\n\n**Readiness is unverified. Retrieved evidence alone does not establish whether a beta or production launch is safe.**\n\nThis is a deterministic evidence-only fallback, not an AI synthesis or launch approval.\n\n## Retrieved evidence\n\n${confirmed}\n\n## Still unconfirmed\n\n${unconfirmed || "- No explicit gap was retrieved; that is not confirmation of readiness. Validate live user journeys and operating metrics before considering rollout."}`;
     }
     const support = input.evidence.slice(0, 4)
       .map((item) => `- **${item.title}** (${item.truthStatus}): ${buildSocratesV1EvidenceExcerpt(item.text, input.question, 240)}`)
@@ -4312,7 +4354,7 @@ export class SocratesService {
     confidence: "high" | "medium" | "low";
     estimatedUsd: number;
     modelCalls: number;
-    provider: "openai" | "mock" | "deterministic";
+    provider: "openai" | "openai-compatible" | "anthropic" | "google" | "mock" | "deterministic";
     model: string | null;
     degraded: boolean;
   }> {
@@ -4331,7 +4373,7 @@ export class SocratesService {
 
     const fallback =
       "I can answer that directly, but the fast chat model is unavailable right now. Ask again in a moment, or ask about the project for evidence-backed answers.";
-    if (!this.env.OPENAI_API_KEY) {
+    if (!hasConfiguredGeneration(this.env)) {
       return {
         answer_md: fallback,
         confidence: "medium",
@@ -4443,7 +4485,7 @@ export class SocratesService {
     suggested_prompts: string[];
     estimatedUsd: number;
     modelCalls: number;
-    provider: "openai" | "mock" | "deterministic";
+    provider: "openai" | "openai-compatible" | "anthropic" | "google" | "mock" | "deterministic";
     model: string | null;
     degraded: boolean;
   }> {
@@ -4451,7 +4493,7 @@ export class SocratesService {
     const fastArtifactIntent =
       input.artifact &&
       ["system_diagram", "api_map", "timeline_view"].includes(input.intent);
-    if (input.refusedMutation || input.evidence.length === 0 || fastArtifactIntent || !this.env.OPENAI_API_KEY) {
+    if (input.refusedMutation || input.evidence.length === 0 || fastArtifactIntent || !hasConfiguredGeneration(this.env)) {
       return {
         answer_md: deterministic,
         confidence: input.evidence.length > 0 ? "medium" : "low",
@@ -4461,7 +4503,7 @@ export class SocratesService {
         modelCalls: 0,
         provider: "deterministic",
         model: null,
-        degraded: !input.refusedMutation && input.evidence.length > 0 && !fastArtifactIntent && !this.env.OPENAI_API_KEY
+        degraded: !input.refusedMutation && input.evidence.length > 0 && !fastArtifactIntent && !hasConfiguredGeneration(this.env)
       };
     }
 
@@ -4547,11 +4589,11 @@ export class SocratesService {
         embeddingTokens: 0,
         rerankUnits: 0
       });
-      const evidenceMarkers = Array.from(generated.answer_md.matchAll(/\[E(\d{1,2})\]/gi))
+      const evidenceMarkers = Array.from(generated.answer_md.matchAll(/\[E(\d+)\]/gi))
         .map((match) => Number(match[1]));
       const promptEvidenceCount = this.socratesV1PromptEvidence(input.evidence).length;
       const invalidEvidenceMarker = evidenceMarkers.some(
-        (marker) => !Number.isInteger(marker) || marker < 1 || marker > promptEvidenceCount
+        (marker) => !Number.isSafeInteger(marker) || marker < 1 || marker > promptEvidenceCount
       );
       const missingEvidenceMarkers = input.evidence.length > 0 && evidenceMarkers.length === 0;
       const temporalFallback = this.buildSocratesV1TemporalFallback(input.question, input.evidence);
@@ -4732,9 +4774,9 @@ ${evidence || "No evidence retrieved."}${artifact}
     evidence: SocratesV1Evidence[],
     evidenceOnlyAnswer: boolean
   ) {
-    const indexes = Array.from(answer.matchAll(/\[E(\d{1,2})\]/gi))
+    const indexes = Array.from(answer.matchAll(/\[E(\d+)\]/gi))
       .map((match) => Number(match[1]) - 1)
-      .filter((index) => Number.isInteger(index) && index >= 0 && index < evidence.length);
+      .filter((index) => Number.isSafeInteger(index) && index >= 0 && index < evidence.length);
     if (indexes.length === 0 && evidenceOnlyAnswer) return evidence;
     return Array.from(new Set(indexes)).map((index) => evidence[index]!);
   }

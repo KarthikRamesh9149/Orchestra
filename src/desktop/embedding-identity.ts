@@ -1,15 +1,16 @@
 import type {PrismaClient} from '@prisma/client';
 import {AppError} from '../app/errors.js';
-const identity={provider:'openai',model:'text-embedding-3-small',dimensions:1536};
+export interface DesktopEmbeddingIdentity {provider:string;model:string;dimensions:1536;endpoint?:string}
+const legacyIdentity:DesktopEmbeddingIdentity={provider:'openai',model:'text-embedding-3-small',dimensions:1536};
 /** One durable identity per local index. Existing unidentified vectors must not
  * be queried with a newly chosen model. Model migration remains a separate job. */
-export async function ensureDesktopEmbeddingIdentity(db:PrismaClient){
+export async function ensureDesktopEmbeddingIdentity(db:PrismaClient,identity:DesktopEmbeddingIdentity=legacyIdentity){
  await db.$transaction(async tx=>{
   await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtextextended('desktop:embedding-identity',0))`;
   const rows=await tx.$queryRaw<Array<{data:unknown}>>`SELECT data FROM desktop_limit_state WHERE key='desktop:embedding-identity' FOR UPDATE`;
   if(rows.length){
    const data=rows[0].data as Partial<typeof identity>|null;
-   if(!data||data.provider!==identity.provider||data.model!==identity.model||data.dimensions!==identity.dimensions)throw new AppError(409,'The saved embedding identity requires a verified reindex before AI can start.','embedding_reindex_required');
+   if(!data||data.provider!==identity.provider||data.model!==identity.model||data.dimensions!==identity.dimensions||data.endpoint!==identity.endpoint)throw new AppError(409,'The saved embedding identity requires a verified reindex before semantic search can start. Lexical search remains available.','embedding_reindex_required');
    return;
   }
   const populated=await tx.$queryRaw<Array<{present:boolean}>>`SELECT (

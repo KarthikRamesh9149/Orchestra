@@ -448,7 +448,89 @@ function makeService(
   return { service, prisma, tx, projectService, auditService, generationProvider };
 }
 
+function configureMultiDocumentEvidence(prisma: any, includeSecondDocument = true) {
+  const documents = [
+    { id: "10000000-0000-4000-8000-000000000001", title: "Alpha Launch PRD" },
+    { id: "10000000-0000-4000-8000-000000000002", title: "Beta Validation PRD" }
+  ];
+  const rows = Array.from({ length: includeSecondDocument ? 11 : 10 }, (_, index) => {
+    const document = documents[index < 10 ? 0 : 1]!;
+    const versionId = `version-${document.id}`;
+    return {
+      id: `20000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+      content: index < 10 ? "Launch requirements and exclusions: CSV export is required." : "Only email sign-in is permitted.",
+      chunkIndex: index,
+      documentVersionId: versionId,
+      section: { anchorId: `section-${index}`, headingPath: ["Scope"] },
+      documentVersion: { id: versionId, status: "ready", document: { ...document, currentVersionId: versionId } },
+      createdAt: new Date("2026-05-28T10:00:00.000Z")
+    };
+  });
+  prisma.document = { findMany: vi.fn(async () => documents) };
+  prisma.$queryRaw = vi.fn(async () => rows.map(({ id }) => ({ id })));
+  prisma.documentChunk.findMany = vi.fn(async ({ where }: any) => where.id?.in
+    ? rows.filter((row) => where.id.in.includes(row.id))
+    : rows);
+  return { documents, rows };
+}
+
 describe("SocratesService.askV1ProjectMemory", () => {
+  it.each([
+    { selectedSources: ["documents"] },
+    { selectedSources: ["all"] },
+    { selectedSources: undefined }
+  ])("preserves each named document before chunk and answer caps for source scope %j", async ({ selectedSources }) => {
+    const { service, prisma, generationProvider } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key" },
+      { answer_md: "Alpha requires export [E1]. Beta permits email sign-in [E2].", confidence: "high", limitations: [], suggested_prompts: [] }
+    );
+    const { rows } = configureMultiDocumentEvidence(prisma);
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "Compare Alpha Launch PRD and Beta Validation PRD requirements and exclusions.",
+      selectedSources, maxEvidence: 2, includeArtifacts: false, includeHistory: false
+    });
+    const prompt = String(generationProvider.generateObject.mock.calls[0]?.[0]?.prompt);
+    expect(prompt).toContain("explicitDocumentScope: Alpha Launch PRD");
+    expect(prompt).toContain("explicitDocumentScope: Beta Validation PRD");
+    expect(result.citations.map((citation) => citation.refId)).toEqual([rows[0]!.id, rows[10]!.id]);
+    expect(result.modelMetadata.degraded).toBe(false);
+  });
+
+  it.each([
+    { includeSecondDocument: false, maxEvidence: 2 },
+    { includeSecondDocument: true, maxEvidence: 1 }
+  ])("abstains when a named comparison lacks complete document coverage: %j", async ({ includeSecondDocument, maxEvidence }) => {
+    const { service, prisma, generationProvider } = makeService({ OPENAI_API_KEY: "sk-test-openai-key" });
+    configureMultiDocumentEvidence(prisma, includeSecondDocument);
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "Compare Alpha Launch PRD and Beta Validation PRD requirements and exclusions.",
+      maxEvidence, includeArtifacts: false, includeHistory: false
+    });
+    expect(result.answer_md).toContain("don't have enough evidence from every explicitly requested document");
+    expect(result.answer_md).toContain("Beta Validation PRD");
+    expect(result.confidence).toBe("low");
+    expect(result.costEstimate.modelCalls).toBe(0);
+    expect(generationProvider.generateObject).not.toHaveBeenCalled();
+  });
+
+  it("preserves distinct document coverage for unscoped document summaries", async () => {
+    const { service, prisma, generationProvider } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key" },
+      { answer_md: "Export is required [E1]. Email sign-in is permitted [E2].", confidence: "high", limitations: [], suggested_prompts: [] }
+    );
+    configureMultiDocumentEvidence(prisma);
+    await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "Summarize uploaded project documents requirements and exclusions.",
+      selectedSources: ["documents"], maxEvidence: 2, includeArtifacts: false, includeHistory: false
+    });
+    const prompt = String(generationProvider.generateObject.mock.calls[0]?.[0]?.prompt);
+    expect(prompt).toContain("title: Alpha Launch PRD");
+    expect(prompt).toContain("title: Beta Validation PRD");
+  });
+
   it("preserves complete source lists and acceptance sentences instead of cutting arbitrary windows", () => {
     const content = [
       "Northstar launch requirements. Demo project.",
@@ -941,7 +1023,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(prompt).toContain("Supabase");
   });
 
-  it("returns a decision-ready deterministic fallback for a readiness verdict", async () => {
+  it("returns an explicitly unverified deterministic fallback for a readiness verdict", async () => {
     const { service } = makeService();
 
     const result = await service.askV1ProjectMemory({
@@ -952,8 +1034,26 @@ describe("SocratesService.askV1ProjectMemory", () => {
     });
 
     expect(result.answer_md).toContain("## Readiness verdict");
-    expect(result.answer_md).toContain("## Confirmed evidence");
+    expect(result.answer_md).toContain("## Retrieved evidence");
     expect(result.answer_md).toContain("## Still unconfirmed");
+    expect(result.answer_md).toContain("Readiness is unverified");
+    expect(result.answer_md).not.toContain("supports a controlled beta");
+  });
+
+  it.each([
+    "Critical tenant isolation failure. Do not launch or run a beta until the blocker is fixed.",
+    "The office kitchen has a blue cupboard."
+  ])("does not approve a beta from negative or irrelevant retrieved evidence: %s", async (content) => {
+    const { service, prisma } = makeService();
+    const rows = await prisma.documentChunk.findMany();
+    prisma.documentChunk.findMany.mockResolvedValue([{ ...rows[0]!, content }]);
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "Give me a readiness verdict.", selectedSources: ["documents"], includeArtifacts: false, includeHistory: false
+    });
+    expect(result.answer_md).toContain("Readiness is unverified");
+    expect(result.answer_md).toContain(content);
+    expect(result.answer_md).not.toContain("supports a controlled beta");
   });
 
   it("returns a persisted backend API map artifact with citations and no fake demo data", async () => {
@@ -2201,6 +2301,21 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(result.open_targets.length).toBeGreaterThan(0);
     expect(result.limitations).toContainEqual(expect.stringMatching(/failed evidence-marker validation/i));
     expect(result.modelMetadata.degraded).toBe(true);
+  });
+
+  it.each(["100", "0", "9".repeat(400)])("rejects invalid evidence marker E%s even alongside a valid marker", async (marker) => {
+    const { service } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key" },
+      { answer_md: `Supported statement [E1]. Fabricated statement [E${marker}].`, confidence: "high", limitations: [], suggested_prompts: [] }
+    );
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID,
+      question: "What backend API routes are documented?", selectedSources: ["documents"], includeArtifacts: false
+    });
+    expect(result.answer_md).not.toContain("Fabricated statement");
+    expect(result.answer_md).not.toContain(`[E${marker}]`);
+    expect(result.modelMetadata.degraded).toBe(true);
+    expect(result.limitations).toContainEqual(expect.stringMatching(/failed evidence-marker validation/i));
   });
 
   it("rejects invented elapsed-time arithmetic in current-state answers", async () => {

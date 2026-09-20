@@ -3,6 +3,16 @@ import crypto from 'node:crypto';
 
 const manifest=JSON.parse(fs.readFileSync('docs/desktop/import-manifest.json','utf8'));
 const adjustments={
+ 'src/lib/ai-ops/ai-model-strategy.ts':'Provider-neutral desktop generation readiness and honest vendor metadata; hosted configuration remains separate.',
+ 'src/lib/parsers/file-safety.ts':'Security audit: bound actual ZIP inflation and validate archive interpretations before materialising DOCX/XLSX contents.',
+ 'src/lib/parsers/docx.ts':'Await bounded ZIP payload verification before handing document contents to Mammoth.',
+ 'src/lib/parsers/xlsx.ts':'Await bounded ZIP payload verification before handing workbook contents to JSZip.',
+ 'tests/parser-file-safety.test.ts':'Regression fixtures for forged decompressed sizes and inconsistent ZIP names, headers and payload spans.',
+ 'src/lib/retrieval/hybrid.ts':'Preserve document and version identity for citation targets without section anchors.',
+ 'tests/retrieval-hybrid-lexical.test.ts':'Regression coverage for sectionless document citation provenance.',
+ 'src/modules/deep-research/prompts.ts':'Require claim-local citations for summaries, market context and proposed expansion without converting suggestions into truth.',
+ 'src/modules/deep-research/report-render.ts':'Render all citation aliases for each safely deduplicated research source in Markdown and PDF.',
+ 'tests/fix22-deep-research.test.ts':'Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage.',
  'tests/deep-research-citation-contract.test.ts':'Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads.',
  'src/modules/deep-research/evidence.ts':'Real OpenAI research regression: retain retrieved source content instead of substituting a contextual summary; preserve evidence budgets and authorization.',
  'tests/deep-research-evidence-coverage.test.ts':'Regression proving a short contextual summary cannot replace complete retrieved source facts.',
@@ -60,6 +70,19 @@ const adjustments={
  'apps/vscode-extension/tsconfig.json':'Explicit Node/VS Code ambient types prevent accidental parent-workspace type loading.',
  'apps/vscode-extension/package-lock.json':'Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh.'
 };
+// September 20 owner-authorized BYOK and product-correctness audit. Preserve
+// the prior rationale while recording this separately reviewed evolution.
+for (const file of [
+ 'src/config/env.ts','apps/beta-web/src/pages/SettingsPage.tsx'
+]) adjustments[file]+=' September 20: explicit desktop provider selection and shared-server ownership; no production configuration or UI styling changes.';
+for (const file of [
+ 'src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts',
+ 'src/modules/deep-research/service.ts','src/modules/deep-research/schemas.ts',
+ 'tests/deep-research-citation-contract.test.ts','tests/deep-research-evidence-coverage.test.ts',
+ 'apps/beta-web/src/components/socrates/DeepResearch.tsx',
+ 'apps/beta-web/src/components/socrates/DeepResearch.test.tsx','apps/beta-web/src/lib/api.ts'
+]) adjustments[file]+=' September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged.';
+adjustments['src/modules/deep-research/service.ts']+=' Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence.';
 const changes=[];
 // User-authorized UI copy cleanup during Step 8; no styling or behavior changes.
 for (const file of ['ChatPage.tsx','ChatPage.test.tsx','DeliveryPage.tsx','TruthInboxPage.tsx','TruthChangePacketPage.tsx','WatchtowerPage.tsx']) {

@@ -3,6 +3,7 @@ import { Prisma, type PrismaClient } from "@prisma/client";
 import { AppError } from "../../app/errors.js";
 import type { AppEnv } from "../../config/env.js";
 import type { EmbeddingProvider, GenerationProvider } from "../../lib/ai/provider.js";
+import { hasConfiguredGeneration } from "../../lib/ai/configuration.js";
 import { estimateAiCost, getModelForTask, pricingFromEnv, type AiLimiter } from "../../lib/ai-ops/index.js";
 import { classifyIntent } from "../../lib/retrieval/intent.js";
 import { buildRetrievalPlan, domainsFromPlan } from "../../lib/retrieval/planner.js";
@@ -84,7 +85,7 @@ export class DeepResearchService {
     this.assertEnabled();
     await this.projectService.ensureProjectAccess(projectId, actor.userId);
 
-    if (this.env.RUNTIME_PROFILE === 'desktop-local' && !this.env.OPENAI_API_KEY) throw new AppError(409, 'Configure desktop AI before starting research. No run was created or charged. Offline document reading and search remain available.', 'ai_not_configured');
+    if (this.env.RUNTIME_PROFILE === 'desktop-local' && !hasConfiguredGeneration(this.env)) throw new AppError(409, 'Configure desktop AI before starting research. No run was created or charged. Offline document reading and search remain available.', 'ai_not_configured');
 
     const now = new Date();
     const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
@@ -254,12 +255,16 @@ export class DeepResearchService {
         focus,
         selectedSources
       );
+      const originalBaseCards = await filterDeepResearchOriginalDocumentCards(
+        this.prisma, projectId, filterCardsBySources(pack.evidenceCards, selectedSources)
+      );
       const cards = mergeDeepResearchCards(
-        filterCardsBySources(pack.evidenceCards, selectedSources),
+        originalBaseCards,
         explicitSourceCards,
         Math.max(this.env.SOCRATES_MAX_EVIDENCE_ITEMS, Math.min(16, selectedSources.size * 3)),
         focus
       );
+      assertDeepResearchDocumentEvidence(cards, selectedSources);
       await progress(40, "evidence_ready");
 
       // 5. optional public web search (focus-derived queries only)
@@ -310,7 +315,7 @@ export class DeepResearchService {
       const grounded = groundDeepResearchOutput(llm, cards, webResults);
       const results: DeepResearchResults = deepResearchResultsSchema.parse({
         ...grounded,
-        marketContext: wantWeb ? llm.marketContext : [],
+        marketContext: wantWeb ? grounded.marketContext : [],
         stats,
         sources: sourceItems
       });
@@ -524,6 +529,7 @@ export async function collectExplicitDeepResearchSourceCards(
   const tasks: Array<Promise<EvidenceCard[]>> = [];
   if (selected.has("docs") && typeof prisma.document?.findMany === "function" && typeof prisma.documentChunk?.findMany === "function") {
     tasks.push(collectNamedDocumentCards(prisma, projectId, focus));
+    tasks.push(collectTopicalDocumentCards(prisma, projectId, focus));
   }
 
   if (selected.has("slack")) {
@@ -536,6 +542,106 @@ export async function collectExplicitDeepResearchSourceCards(
   return (await Promise.all(tasks)).flat();
 }
 
+const RESEARCH_DOCUMENT_SCAFFOLD = new Set([
+  "assess", "assessment", "audit", "evaluate", "review", "research", "describe", "explain", "provide",
+  "still", "needed", "needs", "need", "before", "after", "should", "could", "would", "must",
+  "all", "any", "these", "those", "this", "that", "are", "was", "were", "have", "has", "had",
+  "product", "requirement", "requirements", "decision", "decisions", "launch", "readiness", "ready",
+  "status", "detail", "details", "information", "fact", "facts"
+]);
+
+export async function filterDeepResearchOriginalDocumentCards(prisma: PrismaClient, projectId: string, cards: EvidenceCard[]): Promise<EvidenceCard[]> {
+  const isDocument = (card: EvidenceCard) => providerLabel(card.sourceType) === "Documents";
+  const documentCards = cards.filter(isDocument);
+  if (!documentCards.length) return cards;
+  const versionIds = [...new Set(documentCards.map(card => card.openTarget?.targetRef.documentVersionId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0))];
+  // Validate provenance independently from lexical matches: a valid semantic
+  // match must not be lost merely because a synonym differs from source text.
+  const versions = versionIds.length ? await prisma.documentVersion.findMany({
+    where: { projectId, id: { in: versionIds }, status: { in: ["ready", "partial"] },
+      OR: [{ sourceLabel: null }, { sourceLabel: { not: "generated_by_socrates" } }],
+      document: { projectId, archivedAt: null } },
+    select: { id: true, documentId: true, sourceLabel: true, document: { select: { currentVersionId: true } } }
+  }) : [];
+  const originalVersions = new Map(versions.filter(version => version.id === version.document.currentVersionId
+    && version.sourceLabel !== "generated_by_socrates").map(version => [version.id, version.documentId]));
+  return cards.filter(card => !isDocument(card) || originalVersions.get(String(card.openTarget?.targetRef.documentVersionId)) === sourceDocumentId(card));
+}
+
+async function collectTopicalDocumentCards(prisma: PrismaClient, projectId: string, focus: string): Promise<EvidenceCard[]> {
+  if (typeof prisma.$queryRaw !== "function") return [];
+  const terms = buildRecallPreservingWebsearchQuery(focus, 64).split(" OR ")
+    .filter(term => term && !RESEARCH_DOCUMENT_SCAFFOLD.has(term));
+  if (!terms.length) return [];
+  const searchQuery = terms.join(" OR ");
+  // Search source bytes across the current corpus. Long natural questions need
+  // not repeat a complete title or match the hybrid vector-score threshold.
+  // Derived summaries, research notes and Brain nodes are not document rows.
+  const minimumMatches = Math.min(2, terms.length);
+  const matches = await prisma.$queryRaw<Array<{ id: string; matchedTerms: number }>>(Prisma.sql`
+    SELECT dc.id, relevance.matched_terms AS "matchedTerms"
+    FROM document_chunks dc
+    JOIN document_versions dv ON dv.id = dc.document_version_id
+    JOIN documents d ON d.id = dv.document_id
+    CROSS JOIN LATERAL (
+      SELECT count(*)::int AS matched_terms
+      FROM unnest(ARRAY[${Prisma.join(terms)}]::text[]) AS query_term(term)
+      WHERE to_tsvector('english', dc.content) @@ plainto_tsquery('english', query_term.term)
+    ) relevance
+    WHERE dc.project_id = ${projectId}::uuid
+      AND d.project_id = ${projectId}::uuid
+      AND d.archived_at IS NULL
+      AND d.current_version_id = dv.id
+      AND dv.status IN ('ready', 'partial')
+      AND (dv.source_label IS NULL OR dv.source_label <> 'generated_by_socrates')
+      AND dc.parse_revision = dv.parse_revision
+      AND to_tsvector('english', dc.lexical_content) @@ websearch_to_tsquery('english', ${searchQuery})
+      AND relevance.matched_terms >= ${minimumMatches}
+    ORDER BY relevance.matched_terms DESC,
+      ts_rank_cd(to_tsvector('english', dc.content), websearch_to_tsquery('english', ${searchQuery})) DESC,
+      dc.chunk_index ASC, dc.id ASC
+    LIMIT 64
+  `);
+  if (!matches.length) return [];
+  const rows = await prisma.documentChunk.findMany({
+    where: { projectId, id: { in: matches.map(row => row.id) },
+      documentVersion: { status: { in: ["ready", "partial"] }, document: { projectId, archivedAt: null },
+        OR: [{ sourceLabel: null }, { sourceLabel: { not: "generated_by_socrates" } }] } },
+    include: { section: true, documentVersion: { include: { document: true } } }
+  });
+  const queryRanks = new Map(matches.map((row, index) => [row.id, index]));
+  const matchedTerms = new Map(matches.map(row => [row.id, Number(row.matchedTerms)]));
+  const ranked = rows.filter(row => row.parseRevision === row.documentVersion.parseRevision
+      && row.documentVersion.sourceLabel !== "generated_by_socrates"
+      && row.documentVersion.document.currentVersionId === row.documentVersionId)
+    .map(row => ({ row, matched: matchedTerms.get(row.id) ?? 0 }))
+    // A project name in a title or common question boilerplate is not enough.
+    // Count terms with the same English stemming as SQL, not JS substrings.
+    .filter(({ matched }) => Number.isSafeInteger(matched) && matched >= minimumMatches && matched <= terms.length)
+    .sort((a, b) => b.matched - a.matched || (queryRanks.get(a.row.id) ?? 0) - (queryRanks.get(b.row.id) ?? 0));
+  const groups = new Map<string, typeof ranked>();
+  for (const item of ranked) {
+    const id = item.row.documentVersion.document.id;
+    const group = groups.get(id) ?? [];
+    group.push(item);
+    groups.set(id, group);
+  }
+  const diverse = [...groups.values()].flatMap((group, groupIndex) => group.map((item, index) => ({ item, index, groupIndex })))
+    .sort((a, b) => a.index - b.index || a.groupIndex - b.groupIndex).slice(0, 16);
+  return diverse.map(({ item: { row, matched } }) => ({
+      evidenceId: `document:${row.id}`, sourceType: "document_chunk", title: row.documentVersion.document.title,
+      excerpt: cleanExcerpt(row.content, 4000), whySelected: "Topical current uploaded-document source text; not an accepted product decision",
+      confidence: 0.5 + Math.min(0.5, matched / terms.length) * 0.5,
+      sourcePrecedence: "source_evidence", trace: { documentChunkId: row.id },
+      citationRef: { type: "document_chunk", id: row.id, label: row.documentVersion.document.title },
+      openTarget: { targetType: row.section ? "document_section" : "document", targetRef: {
+        documentId: row.documentVersion.document.id, documentVersionId: row.documentVersionId,
+        ...(row.section ? { anchorId: row.section.anchorId } : {})
+      } }
+    }));
+}
+
 async function collectNamedDocumentCards(prisma: PrismaClient, projectId: string, focus: string): Promise<EvidenceCard[]> {
   const normalize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
   const normalizedFocus = normalize(focus);
@@ -546,21 +652,33 @@ async function collectNamedDocumentCards(prisma: PrismaClient, projectId: string
   const named = documents.filter(document => normalize(document.title).split(" ").length >= 2
     && normalizedFocus.includes(normalize(document.title)));
   if (!named.length) return [];
-  const rows = await prisma.documentChunk.findMany({
-    where: { projectId, documentVersionId: { in: named.map(document => document.currentVersionId!) },
-      documentVersion: { status: { in: ["ready", "partial"] } } },
-    include: { section: true, documentVersion: { include: { document: true } } },
-    orderBy: { chunkIndex: "asc" }, take: 40
-  });
-  return rows.filter(row => row.parseRevision === row.documentVersion.parseRevision).slice(0, 8).map(row => ({
+  // Independently bound each named document so one long document cannot fill
+  // every retrieval slot before a second named source is even considered.
+  const queryWithoutTitles = named.reduce((query, document) => query.replace(normalize(document.title), " "), normalizedFocus);
+  const groups = await Promise.all(named.slice(0, 8).map(async document => {
+    const rows = await prisma.documentChunk.findMany({
+      where: { projectId, documentVersionId: { in: [document.currentVersionId!] },
+        documentVersion: { status: { in: ["ready", "partial"] },
+          OR: [{ sourceLabel: null }, { sourceLabel: { not: "generated_by_socrates" } }] } },
+      include: { section: true, documentVersion: { include: { document: true } } },
+      orderBy: { chunkIndex: "asc" }, take: 40
+    });
+    return rankExplicitRows(rows.filter(row => row.parseRevision === row.documentVersion.parseRevision
+        && row.documentVersion.sourceLabel !== "generated_by_socrates"),
+      queryWithoutTitles, row => row.content).map(({ row }) => row);
+  }));
+  const rows = groups.flatMap((group, groupIndex) => group.map((row, index) => ({ row, index, groupIndex })))
+    .sort((a, b) => a.index - b.index || a.groupIndex - b.groupIndex)
+    .slice(0, 8).map(({ row }) => row);
+  return rows.map(row => ({
     evidenceId: `document:${row.id}`, sourceType: "document_chunk", title: row.documentVersion.document.title,
-    excerpt: cleanExcerpt(row.content), whySelected: "Explicitly named current document source text",
+    excerpt: cleanExcerpt(row.content, 4000), whySelected: "Explicitly named current document source text",
     confidence: 0.9, sourcePrecedence: "source_evidence", trace: { documentChunkId: row.id },
     citationRef: { type: "document_chunk", id: row.id, label: row.documentVersion.document.title },
-    openTarget: row.section ? { targetType: "document_section", targetRef: {
+    openTarget: { targetType: row.section ? "document_section" : "document", targetRef: {
       documentId: row.documentVersion.document.id, documentVersionId: row.documentVersionId,
-      anchorId: row.section.anchorId
-    } } : undefined
+      ...(row.section ? { anchorId: row.section.anchorId } : {})
+    } }
   }));
 }
 
@@ -699,7 +817,7 @@ function rankExplicitRows<T>(rows: T[], focus: string, textFor: (row: T) => stri
     .sort((a, b) => b.score - a.score || a.index - b.index);
 }
 
-function mergeDeepResearchCards(base: EvidenceCard[], explicit: EvidenceCard[], limit: number, focus: string) {
+export function mergeDeepResearchCards(base: EvidenceCard[], explicit: EvidenceCard[], limit: number, focus: string) {
   const merged: EvidenceCard[] = [];
   const seen = new Set<string>();
   const ranked = [...base, ...explicit]
@@ -709,7 +827,34 @@ function mergeDeepResearchCards(base: EvidenceCard[], explicit: EvidenceCard[], 
       score: lexicalScore(focus, `${card.title} ${card.excerpt} ${card.whySelected}`)
     }))
     .sort((a, b) => b.score - a.score || b.card.confidence - a.card.confidence || a.index - b.index);
-  for (const { card } of ranked) {
+  // Reserve a slot for each explicitly requested document before filling the
+  // remaining budget by relevance. Identity comes from document IDs, not titles.
+  const namedDocumentIds = new Set(explicit.map(sourceDocumentId).filter((id): id is string => id !== null));
+  const reserved = new Set<string>();
+  const firstPerDocument = ranked.filter(({ card }) => {
+    const id = sourceDocumentId(card);
+    if (!id || !namedDocumentIds.has(id) || reserved.has(id)) return false;
+    reserved.add(id);
+    return true;
+  });
+  const documentsFirst = [...ranked.filter(({ card }) => sourceDocumentId(card)), ...ranked.filter(({ card }) => !sourceDocumentId(card))];
+  const sourceFamily = (card: EvidenceCard) => {
+    if (sourceDocumentId(card)) return "docs";
+    if (/github|commit|pull_request/.test(card.sourceType)) return "github";
+    if (/message|thread|comm|slack|teams|chat/.test(card.sourceType)) return "slack";
+    if (/calendar|meeting|event/.test(card.sourceType)) return "calendar";
+    return null;
+  };
+  const reservedFamilies = new Set<string>();
+  const firstPerSource = ranked.filter(({ card }) => {
+    const family = sourceFamily(card);
+    if (!family || reservedFamilies.has(family)) return false;
+    reservedFamilies.add(family);
+    return true;
+  });
+  // Preserve each selected domain before document diversity. Documents cannot
+  // exhaust a mixed-source request's slots and silently drop Slack or GitHub.
+  for (const { card } of [...firstPerSource, ...firstPerDocument, ...(reservedFamilies.size > 1 ? ranked : documentsFirst)]) {
     const key = `${card.sourceType}:${card.citationRef?.id ?? card.evidenceId}`;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -793,8 +938,8 @@ function readJsonString(value: unknown, key: string) {
   return typeof candidate === "string" && candidate.trim() ? candidate.trim() : null;
 }
 
-function cleanExcerpt(value: unknown) {
-  return String(value ?? "").replace(/\s+/g, " ").trim().slice(0, 1600);
+function cleanExcerpt(value: unknown, maxChars = 1600) {
+  return String(value ?? "").replace(/\s+/g, " ").trim().slice(0, maxChars);
 }
 
 export function filterCardsBySources(cards: EvidenceCard[], selected: Set<string>): EvidenceCard[] {
@@ -807,7 +952,9 @@ export function filterCardsBySources(cards: EvidenceCard[], selected: Set<string
     if (isComm) return selected.has("slack");
     if (isGithub) return selected.has("github");
     if (isCalendar) return selected.has("calendar");
-    if (isDoc) return selected.has("docs");
+    // "Uploaded docs" alone is not permission to substitute derived Brain or
+    // Live Doc summaries for the source documents the user selected.
+    if (isDoc) return selected.has("docs") && !(selected.size === 1 && /brain|live_doc/.test(t));
     // Unknown source domains fail closed: selecting one source must never admit
     // an unclassified card from another domain.
     return false;
@@ -815,13 +962,28 @@ export function filterCardsBySources(cards: EvidenceCard[], selected: Set<string
 }
 
 export function buildDeepResearchSources(cards: EvidenceCard[], webResults: SearchResult[]): DeepResearchSource[] {
-  const items: DeepResearchSource[] = [];
+  const items = new Map<string, DeepResearchSource>();
+  const append = (key: string, item: DeepResearchSource) => {
+    const existing = items.get(key);
+    if (existing) {
+      existing.refs = [...new Set([...(existing.refs ?? []), ...(item.refs ?? [])])];
+    } else {
+      items.set(key, item);
+    }
+  };
   for (const [index, card] of cards.entries()) {
-    const label = safeSourceLabel(card.citationRef?.label ?? card.title, "Project evidence");
-    items.push({
+    const documentId = sourceDocumentId(card);
+    const label = safeSourceLabel(documentId ? card.title : card.citationRef?.label ?? card.title, "Project evidence");
+    const derivedKinds: Record<string, string> = { brain_node: "Brain node", product_brain: "Product Brain", live_doc_section: "Live Doc" };
+    const derivedKind = derivedKinds[card.sourceType];
+    const ref = `E${index + 1}`;
+    // A generic fallback route or shared title is not source identity. Only
+    // verified document IDs or exact typed evidence IDs can group citations.
+    append(sourceIdentity(card), {
       provider: providerLabel(card.sourceType),
-      ref: `E${index + 1}`,
-      label,
+      ref,
+      refs: [ref],
+      label: derivedKind ? `${label.slice(0, 220)} (${derivedKind})` : label,
       kind: "internal",
       href: safeInternalHref(card)
     });
@@ -829,17 +991,36 @@ export function buildDeepResearchSources(cards: EvidenceCard[], webResults: Sear
   for (const [index, result] of webResults.entries()) {
     const href = safeExternalHref(result.url);
     if (!href) continue;
-    items.push({ provider: "Web", ref: `W${index + 1}`, label: safeSourceLabel(result.title, "Public source"), kind: "web", href });
+    const ref = `W${index + 1}`;
+    append(`web:${href}`, { provider: "Web", ref, refs: [ref], label: safeSourceLabel(result.title, "Public source"), kind: "web", href });
   }
-  return Array.from(new Map(items.map((item) => {
-    const documentPath = item.kind === "internal" && item.href?.match(/^\/memory\/docs\/[^/?#]+\/view/);
-    return [documentPath ? `document:${documentPath[0]}` : `${item.kind}:${item.href}:${item.label}`, item];
-  })).values()).slice(0, 40);
+  return [...items.values()];
+}
+
+function sourceDocumentId(card: EvidenceCard) {
+  const id = card.openTarget?.targetRef.documentId;
+  const sourceType = card.sourceType.toLowerCase();
+  return typeof id === "string" && id.length > 0
+    && /document|doc|section|chunk/.test(sourceType)
+    && !/brain|live_doc/.test(sourceType) ? id : null;
+}
+
+function sourceIdentity(card: EvidenceCard) {
+  const documentId = sourceDocumentId(card);
+  return documentId ? `document:${documentId}` : `evidence:${card.citationRef?.type ?? card.sourceType}:${card.citationRef?.id ?? card.evidenceId}`;
 }
 
 export function assertDeepResearchRetrievalAvailable(retrieval: { candidates: unknown[]; telemetry: { retrievalBranchFailureCount: number } }) {
   if (retrieval.candidates.length === 0 && retrieval.telemetry.retrievalBranchFailureCount > 0) {
     throw new AppError(503, "Research retrieval could not complete. Start research again; source availability could not be verified.", "deep_research_retrieval_unavailable");
+  }
+}
+
+export function assertDeepResearchDocumentEvidence(cards: EvidenceCard[], selectedSources: Set<string>) {
+  if (selectedSources.size === 1 && selectedSources.has("docs") && !cards.some(sourceDocumentId)) {
+    throw new AppError(503,
+      "No matching current uploaded-document text was retrieved. Derived notes cannot establish what those documents contain. Narrow the focus or check document processing; this does not mean the documents lack the requested facts.",
+      "deep_research_document_evidence_unavailable");
   }
 }
 
@@ -850,7 +1031,7 @@ export function groundDeepResearchOutput(
 ) {
   const allowed = new Set([
     ...cards.map((_, index) => `E${index + 1}`),
-    ...webResults.map((_, index) => `W${index + 1}`)
+    ...webResults.flatMap((result, index) => safeExternalHref(result.url) ? [`W${index + 1}`] : [])
   ]);
   // Older prompts allowed source titles. Resolve only exact, unambiguous aliases;
   // never fuzzy-match a title or map a duplicate title to an arbitrary excerpt.
@@ -861,9 +1042,11 @@ export function groundDeepResearchOutput(
     aliases.set(key, aliases.has(key) && aliases.get(key) !== ref ? null : ref);
   };
   cards.forEach((card, i) => { alias(card.title, `E${i + 1}`); if (card.citationRef) alias(`${card.citationRef.type}:${card.citationRef.id}`, `E${i + 1}`); });
-  webResults.forEach((result, i) => { alias(result.title, `W${i + 1}`); alias(result.url, `W${i + 1}`); });
-  const numberedRefs = (value: string) => (value.match(/\b[EW]\d+\b/gi) ?? []).map(ref => ref.toUpperCase()).filter(ref => allowed.has(ref));
-  const refs = (value: string) => Array.from(new Set([
+  webResults.forEach((result, i) => {
+    if (safeExternalHref(result.url)) { alias(result.title, `W${i + 1}`); alias(result.url, `W${i + 1}`); }
+  });
+  const numberedRefs = (value: string) => (value.match(/\b[EW]\d+\b/gi) ?? []).map(ref => ref.toUpperCase());
+  const refs = (value: string) => numberedRefs(value).some(ref => !allowed.has(ref)) ? [] : Array.from(new Set([
     ...numberedRefs(value),
     ...value.split(/\s*[·;\n]\s*/).flatMap(part => {
       const resolved = aliases.get(part.trim().toLowerCase());
@@ -878,15 +1061,22 @@ export function groundDeepResearchOutput(
     const valid = refs(action.source);
     return valid.length ? [{ ...action, source: valid.join(" · ") }] : [];
   });
+  const validInlineRefs = (value: string, webOnly = false) => {
+    const cited = numberedRefs(value);
+    return cited.length > 0 && cited.every(ref => allowed.has(ref) && (!webOnly || ref.startsWith("W")));
+  };
   return {
     ...output,
-    executiveSummary: findings.length || recommendedActions.length || numberedRefs(output.executiveSummary).length
+    // A citation elsewhere in the report cannot substantiate this summary.
+    executiveSummary: validInlineRefs(output.executiveSummary)
       ? output.executiveSummary
       : cards.length || webResults.length
         ? "Sources were retrieved, but a citation-backed answer could not be established. Try narrowing the focus; this does not mean the sources contain no answer."
         : "No evidence-grounded findings could be established for this focus from the selected sources.",
     findings,
-    recommendedActions
+    recommendedActions,
+    marketContext: output.marketContext.filter(item => validInlineRefs(`${item.title} ${item.body}`, true)),
+    expansionOpportunities: output.expansionOpportunities.filter(item => validInlineRefs(item))
   };
 }
 
@@ -904,8 +1094,8 @@ function providerLabel(sourceType: string) {
   if (/github|commit|pull_request|\bpr\b/.test(value)) return "GitHub";
   if (/message|thread|comm|slack|teams|chat/.test(value)) return value.includes("teams") ? "Microsoft Teams" : "Communications";
   if (/calendar|meeting|event/.test(value)) return "Calendar";
-  if (/document|doc|section|chunk/.test(value)) return "Documents";
   if (/brain|live_doc|product_brain/.test(value)) return "Product Memory";
+  if (/document|doc|section|chunk/.test(value)) return "Documents";
   return "Project Memory";
 }
 
@@ -942,9 +1132,8 @@ export function computeStats(cards: EvidenceCard[], webResults: SearchResult[], 
     const t = card.sourceType.toLowerCase();
     const ref = card.openTarget?.targetRef ?? {};
     const id = card.citationRef?.id ?? card.evidenceId;
-    const documentId = typeof ref.documentId === "string" ? ref.documentId : null;
-    const key = documentId ? `document:${documentId}` : `${t}:${id}`;
-    sources.add(key);
+    const documentId = sourceDocumentId(card);
+    sources.add(sourceIdentity(card));
     if (/message|thread|comm|slack|teams|chat/.test(t)) messages.add(String(card.trace?.messageId ?? ref.messageId ?? id));
     else if (/github|commit|pull_request|pr\b/.test(t)) engineering.add(id);
     // Derived Product Brain/Live Doc cards and unidentified chunks are not

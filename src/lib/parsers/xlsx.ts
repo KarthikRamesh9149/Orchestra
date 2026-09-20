@@ -1,7 +1,7 @@
 import JSZip from "jszip";
 import {
   assertParsedTextSafe,
-  assertXlsxZipStructureSafe,
+  assertXlsxZipContentSafe,
   consumeParsedTextBudget,
   withParserTimeout,
   type ParsedTextBudget
@@ -17,7 +17,7 @@ const MAX_HEADER_CHARS = 200;
 const MAX_CELL_CHARS = 500;
 
 export async function parseXlsxDocument(buffer: Buffer, title = "Spreadsheet"): Promise<ParsedDocument> {
-  assertXlsxZipStructureSafe(buffer);
+  await assertXlsxZipContentSafe(buffer);
   const zip = await withParserTimeout(JSZip.loadAsync(buffer), "XLSX zip parsing");
   const sharedStrings = await loadSharedStrings(zip);
   const sheets = await loadWorkbookSheets(zip);

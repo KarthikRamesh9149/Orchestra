@@ -180,17 +180,15 @@ async function retrieveDocumentChunks(
       containerId: chunk.document_version_id,
       sourcePrecedence: "source_evidence" as const,
       evidenceRole: "source_evidence" as const,
-      openTarget: chunk.anchor_id
-        ? {
-            targetType: "document_section",
-            targetRef: {
-              documentVersionId: chunk.document_version_id,
-              documentId: chunk.document_id,
-              anchorId: chunk.anchor_id,
-              ...(chunk.page_number ? { pageNumber: chunk.page_number } : {})
-            }
-          }
-        : undefined,
+      openTarget: {
+        targetType: chunk.anchor_id ? "document_section" : "document",
+        targetRef: {
+          documentVersionId: chunk.document_version_id,
+          documentId: chunk.document_id,
+          ...(chunk.anchor_id ? { anchorId: chunk.anchor_id } : {}),
+          ...(chunk.page_number ? { pageNumber: chunk.page_number } : {})
+        }
+      },
       citationRef: { type: chunk.drive_file_id ? "google_drive_document" : "document_chunk", id: chunk.id, label },
       vectorScore: vecSim,
       lexicalScore: lex,
@@ -318,17 +316,15 @@ async function retrieveDocumentLexicalChunks(
         containerId: chunk.document_version_id,
         sourcePrecedence: "source_evidence" as const,
         evidenceRole: "communication_evidence" as const,
-        openTarget: chunk.anchor_id
-          ? {
-              targetType: "document_section",
-              targetRef: {
-                documentVersionId: chunk.document_version_id,
-                documentId: chunk.document_id,
-                anchorId: chunk.anchor_id,
-                ...(chunk.page_number ? { pageNumber: chunk.page_number } : {})
-              }
-            }
-          : undefined,
+        openTarget: {
+          targetType: chunk.anchor_id ? "document_section" : "document",
+          targetRef: {
+            documentVersionId: chunk.document_version_id,
+            documentId: chunk.document_id,
+            ...(chunk.anchor_id ? { anchorId: chunk.anchor_id } : {}),
+            ...(chunk.page_number ? { pageNumber: chunk.page_number } : {})
+          }
+        },
         citationRef: { type: chunk.drive_file_id ? "google_drive_document" : "document_chunk", id: chunk.id, label },
         vectorScore: 0,
         lexicalScore: lex,

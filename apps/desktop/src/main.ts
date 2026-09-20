@@ -7,7 +7,10 @@ import {constants} from 'node:fs';
 import {commandSchema,isTrustedFrame} from './contracts.js';
 import {assetResponse} from './assets.js';
 import {loadVault} from './vault.js';
-import {ProtectedSettingsStore,aiPreferencesSchema,protectedSettingsSchema} from './protected-settings.js';
+import {ProtectedSettingsStore,aiPreferencesSchema} from './protected-settings.js';
+import {AiSettingsSession,aiKeyImportSchema,desktopAiSearchStatus} from './ai-settings-session.js';
+import {resolveDesktopGenerationEndpoint,resolveDesktopEmbeddingEndpoint} from '../../../src/desktop/ai-config.js';
+import {testDesktopAiConnection} from '../../../src/desktop/ai-provider.js';
 import {HostClient} from './host-client.js';
 import {Selections} from './selections.js';
 import {scanSourceFolder} from './source-folder.js';
@@ -67,6 +70,7 @@ else {
   const trusted=(event:Electron.IpcMainInvokeEvent)=>!!window&&event.sender===window.webContents&&event.senderFrame===window.webContents.mainFrame&&isTrustedFrame(event.senderFrame?.url??'',true);
   registerProjectTransferUI('orchestra:local-transfer',event=>trusted(event)?{window:window!,send:request=>localHttp(request,host,true)}:undefined);
   const settings=new ProtectedSettingsStore(join(app.getPath('userData'),'local-runtime'),safeStorage);
+  const aiDraft=new AiSettingsSession();
   const closeShared=registerSharedWindows({local:window,resources,preload:join(__dirname,'shared-preload.cjs'),store:new SharedConnectionStore(join(app.getPath('userData'),'shared-connections'),safeStorage),packaged:app.isPackaged});
   app.on('before-quit',closeShared);
   let configuringAi=false;
@@ -307,8 +311,53 @@ else {
   });
   ipcMain.handle('orchestra:ai-inspect',async event=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
-   try{const value=await settings.read();return {ok:true,data:{configured:!!value.ai,preferences:value.ai?.preferences??null}};}
+   try{const [value,runtime]=await Promise.all([settings.read(),host.request({operation:'local.bootstrap'})]);return {ok:true,data:{configured:!!value.ai,preferences:value.ai?.preferences??null,...desktopAiSearchStatus(runtime)}};}
    catch{return {ok:false,error:{code:'credentials_unavailable',message:'OS-protected AI settings could not be read.'}};}
+  });
+  ipcMain.handle('orchestra:ai-discard-draft',(event,target:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   if(configuringAi)return {ok:false,error:{code:'ai_settings_busy',message:'Finish the current native operation.'}};
+   const parsed=z.enum(['generation','embedding']).optional().safeParse(target);
+   if(!parsed.success)return {ok:false,error:{code:'invalid_ai_target',message:'Choose a valid credential target.'}};
+   aiDraft.clear(parsed.data);return {ok:true,data:{discarded:true}};
+  });
+  ipcMain.handle('orchestra:ai-import-key',async(event,input:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   const parsed=aiKeyImportSchema.safeParse(input);
+   if(!parsed.success)return {ok:false,error:{code:'invalid_ai_settings',message:'Select a provider and valid HTTPS endpoint before adding its API key.'}};
+   if(configuringAi)return {ok:false,error:{code:'ai_settings_busy',message:'Finish the current native operation.'}};
+   configuringAi=true;
+   try{
+    await settings.read(); // Require working OS protection before reading a key.
+    const {target,preferences}=parsed.data;
+    const provider=target==='generation'?(preferences.provider??'openai'):(preferences.embeddingProvider??((preferences.provider??'openai')==='openai'?'openai':'none'));
+    if(provider==='none')return {ok:false,error:{code:'embedding_disabled',message:'Select an embedding provider first.'}};
+    const destination=target==='generation'?resolveDesktopGenerationEndpoint(preferences):(provider==='openai'?'https://api.openai.com/v1/embeddings':`${preferences.embeddingBaseUrl!.replace(/\/$/,'')}/embeddings`);
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:`Add ${target==='generation'?'an API key':'an embedding API key'} for ${provider}?`,detail:`Copy a dedicated ${provider} API key first. Intended network destination: ${destination}\n\nThe key is read directly from your clipboard in the native app, never the web interface. It stays in native memory until you test and save; saved keys use OS encryption. No network request is made by this import. The copied key will be cleared from the clipboard.`,buttons:['Cancel','Import API key'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    const apiKey=(await clipboard.readText()).trim();
+    aiDraft.importKey(target,preferences,apiKey);
+    if((await clipboard.readText()).trim()===apiKey)await clipboard.clear();
+    return {ok:true,data:{imported:true}};
+   }catch{return {ok:false,error:{code:'ai_key_import_failed',message:'API key import was not confirmed. Copy a valid provider key and check OS credential protection.'}};}
+   finally{configuringAi=false;}
+  });
+  ipcMain.handle('orchestra:ai-test',async(event,input:unknown)=>{
+   if(!trusted(event))throw new Error('Unauthorized frame');
+   const parsed=aiPreferencesSchema.safeParse(input);
+   if(!parsed.success)return {ok:false,error:{code:'invalid_ai_settings',message:'Choose valid AI settings and request limits.'}};
+   if(configuringAi)return {ok:false,error:{code:'ai_settings_busy',message:'Finish the current AI configuration first.'}};
+   configuringAi=true;
+   try{
+    const saved=(await settings.read()).ai;
+    const config=aiDraft.configuration(parsed.data,saved);
+    const embeddingDestination=resolveDesktopEmbeddingEndpoint(config);
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Test connection to your selected AI provider?',detail:`Generation: ${resolveDesktopGenerationEndpoint(parsed.data)}\nModel: ${parsed.data.generationModel}\nEmbeddings: ${embeddingDestination??'Disabled; lexical evidence search only'}\n\nThis sends a small synthetic test, never project evidence. It makes ${embeddingDestination?'up to two requests':'one request'} and may incur API charges. Configuration tests are separate from your saved daily request allowance. Passing confirms this small test, not universal model compatibility. Nothing is saved yet.`,buttons:['Cancel','Test connection'],defaultId:0,cancelId:0});
+    if(consent.response!==1)return {ok:true,data:{cancelled:true}};
+    await aiDraft.test(parsed.data,saved,testDesktopAiConnection);
+    return {ok:true,data:{tested:true}};
+   }catch{return {ok:false,error:{code:'ai_test_failed',message:'Connection test failed. Check that a key was added for each selected provider, the endpoint and model are compatible, and the API account has access and credit.'}};}
+   finally{configuringAi=false;}
   });
   ipcMain.handle('orchestra:ai-configure',async(event,input:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
@@ -317,19 +366,12 @@ else {
    if(configuringAi)return {ok:false,error:{code:'ai_settings_busy',message:'Finish the current AI configuration first.'}};
    configuringAi=true;
    try{
-    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Import an OpenAI key from your clipboard?',detail:'Copy a dedicated OpenAI API key first. It stays outside the web interface and is encrypted using OS protection. Orchestra will test model access, save it and restart. Later AI requests send relevant evidence to OpenAI and may incur charges on your API account. The request limit is not a dollar spending cap.',buttons:['Cancel','Test, save and restart'],defaultId:0,cancelId:0});
+    const state=await settings.read(),ai=aiDraft.confirmed(parsed.data,state.ai);
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Save AI settings and restart Orchestra?',detail:`Generation: ${resolveDesktopGenerationEndpoint(parsed.data)}\nEmbeddings: ${resolveDesktopEmbeddingEndpoint(ai)??'Disabled; lexical evidence search only'}\n\nRelevant project evidence will be sent to these destinations using your API accounts. Keys are encrypted on this Mac. Usage limits are request ceilings, not dollar spending caps. An embedding identity change safely disables incompatible existing vectors until reindexing.`,buttons:['Cancel','Save and restart'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
-    const apiKey=(await clipboard.readText()).trim();
-    const value=protectedSettingsSchema.parse({version:1,ai:{apiKey,preferences:parsed.data}});
-    // Fixed HTTPS destination, no redirects, no prompt or project data in this test.
-    for(const model of [parsed.data.generationModel,parsed.data.embeddingModel]){
-     const response=await fetch(`https://api.openai.com/v1/models/${encodeURIComponent(model)}`,{headers:{Authorization:`Bearer ${apiKey}`},redirect:'error',signal:AbortSignal.timeout(15000)});
-     await response.body?.cancel();if(!response.ok)throw new Error('Model access failed');
-    }
-    await settings.write({...await settings.read(),ai:value.ai});
-    if((await clipboard.readText()).trim()===apiKey)await clipboard.clear();
+    await settings.write({...state,ai:aiDraft.confirmed(parsed.data,state.ai)});aiDraft.clear();
     app.relaunch();app.quit();return {ok:true,data:{restarting:true}};
-   }catch{return {ok:false,error:{code:'ai_configuration_failed',message:'AI configuration was not confirmed. Check the clipboard key, model access, network and OS credential protection.'}};}
+   }catch{return {ok:false,error:{code:'ai_configuration_failed',message:'AI settings were not saved. Test the current settings again, then save within 15 minutes. Check OS credential protection if the problem continues.'}};}
    finally{configuringAi=false;}
   });
   ipcMain.handle('orchestra:ai-revoke',async event=>{
@@ -337,9 +379,9 @@ else {
    if(configuringAi)return {ok:false,error:{code:'ai_settings_busy',message:'Finish the current AI configuration first.'}};
    configuringAi=true;
    try{
-    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Remove AI access from this installation?',detail:'Orchestra will remove its saved key, stop active AI work and restart offline. This does not delete your project evidence or revoke the key in your OpenAI account.',buttons:['Cancel','Remove and restart'],defaultId:0,cancelId:0});
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Remove AI access from this installation?',detail:'Orchestra will remove its saved generation and embedding keys, stop active AI work and restart offline. This does not delete your project evidence or revoke the keys in your provider accounts.',buttons:['Cancel','Remove and restart'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
-    await settings.write({...await settings.read(),ai:null});app.relaunch();app.quit();return {ok:true,data:{restarting:true}};
+    await settings.write({...await settings.read(),ai:null});aiDraft.clear();app.relaunch();app.quit();return {ok:true,data:{restarting:true}};
    }catch{return {ok:false,error:{code:'ai_revoke_failed',message:'AI access removal could not be confirmed.'}};}
    finally{configuringAi=false;}
   });

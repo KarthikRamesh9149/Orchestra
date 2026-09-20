@@ -148,7 +148,8 @@ function DeepResearchResults({
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
               {results.sources.map((source, index) => {
                 const className = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-3 transition-colors hover:border-[var(--teal)]";
-                const content = <><span className="block font-sans text-[13px] font-medium text-[var(--text-default)]">{source.label}</span><span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--text-muted)]">{source.provider}</span></>;
+                const refs = source.refs?.length ? source.refs : source.ref ? [source.ref] : [];
+                const content = <><span className="block font-sans text-[13px] font-medium text-[var(--text-default)]">{source.label}</span><span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--text-muted)]">{refs.length ? `${refs.join(" · ")} — ` : ""}{source.provider}</span></>;
                 const safeHref = safeMarkdownUrl(source.href);
                 if (!safeHref) return <div key={`${source.label}-${index}`} className={className}>{content}</div>;
                 return safeHref.startsWith("/")
