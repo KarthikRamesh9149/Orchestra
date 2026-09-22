@@ -31,6 +31,7 @@ function harness(options: { deploymentStatus?: string; deploymentSummary?: strin
   const prisma = {
     project: { findFirst: vi.fn().mockResolvedValue({ id: PROJECT_ID }) },
     specChangeProposal: { findFirst: vi.fn().mockResolvedValue(proposal), findUniqueOrThrow: vi.fn().mockResolvedValue(proposal), findMany: vi.fn().mockResolvedValue([]), count: vi.fn().mockResolvedValue(0) },
+    decisionRecord: { findMany: vi.fn().mockResolvedValue([]), count: vi.fn().mockResolvedValue(0) },
     truthInboxItemState: { findUnique: vi.fn().mockResolvedValue({ assignedUserId: ACTOR.userId, assignedUser: { displayName: "Karthik", email: "k@example.com" }, updatedAt: now }) },
     liveDocSectionRevision: { findMany: vi.fn().mockResolvedValue([]) },
     agentContextPackSource: { findMany: vi.fn().mockResolvedValue([{ pack: { id: "pack-1", title: "Implementation preflight", generatedAt: now, status: "active" } }]) },
@@ -59,6 +60,36 @@ function harness(options: { deploymentStatus?: string; deploymentSummary?: strin
 }
 
 describe("DeliveryIntelligenceService", () => {
+  it("does not turn generated graph inventory into accepted truth or healthy evidence coverage", async () => {
+    const { service, prisma } = harness();
+    prisma.brainNode.count.mockResolvedValue(9);
+    prisma.document.count.mockResolvedValue(2);
+    const overview = await service.getOverview(PROJECT_ID, ACTOR, true);
+    const coverage = overview.contextHealth.components.find((item) => item.key === "evidence_coverage");
+    expect(coverage).toMatchObject({ state: "attention", summary: "0 accepted decision(s); 0 accepted change(s)." });
+    expect(coverage?.detail).toEqual(expect.arrayContaining(["2 source document(s) and 9 active Product Brain node(s) are stored as context; these counts do not establish approval."]));
+  });
+
+  it("counts actual project-wide approvals separately without inventing requirement-to-source coverage", async () => {
+    const { service, prisma } = harness();
+    prisma.decisionRecord.count.mockResolvedValue(3);
+    prisma.specChangeProposal.count.mockImplementation(async ({ where }: any) => where.status === "accepted" ? 4 : 0);
+    const overview = await service.getOverview(PROJECT_ID, ACTOR, true);
+    const coverage = overview.contextHealth.components.find((item) => item.key === "evidence_coverage");
+    expect(coverage).toMatchObject({ state: "unknown", summary: "3 accepted decision(s); 4 accepted change(s)." });
+    expect(prisma.decisionRecord.count).toHaveBeenCalledWith({ where: { projectId: PROJECT_ID, status: "accepted" } });
+    expect(prisma.specChangeProposal.count).toHaveBeenCalledWith({ where: { projectId: PROJECT_ID, status: "accepted" } });
+    expect(coverage?.detail.join(" ")).toContain("Requirement-to-source coverage has not been verified");
+  });
+
+  it("keeps an empty context inventory blocked", async () => {
+    const { service, prisma } = harness();
+    prisma.brainNode.count.mockResolvedValue(0);
+    prisma.document.count.mockResolvedValue(0);
+    const overview = await service.getOverview(PROJECT_ID, ACTOR, true);
+    expect(overview.contextHealth.components.find((item) => item.key === "evidence_coverage")?.state).toBe("blocked");
+  });
+
   it("keeps review-only findings out of delivery and receipt claims", async () => {
     const { service } = harness();
     const trace = await service.getTrace(PROJECT_ID, "suggestion:signal-1", ACTOR);
@@ -154,6 +185,17 @@ describe("DeliveryIntelligenceService", () => {
     ]));
   });
 
+  it("does not count generated graph nodes as approval even when their artifact is auto-accepted", async () => {
+    const { service, prisma, contextPacks } = harness();
+    prisma.brainNode.findMany.mockResolvedValue([{ title: "Imported PRD", summary: "Unapproved CSV request", nodeType: "requirement", priority: "high" }, { title: "Saved research", summary: "Generated manual note", nodeType: "constraint", priority: "high" }]);
+    prisma.projectCodingRequirements.findMany.mockResolvedValue([{ artifactVersion: { payloadJson: { tests: "Verify CSV" }, status: "accepted", versionNumber: 1 } }]);
+    contextPacks.createPack.mockResolvedValue({ id: "pack", title: "Preflight", bodyMarkdown: "# Preflight", sources: [{ title: "Imported PRD" }], sourceCount: 1, evidenceCount: 1, warnings: [], limitations: [] });
+    const result = await service.generatePreflight(PROJECT_ID, ACTOR, { taskPrompt: "Implement CSV export", targetAgent: "codex", budgetPreset: "normal" });
+    expect(result).toMatchObject({ ready: false, readinessLabel: "blocked", currentAcceptedTruth: [], technicalConstraints: [] });
+    expect(result.blockers).toContain("No accepted Product Brain truth is available for this project.");
+    expect(result.relevantEvidence).toContain("Imported PRD");
+  });
+
   it("blocks preflight for persisted blocking severity without depending on summary wording", async () => {
     const { service, prisma, contextPacks } = harness();
     prisma.brainNode.findMany.mockResolvedValue([{ title: "Login", summary: "Approved", nodeType: "requirement", priority: "high" }]);
@@ -183,6 +225,7 @@ describe("DeliveryIntelligenceService", () => {
 
   it("blocks a scoped preflight for a contradiction found in the complete project scope", async () => {
     const { service, prisma, contextPacks } = harness();
+    prisma.decisionRecord.findMany.mockResolvedValue([{ id: "decision-login", title: "Login", statement: "Use approved login." }]);
     prisma.brainNode.findMany.mockResolvedValue([{ title: "Login", summary: "Approved", nodeType: "requirement", priority: "high" }]);
     prisma.projectCodingRequirements.findMany.mockResolvedValue([{ artifactVersion: { payloadJson: { tests: "Verify login" }, status: "active", versionNumber: 1 } }]);
     contextPacks.createPack.mockResolvedValue({ id: "pack", title: "Preflight", bodyMarkdown: "# Preflight", sources: [], sourceCount: 1, evidenceCount: 1, warnings: [], limitations: [] });
@@ -197,8 +240,8 @@ describe("DeliveryIntelligenceService", () => {
 
   it("allows Agent Preflight only when accepted truth, evidence, and test requirements exist", async () => {
     const { service, prisma, contextPacks } = harness();
-    prisma.brainNode.findMany.mockResolvedValueOnce([
-      { title: "Timeline exports", summary: "Managers can export project timeline evidence.", nodeType: "requirement", priority: "high" }
+    prisma.decisionRecord.findMany.mockResolvedValueOnce([
+      { id: "decision-timeline", title: "Timeline exports", statement: "Managers can export project timeline evidence." }
     ]);
     prisma.projectCodingRequirements.findMany.mockResolvedValueOnce([
       { artifactVersion: { payloadJson: { acceptance: ["Verify manager export and deny client export"] }, status: "accepted", versionNumber: 1 } }
@@ -221,11 +264,13 @@ describe("DeliveryIntelligenceService", () => {
     });
 
     expect(preflight).toMatchObject({ ready: true, readinessLabel: "ready", blockers: [] });
+    expect(preflight.currentAcceptedTruth).toEqual(["Timeline exports: Managers can export project timeline evidence."]);
+    expect(prisma.decisionRecord.findMany).toHaveBeenCalledWith(expect.objectContaining({ where: { projectId: PROJECT_ID, status: "accepted" } }));
   });
 
   it("deduplicates noisy conflicts and does not repeat blockers as open questions", async () => {
     const { service, prisma } = harness();
-    prisma.specChangeProposal.findMany.mockResolvedValueOnce([
+    prisma.specChangeProposal.findMany.mockImplementation(async ({ where }: any) => where.status === "accepted" ? [] : [
       { id: "proposal-a", title: "Message suggests a requirement change.", summary: "Message suggests a requirement change.", proposalType: "requirement_change" },
       { id: "proposal-b", title: "Message suggests a requirement change.", summary: "Message suggests a requirement change.", proposalType: "requirement_change" }
     ]);

@@ -8,7 +8,7 @@ import { composeAgentContextPackSections, renderAgentContextBodyMarkdown } from 
 import { AGENT_CONTEXT_EXPORT_FORMATS, renderAgentContextExport } from "./export-templates.js";
 import { buildAgentContextLimitations } from "./limitations.js";
 import type { AgentContextExportRequestInput, CreateAgentContextPackInput, ListAgentContextPacksQuery } from "./schemas.js";
-import { filterAgentContextEvidenceForMvp, rankAgentContextSources } from "./source-selection.js";
+import { filterAgentContextEvidenceForMvp, isCurrentTruthEvidence, rankAgentContextSources } from "./source-selection.js";
 import { estimateAgentContextTokens } from "./token-estimator.js";
 import type {
   AgentContextBuildInput,
@@ -120,6 +120,7 @@ export class AgentContextPackService {
   async getPack(projectId: string, packId: string, actorUserId: string) {
     await this.ensureAccess(projectId, actorUserId);
     const pack = await this.loadPack(projectId, packId);
+    this.assertRecordedTruth(pack);
     return this.toDto(pack);
   }
 
@@ -202,7 +203,9 @@ export class AgentContextPackService {
       entityId: pack.id,
       payload: { packId }
     });
-    return this.toDto(pack);
+    // Archival remains available for legacy packs; content is retrieved only
+    // through the guarded get/export paths, never as a mutation side effect.
+    return this.toListDto(pack);
   }
 
   async deletePack(projectId: string, packId: string, actorUserId: string) {
@@ -262,6 +265,7 @@ export class AgentContextPackService {
     await this.ensureAccess(projectId, actorUserId);
     const project = await this.loadProject(projectId);
     const pack = await this.loadPack(projectId, packId);
+    this.assertRecordedTruth(pack);
     if (input.redactionMode === "client_safe") {
       await this.auditService.record({
         orgId: project.orgId,
@@ -316,6 +320,17 @@ export class AgentContextPackService {
     });
     if (!pack) throw new AppError(404, "Agent context pack not found", "agent_context_pack_not_found");
     return pack;
+  }
+
+  private assertRecordedTruth(pack: PackWithSources) {
+    if (pack.sources.some((source) =>
+      ["current_accepted_truth", "coding_requirement", "accepted_change", "accepted_decision"].includes(source.evidenceStatus)
+      && !isCurrentTruthEvidence(source)
+    )) {
+      throw new AppError(409,
+        "This context pack treated generated source context as accepted truth. Refresh the pack before retrieving or exporting it.",
+        "agent_context_truth_refresh_required");
+    }
   }
 
   private normalizeInput(input: CreateAgentContextPackInput): AgentContextBuildInput {
@@ -468,7 +483,7 @@ export class AgentContextPackService {
     const [brain, nodes, liveDoc, documentSections, changes, decisions, contexts, messages, diagrams, coding, responsibilities, dashboard] =
       await Promise.all([
         this.prisma.artifactVersion.findFirst({ where: { projectId, artifactType: "product_brain", status: "accepted" }, orderBy: { versionNumber: "desc" } }),
-        this.prisma.brainNode.findMany({ where: { projectId, status: { not: "deprecated" } }, orderBy: [{ priority: "asc" }, { createdAt: "desc" }], take: 20 }),
+        this.prisma.brainNode.findMany({ where: { projectId, status: { not: "deprecated" }, artifactVersion: { status: "accepted" } }, orderBy: [{ priority: "asc" }, { createdAt: "desc" }], take: 20 }),
         this.prisma.artifactVersion.findFirst({ where: { projectId, artifactType: "live_doc", status: "accepted" }, orderBy: { versionNumber: "desc" } }),
         this.prisma.documentSection.findMany({
           where: { projectId, documentVersion: { status: { in: ["ready", "partial"] } } },
@@ -516,12 +531,12 @@ export class AgentContextPackService {
         sourceType: "product_brain",
         sourceRefType: "product_brain",
         sourceRefId: brain.id,
-        relationship: "current_truth",
+        relationship: "derived_context",
         title: `Product Brain v${brain.versionNumber}`,
         excerpt: summarizeJson(brain.payloadJson),
-        evidenceStatus: "current_accepted_truth",
-        score: 100,
-        isCurrentTruth: true,
+        evidenceStatus: "manual_context",
+        whyItMatters: "Generated Product Brain context; acceptance is established only by the specific recorded decisions below.",
+        score: 70,
         artifactVersionId: brain.id,
         citation: { type: "product_brain", id: brain.id, label: `Product Brain v${brain.versionNumber}` },
         openTarget: { targetType: "product_brain", targetRef: { artifactVersionId: brain.id } }
@@ -533,12 +548,12 @@ export class AgentContextPackService {
         sourceType: "brain_node",
         sourceRefType: "brain_node",
         sourceRefId: node.id,
-        relationship: "current_truth_detail",
+        relationship: "derived_context",
         title: node.title,
         excerpt: node.summary,
-        evidenceStatus: "current_accepted_truth",
-        score: 82,
-        isCurrentTruth: true,
+        evidenceStatus: "manual_context",
+        whyItMatters: "Generated graph summary of source material, not a recorded approval.",
+        score: 62,
         artifactVersionId: node.artifactVersionId,
         citation: { type: "brain_node", id: node.id, label: node.title },
         openTarget: { targetType: "brain_node", targetRef: { brainNodeId: node.id } }
@@ -550,12 +565,12 @@ export class AgentContextPackService {
         sourceType: "live_doc_section",
         sourceRefType: "live_doc",
         sourceRefId: liveDoc.id,
-        relationship: "current_truth_layer",
+        relationship: "derived_context",
         title: `Live Doc v${liveDoc.versionNumber}`,
         excerpt: summarizeJson(liveDoc.payloadJson),
-        evidenceStatus: "current_accepted_truth",
-        score: 88,
-        isCurrentTruth: true,
+        evidenceStatus: "manual_context",
+        whyItMatters: "Derived Live Doc context; its lifecycle status does not approve every included statement.",
+        score: 68,
         artifactVersionId: liveDoc.id,
         citation: { type: "live_doc_section", id: liveDoc.id, label: `Live Doc v${liveDoc.versionNumber}` },
         openTarget: { targetType: "live_doc_section", targetRef: { artifactVersionId: liveDoc.id } }
@@ -670,9 +685,9 @@ export class AgentContextPackService {
         relationship: "coding_requirement",
         title: `Coding requirements ${requirement.artifactVersion.versionNumber}`,
         excerpt: summarizeJson(requirement.artifactVersion.payloadJson),
-        evidenceStatus: "coding_requirement",
+        evidenceStatus: "manual_context",
+        whyItMatters: "Generated coding guidance; verify it against recorded accepted decisions before implementation.",
         score: 80,
-        isCurrentTruth: true,
         artifactVersionId: requirement.artifactVersionId,
         citation: { type: "coding_requirements", id: requirement.id, label: "Coding requirements" },
         openTarget: { targetType: "coding_requirements", targetRef: { codingRequirementsId: requirement.id } }

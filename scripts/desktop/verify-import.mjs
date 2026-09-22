@@ -117,6 +117,11 @@ for (const file of ['src/modules/socrates/service.ts','tests/socrates-v1-service
  adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+'September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded.';
 }
 adjustments['apps/beta-web/src/pages/MemoryPage.test.tsx']+=' September 22 clean-source suite: hold the mocked processing response until the initial visible state is observed, removing an animation/status race without changing the application or weakening visibility assertions.';
+for (const file of ['src/modules/agent-context/composer.ts','src/modules/agent-context/service.ts',
+ 'src/modules/agent-context/source-selection.ts','src/modules/delivery/service.ts',
+ 'tests/agent-context-pack.test.ts','tests/delivery-intelligence-service.test.ts']) {
+ adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+'September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment.';
+}
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

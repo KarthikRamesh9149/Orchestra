@@ -1,7 +1,6 @@
 import type { AgentContextPackBudgetPreset } from "@prisma/client";
 import type { AgentContextEvidenceCandidate, AgentContextSeedReference } from "./types.js";
 
-const currentTruthStatuses = new Set(["current_accepted_truth", "accepted_change", "accepted_decision", "coding_requirement"]);
 const statusWeight: Record<string, number> = {
   current_accepted_truth: 100,
   accepted_change: 95,
@@ -75,6 +74,9 @@ function score(candidate: AgentContextEvidenceCandidate, seedReference?: AgentCo
   return (statusWeight[candidate.evidenceStatus] ?? 10) + candidate.score + seedBoost + (candidate.citation ? 5 : 0);
 }
 
-export function isCurrentTruthEvidence(candidate: AgentContextEvidenceCandidate) {
-  return candidate.isCurrentTruth || currentTruthStatuses.has(candidate.evidenceStatus);
+export function isCurrentTruthEvidence(candidate: Pick<AgentContextEvidenceCandidate, "sourceRefType" | "evidenceStatus">) {
+  // Generated aggregate artifacts use an "accepted" lifecycle status too. That
+  // status (or a projected boolean) cannot approve the raw material they contain.
+  return (candidate.sourceRefType === "change_proposal" && candidate.evidenceStatus === "accepted_change")
+    || (candidate.sourceRefType === "decision_record" && candidate.evidenceStatus === "accepted_decision");
 }

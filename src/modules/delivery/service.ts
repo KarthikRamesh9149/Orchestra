@@ -370,11 +370,17 @@ export class DeliveryIntelligenceService {
 
   async generatePreflight(projectId: string, actor: Actor, input: AgentPreflightInput): Promise<AgentPreflight> {
     await this.ensureInternalAccess(projectId, actor);
-    const [truthNodes, conflicts, fdeFindings, codingRequirements, responsibilities, projectContradictionCount, projectContradictionExample, persistedBlockingFindingCount, persistedBlockingFindingExample] = await Promise.all([
-      this.prisma.brainNode.findMany({
-        where: { projectId, artifactVersion: { status: "accepted", artifactType: { in: ["product_brain", "brain_graph"] } } },
-        select: { title: true, summary: true, nodeType: true, priority: true },
-        orderBy: [{ priority: "desc" }, { createdAt: "desc" }],
+    const [acceptedChanges, acceptedDecisions, conflicts, fdeFindings, codingRequirements, responsibilities, projectContradictionCount, projectContradictionExample, persistedBlockingFindingCount, persistedBlockingFindingExample] = await Promise.all([
+      this.prisma.specChangeProposal.findMany({
+        where: { projectId, status: "accepted" },
+        select: { title: true, summary: true, decisionRecordId: true },
+        orderBy: { acceptedAt: "desc" },
+        take: 40
+      }),
+      this.prisma.decisionRecord.findMany({
+        where: { projectId, status: "accepted" },
+        select: { id: true, title: true, statement: true },
+        orderBy: { acceptedAt: "desc" },
         take: 40
       }),
       this.prisma.specChangeProposal.findMany({
@@ -445,7 +451,14 @@ export class DeliveryIntelligenceService {
     });
     const packRecord = pack as unknown as Record<string, unknown>;
     const packSources = Array.isArray(packRecord.sources) ? packRecord.sources as Array<Record<string, unknown>> : [];
-    const constraints = truthNodes.filter((node) => node.nodeType === "constraint").map((node) => `${node.title}: ${node.summary}`);
+    const decisionIds = new Set(acceptedDecisions.map((decision) => decision.id));
+    const acceptedTruth = unique([
+      ...acceptedDecisions.map((decision) => `${decision.title}: ${decision.statement}`),
+      ...acceptedChanges.filter((change) => !change.decisionRecordId || !decisionIds.has(change.decisionRecordId)).map((change) => `${change.title}: ${change.summary}`)
+    ]);
+    // Graph nodes and generated artifact status do not establish human approval.
+    // Keep that material in the pack's source evidence, not in accepted truth.
+    const constraints = acceptedTruth.filter((statement) => /\b(must|must not|cannot|required|constraint|shall)\b/i.test(statement));
     const requiredTests = unique([
       ...codingRequirements.flatMap((requirement) => summarizeJson(requirement.artifactVersion.payloadJson).filter((line) => /test|check|acceptance|verify/i.test(line))),
       ...fdeFindings.filter((finding) => /test/i.test(`${finding.findingType} ${finding.summary}`)).map((finding) => finding.suggestedAction ?? finding.summary)
@@ -453,17 +466,17 @@ export class DeliveryIntelligenceService {
     const packEvidenceCount = Number(packRecord.evidenceCount ?? 0);
     const readinessBlockers = unique([
       ...decisionBlockers,
-      ...(truthNodes.length === 0 ? ["No accepted Product Brain truth is available for this project."] : []),
+      ...(acceptedTruth.length === 0 ? ["No accepted Product Brain truth is available for this project."] : []),
       ...(packEvidenceCount === 0 && packSources.length === 0 ? ["No supporting project evidence is available for this task."] : []),
       ...(requiredTests.length === 0 ? ["No project testing or acceptance requirements are recorded for this task."] : [])
     ]);
-    const hardBlocked = blockingFindingCount > 0 || truthNodes.length === 0 || (packEvidenceCount === 0 && packSources.length === 0) || requiredTests.length === 0
+    const hardBlocked = blockingFindingCount > 0 || acceptedTruth.length === 0 || (packEvidenceCount === 0 && packSources.length === 0) || requiredTests.length === 0
       || readinessBlockers.some((blocker) => /unsafe|blocked/i.test(blocker));
     return {
       ready: readinessBlockers.length === 0,
       readinessLabel: hardBlocked ? "blocked" : readinessBlockers.length ? "needs_decision" : "ready",
       blockers: readinessBlockers,
-      currentAcceptedTruth: truthNodes.slice(0, 15).map((node) => `${node.title}: ${node.summary}`),
+      currentAcceptedTruth: acceptedTruth.slice(0, 15),
       relevantEvidence: packSources.slice(0, 20).map((source) => String(source.title ?? source.label ?? source.sourceRefType ?? "Project evidence")),
       technicalConstraints: constraints.slice(0, 20),
       knownConflicts: uniqueByNormalizedText(conflicts.map((conflict) => formatConflict(conflict.title, conflict.summary))),
@@ -517,7 +530,7 @@ export class DeliveryIntelligenceService {
       integrationError = error instanceof Error ? error.message : "Integration status unavailable";
       return null;
     });
-    const [project, integration, acceptedChanges, unresolvedDecisions, fdeFindings, productionObservationRows, latestAgentFile, responsibilities, agentRuns, agentReviews, acceptedBrainNodes, allBrainNodes, documentCount, pendingFeedback, latestBrief, blockingFindingCount, contradictionCount] = await Promise.all([
+    const [project, integration, acceptedChanges, unresolvedDecisions, fdeFindings, productionObservationRows, latestAgentFile, responsibilities, agentRuns, agentReviews, acceptedDecisionCount, acceptedChangeCount, allBrainNodes, documentCount, pendingFeedback, latestBrief, blockingFindingCount, contradictionCount] = await Promise.all([
       this.prisma.project.findFirst({ where: { id: projectId, orgId: actor.orgId }, select: { id: true, name: true } }),
       integrationPromise,
       this.prisma.specChangeProposal.findMany({ where: { projectId, status: "accepted", acceptedAt: { gte: weekAgo } }, include: { decisionRecord: true }, orderBy: { acceptedAt: "desc" }, take: 20 }),
@@ -533,7 +546,8 @@ export class DeliveryIntelligenceService {
       this.prisma.projectResponsibility.findMany({ where: { projectId, status: { in: ["open", "in_progress"] } }, select: { id: true, title: true, status: true, assigneeName: true, memberId: true }, take: 100 }),
       this.prisma.agentRun.findMany({ where: { projectId, status: { notIn: ["archived", "deleted"] } }, orderBy: { updatedAt: "desc" }, take: 12 }),
       this.prisma.agentQualityReview.findMany({ where: { projectId, agentRunId: { not: null }, archivedAt: null, deletedAt: null }, orderBy: { createdAt: "desc" }, take: 30 }),
-      this.prisma.brainNode.count({ where: { projectId, artifactVersion: { status: "accepted", artifactType: { in: ["product_brain", "brain_graph"] } } } }),
+      this.prisma.decisionRecord.count({ where: { projectId, status: "accepted" } }),
+      this.prisma.specChangeProposal.count({ where: { projectId, status: "accepted" } }),
       this.prisma.brainNode.count({ where: { projectId, status: "active" } }),
       this.prisma.document.count({ where: { projectId } }),
       this.prisma.socratesResponseFeedback.count({ where: { projectId, needsHumanReview: true } }),
@@ -575,9 +589,14 @@ export class DeliveryIntelligenceService {
     const candidateImplementation = candidateEvidence.filter(isImplementationEvidence);
     const candidateTests = latestEvidenceByIdentity(candidateEvidence.filter(isTestEvidence));
     const sourceFreshnessState: HealthState = integrationError ? "unknown" : degradedProviders.length ? "attention" : connectedProviders.length ? "healthy" : "unknown";
+    const hasRecordedApproval = acceptedDecisionCount > 0 || acceptedChangeCount > 0;
+    const evidenceCoverageState: HealthState = hasRecordedApproval ? "unknown" : documentCount || allBrainNodes ? "attention" : "blocked";
     const components: ContextHealthComponent[] = [
       component("source_freshness", "Source freshness", sourceFreshnessState, latestSync ? `Latest connected source sync: ${latestSync}.` : "No connected source has a recorded sync time.", connectedProviders.map((provider) => `${provider.label}: ${provider.lastSyncedAt ?? provider.status}`), { targetType: "integrations", targetRef: {} }),
-      component("evidence_coverage", "Evidence coverage", acceptedBrainNodes > 0 && documentCount > 0 ? "healthy" : acceptedBrainNodes || documentCount ? "attention" : "blocked", `${acceptedBrainNodes} accepted Product Brain node(s) across ${documentCount} document(s).`, [`${allBrainNodes} active Product Brain node(s) are stored.`, "Coverage is shown as explicit counts, not a mysterious AI score."], { targetType: "memory", targetRef: {} }),
+      component("evidence_coverage", "Evidence coverage", evidenceCoverageState, `${acceptedDecisionCount} accepted decision(s); ${acceptedChangeCount} accepted change(s).`, [
+        `${documentCount} source document(s) and ${allBrainNodes} active Product Brain node(s) are stored as context; these counts do not establish approval.`,
+        "Decision and change counts can refer to the same approval. Requirement-to-source coverage has not been verified from these inventory counts."
+      ], { targetType: "memory", targetRef: {} }),
       component("open_contradictions", "Open contradictions", completeContradictionCount ? "blocked" : "healthy", `${completeContradictionCount} unresolved project-wide contradiction(s).`, unresolvedDecisions.filter((proposal) => proposal.proposalType === "contradiction_resolution").map((proposal) => proposal.title), { targetType: "truth_inbox", targetRef: { category: "decision_conflicts" } }),
       component("pending_changes", "Pending changes", unresolvedDecisions.length ? "attention" : "healthy", `${unresolvedDecisions.length} proposed change(s) await a decision.`, unresolvedDecisions.slice(0, 8).map((proposal) => proposal.title), { targetType: "truth_inbox", targetRef: {} }),
       component("implementation_drift", "Implementation drift", completeBlockingFindingCount ? "blocked" : drift.length ? "attention" : "healthy", `${drift.length} displayed drift finding(s); ${completeBlockingFindingCount} blocking or unsafe finding(s) across the authorized project scope.`, drift.slice(0, 8).map((finding) => finding.summary), { targetType: "truth_inbox", targetRef: { category: "agent_drift" } }),

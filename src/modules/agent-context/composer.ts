@@ -54,6 +54,7 @@ export function composeAgentContextPackSections(input: {
       items: [
         "Do not rewrite original uploaded or generated PRD/SRS bytes.",
         "Do not treat pending suggestions, raw insights, or unreviewed communication as current truth.",
+        "Generated Product Brain, Live Doc and coding summaries, uploaded documents and saved research are source context, not approval; use only the recorded accepted decisions above as accepted truth.",
         "Do not bypass the accepted-change flow or mutate Product Brain through this pack.",
         "Preserve citations, open targets, auth scoping, and client-safe filtering.",
         "Do not expose disabled full-product providers in MVP mode.",

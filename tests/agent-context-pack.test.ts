@@ -77,7 +77,7 @@ describe("Agent Context Pack foundation", () => {
       taskPrompt: "Implement KYC onboarding",
       taskType: "implementation",
       candidates: [
-        baseCandidate,
+        { ...baseCandidate, sourceType: "decision_record", sourceRefType: "decision_record", evidenceStatus: "accepted_decision" },
         {
           ...baseCandidate,
           id: "ev-2",

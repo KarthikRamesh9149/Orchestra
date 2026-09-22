@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 732,
+  "unchangedImportedFiles": 726,
   "changes": [
     {
       "path": ".gitattributes",
@@ -369,6 +369,24 @@
       "reason": "Step 6 self-hosted local storage uses the private bounded driver; hosted storage behavior remains unchanged."
     },
     {
+      "path": "src/modules/agent-context/composer.ts",
+      "sourceSha256": "de84df16dac6de113b484ec3aaf88cb16f9dc8e6550d4c9f19b66dc3adfc1f3c",
+      "importedSha256": "a087f85656cc1ecec61527670f39ce674ec1321d6af36c7bfe716e41f2884b4c",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
+      "path": "src/modules/agent-context/service.ts",
+      "sourceSha256": "ab81ff1f4e753480eb95f581ea7d07bdb3b00a9c11b1bad0957b2c24c1d5b6a0",
+      "importedSha256": "ed793910ba4c666cbdf4f081270915a70434cf0f4705226efb9f665a0ffbc778",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
+      "path": "src/modules/agent-context/source-selection.ts",
+      "sourceSha256": "1d65767fe42e0b42071506d4d2705821055f647bd0261553d5cea4338a177c36",
+      "importedSha256": "8914e7c0f3bd6446fc5735121e0a52b7a752682a048c17d6fda563d57d596572",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
       "path": "src/modules/communications/message-indexing.service.ts",
       "sourceSha256": "6acaa121649f7e54594c6338f21b8ccfe924d5f9d14cc5dbc99f467bff0191cf",
       "importedSha256": "d74b3e11fb766aef7f5cf026f513b14c8891bb34873bdd3ef4a776a07279f952",
@@ -411,6 +429,12 @@
       "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence."
     },
     {
+      "path": "src/modules/delivery/service.ts",
+      "sourceSha256": "ca4b3f2cfe18d08d65011ca6723b0b177b3022bacd3db5e4ec9ba35b3522823e",
+      "importedSha256": "68535cd23f9a4f26e35686628db855078300b49d5d3363c6037affad43f10261",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
       "path": "src/modules/documents/service.ts",
       "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
       "importedSha256": "b77e8ad4d462b369e202296d832413c0c55051b40da7b87d6d94da6f4e34fbe3",
@@ -441,6 +465,12 @@
       "reason": "Step 2 injected PostgreSQL jobs and AI limiter, with incomplete composition rejected."
     },
     {
+      "path": "tests/agent-context-pack.test.ts",
+      "sourceSha256": "f01080c5ca4eab043036b34434c4195381c6bbf0e8582f3c15987069a066d38b",
+      "importedSha256": "03a45ba9c6215221c8c9fcd5a864a3a9359170531e9d9d3bb1f64dd168d22484",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
       "path": "tests/communication-providers.test.ts",
       "sourceSha256": "ace44a3e8ee112a041f08a30ac32e5a00bbe6b64f294e51f59bb8678c793ea01",
       "importedSha256": "7ccc7cc0d04334cbd6c1d44a43f8f528a1ca38d2fdd6c0c06aa3771101938cd5",
@@ -457,6 +487,12 @@
       "sourceSha256": "6aa7323c2c607eed8268a41f7120b6da2da82f71556ad7aaa0552ca810297e81",
       "importedSha256": "64f5f4b402ecc2213da4b0c36af794b3a7794c5cea12654e8bfc81433663f17d",
       "reason": "Regression proving a short contextual summary cannot replace complete retrieved source facts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+    },
+    {
+      "path": "tests/delivery-intelligence-service.test.ts",
+      "sourceSha256": "08b8a58fcf9b38a8f0e9b74e6830f543f93d140c1ef498bc9fb9430d704713c6",
+      "importedSha256": "5f330bc21dc26643848849822bc7265fcebcd549f1872ad35bbd849034686a57",
+      "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
       "path": "tests/document-service.test.ts",

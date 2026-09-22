@@ -2833,11 +2833,11 @@
     {
       "id": "UI-0130",
       "source": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx",
-      "line": 28,
+      "line": 83,
       "component": "a",
       "label": "a: href",
       "existingTestFile": "apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx",
-      "desktopTestId": "desktop-SocratesMarkdown-28",
+      "desktopTestId": "desktop-SocratesMarkdown-83",
       "bindings": [
         {
           "property": "href",
@@ -2848,16 +2848,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx:28: exercise a: href in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx:83: exercise a: href in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0131",
       "source": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx",
-      "line": 29,
+      "line": 84,
       "component": "Link",
       "label": "Link: to",
       "existingTestFile": "apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx",
-      "desktopTestId": "desktop-SocratesMarkdown-29",
+      "desktopTestId": "desktop-SocratesMarkdown-84",
       "bindings": [
         {
           "property": "to",
@@ -2868,7 +2868,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx:29: exercise Link: to in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx:84: exercise Link: to in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0132",
@@ -2937,11 +2937,11 @@
     {
       "id": "UI-0135",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 257,
+      "line": 260,
       "component": "a",
       "label": "{ariaLabel}",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-257",
+      "desktopTestId": "desktop-ChatPage-260",
       "bindings": [
         {
           "property": "href",
@@ -2952,16 +2952,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:257: exercise {ariaLabel} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:260: exercise {ariaLabel} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0136",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 267,
+      "line": 270,
       "component": "Link",
       "label": "{ariaLabel}",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-267",
+      "desktopTestId": "desktop-ChatPage-270",
       "bindings": [
         {
           "property": "to",
@@ -2972,16 +2972,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:267: exercise {ariaLabel} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:270: exercise {ariaLabel} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0137",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 368,
+      "line": 371,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-368",
+      "desktopTestId": "desktop-ChatPage-371",
       "bindings": [
         {
           "property": "onClick",
@@ -2992,16 +2992,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:368: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:371: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0138",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 432,
+      "line": 435,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-432",
+      "desktopTestId": "desktop-ChatPage-435",
       "bindings": [
         {
           "property": "onClick",
@@ -3012,16 +3012,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:432: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:435: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0139",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 449,
+      "line": 452,
       "component": "button",
       "label": "\"Mark answer helpful\"",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-449",
+      "desktopTestId": "desktop-ChatPage-452",
       "bindings": [
         {
           "property": "onClick",
@@ -3032,16 +3032,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:449: exercise \"Mark answer helpful\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:452: exercise \"Mark answer helpful\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0140",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 450,
+      "line": 453,
       "component": "button",
       "label": "\"Report an answer problem\"",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-450",
+      "desktopTestId": "desktop-ChatPage-453",
       "bindings": [
         {
           "property": "onClick",
@@ -3052,16 +3052,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:450: exercise \"Report an answer problem\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:453: exercise \"Report an answer problem\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0141",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 453,
+      "line": 456,
       "component": "select",
       "label": "select: onChange",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-453",
+      "desktopTestId": "desktop-ChatPage-456",
       "bindings": [
         {
           "property": "onChange",
@@ -3072,16 +3072,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:453: exercise select: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:456: exercise select: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0142",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 453,
+      "line": 456,
       "component": "textarea",
       "label": "\"What should Socrates have said or cited?\"",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-453",
+      "desktopTestId": "desktop-ChatPage-456",
       "bindings": [
         {
           "property": "onChange",
@@ -3092,16 +3092,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:453: exercise \"What should Socrates have said or cited?\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:456: exercise \"What should Socrates have said or cited?\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0143",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 453,
+      "line": 456,
       "component": "button",
       "label": "Cancel",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-453",
+      "desktopTestId": "desktop-ChatPage-456",
       "bindings": [
         {
           "property": "onClick",
@@ -3112,16 +3112,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:453: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:456: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0144",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 453,
+      "line": 456,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-453",
+      "desktopTestId": "desktop-ChatPage-456",
       "bindings": [
         {
           "property": "onClick",
@@ -3132,16 +3132,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:453: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:456: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0145",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 531,
+      "line": 534,
       "component": "textarea",
       "label": "\"Ask Socrates anything about your project…\"",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-531",
+      "desktopTestId": "desktop-ChatPage-534",
       "bindings": [
         {
           "property": "onChange",
@@ -3164,16 +3164,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:531: exercise \"Ask Socrates anything about your project…\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:534: exercise \"Ask Socrates anything about your project…\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0146",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 553,
+      "line": 556,
       "component": "button",
       "label": "{s === \"All\" ? \"Search all project memory\" : `Limit answers to ${s} evidence`}",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-553",
+      "desktopTestId": "desktop-ChatPage-556",
       "bindings": [
         {
           "property": "onClick",
@@ -3184,16 +3184,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:553: exercise {s === \"All\" ? \"Search all project memory\" : `Limit answers to ${s} evidence`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:556: exercise {s === \"All\" ? \"Search all project memory\" : `Limit answers to ${s} evidence`} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0147",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 569,
+      "line": 572,
       "component": "DeepResearchButton",
       "label": "DeepResearchButton: onClick",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-569",
+      "desktopTestId": "desktop-ChatPage-572",
       "bindings": [
         {
           "property": "onClick",
@@ -3204,16 +3204,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:569: exercise DeepResearchButton: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:572: exercise DeepResearchButton: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0148",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 573,
+      "line": 576,
       "component": "input",
       "label": "input: onChange",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-573",
+      "desktopTestId": "desktop-ChatPage-576",
       "bindings": [
         {
           "property": "onChange",
@@ -3224,16 +3224,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:573: exercise input: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:576: exercise input: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0149",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 584,
+      "line": 587,
       "component": "button",
       "label": "{attachDisabled ? \"Add a document after opening a project\" : \"Add a PDF or DOCX to project memory\"}",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-584",
+      "desktopTestId": "desktop-ChatPage-587",
       "bindings": [
         {
           "property": "onClick",
@@ -3244,16 +3244,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:584: exercise {attachDisabled ? \"Add a document after opening a project\" : \"Add a PDF or DOCX to project memory\"} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:587: exercise {attachDisabled ? \"Add a document after opening a project\" : \"Add a PDF or DOCX to project memory\"} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0150",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 602,
+      "line": 605,
       "component": "motion.button",
       "label": "{isGenerating ? \"Stop generating response\" : \"Send message\"}",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-602",
+      "desktopTestId": "desktop-ChatPage-605",
       "bindings": [
         {
           "property": "onClick",
@@ -3264,16 +3264,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:602: exercise {isGenerating ? \"Stop generating response\" : \"Send message\"} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:605: exercise {isGenerating ? \"Stop generating response\" : \"Send message\"} in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0151",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 745,
+      "line": 748,
       "component": "motion.button",
       "label": "motion.button: onFocus, onBlur, onClick, onMouseEnter, onMouseLeave",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-745",
+      "desktopTestId": "desktop-ChatPage-748",
       "bindings": [
         {
           "property": "onFocus",
@@ -3300,16 +3300,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:745: exercise motion.button: onFocus, onBlur, onClick, onMouseEnter, onMouseLeave in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:748: exercise motion.button: onFocus, onBlur, onClick, onMouseEnter, onMouseLeave in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0152",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1271,
+      "line": 1274,
       "component": "div",
       "label": "div: onScroll",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1271",
+      "desktopTestId": "desktop-ChatPage-1274",
       "bindings": [
         {
           "property": "onScroll",
@@ -3320,16 +3320,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1271: exercise div: onScroll in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1274: exercise div: onScroll in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0153",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1315,
+      "line": 1318,
       "component": "AssistantMessage",
       "label": "AssistantMessage: onSuggestion",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1315",
+      "desktopTestId": "desktop-ChatPage-1318",
       "bindings": [
         {
           "property": "onSuggestion",
@@ -3340,16 +3340,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1315: exercise AssistantMessage: onSuggestion in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1318: exercise AssistantMessage: onSuggestion in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0154",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1326,
+      "line": 1329,
       "component": "button",
       "label": "Jump to latest",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1326",
+      "desktopTestId": "desktop-ChatPage-1329",
       "bindings": [
         {
           "property": "onClick",
@@ -3360,16 +3360,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1326: exercise Jump to latest in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1329: exercise Jump to latest in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0155",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1334,
+      "line": 1337,
       "component": "RotatingSuggestion",
       "label": "RotatingSuggestion: onSelect",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1334",
+      "desktopTestId": "desktop-ChatPage-1337",
       "bindings": [
         {
           "property": "onSelect",
@@ -3380,16 +3380,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1334: exercise RotatingSuggestion: onSelect in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1337: exercise RotatingSuggestion: onSelect in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0156",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1343,
+      "line": 1346,
       "component": "button",
       "label": "Cancel upload",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1343",
+      "desktopTestId": "desktop-ChatPage-1346",
       "bindings": [
         {
           "property": "onClick",
@@ -3400,16 +3400,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1343: exercise Cancel upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1346: exercise Cancel upload in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0157",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1344,
+      "line": 1347,
       "component": "button",
       "label": "Check upload and retry",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1344",
+      "desktopTestId": "desktop-ChatPage-1347",
       "bindings": [
         {
           "property": "onClick",
@@ -3420,16 +3420,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1344: exercise Check upload and retry in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1347: exercise Check upload and retry in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0158",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1346,
+      "line": 1349,
       "component": "ChatInput",
       "label": "ChatInput: onChange, onSend, onStop, onDeepResearch, onScopeChange, onAttach",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1346",
+      "desktopTestId": "desktop-ChatPage-1349",
       "bindings": [
         {
           "property": "onChange",
@@ -3460,16 +3460,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1346: exercise ChatInput: onChange, onSend, onStop, onDeepResearch, onScopeChange, onAttach in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1349: exercise ChatInput: onChange, onSend, onStop, onDeepResearch, onScopeChange, onAttach in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0159",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1363,
+      "line": 1366,
       "component": "DeepResearchModal",
       "label": "DeepResearchModal: onClose, onMinimize, onElapsedChange",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1363",
+      "desktopTestId": "desktop-ChatPage-1366",
       "bindings": [
         {
           "property": "onClose",
@@ -3488,16 +3488,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1363: exercise DeepResearchModal: onClose, onMinimize, onElapsedChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1366: exercise DeepResearchModal: onClose, onMinimize, onElapsedChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0160",
       "source": "apps/beta-web/src/pages/ChatPage.tsx",
-      "line": 1371,
+      "line": 1374,
       "component": "DeepResearchMinimizedPill",
       "label": "DeepResearchMinimizedPill: onView",
       "existingTestFile": "apps/beta-web/src/pages/ChatPage.test.tsx",
-      "desktopTestId": "desktop-ChatPage-1371",
+      "desktopTestId": "desktop-ChatPage-1374",
       "bindings": [
         {
           "property": "onView",
@@ -3508,7 +3508,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1371: exercise DeepResearchMinimizedPill: onView in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/pages/ChatPage.tsx:1374: exercise DeepResearchMinimizedPill: onView in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0161",
