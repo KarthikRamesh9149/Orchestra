@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 735,
+  "unchangedImportedFiles": 732,
   "changes": [
     {
       "path": ".gitattributes",
@@ -43,6 +43,18 @@
       "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
       "importedSha256": "6878de85b0ca2cbb55b9c35389bbeabe7807eada6a16d75604e14b7faf923b52",
       "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions."
+    },
+    {
+      "path": "apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx",
+      "sourceSha256": "24879856ae6890231937315ba72bd2a3049a137c3f978a88701c49e5b93cff6b",
+      "importedSha256": "0666a99cd305bf891a94dfeef08224e9551e691055f3c912a1fb80d0b2d9d7c6",
+      "reason": "September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+    },
+    {
+      "path": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx",
+      "sourceSha256": "f29eea8229ed2997406c45405f6f96305f666b848b84d4ae2c87542345c1c37e",
+      "importedSha256": "4d818217d6fcf03693ea6fa0216335f958ef7c16bc3dc1d25c2eaf9f1bbe9008",
+      "reason": "September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
@@ -105,10 +117,16 @@
       "reason": "September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
     },
     {
+      "path": "apps/beta-web/src/lib/api.socrates.test.ts",
+      "sourceSha256": "b69089b1422628746d077b9c763c1df131f3708b453d3d5a089d07f92f34e1d9",
+      "importedSha256": "a6ed2962ad2a231ec4b657ae6cdc11d14cd308843565071d958f1cb0c0929e62",
+      "reason": "September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+    },
+    {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "556a567daae549e8099b15c6580fd383e219312db99fc193364df4b6e851b658",
-      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "e52d1aff4aa9bbb752dfe29776a3378d1c81b1824d85cd4b2474d9c3361defe8",
+      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -119,14 +137,14 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
       "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
-      "importedSha256": "79c9d686ae3bc9e4ef1531baba6ab0ba661be1ff7c968d6fcf0f212eaff6a3c0",
-      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
+      "importedSha256": "07208991f2f84879cc0b83bd9507f7292f6493ab11e8b94f179d218172c8abd8",
+      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "2c83faf661f3e6cafc951e48cd3d4979f8af1f03de81fabc60260edd261ba131",
-      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
+      "importedSha256": "85687bb9f8b47046ad51d10f5c0c78cb090d77104f179bd9d284ce27cb10a0b1",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "apps/beta-web/src/pages/DashboardPage.tsx",
@@ -161,8 +179,8 @@
     {
       "path": "apps/beta-web/src/pages/MemoryPage.test.tsx",
       "sourceSha256": "c4e17f06fa5564d83f0a280ce3e0115e7c52f8c32aa9e38c4bd9062f846f7eec",
-      "importedSha256": "3e27c165291bcd57628e24cb407e1ae6acb65b769683748dfe79c6beb5543766",
-      "reason": "Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation. September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate."
+      "importedSha256": "cea5135d245544db6a3a43b8a6e371944aed8d8222d29490d69c3c5d4d90f463",
+      "reason": "Steps 6/7 regression verifies honest downloads, send-only Gmail exclusion and pending-document refresh, failure and workspace isolation. September 20 readiness follow-up: discover saved generated research through the existing authorized context endpoint, retain envelope pagination and shared timeout/auth/error behavior, isolate workspace state and keep original evidence counts separate. September 22 clean-source suite: hold the mocked processing response until the initial visible state is observed, removing an animation/status race without changing the application or weakening visibility assertions."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryPage.tsx",
@@ -221,8 +239,8 @@
     {
       "path": "apps/beta-web/src/store/chatStore.ts",
       "sourceSha256": "c99d03ff6521436a74a6a8e9a2d9e6cabd4289177088e71c4843ccf8acfe0717",
-      "importedSha256": "23b91872d0ce3c72fe37d8bab0f58cc6ef54b0c54383664e48a0d8aaea828a73",
-      "reason": "Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged."
+      "importedSha256": "9470c8d75387513298f6c90c967bc321d0dc39bf6d75f43aa9f7b866b211eeba",
+      "reason": "Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "apps/beta-web/vite.config.ts",
@@ -407,8 +425,8 @@
     {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "ccac0dca63779eb6daf13a8fef90c843b47cd5bad5bf1b1ee436d5ec16c8f8dc",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording."
+      "importedSha256": "3c7e9fe762b80dd14d899069a001fc5a70aa5f39e7fc00c26d21909d1c482fe7",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
@@ -479,8 +497,8 @@
     {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "0ab6e33a81104411b42d39cd0e0bb84fa619fb9e7a1f47d6fb4eba39a5ffde4b",
-      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence."
+      "importedSha256": "52f90c51d89b3f4622150088a515fd91757e6f4e2fe766fb74cea40ed97a9420",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     }
   ]
 }

@@ -360,6 +360,28 @@ describe("server-authoritative Socrates chat", () => {
     expect(screen.getByTestId("location")).toHaveTextContent("/memory/docs/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/view");
   });
 
+  it("restores explicit sparse citation numbers after reload and opens the matching source", async () => {
+    const rich = assistantRow("First claim [E8]. Second claim [E2]. Legacy [E1].");
+    rich.answerPayloadJson = {
+      citations: [
+        { evidenceNumber: 2, refId: "chunk:2", sourceType: "document", label: "Second", openTargetId: "target:2" },
+        { evidenceNumber: 8, refId: "chunk:8", sourceType: "document", label: "Eighth", openTargetId: "target:8" },
+        { refId: "chunk:1", sourceType: "document", label: "Legacy", openTargetId: "target:1" },
+      ],
+      open_targets: [1, 2, 8].map((number) => ({ id: `target:${number}`, sourceType: "document", targetType: "document_section", targetRef: { documentId: `doc-${number}` } })),
+    };
+    history = [userRow("Which source supports each claim?"), rich];
+    const first = renderChat(`/chat/${SESSION_ID}`);
+    expect(await screen.findByRole("link", { name: "[E8]" })).toHaveAttribute("href", "/memory/docs/doc-8/view");
+    expect(screen.getByRole("link", { name: "[E2]" })).toHaveAttribute("href", "/memory/docs/doc-2/view");
+    expect(screen.queryByRole("link", { name: "[E1]" })).not.toBeInTheDocument();
+    first.unmount();
+    useChatStore.setState({ projectId: null, conversations: [], activeId: null });
+    renderChat(`/chat/${SESSION_ID}`);
+    await userEvent.click(await screen.findByRole("link", { name: "[E8]" }));
+    expect(screen.getByTestId("location")).toHaveTextContent("/memory/docs/doc-8/view");
+  });
+
   it("[FIX-12] shows authorization/history failures instead of a false empty chat", async () => {
     mocks.getSocratesHistory.mockRejectedValue(new Error("Socrates session access denied"));
     renderChat(`/chat/${SESSION_ID}`);

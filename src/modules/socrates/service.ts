@@ -493,6 +493,8 @@ type SocratesV1Evidence = {
   datasetProfile?: TabularDatasetProfile | null;
   documentId?: string | null;
   explicitDocumentScopeTitle?: string | null;
+  // Assigned only when projecting an explicit marker from the original prompt.
+  evidenceNumber?: number;
 };
 
 // Reserve coverage across documents before applying a chunk budget. Multiple
@@ -4819,30 +4821,40 @@ ${evidence || "No evidence retrieved."}${artifact}
   ) {
     const indexes = Array.from(answer.matchAll(/\[E(\d+)\]/gi))
       .map((match) => Number(match[1]) - 1)
-      .filter((index) => Number.isSafeInteger(index) && index >= 0 && index < evidence.length);
+      .filter((index) => Number.isSafeInteger(index) && index >= 0 && index < Math.min(evidence.length, 10));
     if (indexes.length === 0 && evidenceOnlyAnswer) return evidence;
-    return Array.from(new Set(indexes)).map((index) => evidence[index]!);
+    return Array.from(new Set(indexes)).map((index) => ({ ...evidence[index]!, evidenceNumber: index + 1 }));
+  }
+
+  private socratesV1CitationProjectionLimit(evidence: SocratesV1Evidence[], fallbackLimit: number) {
+    // Once the model has cited a supplied item, a smaller display cap must not
+    // leave its marker unresolved. Generation itself is bounded to ten items.
+    return evidence.some((item) => item.evidenceNumber !== undefined) ? 10 : fallbackLimit;
   }
 
   private socratesV1ResponseCitations(evidence: SocratesV1Evidence[]) {
+    const targetIds = new Set(this.socratesV1ResponseOpenTargets(evidence).map((target) => target.id));
     return evidence
-      .filter((item) => item.citation)
-      .slice(0, this.env.SOCRATES_MAX_CITATIONS)
+      .filter((item) => item.citation || item.evidenceNumber !== undefined)
+      .slice(0, this.socratesV1CitationProjectionLimit(evidence, this.env.SOCRATES_MAX_CITATIONS))
       .map((item) => ({
-        id: item.citation!.id,
+        id: item.citation?.id ?? item.evidenceId,
         sourceType: item.sourceType,
-        label: item.citation!.label,
+        label: item.citation?.label ?? item.title,
         excerpt: excerpt(item.text, 220),
         confidence: item.confidence,
-        openTargetId: item.openTarget ? item.evidenceId : null,
-        refId: item.citation!.id
+        openTargetId: targetIds.has(item.evidenceId) ? item.evidenceId : null,
+        refId: item.citation?.id ?? item.evidenceId,
+        ...(item.evidenceNumber === undefined ? {} : { evidenceNumber: item.evidenceNumber })
       }));
   }
 
   private socratesV1ResponseOpenTargets(evidence: SocratesV1Evidence[]) {
     return evidence
       .filter((item) => item.openTarget)
-      .slice(0, this.env.SOCRATES_MAX_OPEN_TARGETS)
+      .slice(0, this.env.SOCRATES_MAX_OPEN_TARGETS === 0
+        ? 0
+        : this.socratesV1CitationProjectionLimit(evidence, this.env.SOCRATES_MAX_OPEN_TARGETS))
       .map((item) => ({
         id: item.evidenceId,
         sourceType: item.sourceType,
@@ -4854,8 +4866,8 @@ ${evidence || "No evidence retrieved."}${artifact}
     assistantMessageId: string,
     response: {
       answer_md: string;
-      citations: Array<{ refId: string; label: string; confidence: number; sourceType: string }>;
-      open_targets: Array<{ targetType: string; targetRef: Record<string, unknown> }>;
+      citations: Array<{ refId: string; label: string; confidence: number; sourceType: string; evidenceNumber?: number }>;
+      open_targets: Array<{ id?: string; targetType: string; targetRef: Record<string, unknown> }>;
       artifact: SocratesV1Artifact | null;
       retrievalSummary: Record<string, unknown>;
       safety: Record<string, unknown>;
@@ -4936,8 +4948,8 @@ ${evidence || "No evidence retrieved."}${artifact}
     assistantMessageId: string,
     response: {
       answer_md: string;
-      citations: Array<{ refId: string; label: string; confidence: number; sourceType: string }>;
-      open_targets: Array<{ targetType: string; targetRef: Record<string, unknown> }>;
+      citations: Array<{ refId: string; label: string; confidence: number; sourceType: string; evidenceNumber?: number }>;
+      open_targets: Array<{ id?: string; targetType: string; targetRef: Record<string, unknown> }>;
       artifact: SocratesV1Artifact | null;
       retrievalSummary: Record<string, unknown>;
       safety: Record<string, unknown>;
@@ -4949,16 +4961,18 @@ ${evidence || "No evidence retrieved."}${artifact}
   ) {
     if (signal?.aborted) throw signal.reason ?? new DOMException("Aborted", "AbortError");
     const safeResponse = toJsonSafe(response) as object;
+    const projectedCitationKeys = new Set(response.citations.map((item) => `${item.sourceType}:${item.refId}`));
+    const projectedTargetIds = new Set(response.open_targets.map((item) => item.id));
     const persistableCitations = evidence
       .filter((item) => item.citation?.type)
       .filter((item) => Boolean(toPersistedSocratesCitationType(item.citation!.type)))
-      .slice(0, this.env.SOCRATES_MAX_CITATIONS);
+      .filter((item) => projectedCitationKeys.has(`${item.sourceType}:${item.citation!.id}`));
     const persistableCitationEvidenceIds = new Set(persistableCitations.map((item) => item.evidenceId));
     const persistableTargets = evidence
       .filter((item) => item.openTarget)
       .filter((item) => persistableCitationEvidenceIds.has(item.evidenceId))
       .filter((item) => SOCRATES_V1_PERSISTABLE_OPEN_TARGET_TYPES.has(item.openTarget!.targetType))
-      .slice(0, this.env.SOCRATES_MAX_OPEN_TARGETS);
+      .filter((item) => projectedTargetIds.has(item.evidenceId));
     await this.prisma.$transaction(async (tx) => {
       if (signal) {
         if (signal.aborted) throw signal.reason ?? new DOMException("Aborted", "AbortError");

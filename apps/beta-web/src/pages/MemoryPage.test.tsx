@@ -69,10 +69,16 @@ describe("[FIX-20] Memory document persistence", () => {
   it('refreshes pending desktop processing from the backend and stops after completion',async()=>{
     const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
     mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
-    mocks.getDocumentStatus.mockResolvedValue({...doc,status:'partial'});
+    // Keep the initial state until it has actually rendered. An immediately
+    // resolved status plus the real entrance animation made this test race on
+    // loaded clean-build machines before it could observe Processing.
+    let complete!:(value:Doc)=>void;
+    mocks.getDocumentStatus.mockImplementation(()=>new Promise(resolve=>{complete=resolve;}));
     const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
     try{
-      await waitFor(()=>expect(screen.getByText('Processing',{exact:true})).toBeVisible());
+      await waitFor(()=>expect(screen.getByText('Processing',{exact:true})).toBeVisible(),{timeout:3500});
+      await waitFor(()=>expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1),{timeout:3500});
+      await act(async()=>complete({...doc,status:'partial'}));
       await waitFor(()=>expect(screen.getByText('Partially processed',{exact:true})).toBeVisible(),{timeout:3500});
       expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1);
       await act(async()=>{await new Promise(resolve=>setTimeout(resolve,2200));});

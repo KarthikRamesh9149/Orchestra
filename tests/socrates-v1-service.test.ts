@@ -2317,6 +2317,52 @@ describe("SocratesService.askV1ProjectMemory", () => {
     });
   });
 
+  it.each(["object", "streaming"])("preserves all eight explicit citation identities through %s completion and persisted history", async (path) => {
+    const answer = "The selected document sources are [E8][E2][E1][E3][E4][E5][E6][E7].";
+    const { service, prisma, generationProvider, tx } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key", SOCRATES_MAX_EVIDENCE_ITEMS: 10, SOCRATES_MAX_CITATIONS: 6, SOCRATES_MAX_OPEN_TARGETS: 6 },
+      { answer_md: answer, confidence: "medium", limitations: [], suggested_prompts: [] }
+    );
+    const base = (await prisma.documentChunk.findMany())[0];
+    const id = (prefix: number, index: number) => `${prefix}0000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`;
+    prisma.documentChunk.findMany.mockResolvedValue(Array.from({ length: 8 }, (_, index) => ({
+      ...base, id: id(1, index), documentVersionId: id(2, index),
+      content: `The backend contract source ${index + 1} documents an authenticated API route.`,
+      lexicalContent: `backend contract source ${index + 1} authenticated api route`,
+      section: { ...base.section, id: id(4, index) },
+      documentVersion: { ...base.documentVersion, id: id(2, index),
+        document: { ...base.documentVersion.document, id: id(3, index), currentVersionId: id(2, index), title: `Backend Contract ${index + 1}` } }
+    })));
+    const deltas: string[] = [];
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID, actorUserId: USER_ID, question: "Summarize the backend contract evidence.",
+      selectedSources: ["documents"], includeArtifacts: false,
+      ...(path === "streaming" ? { onDelta: (delta: string) => { deltas.push(delta); } } : {})
+    });
+    const call = (path === "streaming" ? generationProvider.streamText : generationProvider.generateObject).mock.calls[0]![0];
+    expect(call.prompt).toContain("### Evidence E8");
+    expect(result.answer_md).toBe(answer);
+    if (path === "streaming") expect(deltas.join("")).toBe(answer);
+    expect(result.citations.map((row) => row.evidenceNumber)).toEqual([8, 2, 1, 3, 4, 5, 6, 7]);
+    expect(result.citations.every((row) => row.sourceType === "document")).toBe(true);
+    expect(result.open_targets).toHaveLength(8);
+    for (const citation of result.citations) {
+      expect(citation.refId).toBe(id(1, citation.evidenceNumber! - 1));
+      const target = result.open_targets.find((item) => item.id === citation.openTargetId);
+      expect(target && "documentId" in target.targetRef ? target.targetRef.documentId : undefined).toBe(id(3, citation.evidenceNumber! - 1));
+    }
+    const stored = (tx.socratesMessage.update as any).mock.calls[0][0].data;
+    expect(stored.content).toBe(answer);
+    expect(stored.answerPayloadJson.citations).toEqual(result.citations);
+    expect(stored.answerPayloadJson.open_targets).toEqual(result.open_targets);
+    expect((tx.socratesCitation.createMany as any).mock.calls[0][0].data).toHaveLength(8);
+    expect((tx.socratesOpenTarget.createMany as any).mock.calls[0][0].data).toHaveLength(8);
+    prisma.socratesSession.findFirst.mockResolvedValue({ id: SESSION_ID, projectId: PROJECT_ID, userId: USER_ID });
+    prisma.socratesMessage.findMany.mockResolvedValue([{ id: ASSISTANT_MESSAGE_ID, role: "assistant", ...stored }]);
+    const history = await service.getHistory(PROJECT_ID, SESSION_ID, USER_ID, true);
+    expect(history[0]?.answerPayloadJson).toEqual(stored.answerPayloadJson);
+  });
+
   it("falls back to grounded evidence when the model cites beyond the prompt", async () => {
     const { service, prisma } = makeService(
       {

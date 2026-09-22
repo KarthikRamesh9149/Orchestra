@@ -80,10 +80,12 @@ const FAILED_ANSWER = "Socrates could not complete this answer. Try asking again
 const PROVIDER_SOURCE_KEYS = new Set(["slack", "microsoft_teams", "clickup", "granola", "fireflies_ai", "zoho_mail", "zoho_cliq", "zoho_crm"]);
 const SocratesMarkdown = lazy(() => import("../components/ui/SocratesMarkdown").then((module) => ({ default: module.SocratesMarkdown })));
 
-function AnswerMarkdown({ content, streaming = false }: { content: string; streaming?: boolean }) {
+function AnswerMarkdown({ content, streaming = false, citations, openTargets }: {
+  content: string; streaming?: boolean; citations?: Citation[]; openTargets?: OpenTarget[];
+}) {
   return (
     <Suspense fallback={<p className="whitespace-pre-wrap font-sans text-[14px] leading-relaxed text-[var(--text-default)]">{content}</p>}>
-      <SocratesMarkdown content={content} streaming={streaming} />
+      <SocratesMarkdown content={content} streaming={streaming} citations={citations} openTargets={openTargets} />
     </Suspense>
   );
 }
@@ -94,6 +96,7 @@ function historyMessageToUi(message: SocratesHistoryMessage): Message | null {
   const citations = payload?.citations?.length
     ? payload.citations.map((citation) => ({
         id: citation.id,
+        evidenceNumber: citation.evidenceNumber,
         label: citation.label ?? "Source",
         excerpt: citation.excerpt ?? "",
         refId: citation.refId ?? "",
@@ -350,7 +353,7 @@ const AssistantMessage = memo(function AssistantMessage({
                 <p className="font-sans text-[13.5px] leading-relaxed text-[var(--text-default)]">{msg.content}</p>
               </div>
             ) : (
-              <AnswerMarkdown content={msg.content} streaming={msg.isStreaming} />
+              <AnswerMarkdown content={msg.content} streaming={msg.isStreaming} citations={msg.citations} openTargets={openTargets} />
             )}
             {msg.isStreaming && msg.content ? (
               <span className="mt-2 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]" role="status">Writing answer…</span>

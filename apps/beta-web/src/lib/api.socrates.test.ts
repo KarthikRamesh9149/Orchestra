@@ -67,6 +67,19 @@ describe("Socrates session API", () => {
     ]);
   });
 
+  it("preserves explicit evidence numbers without inventing identity for legacy or malformed citations", async () => {
+    server.use(
+      http.get(`${api}/v1/auth/csrf`, () => HttpResponse.json({ data: { csrfToken: "citation-csrf" }, meta: null, error: null })),
+      http.post(`${api}/v1/projects/${projectId}/socrates/v1/ask`, () => HttpResponse.json({ data: {
+        answer_md: "Second [E2], eighth [E8].",
+        citations: [2, 8, undefined, 0, 1.5, 11, "1"].map((evidenceNumber, index) => ({ evidenceNumber, refId: `chunk:${index}`, sourceType: "document", label: "Source", excerpt: "" })),
+        sessionId, message: { userMessageId: "user-message", assistantMessageId: "assistant-message", createdAt: "2026-08-19T01:00:01.000Z" },
+      }, meta: null, error: null }))
+    );
+    const answer = await askSocratesV1(projectId, "Which source?", { sessionId });
+    expect(answer.citations.map(({ evidenceNumber }) => evidenceNumber)).toEqual([2, 8, undefined, undefined, undefined, undefined, undefined]);
+  });
+
   it("loads the owned session list and complete ordered history with cookies", async () => {
     server.use(
       http.get(`${api}/v1/projects/${projectId}/socrates/sessions`, ({ request }) => {
@@ -120,7 +133,7 @@ describe("Socrates session API", () => {
             controller.enqueue(encoder.encode(`id: 3\nevent: delta\ndata: {"text":"answer"}\n\n`));
             controller.enqueue(encoder.encode(`id: 4\nevent: done\ndata: ${JSON.stringify({
               answer_md: "## Live answer\n\nSee **Friday**.",
-              citations: [{ ref_id: "doc:1", source_type: "document", title: "Launch plan", snippet: "Friday", open_target_id: "target:1" }],
+              citations: [{ evidenceNumber: 8, ref_id: "doc:1", source_type: "document", title: "Launch plan", snippet: "Friday", open_target_id: "target:1" }],
               open_targets: [{ id: "target:1", source_type: "document", target_type: "document_section", target_ref: { documentId: "doc-1", anchorId: "launch" } }],
               suggested_prompts: [], confidence: "high", limitations: ["Based on indexed evidence only."],
               artifact: { id: "artifact:launch", type: "summary", title: "Launch brief", content_md: "**Ship Friday.**", payload: { day: "Friday" }, source_refs: [{ sourceType: "document", refId: "doc:1", label: "Launch plan" }], generated_at: "2026-08-20T00:00:00.000Z" },
@@ -143,7 +156,7 @@ describe("Socrates session API", () => {
 
     expect(deltas).toEqual(["Live ", "Live answer"]);
     expect(answer.answer_md).toContain("Live answer");
-    expect(answer.citations[0]).toMatchObject({ refId: "doc:1", openTargetId: "target:1" });
+    expect(answer.citations[0]).toMatchObject({ evidenceNumber: 8, refId: "doc:1", openTargetId: "target:1" });
     expect(answer.open_targets[0]?.targetRef).toEqual({ documentId: "doc-1", anchorId: "launch" });
     expect(answer.limitations).toEqual(["Based on indexed evidence only."]);
     expect(answer.artifact).toMatchObject({ type: "summary", title: "Launch brief" });

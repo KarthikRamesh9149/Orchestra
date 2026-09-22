@@ -107,6 +107,16 @@ for (const file of ['ChatPage.tsx','ChatPage.test.tsx','DeliveryPage.tsx','Truth
  const key=`apps/beta-web/src/pages/${file}`;
  adjustments[key]=(adjustments[key] ? adjustments[key]+' ' : '')+'Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes.';
 }
+// September 22: independently reviewed citation-contract repair. Preserve the
+// original prompt identity through projection, streaming completion and history;
+// only explicit, unique, safe target mappings become inline links. No UI restyle.
+for (const file of ['src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts',
+ 'apps/beta-web/src/components/ui/SocratesMarkdown.tsx','apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx',
+ 'apps/beta-web/src/lib/api.ts','apps/beta-web/src/lib/api.socrates.test.ts',
+ 'apps/beta-web/src/store/chatStore.ts','apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pages/ChatPage.test.tsx']) {
+ adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+'September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded.';
+}
+adjustments['apps/beta-web/src/pages/MemoryPage.test.tsx']+=' September 22 clean-source suite: hold the mocked processing response until the initial visible state is observed, removing an animation/status race without changing the application or weakening visibility assertions.';
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

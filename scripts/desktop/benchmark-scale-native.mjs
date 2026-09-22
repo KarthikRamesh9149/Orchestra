@@ -181,7 +181,7 @@ class ScaleHost {
   }
 }
 
-function seedSql(fixture,foreignOrgId){
+export function seedSql(fixture,foreignOrgId){
   const {ownerId,foreignProjectId}=fixture;
   const sql=`BEGIN;
 INSERT INTO organizations(id,name,slug,updated_at) VALUES (${quote(foreignOrgId)}::uuid,'Synthetic separate tenant','scale-foreign-tenant',now());

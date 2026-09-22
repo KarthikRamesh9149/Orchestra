@@ -129,7 +129,7 @@ async function fingerprint(files, base) {
   for (const file of [...files].sort()) hash.update(relative(base, file)).update('\0').update(await readFile(file)).update('\0');
   return hash.digest('hex');
 }
-async function verifyBuild(dist) {
+export async function verifyBuild(dist) {
   const sources = (await walk(join(REPO, 'src'))).filter(path => path.endsWith('.ts') && !path.endsWith('.d.ts'));
   for (const source of sources) {
     const compiled = join(dist, relative(REPO, source).replace(/\.ts$/, '.js'));
@@ -138,7 +138,7 @@ async function verifyBuild(dist) {
   }
   return { sourceSha256: await fingerprint(sources, REPO), compiledSha256: await fingerprint(sources.map(source => join(dist, relative(REPO, source).replace(/\.ts$/, '.js'))), dist), schemaSha256: await fingerprint(await walk(join(REPO, 'prisma')), REPO) };
 }
-async function dedicatedAi(options) {
+export async function dedicatedAi(options) {
   if (!options.keyFile) return undefined;
   // Never discover or inherit a key. Reject obvious hosted/production env paths.
   const path = await realpath(options.keyFile);
@@ -151,7 +151,7 @@ async function dedicatedAi(options) {
   return { apiKey: key, preferences: { generationModel: options.model, embeddingModel: 'text-embedding-3-small', embeddingDimensions: 1536, maxRequestsPerDay: options.maxRequests, maxOutputTokens: 1024 } };
 }
 
-class NativeHost {
+export class NativeHost {
   constructor(options, profile, bundle, vault) {
     this.options = options; this.profile = profile; this.bundle = bundle; this.vault = vault;
     this.pending = new Map(); this.streams = new Map(); this.authority = undefined;

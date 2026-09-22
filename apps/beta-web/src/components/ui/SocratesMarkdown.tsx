@@ -1,13 +1,68 @@
+import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 import remarkGfm from "remark-gfm";
-import { safeMarkdownUrl } from "../../lib/socratesPresentation";
+import { resolveOpenTarget, safeMarkdownUrl, targetForCitation } from "../../lib/socratesPresentation";
+import type { Citation, OpenTarget } from "../../store/chatStore";
 
-export function SocratesMarkdown({ content, streaming = false }: { content: string; streaming?: boolean }) {
+interface MarkdownNode {
+  type: string;
+  value?: string;
+  url?: string;
+  children?: MarkdownNode[];
+}
+
+const EMPTY_CITATIONS: Citation[] = [];
+const EMPTY_TARGETS: OpenTarget[] = [];
+const NON_PROSE_NODES = new Set(["link", "linkReference", "image", "imageReference", "code", "inlineCode", "html", "definition"]);
+
+function evidenceLinks(citations: Citation[], openTargets: OpenTarget[]) {
+  const links = new Map<number, string>();
+  for (const citation of citations) {
+    const number = citation.evidenceNumber;
+    // An ordinal is prompt identity, not the citation's position in this array.
+    // Missing, duplicate or broken identity must never silently select a source.
+    if (number === undefined || !Number.isInteger(number) || number < 1 || number > 10
+      || citations.filter((item) => item.evidenceNumber === number).length !== 1
+      || !citation.openTargetId
+      || openTargets.filter((target) => target.id === citation.openTargetId).length !== 1) continue;
+    const resolved = resolveOpenTarget(targetForCitation(citation, openTargets));
+    const href = resolved && safeMarkdownUrl(resolved.href);
+    if (href) links.set(number, href);
+  }
+
+  return function remarkEvidenceLinks() {
+    return (tree: MarkdownNode) => {
+      const visit = (node: MarkdownNode) => {
+        if (!node.children || NON_PROSE_NODES.has(node.type)) return;
+        node.children = node.children.flatMap((child) => {
+          if (child.type !== "text" || typeof child.value !== "string") {
+            visit(child);
+            return [child];
+          }
+          return child.value.split(/(\[E\d+\])/gi).filter(Boolean).map((value): MarkdownNode => {
+            const match = /^\[E(\d+)\]$/i.exec(value);
+            const href = match && links.get(Number(match[1]));
+            return href ? { type: "link", url: href, children: [{ type: "text", value }] } : { type: "text", value };
+          });
+        });
+      };
+      if (links.size) visit(tree);
+    };
+  };
+}
+
+export function SocratesMarkdown({ content, streaming = false, citations = EMPTY_CITATIONS, openTargets = EMPTY_TARGETS }: {
+  content: string;
+  streaming?: boolean;
+  citations?: Citation[];
+  openTargets?: OpenTarget[];
+}) {
+  const citationPlugin = useMemo(() => evidenceLinks(citations, openTargets), [citations, openTargets]);
   return (
     <div className="socrates-markdown font-sans text-[14px] leading-relaxed text-[var(--text-default)]" aria-live={streaming ? "polite" : undefined}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, citationPlugin]}
         skipHtml
         urlTransform={(url) => safeMarkdownUrl(url) ?? ""}
         components={{

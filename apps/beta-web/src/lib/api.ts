@@ -383,6 +383,7 @@ export type SocratesScope = "All" | "Slack" | "GitHub" | "Docs";
 
 export interface SocratesCitation {
   id?: string;
+  evidenceNumber?: number;
   label: string;
   excerpt: string;
   refId: string;
@@ -624,6 +625,8 @@ function normalizeSocratesAnswer(result: any, fallbackMessage: SocratesAnswer["m
       refId: citation.refId ?? citation.ref_id ?? "",
       sourceType: citation.sourceType ?? citation.source_type ?? "documents",
       id: citation.id,
+      evidenceNumber: Number.isInteger(citation.evidenceNumber) && citation.evidenceNumber >= 1 && citation.evidenceNumber <= 10
+        ? citation.evidenceNumber : undefined,
       confidence: typeof citation.confidence === "number" ? citation.confidence : undefined,
       openTargetId: citation.openTargetId ?? citation.open_target_id ?? null
     })),

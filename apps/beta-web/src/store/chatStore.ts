@@ -20,6 +20,7 @@ export interface Artifact {
 
 export interface Citation {
   id?: string;
+  evidenceNumber?: number;
   label: string;
   excerpt: string;
   refId: string;
