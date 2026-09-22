@@ -122,6 +122,11 @@ for (const file of ['src/modules/agent-context/composer.ts','src/modules/agent-c
  'tests/agent-context-pack.test.ts','tests/delivery-intelligence-service.test.ts']) {
  adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+'September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment.';
 }
+// September 23 comparative-audit remediation, authorized for private desktop
+// only. Preserve the original import hashes and record the reviewed evolution.
+adjustments['package.json']+=' September 23: discover and execute every Node packaging regression through one portable local gate.';
+adjustments['src/modules/socrates/service.ts']+=' September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority.';
+adjustments['tests/socrates-v1-service.test.ts']+=' September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads.';
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

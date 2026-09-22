@@ -3063,7 +3063,8 @@ export class SocratesService {
         orderBy: [{ createdAt: "desc" }],
         take: 120
       });
-      return this.enrichSocratesV1DocumentRows(projectId, rows.filter((row) => this.isCurrentParsedChunk(row)));
+      // Cache immutable content, not eligibility or provider authorization.
+      return rows.filter((row) => this.isCurrentParsedChunk(row));
     });
     const indexedIds = await this.findSocratesV1DocumentEvidenceIds(projectId, query, explicitDocumentIds);
     const indexedRawPromise = indexedIds.length > 0
@@ -3072,7 +3073,10 @@ export class SocratesService {
           include: { section: true, documentVersion: { include: { document: true } } }
         })
       : Promise.resolve([]);
-    const [recent, indexedRaw] = await Promise.all([recentPromise, indexedRawPromise]);
+    const [cachedRecent, indexedRaw] = await Promise.all([recentPromise, indexedRawPromise]);
+    const recent = await this.enrichSocratesV1DocumentRows(
+      projectId, await this.revalidateSocratesV1CachedDocuments(projectId, cachedRecent)
+    );
     const rank = new Map(indexedIds.map((id, index) => [id, index]));
     indexedRaw.sort((a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER));
     const indexed = await this.enrichSocratesV1DocumentRows(
@@ -3127,13 +3131,41 @@ export class SocratesService {
   private async findSocratesV1ExplicitDocumentScope(projectId: string, query: string): Promise<Array<{ id: string; title: string }>> {
     const documentModel = (this.prisma as any).document;
     if (!documentModel?.findMany) return [];
-    const documents = await this.cachedV1Evidence<Array<{ id: string; title: string }>>(projectId, "document-title-scope", () => documentModel.findMany({
+    // Titles/current source selection can change in another API/worker process.
+    const documents = await documentModel.findMany({
       where: { projectId, archivedAt: null, currentVersionId: { not: null } },
       select: { id: true, title: true }
-    }));
+    });
     return documents.filter((document: { id: string; title: string }) =>
       typeof document.title === "string" && explicitSocratesV1DocumentTitleMatches(query, document.title)
     );
+  }
+
+  private async revalidateSocratesV1CachedDocuments<T extends { id: string; parseRevision?: number | null }>(projectId: string, rows: T[]) {
+    if (rows.length === 0) return [];
+    // One bounded, primary-key metadata lookup protects cached content against
+    // archive/delete, version replacement and reparsing across processes. Do not
+    // swallow failures or cache this result. An in-flight old load cannot grant
+    // eligibility, even if it completes after the mutation commits.
+    const current = await this.prisma.documentChunk.findMany({
+      where: {
+        projectId, id: { in: rows.map((row) => row.id) },
+        documentVersion: { status: { in: ["ready", "partial"] }, document: { archivedAt: null } }
+      },
+      select: {
+        id: true,
+        documentVersion: { select: {
+          id: true, status: true, parseRevision: true,
+          document: { select: { id: true, title: true, currentVersionId: true } }
+        } }
+      }
+    });
+    const byId = new Map(current.map((row) => [row.id, row.documentVersion]));
+    return rows.flatMap((row) => {
+      const documentVersion = byId.get(row.id);
+      if (!documentVersion || !this.isCurrentParsedChunk({ ...row, documentVersion })) return [];
+      return [{ ...row, documentVersion }];
+    });
   }
 
   private async enrichSocratesV1DocumentRows(projectId: string, rows: any[]) {

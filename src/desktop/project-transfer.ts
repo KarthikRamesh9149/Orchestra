@@ -115,9 +115,29 @@ export function validateProjectTransfer(input:unknown){
  }
  if(used.size!==files.size)fail('Unreferenced file');
  const versions=new Map(transfer.records.DocumentVersion!.map(row=>[row.id,row]));
+ const sections=new Map(transfer.records.DocumentSection!.map(row=>[row.id,row]));
+ // Existence alone does not bind independent foreign keys to the same source.
+ // Nullable pointers and historical versions/revisions remain valid; compare
+ // only populated pointers, never require the document's current version.
+ const documentSource=(name:TransferModel,documentId:unknown,versionId:unknown,sectionId:unknown=null)=>{
+  if(documentId!==null&&versionId!==null&&versions.get(versionId)?.documentId!==documentId)fail(name+' version belongs to another document');
+  if(sectionId!==null){
+   const sectionVersionId=sections.get(sectionId)?.documentVersionId;
+   if(versionId!==null&&sectionVersionId!==versionId)fail(name+' section belongs to another document version');
+   if(documentId!==null&&versions.get(sectionVersionId)?.documentId!==documentId)fail(name+' section belongs to another document');
+  }
+ };
  for(const row of transfer.records.Document!)if(row.currentVersionId!==null&&versions.get(row.currentVersionId)?.documentId!==row.id)fail('Current version belongs to another document');
+ for(const row of transfer.records.ProjectLiveDocSource!)documentSource('ProjectLiveDocSource',row.documentId,row.documentVersionId);
+ for(const name of ['LiveDocSectionDraft','LiveDocSectionRevision'] as const)for(const row of transfer.records[name]!)documentSource(name,row.sourceDocumentId,row.sourceDocumentVersionId,row.documentSectionId);
+ for(const row of transfer.records.DocumentChunk!)if(row.sectionId!==null){
+  const section=sections.get(row.sectionId)!;
+  if(section.documentVersionId!==row.documentVersionId)fail('DocumentChunk section belongs to another document version');
+  if(section.parseRevision!==row.parseRevision)fail('DocumentChunk section belongs to another parse revision');
+ }
  const nodes=new Map(transfer.records.BrainNode!.map(row=>[row.id,row]));
  for(const row of transfer.records.BrainEdge!)if([row.fromNodeId,row.toNodeId].some(id=>nodes.get(id)?.artifactVersionId!==row.artifactVersionId))fail('Brain edge crosses artifact versions');
+ for(const row of transfer.records.BrainSectionLink!)if(nodes.get(row.brainNodeId)?.artifactVersionId!==row.artifactVersionId)fail('BrainSectionLink node belongs to another artifact version');
  return {transfer,digest:sha(Buffer.from(canonical(transfer)))};
 }
 export function sealProjectTransfer(input:unknown,passphrase:string){z.string().min(16).max(1024).parse(passphrase);return encryptBackup(Buffer.from(canonical(validateProjectTransfer(input).transfer)),passphrase);}

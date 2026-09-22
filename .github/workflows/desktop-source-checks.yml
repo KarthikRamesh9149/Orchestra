@@ -1,0 +1,64 @@
+name: Desktop source checks
+
+# Deliberate manual runs only. The owner authorized included Actions minutes
+# with the existing account-wide $0/stop-usage budget; no paid runners or storage.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-source-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: postgresql://fixture:fixture@127.0.0.1:5432/orchestra_unused
+      CI: 'true'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.19.0'
+      - name: Install locked dependencies
+        run: |
+          npm ci
+          npm --prefix apps/desktop ci
+          npm --prefix apps/beta-web ci
+          npm --prefix apps/vscode-extension ci
+      - name: Generate and validate database client
+        run: |
+          npm run prisma:generate
+          npx --no-install prisma validate
+      - name: Source inventory and import provenance
+        run: |
+          node scripts/desktop/inventory.mjs --check
+          node scripts/desktop/verify-import.mjs --check
+      - name: Typecheck and backend build
+        run: |
+          npm run typecheck
+          npx --no-install tsc -p tsconfig.json
+      - name: Desktop backend tests
+        run: npx --no-install vitest run --config vitest.desktop.config.ts
+      - name: Packaging regression tests
+        run: npm run test:desktop:packaging
+      - name: Frontend tests and build
+        run: |
+          npm --prefix apps/beta-web test
+          npm --prefix apps/beta-web run build
+      - name: Extension build
+        run: npm --prefix apps/vscode-extension run build
+      - name: Dependency audits and local security checks
+        run: |
+          npm run audit:all
+          npm run security:scan:local
+          npm run beta:web:no-prod-mocks
+
+# This is source-level evidence, not signed Mac/package/provider qualification.
+# No caches or artifacts are uploaded, and no deployment/publication occurs.

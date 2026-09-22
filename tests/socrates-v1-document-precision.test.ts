@@ -9,7 +9,8 @@ function chunk(id: string, text: string) {
 function documentRetrieval(relevant: ReturnType<typeof chunk>, filler: ReturnType<typeof chunk>[], named = false) {
   const instance = Object.create(SocratesService.prototype) as any;
   instance.env = { OPENAI_EMBEDDING_MODEL: "mock" };
-  instance.prisma = { documentChunk: { findMany: vi.fn(async () => [relevant]) } };
+  instance.prisma = { documentChunk: { findMany: vi.fn(async ({ where }) =>
+    [relevant, ...filler].filter((row) => where.id.in.includes(row.id))) } };
   instance.findSocratesV1ExplicitDocumentScope = vi.fn(async () => named
     ? [{ id: relevant.documentVersion.document.id, title: "Control Handbook" }] : []);
   instance.cachedV1Evidence = vi.fn(async () => filler);

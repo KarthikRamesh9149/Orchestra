@@ -474,6 +474,77 @@ function configureMultiDocumentEvidence(prisma: any, includeSecondDocument = tru
   return { documents, rows };
 }
 
+describe("Socrates cached document freshness", () => {
+  function fixture() {
+    const { service, prisma } = makeService();
+    const row = {
+      id: "freshness-chunk", projectId: PROJECT_ID, documentVersionId: "freshness-version",
+      content: "CSV export is required.", lexicalContent: "csv export required", parseRevision: 1,
+      section: { anchorId: "scope", headingPath: ["Scope"] },
+      documentVersion: { id: "freshness-version", status: "ready", parseRevision: 1,
+        document: { id: "freshness-document", title: "Launch PRD", archivedAt: null, currentVersionId: "freshness-version" } }
+    };
+    let stored = [structuredClone(row)];
+    prisma.documentChunk.findMany.mockImplementation(async ({ where }: any) => structuredClone(stored.filter((item) =>
+      item.projectId === where.projectId && item.documentVersion.document.archivedAt === null &&
+      (!where.id?.in || where.id.in.includes(item.id))
+    )));
+    const retrieve = () => (service as any).findSocratesV1DocumentEvidence(PROJECT_ID, "what is this project", false);
+    return { service, prisma, row, retrieve, replace: (rows: typeof stored) => { stored = rows; } };
+  }
+
+  it("excludes archived or deleted documents immediately without reloading cached content", async () => {
+    const { prisma, retrieve, replace } = fixture();
+    expect(await retrieve()).toHaveLength(1);
+    replace([]);
+    expect(await retrieve()).toEqual([]);
+    expect(prisma.documentChunk.findMany.mock.calls.filter(([args]: any) => args.include)).toHaveLength(1);
+  });
+
+  it.each(["version", "parse", "status"])("rejects a cached row after its current %s changes", async (change) => {
+    const { row, retrieve, replace } = fixture();
+    expect(await retrieve()).toHaveLength(1);
+    const latest = structuredClone(row);
+    if (change === "version") latest.documentVersion.document.currentVersionId = "new-version";
+    if (change === "parse") latest.documentVersion.parseRevision = 2;
+    if (change === "status") latest.documentVersion.status = "failed";
+    replace([latest]);
+    expect(await retrieve()).toEqual([]);
+  });
+
+  it("does not let an in-flight old load restore archived evidence to the next answer", async () => {
+    const { prisma, row, retrieve, replace } = fixture();
+    let release!: (rows: unknown[]) => void;
+    const pending = new Promise<unknown[]>((resolve) => { release = resolve; });
+    prisma.documentChunk.findMany.mockImplementationOnce(() => pending);
+    const reading = retrieve();
+    await vi.waitFor(() => expect(prisma.documentChunk.findMany).toHaveBeenCalled());
+    replace([]);
+    release([row]);
+    expect(await reading).toEqual([]);
+    expect(await retrieve()).toEqual([]);
+  });
+
+  it("fails closed when fresh eligibility cannot be read", async () => {
+    const { prisma, retrieve } = fixture();
+    await retrieve();
+    prisma.documentChunk.findMany.mockRejectedValueOnce(new Error("database unavailable"));
+    await expect(retrieve()).rejects.toThrow("database unavailable");
+  });
+
+  it("keeps unchanged content cached while checking project-scoped metadata", async () => {
+    const { prisma, retrieve } = fixture();
+    expect(await retrieve()).toHaveLength(1);
+    expect(await retrieve()).toHaveLength(1);
+    const reads = prisma.documentChunk.findMany.mock.calls.map(([args]: any) => args);
+    expect(reads.filter((args: any) => args.include)).toHaveLength(1);
+    const checks = reads.filter((args: any) => args.select);
+    expect(checks).toHaveLength(2);
+    expect(checks.every((args: any) => args.where.projectId === PROJECT_ID && args.where.documentVersion.document.archivedAt === null)).toBe(true);
+    expect(checks.every((args: any) => !args.select.content && !args.select.lexicalContent)).toBe(true);
+  });
+});
+
 describe("SocratesService.askV1ProjectMemory", () => {
   it.each([
     { selectedSources: ["documents"] },
@@ -1279,7 +1350,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
 
   it("drops stale document chunks from superseded document versions", async () => {
     const { service, prisma } = makeService();
-    prisma.documentChunk.findMany.mockResolvedValueOnce([
+    prisma.documentChunk.findMany.mockResolvedValue([
       {
         id: "01010101-0101-4101-8101-010101010101",
         content: "Stale billing plan says invoices are manual and should not be trusted.",
@@ -1327,7 +1398,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
 
   it("drops stale document chunks from older parse revisions of the current version", async () => {
     const { service, prisma } = makeService();
-    prisma.documentChunk.findMany.mockResolvedValueOnce([
+    prisma.documentChunk.findMany.mockResolvedValue([
       {
         id: "03030303-0303-4303-8303-030303030303",
         content: "Old parse revision says the beta stores raw private folder contents.",
@@ -1404,7 +1475,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
         }
       ])
     };
-    prisma.documentChunk.findMany.mockResolvedValueOnce([
+    prisma.documentChunk.findMany.mockResolvedValue([
       {
         id: "05050505-0505-4505-8505-050505050505",
         content: "The Drive PRD says managers choose the exact files and folders Socrates may use.",
@@ -1700,7 +1771,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
       }
     );
 
-    prisma.documentChunk.findMany.mockResolvedValueOnce([
+    prisma.documentChunk.findMany.mockResolvedValue([
       {
         id: notionChunkId,
         projectId: PROJECT_ID,
@@ -2571,7 +2642,8 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(first.warmed).toBe(true);
     expect(concurrent.warmed).toBe(true);
     expect(second.expiresInMs).toBe(60_000);
-    expect(prisma.documentChunk.findMany).toHaveBeenCalledTimes(1);
+    expect(prisma.documentChunk.findMany.mock.calls.filter(([args]: any) => args.include)).toHaveLength(1);
+    expect(prisma.documentChunk.findMany.mock.calls.filter(([args]: any) => args.select)).toHaveLength(3);
     expect(prisma.communicationMessageChunk.findMany).toHaveBeenCalledTimes(1);
     expect(prisma.gitHubEngineeringEvidence.findMany).toHaveBeenCalledTimes(1);
     expect(generationProvider.streamText).not.toHaveBeenCalled();

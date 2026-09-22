@@ -42,10 +42,28 @@ otherwise may fail to find standard macOS headers on a clean machine. These
 commands do not accept an Xcode licence or change system-wide developer settings.
 
 The native recipe pins source hashes and builds private PostgreSQL/pgvector and
-OpenSSL. Preparation verifies the pinned Node download and assembles `.desktop`.
+OpenSSL. Only regular, no-follow archive files in `.desktop/native-build` are
+reused, after SHA256 verification on every run. The verified bytes are copied
+into a fresh `run-*` workspace before extraction. Existing extracted source
+trees, OpenSSL libraries and install outputs are never reused. Build/cache and
+install-directory symlinks are rejected. Failed downloads are not cached.
+
+The complete fresh install and its provenance are promoted together only after
+the build and distribution checks succeed. A prior native candidate is retained
+under `.desktop/native/darwin-arm64-previous-*`; failures leave it in place.
+Old workspaces/candidates remain for inspection and are not automatically deleted.
+The build lock rejects concurrent native builds. After an interrupted process,
+confirm no build is running before manually removing `.desktop/native-build/.build-lock`.
+Run build, preparation and packaging sequentially; preparation must not run
+while the native candidate is being replaced.
+
+Preparation verifies the pinned Node download and assembles `.desktop`.
 The package path is written to `.desktop/latest-package.txt`. Native build
 provenance is `.desktop/native/darwin-arm64/build-provenance.json`; the runtime
-contains `native-manifest.json`. Hashes prove byte identity, not authorship or
+contains `native-manifest.json`. Build provenance records verified source pins,
+the recipe hashes and the fresh-input policy; it describes the native install
+before preparation relocates/signs its binaries. The runtime manifest records
+the prepared native file hashes. Hashes prove byte identity, not authorship or
 public signing. Never disable Gatekeeper or strip quarantine as a release step.
 
 Applicable source tests:
@@ -53,9 +71,16 @@ Applicable source tests:
 ```sh
 npx vitest run --config vitest.desktop.config.ts
 npm --prefix apps/beta-web test
-node --test tests/desktop-publication-audit.test.mjs
+npm run test:desktop:packaging
 node scripts/desktop/publication-audit.mjs
 ```
+
+The packaging gate runs every `tests/**/*.test.mjs` through Node's test runner,
+including future nested tests, without shell-dependent glob expansion. Use
+`npm run test:desktop:packaging -- --list` to inspect its selection. It complements
+the TypeScript/Vitest gates above; `npm test` remains the upstream suite. These
+are local source/fixture checks, not native compilation or packaged runtime
+qualification. No GitHub Actions or paid runner is required.
 
 The publication audit intentionally returns nonzero while publication is blocked.
 It reports metadata and pending review, not a security certificate. The full

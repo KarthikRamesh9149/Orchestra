@@ -59,6 +59,7 @@
     "start": "node scripts/start-service.mjs",
     "start:worker": "node dist/src/worker.js",
     "test": "vitest run",
+    "test:desktop:packaging": "node scripts/desktop/test-packaging.mjs",
     "test:watch": "vitest",
     "prisma:generate": "prisma generate && node scripts/ops/ensure-prisma-client-link.mjs",
     "prisma:migrate": "prisma migrate dev",

@@ -269,8 +269,8 @@
     {
       "path": "package.json",
       "sourceSha256": "dc9bca392bfa6997c3db4c32de7362f7947cfa3ba96fb1bc91812e7f3dc1a984",
-      "importedSha256": "debfc98a4fd57323186e3bdcb71d2e973a5f88a194721893e5676d98e122dd13",
-      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool."
+      "importedSha256": "7d8d90fe5628c0831d461ae9fbde51e5ffb22164862028ed3d423342fe8432df",
+      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate."
     },
     {
       "path": "prisma/schema.prisma",
@@ -449,8 +449,8 @@
     {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "3c7e9fe762b80dd14d899069a001fc5a70aa5f39e7fc00c26d21909d1c482fe7",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "afbf2ec16d6e9525045f3a505303ab7dca777bb8f1c1cf388377634b83bd08c6",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
@@ -533,8 +533,8 @@
     {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "52f90c51d89b3f4622150088a515fd91757e6f4e2fe766fb74cea40ed97a9420",
-      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "ea1d37b53736ce106c0ccad98cadd3af54c42bc257afa2f8f8e9294d4b7e97c7",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads."
     }
   ]
 }
