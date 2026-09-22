@@ -1,0 +1,75 @@
+1
+00:00:00,200 --> 00:00:01,600
+Your team moves fast.
+
+2
+00:00:01,600 --> 00:00:03,950
+Your product context should keep up.
+
+3
+00:00:04,350 --> 00:00:06,250
+Requirements live in documents.
+
+4
+00:00:06,250 --> 00:00:08,200
+Changes arrive in conversations.
+
+5
+00:00:08,200 --> 00:00:12,700
+Your coding agent starts with whatever context someone remembered to paste.
+
+6
+00:00:13,100 --> 00:00:16,750
+Orchestra connects the evidence, the decisions, and the work.
+
+7
+00:00:17,150 --> 00:00:18,550
+Start with a source.
+
+8
+00:00:18,550 --> 00:00:23,125
+Ask Socrates a product question, then open the citation behind its answer.
+
+9
+00:00:23,525 --> 00:00:27,150
+In our Northstar project, CSV export is documented.
+
+10
+00:00:27,150 --> 00:00:29,650
+PDF export is a request.
+
+11
+00:00:29,650 --> 00:00:31,250
+Those are different things.
+
+12
+00:00:31,650 --> 00:00:34,550
+Truth Inbox brings proposed changes into review.
+
+13
+00:00:34,550 --> 00:00:37,600
+Authorised decisions shape the Product Brain.
+
+14
+00:00:38,000 --> 00:00:42,200
+Agent Preflight gives your coding agent a scoped context pack.
+
+15
+00:00:42,200 --> 00:00:45,250
+Postflight links reported work back to that starting point.
+
+16
+00:00:45,650 --> 00:00:47,550
+Keep the reason behind the requirement.
+
+17
+00:00:47,550 --> 00:00:52,025
+Give the next person, and the next agent, a clearer place to begin.
+
+18
+00:00:52,695 --> 00:00:53,700
+Orchestra.
+
+19
+00:00:53,700 --> 00:00:55,820
+Product Brain for High Speed Teams.

@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "renderer": {
+    "file": "scripts/desktop/render-narrated-launch.swift",
+    "sha256": "13ff8616510e818d60c4e29b81a1d02942c4b3a2d30ce25db76350dcd820a16b"
+  },
+  "reproduction": [
+    "Compile the renderer with macOS Command Line Tools Swift and the macOS SDK.",
+    "Place the privately retained original captures, logo and WAVs at the relative asset paths in each portable timeline. Verify input SHA-256 values before rendering.",
+    "Run renderer launch.timeline.json launch-master and renderer walkthrough.timeline.json walkthrough-master. Output directories must be fresh.",
+    "Encode each master with the per-film H.264 two-pass settings, AAC and +faststart. Check final byte size, decode and inspect readable keyframes."
+  ],
+  "disclosures": [
+    "Fictional Northstar project data in actual Orchestra app captures.",
+    "AI-generated narration; the user accepted a 21-second voice audition. No claim of independent full-film perceptual listening.",
+    "Narration uses complete natural speech clips without time stretching or clipping. Walkthrough paragraphs are sample-exact extracts from the normalized narration; chapter pauses are editorial.",
+    "Edited waiting, framing and sequence. UI pixels and shown states are not rewritten.",
+    "Blocked Preflight and exact-pack handoff do not demonstrate approval, completed implementation or recorded Postflight execution.",
+    "No third-party music. Original Orchestra logo."
+  ],
+  "verification": {
+    "rendererValidationCases": 11,
+    "rendererValidationPassed": 11,
+    "finalIndependentVisualReview": "Parent agent reviewed both final contact sheets. Renderer worker inspected compressed keyframes. No independent full-film perceptual listening is claimed.",
+    "publication": "Not performed by the renderer worker"
+  },
+  "films": [
+    {
+      "name": "launch",
+      "duration": 60,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "audioTracks": 1,
+      "sceneCount": 13,
+      "captionCount": 19,
+      "web": {
+        "file": "Orchestra-launch-web.mp4",
+        "bytes": 9091826,
+        "sha256": "34d21a3408da0ba13c8ee425892d84e9863e1d911ead05bbc873f583ae01c88e",
+        "videoCodec": "H.264",
+        "audioCodec": "AAC",
+        "under9500000Bytes": true
+      },
+      "master": {
+        "file": "launch/Orchestra-film.mp4",
+        "bytes": 24610639,
+        "sha256": "beabfed0fc6a2d17472ce0f3e7cd49448d9641a8399830f50ae59330091de047"
+      },
+      "portableTimeline": {
+        "file": "launch.timeline.json",
+        "sha256": "f6b408b5841d434994e8cd3d75690a822c507b9963ec428db54d529108b3ac77"
+      },
+      "originalRenderTimelineSHA256": "666fb6119d37fe760f2f7875fa627560fcbdcf5dfb352a350057232c14018b3c",
+      "sourceImages": [
+        {
+          "file": "assets/brand/orchestra-logo.png",
+          "sha256": "38d72a06298536aa86d44af48e50fd148b25503879d10bc83ed24f9d323bcbb1"
+        },
+        {
+          "file": "assets/screenshots/citation-e2-source.png",
+          "sha256": "78db185f84fc7b86530f80a537e7849766bb118e9888c4235bd0d3dc8135f898"
+        },
+        {
+          "file": "assets/screenshots/memory.png",
+          "sha256": "ccf9ea8572040830204306d6a17ffe7cbfc273d9aaa8dd677ad96189874b3a9b"
+        },
+        {
+          "file": "assets/screenshots/prd-detail.png",
+          "sha256": "9a40ef155c70923452000ef2435a64715a613715ea98cd5b0db457e2b972d363"
+        },
+        {
+          "file": "assets/screenshots/prd-source.png",
+          "sha256": "774818e8f4707661eb3721dfdeadd7074242c6d541bc981176481c2f1d6c11f1"
+        },
+        {
+          "file": "assets/screenshots/preflight-corrected-readiness.png",
+          "sha256": "9e140b089dd31160dff9ef1539541d6f76c269bc73f49b779be5047380cbc0c2"
+        },
+        {
+          "file": "assets/screenshots/preflight-exact-pack-handoff.png",
+          "sha256": "009bd5e8881ef43bccfa0ac2e283a8e86ab15250c5972ef6d39ae1dbea181bb6"
+        },
+        {
+          "file": "assets/screenshots/socrates-final.png",
+          "sha256": "2b273fb5a7d75ce6bc06f4ffb911b6e06f3d2a3f7147e11c37ca287754759ec7"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-004.png",
+          "sha256": "12eaee40e599d6fbb2dfd9d6ce746b2eff8e2879f10dfb5a7f95943c13e5ac2d"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-005.png",
+          "sha256": "5de46dfde14385485a00c73ccf1889e6774c5135cea4b5f21e366aea87f39feb"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-006.png",
+          "sha256": "6fba01f5708d15d283bf7a10e1d9fc4a8b2d953412562091f543cc0bb2c7c050"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-007.png",
+          "sha256": "02dbc6db55ea1b658383a44582e65e7dc425597bb98e628249ad282748530c3d"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-008.png",
+          "sha256": "0b5e2934d0039a6550f87d38e56fe7a8883083dd6eb44e224697c7f6f5243970"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-009.png",
+          "sha256": "6f8b70ba6eed03b02bf5534e067864c8d833161483608b32dfc27a0a5bc9d16d"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-010.png",
+          "sha256": "3d3b12d5aa0fc6362b7cd8582c5cd0f284e86b088453bdc23353b00488cd002d"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-011.png",
+          "sha256": "b0f861d9ff07d8035395cae5434f259ba386f23c07eb2d13dd3eca51d3d5ff36"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-012.png",
+          "sha256": "8f5b58171f10c4383c096000aa3b1be2b66c55789a470f190ff992a42396296c"
+        },
+        {
+          "file": "assets/screenshots/socrates-live-013.png",
+          "sha256": "19f1395ead0497cfdd4179e8393d76cb04086480e9cd846c3217535e4eceb52f"
+        },
+        {
+          "file": "assets/screenshots/truth-inbox.png",
+          "sha256": "fedd1ca29a735a9177009acf989049ca8a723e30bae4d3eee36baee13bc1dbb9"
+        }
+      ],
+      "narration": [
+        {
+          "file": "assets/audio/launch/launch-narration-delivery-48k.wav",
+          "start": 0,
+          "duration": 56.49,
+          "sha256": "37d85a831e2eea93ada2d5a9bff98162ef3f09d82623e0e56cf8fd987e043e9b"
+        }
+      ],
+      "captionTiming": "Editorial sentence cues against measured narration; not independent forced alignment.",
+      "decodeCheck": "ffmpeg -v error -i <web-file> -f null -",
+      "webEncoding": {
+        "preset": "slow",
+        "passes": 2,
+        "pixelFormat": "yuv420p",
+        "videoKbps": 1100,
+        "audioKbps": 64,
+        "fastStart": true
+      }
+    },
+    {
+      "name": "walkthrough",
+      "duration": 180,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "audioTracks": 1,
+      "sceneCount": 29,
+      "captionCount": 57,
+      "web": {
+        "file": "Orchestra-walkthrough-web-safe.mp4",
+        "bytes": 9408511,
+        "sha256": "35ed073932835211229247a130670f928ecb22f8a1737e06b3701a40eaffed55",
+        "videoCodec": "H.264",
+        "audioCodec": "AAC",
+        "under9500000Bytes": true
+      },
+      "master": {
+        "file": "walkthrough/Orchestra-film.mp4",
+        "bytes": 60225151,
+        "sha256": "d4c0cfd26ce89a7f84981ff5e627405f8ec447f026579a73267ffa5e8024bdbf"
+      },
+      "portableTimeline": {
+        "file": "walkthrough.timeline.json",
+        "sha256": "14a8d39f23e710429c5b34f20cf278e27872ac7858f961366ffaf74bd29fcd58"
+      },
+      "originalRenderTimelineSHA256": "1f23c2d8e019e6aa6e8b0a5659cf22ae1f2d5c54687fb21749103e8c5fe5a33d",
+      "sourceImages": [
+        {
+          "file": "assets/brand/orchestra-logo.png",
+          "sha256": "38d72a06298536aa86d44af48e50fd148b25503879d10bc83ed24f9d323bcbb1"
+        },
+        {
+          "file": "assets/screenshots/citation-e2-source.png",
+          "sha256": "78db185f84fc7b86530f80a537e7849766bb118e9888c4235bd0d3dc8135f898"
+        },
+        {
+          "file": "assets/screenshots/deep-research-findings.png",
+          "sha256": "0e9d34df5ea1e8022f5927a3a9f21d94ab10faf6f339b2f246c13e8a5db37ec9"
+        },
+        {
+          "file": "assets/screenshots/deep-research.png",
+          "sha256": "e2cd403bb3972eb25d69c53e64e70121997d9c78b9404242a70692feea179144"
+        },
+        {
+          "file": "assets/screenshots/memory.png",
+          "sha256": "ccf9ea8572040830204306d6a17ffe7cbfc273d9aaa8dd677ad96189874b3a9b"
+        },
+        {
+          "file": "assets/screenshots/prd-detail.png",
+          "sha256": "9a40ef155c70923452000ef2435a64715a613715ea98cd5b0db457e2b972d363"
+        },
+        {
+          "file": "assets/screenshots/prd-source.png",
+          "sha256": "774818e8f4707661eb3721dfdeadd7074242c6d541bc981176481c2f1d6c11f1"
+        },
+        {
+          "file": "assets/screenshots/preflight-corrected-readiness.png",
+          "sha256": "9e140b089dd31160dff9ef1539541d6f76c269bc73f49b779be5047380cbc0c2"
+        },
+        {
+          "file": "assets/screenshots/preflight-exact-pack-handoff.png",
+          "sha256": "009bd5e8881ef43bccfa0ac2e283a8e86ab15250c5972ef6d39ae1dbea181bb6"
+        },
+        {
+          "file": "assets/screenshots/socrates-persisted-answer.png",
+          "sha256": "fb1c30ceeb7eb7481dd8cd883f945fbbce2674bcacf270092f2f4b9cdc36cfea"
+        },
+        {
+          "file": "assets/screenshots/timeline-saved.png",
+          "sha256": "beed78aa98d950390c93ef88ae143d4f9404ea59f96d20ac851f7b10a5a59615"
+        },
+        {
+          "file": "assets/screenshots/truth-inbox.png",
+          "sha256": "fedd1ca29a735a9177009acf989049ca8a723e30bae4d3eee36baee13bc1dbb9"
+        }
+      ],
+      "narration": [
+        {
+          "file": "assets/audio/walkthrough/01.wav",
+          "start": 0.6,
+          "duration": 4.97,
+          "sha256": "0a1be7782a665cef3b8b2c7f314880abbec3b7ce3ffdbf95ead9b5ab452cd8a8"
+        },
+        {
+          "file": "assets/audio/walkthrough/02.wav",
+          "start": 6.67,
+          "duration": 9.145,
+          "sha256": "2a1dd126796bb663a69d1cdec08cefdedc1a06eec2bdeddacbb94880a3fff54f"
+        },
+        {
+          "file": "assets/audio/walkthrough/03.wav",
+          "start": 16.915,
+          "duration": 3.77,
+          "sha256": "1d9363d7332b671895f16ba6249821f1170af223a25f8b6820045f160334dd90"
+        },
+        {
+          "file": "assets/audio/walkthrough/04.wav",
+          "start": 21.785,
+          "duration": 13.52,
+          "sha256": "ec4a60673995933f2a166824bc41970bb0381391e970222cab50445ee7e51b04"
+        },
+        {
+          "file": "assets/audio/walkthrough/05.wav",
+          "start": 36.405,
+          "duration": 6.92,
+          "sha256": "6eb28d42783653d06b09f55f73e23616af1a8dc78132ef76809682d2c0470ea5"
+        },
+        {
+          "file": "assets/audio/walkthrough/06.wav",
+          "start": 44.425,
+          "duration": 13.67,
+          "sha256": "0facfd2ec5070fcb89e21fdfbbcb20eb7e2499c54ddcb9512a8c6224221d5a03"
+        },
+        {
+          "file": "assets/audio/walkthrough/07.wav",
+          "start": 59.195,
+          "duration": 13.42,
+          "sha256": "1fda6f993c35092461dcf4a330fd2f2d4ab1e986fd75163a8cd9d87c41fa322d"
+        },
+        {
+          "file": "assets/audio/walkthrough/08.wav",
+          "start": 73.715,
+          "duration": 7.495,
+          "sha256": "67678a8b41a4e962afb0c7f5ce1f8b6e3e4b9764560668b71ea2df2d817f19e4"
+        },
+        {
+          "file": "assets/audio/walkthrough/09.wav",
+          "start": 82.31,
+          "duration": 23.07,
+          "sha256": "270f5c35e4d89786f35ea501e0554234c9e4e909abbeaefa399b4db6e8d26d8e"
+        },
+        {
+          "file": "assets/audio/walkthrough/10.wav",
+          "start": 106.48,
+          "duration": 16.17,
+          "sha256": "8c1781da33d1f3ef48efb5fe61b01538aad647b53476edb69c5ac0f94dca98af"
+        },
+        {
+          "file": "assets/audio/walkthrough/11.wav",
+          "start": 123.75,
+          "duration": 20.97,
+          "sha256": "187aabcfbb2f210e4fe21ccadfa266d1bb8dedef970997762a9e86bc247dda5f"
+        },
+        {
+          "file": "assets/audio/walkthrough/12.wav",
+          "start": 145.82,
+          "duration": 14.545,
+          "sha256": "8b2871d9a987876e40f23d7e5e42bc6c1218fec5e673f58d15263bfbbfb97b12"
+        },
+        {
+          "file": "assets/audio/walkthrough/13.wav",
+          "start": 161.465,
+          "duration": 10.92,
+          "sha256": "67ab5d19f731d93cb0f0caeaf3b523623c70b9c5aae746299d5443187412cb7f"
+        },
+        {
+          "file": "assets/audio/walkthrough/14.wav",
+          "start": 173.485,
+          "duration": 3.245,
+          "sha256": "4170f222f2fe07d6234146d4241936fbee5ff172c312c51a35f1b5b6c0bbf5ad"
+        }
+      ],
+      "captionTiming": "Kokoro model-predicted token durations translated by measured paragraph sample boundaries; not independent forced alignment.",
+      "decodeCheck": "ffmpeg -v error -i <web-file> -f null -",
+      "webEncoding": {
+        "preset": "slow",
+        "passes": 2,
+        "pixelFormat": "yuv420p",
+        "videoKbps": 350,
+        "audioKbps": 64,
+        "audioGainDb": -2,
+        "audioSource": "Re-encoded from master audio; verified video stream copied without re-encoding.",
+        "measuredIntegratedLUFS": -18.5,
+        "measuredTruePeakDbFS": -2.5,
+        "fastStart": true
+      }
+    }
+  ]
+}

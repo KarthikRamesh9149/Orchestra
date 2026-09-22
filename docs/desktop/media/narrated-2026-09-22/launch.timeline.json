@@ -1,0 +1,337 @@
+{
+  "duration": 60,
+  "logo": "assets/brand/orchestra-logo.png",
+  "audio": [
+    {
+      "file": "assets/audio/launch/launch-narration-delivery-48k.wav",
+      "start": 0
+    }
+  ],
+  "previewTimes": [
+    1.5,
+    5.8,
+    10.5,
+    14.7,
+    19.7,
+    22.5,
+    25.4,
+    29.3,
+    34,
+    40.1,
+    43.7,
+    49,
+    56.7
+  ],
+  "captions": [
+    {
+      "start": 0.2,
+      "end": 1.6,
+      "text": "Your team moves fast."
+    },
+    {
+      "start": 1.6,
+      "end": 3.95,
+      "text": "Your product context should keep up."
+    },
+    {
+      "start": 4.35,
+      "end": 6.25,
+      "text": "Requirements live in documents."
+    },
+    {
+      "start": 6.25,
+      "end": 8.2,
+      "text": "Changes arrive in conversations."
+    },
+    {
+      "start": 8.2,
+      "end": 12.7,
+      "text": "Your coding agent starts with whatever context someone remembered to paste."
+    },
+    {
+      "start": 13.1,
+      "end": 16.75,
+      "text": "Orchestra connects the evidence, the decisions, and the work."
+    },
+    {
+      "start": 17.15,
+      "end": 18.55,
+      "text": "Start with a source."
+    },
+    {
+      "start": 18.55,
+      "end": 23.125,
+      "text": "Ask Socrates a product question, then open the citation behind its answer."
+    },
+    {
+      "start": 23.525,
+      "end": 27.15,
+      "text": "In our Northstar project, CSV export is documented."
+    },
+    {
+      "start": 27.15,
+      "end": 29.65,
+      "text": "PDF export is a request."
+    },
+    {
+      "start": 29.65,
+      "end": 31.25,
+      "text": "Those are different things."
+    },
+    {
+      "start": 31.65,
+      "end": 34.55,
+      "text": "Truth Inbox brings proposed changes into review."
+    },
+    {
+      "start": 34.55,
+      "end": 37.6,
+      "text": "Authorised decisions shape the Product Brain."
+    },
+    {
+      "start": 38,
+      "end": 42.2,
+      "text": "Agent Preflight gives your coding agent a scoped context pack."
+    },
+    {
+      "start": 42.2,
+      "end": 45.25,
+      "text": "Postflight links reported work back to that starting point."
+    },
+    {
+      "start": 45.65,
+      "end": 47.55,
+      "text": "Keep the reason behind the requirement."
+    },
+    {
+      "start": 47.55,
+      "end": 52.025,
+      "text": "Give the next person, and the next agent, a clearer place to begin."
+    },
+    {
+      "start": 52.695,
+      "end": 53.7,
+      "text": "Orchestra."
+    },
+    {
+      "start": 53.7,
+      "end": 55.82,
+      "text": "Product Brain for High Speed Teams."
+    }
+  ],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 4.15,
+      "layout": "hero",
+      "eyebrow": "ORCHESTRA",
+      "title": "Your team\nmoves fast.",
+      "body": "Your product context should keep up."
+    },
+    {
+      "start": 4.15,
+      "end": 8.2,
+      "layout": "split",
+      "eyebrow": "01 / THE CONTEXT",
+      "title": "The source.",
+      "body": "Where the requirement begins.",
+      "image": "assets/screenshots/prd-source.png",
+      "crop": [
+        0.19,
+        0.035,
+        0.805,
+        0.91
+      ],
+      "zoom": 1.012
+    },
+    {
+      "start": 8.2,
+      "end": 13,
+      "layout": "split",
+      "eyebrow": "01 / THE CONTEXT",
+      "title": "The next\nrequest.",
+      "body": "Another conversation. A change to consider.",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "crop": [
+        0.2,
+        0.095,
+        0.765,
+        0.84
+      ],
+      "zoom": 1.012
+    },
+    {
+      "start": 13,
+      "end": 17,
+      "layout": "screen",
+      "eyebrow": "02 / PROJECT MEMORY",
+      "title": "One place to connect the context.",
+      "image": "assets/screenshots/memory.png"
+    },
+    {
+      "start": 17,
+      "end": 21.9,
+      "layout": "split",
+      "eyebrow": "03 / ASK SOCRATES",
+      "title": "Ask.\nCheck.\nUnderstand.",
+      "body": "Keep the answer connected to the evidence.",
+      "crop": [
+        0.275,
+        0.045,
+        0.59,
+        0.76
+      ],
+      "frames": [
+        {
+          "at": 0,
+          "file": "assets/screenshots/socrates-live-004.png"
+        },
+        {
+          "at": 0.509,
+          "file": "assets/screenshots/socrates-live-005.png"
+        },
+        {
+          "at": 0.95,
+          "file": "assets/screenshots/socrates-live-006.png"
+        },
+        {
+          "at": 1.497,
+          "file": "assets/screenshots/socrates-live-007.png"
+        },
+        {
+          "at": 1.951,
+          "file": "assets/screenshots/socrates-live-008.png"
+        },
+        {
+          "at": 2.349,
+          "file": "assets/screenshots/socrates-live-009.png"
+        },
+        {
+          "at": 2.538,
+          "file": "assets/screenshots/socrates-live-010.png"
+        },
+        {
+          "at": 2.866,
+          "file": "assets/screenshots/socrates-live-011.png"
+        },
+        {
+          "at": 3.106,
+          "file": "assets/screenshots/socrates-live-012.png"
+        },
+        {
+          "at": 4.182,
+          "file": "assets/screenshots/socrates-live-013.png"
+        }
+      ]
+    },
+    {
+      "start": 21.9,
+      "end": 23.35,
+      "layout": "screen",
+      "eyebrow": "03 / OPEN THE CITATION",
+      "title": "Read the original.",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "crop": [
+        0.195,
+        0.055,
+        0.79,
+        0.905
+      ]
+    },
+    {
+      "start": 23.35,
+      "end": 27.2,
+      "layout": "split",
+      "eyebrow": "04 / KNOW THE DIFFERENCE",
+      "title": "Documented\nscope.",
+      "body": "CSV export in the launch PRD.",
+      "image": "assets/screenshots/prd-detail.png",
+      "crop": [
+        0.222,
+        0.35,
+        0.57,
+        0.23
+      ]
+    },
+    {
+      "start": 27.2,
+      "end": 31.45,
+      "layout": "split",
+      "eyebrow": "04 / KNOW THE DIFFERENCE",
+      "title": "A request.\nNot a decision.",
+      "body": "PDF export still needs review.",
+      "image": "assets/screenshots/socrates-final.png",
+      "crop": [
+        0.3,
+        0.42,
+        0.56,
+        0.285
+      ]
+    },
+    {
+      "start": 31.45,
+      "end": 37.8,
+      "layout": "screen",
+      "eyebrow": "05 / REVIEW THE CHANGE",
+      "title": "Make the decision deliberate.",
+      "image": "assets/screenshots/truth-inbox.png",
+      "crop": [
+        0.185,
+        0.055,
+        0.8,
+        0.855
+      ]
+    },
+    {
+      "start": 37.8,
+      "end": 42.2,
+      "layout": "screen",
+      "eyebrow": "06 / AGENT PREFLIGHT",
+      "title": "Check the context before the code.",
+      "image": "assets/screenshots/preflight-corrected-readiness.png",
+      "crop": [
+        0.09,
+        0.59,
+        0.86,
+        0.245
+      ]
+    },
+    {
+      "start": 42.2,
+      "end": 45.5,
+      "layout": "screen",
+      "eyebrow": "06 / AGENT HANDOFF",
+      "title": "Keep work linked to its starting point.",
+      "image": "assets/screenshots/preflight-exact-pack-handoff.png",
+      "crop": [
+        0.09,
+        0.295,
+        0.86,
+        0.155
+      ]
+    },
+    {
+      "start": 45.5,
+      "end": 52.45,
+      "layout": "screen",
+      "eyebrow": "06 / KEEP THE REASON",
+      "title": "A clearer place to begin.",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "crop": [
+        0.22,
+        0.544,
+        0.735,
+        0.193
+      ]
+    },
+    {
+      "start": 52.45,
+      "end": 60,
+      "layout": "hero",
+      "eyebrow": "ORCHESTRA",
+      "title": "Product Brain for\nHigh Speed Teams",
+      "body": ""
+    }
+  ],
+  "editNotes": "Real generation frames start at captured frame004; retained relative frame intervals are unchanged. Initial waiting is omitted."
+}

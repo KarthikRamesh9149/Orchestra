@@ -17,19 +17,21 @@ Your PRD says one thing. A conversation changes the scope. Your coding agent sti
 
 ## Watch Orchestra
 
-### Product overview
+### Orchestra in 60 seconds
 
 The context problem, the product, and the value of making decisions explicit.
 
-https://github.com/user-attachments/assets/9dd87791-42be-4801-8bad-c71fe8ddcd7e
+https://github.com/user-attachments/assets/ec16c0f7-5fae-4b9b-ba15-6ce23fe48e7d
 
-### Open the evidence behind an answer
+<a id="open-the-evidence-behind-an-answer"></a>
 
-A closer look at the source-to-answer workflow in the actual desktop app.
+### A three-minute product walkthrough
 
-https://github.com/user-attachments/assets/9adb1381-e826-4760-a853-e979ece3fd7b
+Follow a launch requirement from its source into Socrates, Deep Research and a scoped agent context pack—with unresolved decisions kept visible.
 
-*Source-retrieval previews recorded with sample project data. [Recording details](docs/desktop/media/PRODUCT-FILM.md).*
+https://github.com/user-attachments/assets/51f3404e-a8e9-4263-9f8a-2cc03149f166
+
+*Sound on for narration. Real OpenAI answers in a sample project; edited timing. [Recording details](docs/desktop/media/PRODUCT-FILM.md).*
 
 ## Ask a product question. Check the source.
 
@@ -38,6 +40,15 @@ https://github.com/user-attachments/assets/9adb1381-e826-4760-a853-e979ece3fd7b
 **Socrates** answers from project evidence with citations you can open. **Memory** keeps the underlying documents available for inspection. **Deep Research** turns a larger question into a source-linked report you can save alongside the project.
 
 Accepted decisions and ordinary source material remain distinct. A document saying “approved” is not itself a recorded approval, and a saved AI report remains generated evidence.
+
+### Start with a question that matters
+
+| Ask Orchestra | What to inspect |
+| --- | --- |
+| “What is in scope for launch?” | A source-linked answer, with requests separated from recorded decisions. |
+| “Where did this requirement come from?” | The original document or conversation behind the claim. |
+| “What is still missing before we build?” | Evidence gaps, unresolved questions and task-specific Preflight blockers. |
+| “What context should my coding agent use?” | A scoped context pack that the agent retrieves by its exact project and pack ID. |
 
 <p align="center">
   <img src="docs/desktop/media/orchestra-source-view.png" alt="Orchestra source viewer showing the fictional Northstar launch requirements" width="900" />

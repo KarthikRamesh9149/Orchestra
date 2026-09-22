@@ -1,0 +1,27 @@
+You can move quickly and still lose track of what your team actually agreed to build.
+
+A requirement sits in a document. A new request arrives later. By the time work reaches a coding agent, those two things can look like the same plan.
+
+Orchestra keeps those different kinds of context connected.
+
+We're using Northstar, a fictional launch project. Start in Memory with the original PRD. Its CSV export lists four fields: item ID, title, owner and status. The source stays available to inspect.
+
+Now ask Socrates: what is in scope, is PDF export approved, and do we have a launch date or budget?
+
+With OpenAI configured, Socrates generates an answer from the available project evidence. Open a citation and check the underlying document. The useful result is not just a summary. It's a distinction you can verify.
+
+CSV export is documented in the PRD. PDF export appears as a later request, with no recorded approval established by this evidence. The available sources do not establish a launch date or budget.
+
+That gives your team a more useful next question: should PDF export become part of this launch, and who needs to decide?
+
+Some questions need more than a chat response. Deep Research takes a broader question and produces a report linked to its sources. Here, the saved report covers CSV scope and the PDF request, while keeping the missing launch date and budget visible. Open its source links to inspect the evidence behind the findings. Saving the report preserves generated evidence; it does not create an approved requirement.
+
+Now open Truth Inbox, where proposed changes and review signals come together. A reviewer can inspect the evidence and affected areas before deciding. In this project, PDF remains a request. Review separates a new idea from an accepted product decision.
+
+Before an agent starts implementation, Agent Preflight assembles a scoped pack with project evidence, constraints, an acceptance checklist and open questions. This pack is blocked. The missing tests are visible, and the project has no recorded human-approved requirements. That's useful context: the next action is to resolve the gap, not assume the work is ready.
+
+The handoff is specific. Pair Codex or VS Code, and use Orchestra MCP to retrieve the exact project and pack ID. A retrieved pack is still subject to its blockers. It is context for the agent, not permission to proceed.
+
+Orchestra helps a fast-moving team keep its questions, decisions and implementation connected. Start with the source. Review the change. Give your agents context the team can trace.
+
+Orchestra. Product Brain for High Speed Teams.

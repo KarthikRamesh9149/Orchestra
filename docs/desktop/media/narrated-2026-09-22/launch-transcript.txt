@@ -1,0 +1,17 @@
+Your team moves fast. Your product context should keep up.
+
+Requirements live in documents. Changes arrive in conversations. Your coding agent starts with whatever context someone remembered to paste.
+
+Orchestra connects the evidence, the decisions, and the work.
+
+Start with a source. Ask Socrates a product question, then open the citation behind its answer.
+
+In our Northstar project, CSV export is documented. PDF export is a request. Those are different things.
+
+Truth Inbox brings proposed changes into review. Authorised decisions shape the Product Brain.
+
+Agent Preflight gives your coding agent a scoped context pack. Postflight links reported work back to that starting point.
+
+Keep the reason behind the requirement. Give the next person, and the next agent, a clearer place to begin.
+
+Orchestra. Product Brain for High Speed Teams.

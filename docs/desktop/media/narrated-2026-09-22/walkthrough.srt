@@ -1,0 +1,227 @@
+1
+00:00:00,875 --> 00:00:04,575
+You can move quickly and still lose track of what your team actually agreed to
+
+2
+00:00:04,575 --> 00:00:05,350
+build.
+
+3
+00:00:06,970 --> 00:00:08,983
+A requirement sits in a document.
+
+4
+00:00:08,983 --> 00:00:10,995
+A new request arrives later.
+
+5
+00:00:10,995 --> 00:00:14,770
+By the time work reaches a coding agent, those two things can look like the same
+
+6
+00:00:14,770 --> 00:00:15,595
+plan.
+
+7
+00:00:17,190 --> 00:00:20,465
+Orchestra keeps those different kinds of context connected.
+
+8
+00:00:22,060 --> 00:00:24,773
+We're using Northstar, a fictional launch project.
+
+9
+00:00:24,773 --> 00:00:27,048
+Start in Memory with the original PRD.
+
+10
+00:00:27,048 --> 00:00:30,710
+Its CSV export lists four fields: item ID,
+
+11
+00:00:30,710 --> 00:00:32,635
+title, owner and status.
+
+12
+00:00:32,635 --> 00:00:35,085
+The source stays available to inspect.
+
+13
+00:00:36,705 --> 00:00:40,930
+Now ask Socrates: what is in scope, is PDF export approved,
+
+14
+00:00:40,930 --> 00:00:43,105
+and do we have a launch date or budget?
+
+15
+00:00:44,700 --> 00:00:49,025
+With OpenAI configured, Socrates generates an answer from the available
+
+16
+00:00:49,025 --> 00:00:50,413
+project evidence.
+
+17
+00:00:50,413 --> 00:00:53,450
+Open a citation and check the underlying document.
+
+18
+00:00:53,450 --> 00:00:55,850
+The useful result is not just a summary.
+
+19
+00:00:55,850 --> 00:00:57,875
+It's a distinction you can verify.
+
+20
+00:00:59,520 --> 00:01:02,358
+CSV export is documented in the PRD.
+
+21
+00:01:02,358 --> 00:01:06,695
+PDF export appears as a later request, with no recorded approval
+
+22
+00:01:06,695 --> 00:01:08,570
+established by this evidence.
+
+23
+00:01:08,570 --> 00:01:12,395
+The available sources do not establish a launch date or budget.
+
+24
+00:01:13,990 --> 00:01:16,690
+That gives your team a more useful next question:
+
+25
+00:01:16,690 --> 00:01:19,515
+should PDF export become part of this launch,
+
+26
+00:01:19,515 --> 00:01:20,990
+and who needs to decide?
+
+27
+00:01:22,610 --> 00:01:25,073
+Some questions need more than a chat response.
+
+28
+00:01:25,073 --> 00:01:28,210
+Deep Research takes a broader question and produces a report linked to its
+
+29
+00:01:28,210 --> 00:01:29,098
+sources.
+
+30
+00:01:29,098 --> 00:01:33,735
+Here, the saved report covers CSV scope and the PDF request,
+
+31
+00:01:33,735 --> 00:01:36,623
+while keeping the missing launch date and budget visible.
+
+32
+00:01:36,623 --> 00:01:40,060
+Open its source links to inspect the evidence behind the findings.
+
+33
+00:01:40,060 --> 00:01:42,810
+Saving the report preserves generated evidence;
+
+34
+00:01:42,810 --> 00:01:45,160
+it does not create an approved requirement.
+
+35
+00:01:46,805 --> 00:01:51,543
+Now open Truth Inbox, where proposed changes and review signals come together.
+
+36
+00:01:51,543 --> 00:01:55,443
+A reviewer can inspect the evidence and affected areas before deciding.
+
+37
+00:01:55,443 --> 00:01:58,768
+In this project, PDF remains a request.
+
+38
+00:01:58,768 --> 00:02:02,430
+Review separates a new idea from an accepted product decision.
+
+39
+00:02:04,025 --> 00:02:08,063
+Before an agent starts implementation, Agent Preflight assembles a scoped pack
+
+40
+00:02:08,063 --> 00:02:12,813
+with project evidence, constraints, an acceptance checklist and open questions.
+
+41
+00:02:12,813 --> 00:02:14,225
+This pack is blocked.
+
+42
+00:02:14,225 --> 00:02:17,913
+The missing tests are visible, and the project has no recorded human-approved
+
+43
+00:02:17,913 --> 00:02:18,988
+requirements.
+
+44
+00:02:18,988 --> 00:02:22,725
+That's useful context: the next action is to resolve the gap,
+
+45
+00:02:22,725 --> 00:02:24,500
+not assume the work is ready.
+
+46
+00:02:26,095 --> 00:02:27,708
+The handoff is specific.
+
+47
+00:02:27,708 --> 00:02:32,470
+Pair Codex or VS Code, and use Orchestra MCP to retrieve the exact
+
+48
+00:02:32,470 --> 00:02:34,045
+project and pack ID.
+
+49
+00:02:34,045 --> 00:02:36,895
+A retrieved pack is still subject to its blockers.
+
+50
+00:02:36,895 --> 00:02:40,145
+It is context for the agent, not permission to proceed.
+
+51
+00:02:41,765 --> 00:02:44,640
+Orchestra helps a fast-moving team keep its questions,
+
+52
+00:02:44,640 --> 00:02:46,978
+decisions and implementation connected.
+
+53
+00:02:46,978 --> 00:02:48,215
+Start with the source.
+
+54
+00:02:48,215 --> 00:02:49,553
+Review the change.
+
+55
+00:02:49,553 --> 00:02:52,165
+Give your agents context the team can trace.
+
+56
+00:02:53,760 --> 00:02:54,360
+Orchestra.
+
+57
+00:02:54,360 --> 00:02:56,510
+Product Brain for High Speed Teams.

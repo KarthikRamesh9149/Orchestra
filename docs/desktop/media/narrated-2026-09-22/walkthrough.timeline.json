@@ -1,0 +1,774 @@
+{
+  "duration": 180,
+  "logo": "assets/brand/orchestra-logo.png",
+  "audio": [
+    {
+      "file": "assets/audio/walkthrough/01.wav",
+      "start": 0.6
+    },
+    {
+      "file": "assets/audio/walkthrough/02.wav",
+      "start": 6.67
+    },
+    {
+      "file": "assets/audio/walkthrough/03.wav",
+      "start": 16.915
+    },
+    {
+      "file": "assets/audio/walkthrough/04.wav",
+      "start": 21.785
+    },
+    {
+      "file": "assets/audio/walkthrough/05.wav",
+      "start": 36.405
+    },
+    {
+      "file": "assets/audio/walkthrough/06.wav",
+      "start": 44.425
+    },
+    {
+      "file": "assets/audio/walkthrough/07.wav",
+      "start": 59.195
+    },
+    {
+      "file": "assets/audio/walkthrough/08.wav",
+      "start": 73.715
+    },
+    {
+      "file": "assets/audio/walkthrough/09.wav",
+      "start": 82.31
+    },
+    {
+      "file": "assets/audio/walkthrough/10.wav",
+      "start": 106.48
+    },
+    {
+      "file": "assets/audio/walkthrough/11.wav",
+      "start": 123.75
+    },
+    {
+      "file": "assets/audio/walkthrough/12.wav",
+      "start": 145.82
+    },
+    {
+      "file": "assets/audio/walkthrough/13.wav",
+      "start": 161.465
+    },
+    {
+      "file": "assets/audio/walkthrough/14.wav",
+      "start": 173.485
+    }
+  ],
+  "captions": [
+    {
+      "start": 0.875,
+      "end": 4.575,
+      "text": "You can move quickly and still lose track of what your team actually agreed to"
+    },
+    {
+      "start": 4.575,
+      "end": 5.35,
+      "text": "build."
+    },
+    {
+      "start": 6.97,
+      "end": 8.9825,
+      "text": "A requirement sits in a document."
+    },
+    {
+      "start": 8.9825,
+      "end": 10.995,
+      "text": "A new request arrives later."
+    },
+    {
+      "start": 10.995,
+      "end": 14.77,
+      "text": "By the time work reaches a coding agent, those two things can look like the same"
+    },
+    {
+      "start": 14.77,
+      "end": 15.595,
+      "text": "plan."
+    },
+    {
+      "start": 17.19,
+      "end": 20.465,
+      "text": "Orchestra keeps those different kinds of context connected."
+    },
+    {
+      "start": 22.06,
+      "end": 24.7725,
+      "text": "We're using Northstar, a fictional launch project."
+    },
+    {
+      "start": 24.7725,
+      "end": 27.0475,
+      "text": "Start in Memory with the original PRD."
+    },
+    {
+      "start": 27.0475,
+      "end": 30.71,
+      "text": "Its CSV export lists four fields: item ID,"
+    },
+    {
+      "start": 30.71,
+      "end": 32.635,
+      "text": "title, owner and status."
+    },
+    {
+      "start": 32.635,
+      "end": 35.085,
+      "text": "The source stays available to inspect."
+    },
+    {
+      "start": 36.705,
+      "end": 40.93,
+      "text": "Now ask Socrates: what is in scope, is PDF export approved,"
+    },
+    {
+      "start": 40.93,
+      "end": 43.105,
+      "text": "and do we have a launch date or budget?"
+    },
+    {
+      "start": 44.7,
+      "end": 49.025,
+      "text": "With OpenAI configured, Socrates generates an answer from the available"
+    },
+    {
+      "start": 49.025,
+      "end": 50.4125,
+      "text": "project evidence."
+    },
+    {
+      "start": 50.4125,
+      "end": 53.45,
+      "text": "Open a citation and check the underlying document."
+    },
+    {
+      "start": 53.45,
+      "end": 55.85,
+      "text": "The useful result is not just a summary."
+    },
+    {
+      "start": 55.85,
+      "end": 57.875,
+      "text": "It's a distinction you can verify."
+    },
+    {
+      "start": 59.52,
+      "end": 62.3575,
+      "text": "CSV export is documented in the PRD."
+    },
+    {
+      "start": 62.3575,
+      "end": 66.695,
+      "text": "PDF export appears as a later request, with no recorded approval"
+    },
+    {
+      "start": 66.695,
+      "end": 68.57,
+      "text": "established by this evidence."
+    },
+    {
+      "start": 68.57,
+      "end": 72.395,
+      "text": "The available sources do not establish a launch date or budget."
+    },
+    {
+      "start": 73.99,
+      "end": 76.69,
+      "text": "That gives your team a more useful next question:"
+    },
+    {
+      "start": 76.69,
+      "end": 79.515,
+      "text": "should PDF export become part of this launch,"
+    },
+    {
+      "start": 79.515,
+      "end": 80.99,
+      "text": "and who needs to decide?"
+    },
+    {
+      "start": 82.61,
+      "end": 85.0725,
+      "text": "Some questions need more than a chat response."
+    },
+    {
+      "start": 85.0725,
+      "end": 88.21,
+      "text": "Deep Research takes a broader question and produces a report linked to its"
+    },
+    {
+      "start": 88.21,
+      "end": 89.0975,
+      "text": "sources."
+    },
+    {
+      "start": 89.0975,
+      "end": 93.735,
+      "text": "Here, the saved report covers CSV scope and the PDF request,"
+    },
+    {
+      "start": 93.735,
+      "end": 96.6225,
+      "text": "while keeping the missing launch date and budget visible."
+    },
+    {
+      "start": 96.6225,
+      "end": 100.06,
+      "text": "Open its source links to inspect the evidence behind the findings."
+    },
+    {
+      "start": 100.06,
+      "end": 102.81,
+      "text": "Saving the report preserves generated evidence;"
+    },
+    {
+      "start": 102.81,
+      "end": 105.16,
+      "text": "it does not create an approved requirement."
+    },
+    {
+      "start": 106.805,
+      "end": 111.5425,
+      "text": "Now open Truth Inbox, where proposed changes and review signals come together."
+    },
+    {
+      "start": 111.5425,
+      "end": 115.4425,
+      "text": "A reviewer can inspect the evidence and affected areas before deciding."
+    },
+    {
+      "start": 115.4425,
+      "end": 118.7675,
+      "text": "In this project, PDF remains a request."
+    },
+    {
+      "start": 118.7675,
+      "end": 122.43,
+      "text": "Review separates a new idea from an accepted product decision."
+    },
+    {
+      "start": 124.025,
+      "end": 128.0625,
+      "text": "Before an agent starts implementation, Agent Preflight assembles a scoped pack"
+    },
+    {
+      "start": 128.0625,
+      "end": 132.8125,
+      "text": "with project evidence, constraints, an acceptance checklist and open questions."
+    },
+    {
+      "start": 132.8125,
+      "end": 134.225,
+      "text": "This pack is blocked."
+    },
+    {
+      "start": 134.225,
+      "end": 137.9125,
+      "text": "The missing tests are visible, and the project has no recorded human-approved"
+    },
+    {
+      "start": 137.9125,
+      "end": 138.9875,
+      "text": "requirements."
+    },
+    {
+      "start": 138.9875,
+      "end": 142.725,
+      "text": "That's useful context: the next action is to resolve the gap,"
+    },
+    {
+      "start": 142.725,
+      "end": 144.5,
+      "text": "not assume the work is ready."
+    },
+    {
+      "start": 146.095,
+      "end": 147.7075,
+      "text": "The handoff is specific."
+    },
+    {
+      "start": 147.7075,
+      "end": 152.47,
+      "text": "Pair Codex or VS Code, and use Orchestra MCP to retrieve the exact"
+    },
+    {
+      "start": 152.47,
+      "end": 154.045,
+      "text": "project and pack ID."
+    },
+    {
+      "start": 154.045,
+      "end": 156.895,
+      "text": "A retrieved pack is still subject to its blockers."
+    },
+    {
+      "start": 156.895,
+      "end": 160.145,
+      "text": "It is context for the agent, not permission to proceed."
+    },
+    {
+      "start": 161.765,
+      "end": 164.64,
+      "text": "Orchestra helps a fast-moving team keep its questions,"
+    },
+    {
+      "start": 164.64,
+      "end": 166.9775,
+      "text": "decisions and implementation connected."
+    },
+    {
+      "start": 166.9775,
+      "end": 168.215,
+      "text": "Start with the source."
+    },
+    {
+      "start": 168.215,
+      "end": 169.5525,
+      "text": "Review the change."
+    },
+    {
+      "start": 169.5525,
+      "end": 172.165,
+      "text": "Give your agents context the team can trace."
+    },
+    {
+      "start": 173.76,
+      "end": 174.36,
+      "text": "Orchestra."
+    },
+    {
+      "start": 174.36,
+      "end": 176.51,
+      "text": "Product Brain for High Speed Teams."
+    }
+  ],
+  "scenes": [
+    {
+      "start": 0,
+      "end": 6.67,
+      "layout": "hero",
+      "title": "Keep the project\nin view.",
+      "eyebrow": "ORCHESTRA",
+      "body": "A walkthrough from source to shared context."
+    },
+    {
+      "start": 6.67,
+      "end": 11.07,
+      "layout": "split",
+      "title": "The requirement.",
+      "eyebrow": "01 / CONTEXT",
+      "image": "assets/screenshots/prd-source.png",
+      "body": "Start with what the source actually says.",
+      "crop": [
+        0.195,
+        0.04,
+        0.79,
+        0.9
+      ]
+    },
+    {
+      "start": 11.07,
+      "end": 16.915,
+      "layout": "split",
+      "title": "The later\nrequest.",
+      "eyebrow": "01 / CONTEXT",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "body": "A new conversation is another piece of evidence.",
+      "crop": [
+        0.2,
+        0.1,
+        0.78,
+        0.82
+      ]
+    },
+    {
+      "start": 16.915,
+      "end": 21.785,
+      "layout": "screen",
+      "title": "Connect the context.",
+      "eyebrow": "02 / PROJECT MEMORY",
+      "image": "assets/screenshots/memory.png"
+    },
+    {
+      "start": 21.785,
+      "end": 27.585,
+      "layout": "screen",
+      "title": "Start with the original PRD.",
+      "eyebrow": "02 / SOURCE EVIDENCE",
+      "image": "assets/screenshots/prd-source.png",
+      "crop": [
+        0.19,
+        0.04,
+        0.8,
+        0.91
+      ]
+    },
+    {
+      "start": 27.585,
+      "end": 36.405,
+      "layout": "split",
+      "title": "Four fields.\nOne clear scope.",
+      "eyebrow": "02 / SOURCE EVIDENCE",
+      "image": "assets/screenshots/prd-detail.png",
+      "body": "item_id · title · owner · status",
+      "crop": [
+        0.222,
+        0.35,
+        0.57,
+        0.23
+      ]
+    },
+    {
+      "start": 36.405,
+      "end": 44.425,
+      "layout": "screen",
+      "title": "Ask the product question.",
+      "eyebrow": "03 / SOCRATES",
+      "image": "assets/screenshots/socrates-persisted-answer.png",
+      "crop": [
+        0.495,
+        0.066,
+        0.38,
+        0.123
+      ]
+    },
+    {
+      "start": 44.425,
+      "end": 51.125,
+      "layout": "screen",
+      "title": "An answer you can inspect.",
+      "eyebrow": "03 / SOCRATES",
+      "image": "assets/screenshots/socrates-persisted-answer.png",
+      "crop": [
+        0.29,
+        0.225,
+        0.57,
+        0.35
+      ]
+    },
+    {
+      "start": 51.125,
+      "end": 59.195,
+      "layout": "screen",
+      "title": "Follow the citation to the source.",
+      "eyebrow": "03 / SOURCE CHECK",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "crop": [
+        0.195,
+        0.055,
+        0.79,
+        0.905
+      ]
+    },
+    {
+      "start": 59.195,
+      "end": 63.895,
+      "layout": "split",
+      "title": "Documented\nin the PRD.",
+      "eyebrow": "04 / KNOW THE DIFFERENCE",
+      "image": "assets/screenshots/socrates-persisted-answer.png",
+      "body": "The launch source defines the CSV requirement.",
+      "crop": [
+        0.31,
+        0.272,
+        0.425,
+        0.086
+      ]
+    },
+    {
+      "start": 63.895,
+      "end": 68.495,
+      "layout": "split",
+      "title": "Requested.\nNot approved.",
+      "eyebrow": "04 / KNOW THE DIFFERENCE",
+      "image": "assets/screenshots/socrates-persisted-answer.png",
+      "body": "A later request does not establish a product decision.",
+      "crop": [
+        0.31,
+        0.356,
+        0.425,
+        0.112
+      ]
+    },
+    {
+      "start": 68.495,
+      "end": 73.715,
+      "layout": "split",
+      "title": "Keep unknowns\nvisible.",
+      "eyebrow": "04 / KNOW THE DIFFERENCE",
+      "image": "assets/screenshots/socrates-persisted-answer.png",
+      "body": "The evidence does not establish a launch date or budget.",
+      "crop": [
+        0.31,
+        0.468,
+        0.425,
+        0.092
+      ]
+    },
+    {
+      "start": 73.715,
+      "end": 82.31,
+      "layout": "screen",
+      "title": "What should change, and who decides?",
+      "eyebrow": "04 / THE NEXT QUESTION",
+      "image": "assets/screenshots/citation-e2-source.png",
+      "crop": [
+        0.22,
+        0.735,
+        0.735,
+        0.12
+      ]
+    },
+    {
+      "start": 82.31,
+      "end": 89.11,
+      "layout": "screen",
+      "title": "Go beyond the chat response.",
+      "eyebrow": "05 / DEEP RESEARCH",
+      "image": "assets/screenshots/deep-research.png",
+      "crop": [
+        0.215,
+        0.145,
+        0.75,
+        0.765
+      ]
+    },
+    {
+      "start": 89.11,
+      "end": 95.21,
+      "layout": "screen",
+      "title": "Compare the evidence.",
+      "eyebrow": "05 / RESEARCH FINDINGS",
+      "image": "assets/screenshots/deep-research-findings.png",
+      "crop": [
+        0.225,
+        0.041,
+        0.72,
+        0.255
+      ]
+    },
+    {
+      "start": 95.21,
+      "end": 101.31,
+      "layout": "screen",
+      "title": "The gaps belong in the report.",
+      "eyebrow": "05 / RESEARCH FINDINGS",
+      "image": "assets/screenshots/deep-research-findings.png",
+      "crop": [
+        0.225,
+        0.446,
+        0.72,
+        0.29
+      ]
+    },
+    {
+      "start": 101.31,
+      "end": 106.48,
+      "layout": "split",
+      "title": "Saved research.\nNot approval.",
+      "eyebrow": "05 / RESEARCH EVIDENCE",
+      "image": "assets/screenshots/deep-research-findings.png",
+      "body": "Keep generated findings linked to their sources.",
+      "crop": [
+        0.225,
+        0.446,
+        0.72,
+        0.152
+      ]
+    },
+    {
+      "start": 106.48,
+      "end": 112.68,
+      "layout": "screen",
+      "title": "Bring proposed changes into review.",
+      "eyebrow": "06 / TRUTH INBOX",
+      "image": "assets/screenshots/truth-inbox.png",
+      "crop": [
+        0.185,
+        0.055,
+        0.8,
+        0.855
+      ]
+    },
+    {
+      "start": 112.68,
+      "end": 117.38,
+      "layout": "screen",
+      "title": "Keep the reason in the timeline.",
+      "eyebrow": "06 / PROJECT MEMORY",
+      "image": "assets/screenshots/timeline-saved.png",
+      "crop": [
+        0.205,
+        0.12,
+        0.78,
+        0.79
+      ]
+    },
+    {
+      "start": 117.38,
+      "end": 123.75,
+      "layout": "split",
+      "title": "Review before\nchanging scope.",
+      "eyebrow": "06 / A DELIBERATE DECISION",
+      "image": "assets/screenshots/timeline-saved.png",
+      "body": "The saved reminder preserves the question, not an approval.",
+      "crop": [
+        0.62,
+        0.276,
+        0.36,
+        0.225
+      ]
+    },
+    {
+      "start": 123.75,
+      "end": 131.05,
+      "layout": "screen",
+      "title": "Scope the work before it starts.",
+      "eyebrow": "07 / AGENT PREFLIGHT",
+      "image": "assets/screenshots/preflight-corrected-readiness.png",
+      "crop": [
+        0.09,
+        0.284,
+        0.86,
+        0.555
+      ]
+    },
+    {
+      "start": 131.05,
+      "end": 138.55,
+      "layout": "screen",
+      "title": "Make the gaps visible.",
+      "eyebrow": "07 / AGENT PREFLIGHT",
+      "image": "assets/screenshots/preflight-corrected-readiness.png",
+      "crop": [
+        0.09,
+        0.59,
+        0.86,
+        0.245
+      ]
+    },
+    {
+      "start": 138.55,
+      "end": 145.82,
+      "layout": "split",
+      "title": "Evidence is not\napproved truth.",
+      "eyebrow": "07 / AGENT PREFLIGHT",
+      "image": "assets/screenshots/preflight-corrected-readiness.png",
+      "body": "Resolve the decision gap before implementation.",
+      "crop": [
+        0.09,
+        0.847,
+        0.43,
+        0.074
+      ]
+    },
+    {
+      "start": 145.82,
+      "end": 153.52,
+      "layout": "screen",
+      "title": "The exact project. The exact pack.",
+      "eyebrow": "08 / AGENT HANDOFF",
+      "image": "assets/screenshots/preflight-exact-pack-handoff.png",
+      "crop": [
+        0.09,
+        0.295,
+        0.86,
+        0.32
+      ]
+    },
+    {
+      "start": 153.52,
+      "end": 161.465,
+      "layout": "screen",
+      "title": "Keep the handoff tied to its context.",
+      "eyebrow": "08 / AGENT HANDOFF",
+      "image": "assets/screenshots/preflight-exact-pack-handoff.png",
+      "crop": [
+        0.09,
+        0.295,
+        0.86,
+        0.155
+      ]
+    },
+    {
+      "start": 161.465,
+      "end": 165.465,
+      "layout": "screen",
+      "title": "Start with the source.",
+      "eyebrow": "09 / CONNECT THE WORK",
+      "image": "assets/screenshots/prd-detail.png",
+      "crop": [
+        0.222,
+        0.35,
+        0.57,
+        0.23
+      ]
+    },
+    {
+      "start": 165.465,
+      "end": 168.865,
+      "layout": "screen",
+      "title": "Review the change.",
+      "eyebrow": "09 / CONNECT THE WORK",
+      "image": "assets/screenshots/timeline-saved.png",
+      "crop": [
+        0.62,
+        0.276,
+        0.36,
+        0.225
+      ]
+    },
+    {
+      "start": 168.865,
+      "end": 173.485,
+      "layout": "hero",
+      "title": "Context your team\ncan trace.",
+      "eyebrow": "09 / CONNECT THE WORK",
+      "body": "Evidence, decisions and implementation."
+    },
+    {
+      "start": 173.485,
+      "end": 180,
+      "layout": "hero",
+      "title": "Product Brain for\nHigh Speed Teams",
+      "eyebrow": "ORCHESTRA",
+      "body": ""
+    }
+  ],
+  "previewTimes": [
+    3.335,
+    8.87,
+    13.9925,
+    19.35,
+    24.685,
+    31.995,
+    40.415,
+    47.775,
+    55.16,
+    61.545,
+    66.195,
+    71.105,
+    78.0125,
+    85.71,
+    92.16,
+    98.26,
+    103.895,
+    109.58,
+    115.03,
+    120.565,
+    127.4,
+    134.8,
+    142.185,
+    149.67,
+    157.4925,
+    163.465,
+    167.165,
+    171.175,
+    176.7425
+  ],
+  "editNotes": "Edited shots from distinct inspected real sessions, not a continuous unedited recording."
+}

@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "rendererValidation": {"passed": 11, "total": 11},
+  "captionCoverage": "All narration text is present in the 19 launch and 57 walkthrough cues, ignoring punctuation, spacing and acronym styling.",
+  "captionTimingLimitation": "Sentence cues and duration-model estimates, not independent forced alignment.",
+  "films": [
+    {
+      "file": "Orchestra-launch-web.mp4",
+      "sha256": "34d21a3408da0ba13c8ee425892d84e9863e1d911ead05bbc873f583ae01c88e",
+      "bytes": 9091826,
+      "durationSeconds": 60,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "fullDecodePassed": true,
+      "fastStartAtomOrderVerified": true,
+      "integratedLUFS": -16.6,
+      "truePeakDbFS": -0.7
+    },
+    {
+      "file": "Orchestra-walkthrough-web-safe.mp4",
+      "sha256": "35ed073932835211229247a130670f928ecb22f8a1737e06b3701a40eaffed55",
+      "bytes": 9408511,
+      "durationSeconds": 180,
+      "width": 1920,
+      "height": 1080,
+      "fps": 30,
+      "decodedFrames": 5400,
+      "fullDecodePassed": true,
+      "fastStartAtomOrderVerified": true,
+      "integratedLUFS": -18.5,
+      "truePeakDbFS": -2.5,
+      "audioGainDb": -2,
+      "videoStreamSHA256": "e05764fb65baead732305b92e59ba2d06010e3948314d98fd76469fe93563413",
+      "videoMatchesInspectedCompressedFrames": true,
+      "supersedes": "Earlier walkthrough web encode with AAC true-peak overshoot. Only the safe file is the final deliverable."
+    }
+  ],
+  "review": "Parent reviewed both final contact sheets; renderer worker inspected selected compressed frames. User accepted a 21-second voice audition. These checks are not a claim of independent full-film perceptual listening."
+}
