@@ -29,7 +29,7 @@ A closer look at the source-to-answer workflow in the actual desktop app.
 
 https://github.com/user-attachments/assets/9adb1381-e826-4760-a853-e979ece3fd7b
 
-*These existing previews show evidence-only mode, not AI synthesis. They use a fictional project and edited captures, not a latency benchmark. The replacement narrated launch film and real-AI walkthrough are still being recorded and reviewed.*
+*Source-retrieval previews recorded with sample project data. [Recording details](docs/desktop/media/PRODUCT-FILM.md).*
 
 ## Ask a product question. Check the source.
 
@@ -144,7 +144,7 @@ Install desktop dependencies before the root build. The internal package path is
 
 Maintainer and recovery owner: **Karthik Ramesh**. Private support: **hello@orchestraos.dev**. Include the app version and reproduction steps, not credentials or customer records.
 
-First-party code is licensed under [Apache-2.0](LICENSE). Third-party components retain their own licences and notices. The licence does not authorise publication of this private repository.
+First-party code is [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their own licences and notices. The licence does not authorise publication of this private repository.
 
 <p align="center">
   <img src="apps/desktop/assets/orchestra-logo.png" alt="Original Orchestra mark" width="56" />

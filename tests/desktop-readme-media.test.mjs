@@ -13,7 +13,13 @@ test('README links resolve locally and preserve private-beta scope', async () =>
   }
   assert.match(text, /Product Brain for High Speed Teams/);
   assert.match(text, /private by explicit owner instruction/);
-  assert.match(text, /evidence-only mode, not AI synthesis/);
+  assert.match(text, /Source-retrieval previews recorded with sample project data/);
+  assert.match(text, /\[Recording details\]\(docs\/desktop\/media\/PRODUCT-FILM\.md\)/);
+  assert.doesNotMatch(text, /still being recorded and reviewed/);
+  const recordingDetails = await readFile(new URL('docs/desktop/media/PRODUCT-FILM.md', root), 'utf8');
+  assert.match(recordingDetails, /evidence-only/);
+  assert.match(recordingDetails, /fictional data/);
+  assert.match(recordingDetails, /not continuous\s+screen recording or a latency test/);
   assert.match(text, /^https:\/\/github.com\/user-attachments\/assets\/[a-f0-9-]+$/m);
   assert(!text.includes('producthunt.com/widgets'), 'No unearned award badges');
 });
