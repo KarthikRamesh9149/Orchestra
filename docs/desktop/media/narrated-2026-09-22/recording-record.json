@@ -14,7 +14,7 @@
     "completeVideoDecode": "passed",
     "sceneContactSheetsAndFinalKeyframes": "inspected",
     "captionTextCoverage": "passed-19-launch-and-57-walkthrough-cues",
-    "readmeEmbedVerification": "pending-root-after-push"
+    "readmeEmbedVerification": "passed-on-github-readme-after-push-e70596b"
   },
   "capture": {
     "realAppCaptures": true,

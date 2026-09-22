@@ -52,6 +52,8 @@ The films contain 19 and 57 caption cues respectively, covering their transcript
 
 All 13 launch scenes and 29 walkthrough scenes were inspected through contact sheets, together with final keyframes. Full decoding passed for **1,800 launch frames** and **5,400 walkthrough frames**. Both private GitHub players reported 1920×1080 and the expected 60/180-second durations. Playback advanced through 20 seconds for the launch and 25.728 seconds for the walkthrough, with no player errors. These browser checks are distinct from a full-length listening review.
 
+After commit `e70596b` was pushed, both embeds were also played directly in the repository README. Launch playback advanced to 18.801 seconds and walkthrough playback to 13.209 seconds, with no media errors. Both were paused after verification.
+
 [Audio and film provenance](narrated-2026-09-22/PROVENANCE.md) · [Exact file identities and verification record](narrated-2026-09-22/recording-record.json)
 
 The repository remains private. These films do not certify release readiness or authorise public distribution.
