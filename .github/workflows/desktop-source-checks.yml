@@ -40,6 +40,10 @@ jobs:
         run: |
           node scripts/desktop/inventory.mjs --check
           node scripts/desktop/verify-import.mjs --check
+      - name: Prepare bounded Mac fixture path on the disposable Linux runner
+        # These tests use a short path for macOS Unix-domain socket limits.
+        # This creates only a runner-owned private test directory, not app state.
+        run: sudo install -d -m 0700 -o "$(id -u)" -g "$(id -g)" /private/tmp
       - name: Typecheck and backend build
         run: |
           npm run typecheck
