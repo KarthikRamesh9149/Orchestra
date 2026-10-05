@@ -13,7 +13,7 @@ Your PRD says one thing. A conversation changes the scope. Your coding agent sti
 
 **Orchestra is a Product Brain for High Speed Teams.** It connects source material, reviewed decisions and implementation evidence, so people and agents can work from the same accepted product context.
 
-*Private beta for Apple Silicon Macs. Repository access is required; there are no public downloads.*
+*Open-source preview for Apple Silicon Macs. Build from source; packaged public downloads are not available yet.*
 
 ## Watch Orchestra
 
@@ -115,7 +115,7 @@ Read the [usage, privacy and recovery guide](docs/desktop/release/USER-GUIDE.md)
 
 ## Build from source
 
-For contributors with repository access: **macOS Apple Silicon, Node.js 24/npm, Xcode command-line tools, Perl/tar and network access**. Use a fresh checkout without production credentials or customer data.
+Source-build prerequisites: **macOS Apple Silicon, Node.js 24/npm, Xcode command-line tools, Perl/tar and network access**. Use a fresh checkout without production credentials or customer data.
 
 ```sh
 git clone https://github.com/KarthikRamesh9149/Orchestra.git
@@ -143,7 +143,7 @@ Install desktop dependencies before the root build. The internal package path is
 - **AI:** OpenAI has real-account Socrates, Deep Research, streaming and restart evidence on the tested Mac configuration. Anthropic, Gemini and compatible API adapters remain previews pending real-account workflow qualification; models must meet the required protocols.
 - **Connectors:** Internal real-account checks cover the desktop connector scope. New-account and new-workspace onboarding still needs qualification; a provider app registration does not establish customer onboarding readiness.
 - **Notices:** The latest internal artifact check found no missing notices or listed unresolved bundled packages. Historical artifacts are not retroactively cleared. Final source/history and publication review remains separate.
-- **Distribution:** The repository remains private by explicit owner instruction. Local tests and internal packages do not constitute public-release certification.
+- **Distribution:** Source publication was authorised by the owner on 5 October 2026. Packaged public downloads remain pending; local tests and internal packages do not constitute public-release certification.
 
 [Release status](docs/desktop/release/README.md) · [Desktop contract](docs/desktop/CONTRACT.md) · [Provider guide](docs/desktop/release/USER-GUIDE.md#add-an-api-key) · [Notice review](docs/desktop/THIRD-PARTY-REVIEW.md)
 
@@ -153,9 +153,9 @@ Install desktop dependencies before the root build. The internal package path is
 
 [Architecture](docs/desktop/ADR-001.md) · [Feature inventory](docs/desktop/feature-parity.json) · [Threat model](docs/desktop/THREAT-MODEL.md) · [Manual updates and recovery](docs/desktop/INTERNAL-UPDATE-RECOVERY.md) · [Contributing](CONTRIBUTING.md)
 
-Maintainer and recovery owner: **Karthik Ramesh**. Private support: **hello@orchestraos.dev**. Include the app version and reproduction steps, not credentials or customer records.
+Maintainer and recovery owner: **Karthik Ramesh**. Support: **hello@orchestraos.dev**. Include the app version and reproduction steps, not credentials or customer records.
 
-First-party code is [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their own licences and notices. The licence does not authorise publication of this private repository.
+First-party code is [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their own licences and notices.
 
 <p align="center">
   <img src="apps/desktop/assets/orchestra-logo.png" alt="Original Orchestra mark" width="56" />

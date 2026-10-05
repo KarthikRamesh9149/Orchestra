@@ -3,7 +3,7 @@
 One Source of Truth and Product Brain for high-speed teams.
 
 **There is no public download available yet.** Do not use an internal package as
-a signed public release. This page is a private release-information draft, not a
+a signed public release. This page is a release-information draft, not a
 deployed download site. No public tag, release or update feed has been published.
 
 | Target | Current disposition |
@@ -14,9 +14,9 @@ deployed download site. No public tag, release or update feed has been published
 | Automatic updates | Deferred; verification helpers are not a working updater |
 | Shared teams | Single-Mac qualification; two-computer test deferred |
 
-The owner confirmed original code/asset ownership and approved Apache-2.0, but
-explicitly withheld publication. Final material, third-party notices and
-repository visibility need approval before publication. The internal signing exception does
+The owner confirmed original code/asset ownership, approved Apache-2.0 and
+authorised public source visibility on 5 October 2026. Installer and release
+publication remain pending. The internal signing exception does
 not waive public-release signing/notarization. Provider testing registrations
 are not proof of public customer enrollment.
 
@@ -30,6 +30,6 @@ are not proof of public customer enrollment.
 - Explicit public provider enrollment qualification and named support owner.
 
 No dummy download buttons, invented checksums, or updater metadata are supplied.
-Use [BUILD.md](BUILD.md) for the private source-build recipe,
+Use [BUILD.md](BUILD.md) for the source-build recipe,
 [USER-GUIDE.md](USER-GUIDE.md) for usage/privacy/recovery, and
 [../STEP-8.md](../STEP-8.md) for the unresolved publication gates.
