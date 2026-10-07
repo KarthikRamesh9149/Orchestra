@@ -43,7 +43,8 @@ describe("desktop Step 1 boundary", () => {
 
   it("keeps publication, signing, licensing and sequential execution explicit", () => {
     expect(read("README.md")).toContain("approved by the owner after confirming ownership");
-    expect(read("README.md")).toContain("private by explicit owner instruction");
+    expect(read("README.md")).toContain("Source publication was authorised by the owner on 5 October 2026");
+    expect(read("README.md")).toContain("Packaged public downloads remain pending");
     expect(read("docs/desktop/CONTRACT.md")).toContain("No automatic progression");
     expect(read("docs/desktop/RELEASE-DEPENDENCIES.md")).toContain("Not confirmed; blocks signed release");
     expect(read("LICENSE")).toContain("Apache License");

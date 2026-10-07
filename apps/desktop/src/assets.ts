@@ -3,6 +3,14 @@ import {resolve,sep,extname} from 'node:path';
 
 const mime:Record<string,string>={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.ico':'image/x-icon','.woff2':'font/woff2','.jpg':'image/jpeg','.webp':'image/webp'};
 export const CSP="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'";
+/** Remove only legacy browser startup resources that our packaged CSP blocks.
+ * The trusted main bundle already initializes the saved theme before rendering.
+ * Do not relax CSP or rewrite the app's styles/scripts to silence violations. */
+export function packagedHtml(html:string):string{
+ return html
+  .replace(/<link\b[^>]*\bhref=["']https:\/\/fonts\.(?:googleapis|gstatic)\.com(?:\/[^"']*)?["'][^>]*>/gi,'')
+  .replace(/<!-- No-flash theme script: apply before first paint -->\s*<script>\s*\(function \(\) \{[\s\S]*?\}\)\(\);\s*<\/script>/,'');
+}
 export async function assetResponse(root:string,url:string,method='GET'):Promise<Response>{
  const target=new URL(url);
  if(target.protocol!=='orchestra:'||target.host!=='app'||!['GET','HEAD'].includes(method))return new Response(null,{status:403});
@@ -18,6 +26,7 @@ export async function assetResponse(root:string,url:string,method='GET'):Promise
   file=await realpath(resolve(directory,'index.html'));
  }
  if(!file.startsWith(directory+sep)||!mime[extname(file)])return new Response(null,{status:403});
- const bytes=method==='HEAD'?null:new Uint8Array(await readFile(file));
+ const source=method==='HEAD'?null:await readFile(file);
+ const bytes=source===null?null:extname(file)==='.html'?new TextEncoder().encode(packagedHtml(source.toString('utf8'))):new Uint8Array(source);
  return new Response(bytes,{headers:{'Content-Type':mime[extname(file)]!,'Content-Security-Policy':CSP,'X-Content-Type-Options':'nosniff'}});
 }

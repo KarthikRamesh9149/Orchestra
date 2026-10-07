@@ -4,7 +4,7 @@ import {readFile, access, stat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 
 const root = new URL('../', import.meta.url);
-test('README links resolve locally and preserve private-beta scope', async () => {
+test('README links resolve locally and distinguish public source from internal packages', async () => {
   const text = await readFile(new URL('README.md', root), 'utf8');
   const links = [...text.matchAll(/(?:href|src)="([^"]+)"|\]\(([^)]+)\)/g)].map(match => match[1] ?? match[2]);
   for (const target of links) {
@@ -13,7 +13,8 @@ test('README links resolve locally and preserve private-beta scope', async () =>
     await access(new URL(target.split('#')[0], root));
   }
   assert.match(text, /Product Brain for High Speed Teams/);
-  assert.match(text, /private by explicit owner instruction/);
+  assert.match(text, /Source publication was authorised by the owner on 5 October 2026/);
+  assert.match(text, /Packaged public downloads remain pending/);
   assert.match(text, /Real OpenAI answers in a sample project; edited timing/);
   assert.match(text, /\[Recording details\]\(docs\/desktop\/media\/PRODUCT-FILM\.md\)/);
   assert.doesNotMatch(text, /still being recorded and reviewed/);

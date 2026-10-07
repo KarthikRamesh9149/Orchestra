@@ -1,10 +1,10 @@
 import {describe,it,expect,afterEach} from 'vitest';
-import {mkdtemp,writeFile,mkdir,symlink,rm,realpath} from 'node:fs/promises';
+import {mkdtemp,writeFile,readFile,mkdir,symlink,rm,realpath} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {commandSchema,isTrustedFrame} from '../apps/desktop/src/contracts.js';
-import {assetResponse,CSP} from '../apps/desktop/src/assets.js';
+import {assetResponse,packagedHtml,CSP} from '../apps/desktop/src/assets.js';
 import {Selections} from '../apps/desktop/src/selections.js';
 import {verifyNativeBundle} from '../apps/desktop/src/integrity.js';
 import {createHash} from 'node:crypto';
@@ -40,6 +40,24 @@ describe('desktop bridge authority',()=>{
   const outside=await temporary();await writeFile(join(outside,'secret.js'),'secret');await symlink(join(outside,'secret.js'),join(root,'escape.js'));
   expect((await assetResponse(root,'orchestra://app/escape.js')).status).toBe(403);
   expect(CSP).toContain("connect-src 'self'");expect(CSP).toContain("object-src 'none'");
+ });
+ it('omits blocked legacy startup resources without changing UI markup or weakening CSP',async()=>{
+  const original=await readFile(new URL('../apps/beta-web/index.html',import.meta.url),'utf8');
+  const root=await temporary();await writeFile(join(root,'index.html'),original);
+  const response=await assetResponse(root,'orchestra://app/chat');const html=await response.text();
+  expect(original).toContain('fonts.googleapis.com');expect(original).toContain('<script>');
+  expect(html).not.toMatch(/fonts\.(?:googleapis|gstatic)\.com/);expect(html).not.toContain('<script>');
+  expect(html).toContain('<div id="root"></div>');expect(html).toContain('src="/src/main.tsx"');
+  expect(response.headers.get('content-security-policy')).toBe(CSP);
+  expect(CSP).toContain("script-src 'self';");expect(CSP).toContain("font-src 'self';");
+  const main=await readFile(new URL('../apps/beta-web/src/main.tsx',import.meta.url),'utf8');
+  expect(main).toContain('initializeTheme();');expect(main).toContain('ReactDOM.createRoot');
+  expect(main.indexOf('initializeTheme();')).toBeLessThan(main.indexOf('ReactDOM.createRoot'));
+  expect(await (await assetResponse(root,'orchestra://app/','HEAD')).text()).toBe('');
+ });
+ it('preserves unrelated scripts and styles instead of treating HTML rewriting as a sanitizer',()=>{
+  const html='<link rel="stylesheet" href="/assets/app.css"><script type="module" src="/assets/app.js"></script><script>untrusted()</script>';
+  expect(packagedHtml(html)).toBe(html);
  });
  it('binds single-use file capabilities and rejects changed files',async()=>{
   const root=await temporary(),path=join(root,'evidence.txt');await writeFile(path,'synthetic evidence');
