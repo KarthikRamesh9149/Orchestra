@@ -129,6 +129,7 @@ adjustments['package.json']+=' October 8 package qualification: scoped Mammoth C
 adjustments['package-lock.json']+=' October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade.';
 adjustments['apps/beta-web/package-lock.json']='October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived.';
 adjustments['apps/vscode-extension/package-lock.json']+=' October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed.';
+adjustments['src/modules/deep-research/prompts.ts']+=' October 8 actual-model qualification: preserve exact numbered source identities in claims and ground recommendations without cross-document label carryover or promotion of imported vendor instructions. No retrieval, model, schema or styling changes.';
 for (const file of ['apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pages/ChatPage.test.tsx']) {
  adjustments[file]+=' October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes.';
 }

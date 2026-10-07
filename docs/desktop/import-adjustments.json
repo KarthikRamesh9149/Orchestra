@@ -413,8 +413,8 @@
     {
       "path": "src/modules/deep-research/prompts.ts",
       "sourceSha256": "0ebded6cddccb4e9e376ae2d53b2dbd7a204b58d10f5f5be339291dcbab16bfc",
-      "importedSha256": "b99aaca7adc595aa5d9613564343add213702734b5680da74e92c7c305f89099",
-      "reason": "Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls."
+      "importedSha256": "e2b3333242ff5a133fd7c92ba0aed270bdd2f230615e2bcdd283a9c06f6b7609",
+      "reason": "Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls. October 8 actual-model qualification: preserve exact numbered source identities in claims and ground recommendations without cross-document label carryover or promotion of imported vendor instructions. No retrieval, model, schema or styling changes."
     },
     {
       "path": "src/modules/deep-research/report-render.ts",
