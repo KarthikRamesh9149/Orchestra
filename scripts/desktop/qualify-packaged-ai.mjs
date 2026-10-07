@@ -206,6 +206,13 @@ try{
  assert(renderedPayload.citations.length>0);for(const citation of renderedPayload.citations){const chunk=state.chunks.find(c=>c.id===citation.refId),target=renderedPayload.open_targets.find(t=>t.id===citation.openTargetId);assert(chunk&&target);assert.equal(target.targetRef?.documentId,chunk.document_id);assert.equal(target.targetRef?.documentVersionId,chunk.document_version_id);assert.notEqual(chunk.document_id,old.documentId);}
  proof.renderedAnswer.sessionId=renderedSession;proof.renderedAnswer.authoritativePayload=renderedPayload;
  record('real answer rendered through composer, streamed UI and final cited response');
+ await page.goto(proof.conversation);await page.getByRole('link',{name:/^Open document/}).first().click();
+ const citedDocumentId=proof.documents.find(d=>d.key==='current').documentId;
+ await page.waitForURL(url=>url.pathname===`/memory/docs/${citedDocumentId}/view`);
+ await page.waitForFunction(()=>{const text=document.body.innerText;return ['item_id, title, owner, status','tenant isolation and audit logging','active project membership and explicit permission','headers and zero data rows'].every(fact=>text.includes(fact));});
+ proof.citationView={documentId:citedDocumentId,url:page.url(),verifiedFacts:['ordered CSV fields','tenant isolation/audit logging','membership/permission','acceptance criteria']};
+ await page.screenshot({path:join(directory,'citation-source.png'),animations:'disabled'});await page.goto(proof.conversation);
+ record('rendered citation opens the correct document and complete parsed source facts');
  await checkpoint();
  const beforeResearch=await inspect();const researchStart=performance.now();const run=previous?.research?.run?.status==='completed'?previous.research.run:await api(`/v1/projects/${projectId}/deep-research`,'POST',{researchFocus:'Compare Cedar Current Specification and Cedar Pending PDF Request: CSV fields, empty projects, authorization requirements, PDF approval status, confirmed launch date and approved budget. Cite sources and state missing facts explicitly.',sources:['docs'],outputFormat:'exec_summary',privacyMode:'internal_only',webSearchEnabled:false});
  let research;
@@ -259,4 +266,4 @@ try{
  record('rendered route, input and layout-shift targets; no page/console errors');
  await page.screenshot({path:join(directory,'final-chat.png'),animations:'disabled'});proof.passed=true;
 }catch(error){proof.failure={name:error.name,message:error.message};console.error('QUALIFICATION FAILED',error.message);if(page)await page.screenshot({path:join(directory,'failure.png')}).catch(()=>{});process.exitCode=1;}
-finally{if(app)await app.close().catch(()=>{});proof.finishedAt=new Date().toISOString();await writeFile(join(directory,'qualification.json'),JSON.stringify(proof,null,2),{mode:0o600});await checkpoint();for(const name of ['ai-answer.png','final-chat.png','failure.png']){const bytes=await readFile(join(directory,name)).catch(()=>null);if(bytes)await writeFile(join(evidenceDirectory,name),bytes,{mode:0o600});}console.log('Evidence',join(evidenceDirectory,'qualification.json'));if(proof.performance)console.log(JSON.stringify(proof.performance));}
+finally{if(app)await app.close().catch(()=>{});proof.finishedAt=new Date().toISOString();await writeFile(join(directory,'qualification.json'),JSON.stringify(proof,null,2),{mode:0o600});await checkpoint();for(const name of ['ai-answer.png','citation-source.png','final-chat.png','failure.png']){const bytes=await readFile(join(directory,name)).catch(()=>null);if(bytes)await writeFile(join(evidenceDirectory,name),bytes,{mode:0o600});}console.log('Evidence',join(evidenceDirectory,'qualification.json'));if(proof.performance)console.log(JSON.stringify(proof.performance));}
