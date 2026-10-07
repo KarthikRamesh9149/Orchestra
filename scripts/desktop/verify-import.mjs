@@ -125,6 +125,13 @@ for (const file of ['src/modules/agent-context/composer.ts','src/modules/agent-c
 // September 23 comparative-audit remediation, authorized for private desktop
 // only. Preserve the original import hashes and record the reviewed evolution.
 adjustments['package.json']+=' September 23: discover and execute every Node packaging regression through one portable local gate.';
+adjustments['package.json']+=' October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified.';
+adjustments['package-lock.json']+=' October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade.';
+adjustments['apps/beta-web/package-lock.json']='October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived.';
+adjustments['apps/vscode-extension/package-lock.json']+=' October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed.';
+for (const file of ['apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pages/ChatPage.test.tsx']) {
+ adjustments[file]+=' October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes.';
+}
 adjustments['src/modules/socrates/service.ts']+=' September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority.';
 adjustments['tests/socrates-v1-service.test.ts']+=' September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads.';
 for(const entry of manifest.files){

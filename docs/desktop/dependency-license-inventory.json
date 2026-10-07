@@ -550,9 +550,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/@fastify/busboy",
-      "version": "3.2.0",
+      "version": "3.2.2",
       "license": "MIT",
-      "integrity": null
+      "integrity": "sha512-yXSS27qPExaXeuLvMRMXOLtpipzfQYNjG3FkunDWKGfMYjKuhFXko9CVzqxm8jcF+lmtS9Fd89QNdh9XDjnbNg=="
     },
     {
       "lock": "package-lock.json",
@@ -1516,9 +1516,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/argparse",
-      "version": "1.0.10",
-      "license": "MIT",
-      "integrity": null
+      "version": "2.0.1",
+      "license": "Python-2.0",
+      "integrity": "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q=="
     },
     {
       "lock": "package-lock.json",
@@ -1567,13 +1567,6 @@
       "location": "node_modules/bcryptjs",
       "version": "3.0.3",
       "license": "BSD-3-Clause",
-      "integrity": null
-    },
-    {
-      "lock": "package-lock.json",
-      "location": "node_modules/bluebird",
-      "version": "3.4.7",
-      "license": "MIT",
       "integrity": null
     },
     {
@@ -1852,9 +1845,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/fast-copy",
-      "version": "3.0.2",
+      "version": "3.1.0",
       "license": "MIT",
-      "integrity": null
+      "integrity": "sha512-IuCOCDFM1F/s4LtG7Bjr3yUUwPHybyhqN74xk2cMYoP51vVeErMy8+6HGFchi/+45lW8uzhs6lBeEqks2GWt6A=="
     },
     {
       "lock": "package-lock.json",
@@ -1901,9 +1894,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/fast-uri",
-      "version": "3.1.7",
+      "version": "3.1.8",
       "license": "BSD-3-Clause",
-      "integrity": "sha512-dOvZVzjdZdz7phd9v6jCbwxrBW3fK6n8Rc0CtdmM4bumzMnxywBYhuph6J819RRw/ku+rLbelwfMunktuzVVHg=="
+      "integrity": "sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg=="
     },
     {
       "lock": "package-lock.json",
@@ -1929,9 +1922,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/fastify",
-      "version": "5.12.3",
+      "version": "5.12.5",
       "license": "MIT",
-      "integrity": "sha512-reZ8wce5VNCcufIt9AVtzZa3L4u1j8esikn7OEgHWLVpRpL5R7Y2+Xzj70OUkv5zDfzUAxXZT6cu4Rt0zr3EKA=="
+      "integrity": "sha512-OB2k1dlxs5/NAABqeKV2FUHkSD2BbENsCak8yULVcymn3fHIPDVa9TI3SDnJSWYSllZmSYuZXy2gTnsT+Sut1A=="
     },
     {
       "lock": "package-lock.json",
@@ -1950,9 +1943,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/fastify/node_modules/fast-uri",
-      "version": "4.1.4",
+      "version": "4.2.1",
       "license": "BSD-3-Clause",
-      "integrity": "sha512-dODXrIxlS9JSdgAnhIUKOosKV1oMtU2VtVw87QRaHzyl5jxO290Ii5tEZfCfzfWNHi3jKWwBSdQj0qIyshdZdQ=="
+      "integrity": "sha512-TmHQgewjHtMq1E5QKA0tOE0yeYGQs25KZC/ziJpubRtWI15W92e6vPFydWOeZBVROSHBYw/QhD9d5OefdD6LDg=="
     },
     {
       "lock": "package-lock.json",
@@ -2384,9 +2377,9 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/mammoth",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "license": "BSD-2-Clause",
-      "integrity": null
+      "integrity": "sha512-2cawcYFcP7ISfXbBcL9lmVgTNWo88v/52ND1gnywHtVT/pX0//puPnf0iMPV9ZgmuvNOE+zkIhDgZ9M2c2dDDg=="
     },
     {
       "lock": "package-lock.json",
@@ -2562,13 +2555,6 @@
       "version": "1.5.0",
       "license": "MIT",
       "integrity": "sha512-cbrerZV+6rvdQrrD+iGMcZFEiiSrbv9Tfdkvnusy6y0x0GKBXREFg/Y65GhIfm0tnLntThhzCnfKwp1WRjeCyQ=="
-    },
-    {
-      "lock": "package-lock.json",
-      "location": "node_modules/path-is-absolute",
-      "version": "1.0.1",
-      "license": "MIT",
-      "integrity": null
     },
     {
       "lock": "package-lock.json",
@@ -2874,22 +2860,15 @@
     {
       "lock": "package-lock.json",
       "location": "node_modules/source-map-js",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "license": "BSD-3-Clause",
-      "integrity": "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="
+      "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw=="
     },
     {
       "lock": "package-lock.json",
       "location": "node_modules/split2",
       "version": "4.2.0",
       "license": "ISC",
-      "integrity": null
-    },
-    {
-      "lock": "package-lock.json",
-      "location": "node_modules/sprintf-js",
-      "version": "1.0.3",
-      "license": "BSD-3-Clause",
       "integrity": null
     },
     {
@@ -6220,9 +6199,9 @@
     {
       "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/source-map-js",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "license": "BSD-3-Clause",
-      "integrity": "sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA=="
+      "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6479,9 +6458,9 @@
     {
       "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/undici",
-      "version": "8.10.0",
+      "version": "8.11.2",
       "license": "MIT",
-      "integrity": "sha512-HvltHd7avK13QIw/oLe4qoOLyoVSoafqJ2jYOrtMRBkbYT31eiBQ8O0ehRKZiEZCMEyLFQNIADpgCWC5fALvYQ=="
+      "integrity": "sha512-u4UB2/IrKdU6lFxumHmmo1a3fCQO5tzQllRorfoRS63txhrB7xTpSn1PftwC4qEHkOaqP95fCWW4lJzwErwzhQ=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -7228,9 +7207,9 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/brace-expansion",
-      "version": "5.0.9",
+      "version": "5.0.12",
       "license": "MIT",
-      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg=="
+      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7550,9 +7529,9 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/fast-uri",
-      "version": "3.1.7",
+      "version": "3.1.8",
       "license": "BSD-3-Clause",
-      "integrity": "sha512-dOvZVzjdZdz7phd9v6jCbwxrBW3fK6n8Rc0CtdmM4bumzMnxywBYhuph6J819RRw/ku+rLbelwfMunktuzVVHg=="
+      "integrity": "sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7970,9 +7949,9 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/markdown-it",
-      "version": "14.3.0",
+      "version": "14.3.2",
       "license": "MIT",
-      "integrity": "sha512-RCEsPjR+sr0x+AuYp601tKTkgFG4YEPLCzHST3cQ/fhlJkqAkz1L2/Qbp1j9qw5SBwQHFBoW8+hoN5xssOF0Tw=="
+      "integrity": "sha512-sHHjZ5fJKlgrG4qns2YwVcdNep35h5fERrfkD2YNsb9UFk0UIHarbiTaHKVMlPuWAoiilyK8Fv/jAm11slsY7Q=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8670,9 +8649,9 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/undici",
-      "version": "7.29.0",
+      "version": "7.30.0",
       "license": "MIT",
-      "integrity": "sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw=="
+      "integrity": "sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -9062,9 +9041,9 @@
     {
       "lock": "apps/desktop/package-lock.json",
       "location": "node_modules/brace-expansion",
-      "version": "5.0.9",
+      "version": "5.0.12",
       "license": "MIT",
-      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg=="
+      "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ=="
     },
     {
       "lock": "apps/desktop/package-lock.json",

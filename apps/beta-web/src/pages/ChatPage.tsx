@@ -780,6 +780,7 @@ export function ChatPage() {
   const { activeProject } = useAuth();
   const projectId = activeProject?.id ?? null;
   const draftConversationId = conversationId ?? null;
+  const initialDraftSelection = useRef(useChatStore.getState().lastActiveByProject);
   const updateConversation = useChatStore((state) => state.updateConversation);
   const upsertConversation = useChatStore((state) => state.upsertConversation);
   const setConversations = useChatStore((state) => state.setConversations);
@@ -801,6 +802,18 @@ export function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [input, setInput] = useState(storedDraft);
+  // New chat records the selection before Router commits its navigation. A
+  // keystroke can still reach this old route in that interval; persist it for
+  // the explicitly selected new chat, never overwrite the previous draft.
+  const isNewChatNavigationPending = () => {
+    const state = useChatStore.getState();
+    return Boolean(projectId && conversationId && state.projectId === projectId && state.activeId === null &&
+      state.lastActiveByProject !== initialDraftSelection.current && state.lastActiveByProject[projectId] === null);
+  };
+  const updateDraftInput = (value: string) => {
+    setInput(value);
+    if (projectId) setDraft(projectId, isNewChatNavigationPending() ? null : draftConversationId, value);
+  };
   const scope = useChatStore((state) => state.sourceScope);
   const setScope = useChatStore((state) => state.setSourceScope);
   const [isUploading, setIsUploading] = useState(false);
@@ -1006,6 +1019,9 @@ export function ChatPage() {
   }, [messages, isTyping]);
 
   const sendMessage = async (text: string) => {
+    // Wait for the new route rather than submit a new-chat draft into the old
+    // server session while its navigation is still pending.
+    if (isNewChatNavigationPending()) return;
     const trimmed = text.trim();
     const currentConvId = activeConvId ?? conversationId ?? null;
     const submittedDraftId = draftConversationId;
@@ -1336,7 +1352,7 @@ export function ChatPage() {
       {!hasMessages && !historyLoading && !historyError && (
         <RotatingSuggestion
           paused={input.length > 0}
-          onSelect={(prompt) => setInput(prompt)}
+          onSelect={updateDraftInput}
         />
       )}
 
@@ -1348,10 +1364,7 @@ export function ChatPage() {
       </div>}
       <ChatInput
         value={input}
-        onChange={(value) => {
-          setInput(value);
-          if (projectId) setDraft(projectId, draftConversationId, value);
-        }}
+        onChange={updateDraftInput}
         onSend={() => void sendMessage(input)}
         onStop={stopGeneration}
         isGenerating={isTyping}

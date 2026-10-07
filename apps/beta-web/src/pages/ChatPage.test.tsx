@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { Link, MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { SocratesHistoryMessage } from "../lib/api";
-import { useChatStore } from "../store/chatStore";
+import { chatDraftKey, useChatStore } from "../store/chatStore";
+import { NavRail } from "../components/shell/NavRail";
 import { ChatPage } from "./ChatPage";
 
 const PROJECT_ID = "11111111-1111-4111-8111-111111111111";
@@ -270,6 +271,68 @@ describe("server-authoritative Socrates chat", () => {
     expect(await screen.findByPlaceholderText("Ask Socrates anything about your project…")).toHaveValue(
       "Keep this draft while I check Memory"
     );
+  });
+
+  it.each(["", "Earlier new-chat draft"])("preserves immediate typing while New chat navigation is pending (%s)", async (priorNewDraft) => {
+    const question = "Keep the new question typed during navigation";
+    useChatStore.setState({
+      projectId: PROJECT_ID,
+      activeId: SESSION_ID,
+      drafts: {
+        [chatDraftKey(PROJECT_ID, SESSION_ID)]: "Existing conversation draft",
+        ...(priorNewDraft ? { [chatDraftKey(PROJECT_ID, null)]: priorNewDraft } : {}),
+      },
+    });
+    render(<MemoryRouter initialEntries={[`/chat/${SESSION_ID}`]}><NavRail /><ChatHarness /></MemoryRouter>);
+    expect(screen.getByPlaceholderText("Ask Socrates anything about your project…")).toHaveValue("Existing conversation draft");
+
+    act(() => {
+      fireEvent.click(screen.getByRole("button", { name: "New chat" }));
+      fireEvent.change(screen.getByPlaceholderText("Ask Socrates anything about your project…"), {
+        target: { value: question },
+      });
+    });
+
+    await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent(/^\/chat$/));
+    expect(screen.getByPlaceholderText("Ask Socrates anything about your project…")).toHaveValue(question);
+    expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled();
+    expect(useChatStore.getState().drafts[chatDraftKey(PROJECT_ID, null)]).toBe(question);
+    expect(useChatStore.getState().drafts[chatDraftKey(PROJECT_ID, SESSION_ID)]).toBe("Existing conversation draft");
+    await userEvent.setup().click(screen.getByRole("button", { name: "Send message" }));
+    expect(mocks.streamSocratesV1).toHaveBeenCalledWith(PROJECT_ID, question, null, expect.objectContaining({ scope: "All" }));
+  });
+
+  it("does not submit the previous session while New chat navigation is pending", async () => {
+    useChatStore.setState({
+      projectId: PROJECT_ID,
+      activeId: SESSION_ID,
+      drafts: { [chatDraftKey(PROJECT_ID, SESSION_ID)]: "Do not submit this old draft" },
+    });
+    render(<MemoryRouter initialEntries={[`/chat/${SESSION_ID}`]}><NavRail /><ChatHarness /></MemoryRouter>);
+
+    act(() => {
+      fireEvent.click(screen.getByRole("button", { name: "New chat" }));
+      fireEvent.click(screen.getByRole("button", { name: "Send message" }));
+    });
+
+    await waitFor(() => expect(screen.getByTestId("location")).toHaveTextContent(/^\/chat$/));
+    expect(mocks.streamSocratesV1).not.toHaveBeenCalled();
+    expect(useChatStore.getState().drafts[chatDraftKey(PROJECT_ID, SESSION_ID)]).toBe("Do not submit this old draft");
+  });
+
+  it("keeps a directly opened conversation draft scoped when the remembered selection is new chat", async () => {
+    useChatStore.setState({
+      projectId: PROJECT_ID,
+      activeId: null,
+      lastActiveByProject: { [PROJECT_ID]: null },
+      drafts: { [chatDraftKey(PROJECT_ID, SESSION_ID)]: "Existing conversation draft" },
+    });
+    renderChat(`/chat/${SESSION_ID}`);
+    fireEvent.change(screen.getByPlaceholderText("Ask Socrates anything about your project…"), {
+      target: { value: "Edit the directly opened conversation" },
+    });
+    expect(useChatStore.getState().drafts[chatDraftKey(PROJECT_ID, SESSION_ID)]).toBe("Edit the directly opened conversation");
+    expect(useChatStore.getState().drafts[chatDraftKey(PROJECT_ID, null)]).toBeUndefined();
   });
 
   it("[FIX-12] restores the complete conversation after browser state is erased", async () => {

@@ -1,12 +1,18 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 726,
+  "unchangedImportedFiles": 725,
   "changes": [
     {
       "path": ".gitattributes",
       "sourceSha256": "0fb7f57b6cd9ef7086bfdac62ec57ecd15abe4733544cdd20674385a7de1fde0",
       "importedSha256": "0b962b21adb89ad5a92e6aac8dd08ba2afc6bd73248e7aac91281958c9603687",
       "reason": "Readiness follow-up: preserve the exact hash-pinned upstream Unicode Zapf Dingbats notice bytes and intentional trailing whitespace; no broad whitespace exemption."
+    },
+    {
+      "path": "apps/beta-web/package-lock.json",
+      "sourceSha256": "2d65c3585760d08690bca738db400890b485a5d10af1de95bda1d486f140a8cc",
+      "importedSha256": "7f4d1122c11ed363d915d1ccce29f7963b55a13485dc676c5ccc7a888642923b",
+      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived."
     },
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -137,14 +143,14 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
       "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
-      "importedSha256": "07208991f2f84879cc0b83bd9507f7292f6493ab11e8b94f179d218172c8abd8",
-      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "1c56d7a830199b23531503525a7e5a036fe82fa73cd8558cbbbbbc230389b940",
+      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes."
     },
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "85687bb9f8b47046ad51d10f5c0c78cb090d77104f179bd9d284ce27cb10a0b1",
-      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "74adc991e168f2a60520e954fdd23704890e99c2110b0b71872ba76cdfcc9b6e",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes."
     },
     {
       "path": "apps/beta-web/src/pages/DashboardPage.tsx",
@@ -251,8 +257,8 @@
     {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
-      "importedSha256": "16a49c5b0ad1204840478785279505683d2efb65bbbcd29c8420340cc145d0f0",
-      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh."
+      "importedSha256": "f209a326eade348231ea33f230afc5ba75925c8286ef6bcfcc56e7ce5f5105e3",
+      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed."
     },
     {
       "path": "apps/vscode-extension/tsconfig.json",
@@ -263,14 +269,14 @@
     {
       "path": "package-lock.json",
       "sourceSha256": "33714f0d9de659613f0d5112a9bd1f41b4e2ce1a71981e645eb2e5f829225782",
-      "importedSha256": "40ed310d9f3153e372612fdf650e24b6fc4b5a9313169d190c76b51ee951fa40",
-      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades."
+      "importedSha256": "48e8e4c0061465fde94c6b28ad9ea3ee0bdc242c47532e40a69c9d441024bca3",
+      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades. October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade."
     },
     {
       "path": "package.json",
       "sourceSha256": "dc9bca392bfa6997c3db4c32de7362f7947cfa3ba96fb1bc91812e7f3dc1a984",
-      "importedSha256": "7d8d90fe5628c0831d461ae9fbde51e5ffb22164862028ed3d423342fe8432df",
-      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate."
+      "importedSha256": "462ac768607390f9d9f76af7fe2524274940bce4d9049c528373ee5618bc008c",
+      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate. October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified."
     },
     {
       "path": "prisma/schema.prisma",
