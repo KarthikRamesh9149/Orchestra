@@ -8,6 +8,9 @@ import {isDeepStrictEqual, promisify} from 'node:util';
 import semver from 'semver';
 
 export const PRISMA_RUNTIME_VERSION = '6.6.0';
+// A reviewed CLI-only security upgrade, not a general npm override resolver.
+// Pin the owner identity and original declaration as well as the replacement.
+const REVIEWED_OVERRIDE = {mammoth: {argparse: '2.0.1'}};
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const ordered = values => [...values].sort();
 const execute = promisify(execFile);
@@ -77,8 +80,12 @@ export async function planRuntimeDependencies(sourceRoot) {
     if (!isDeepStrictEqual(metadata[field] ?? {}, lock.packages[''][field] ?? {})) throw new Error('Root dependency manifest/lock drift: ' + field);
   }
   if (metadata.dependencies?.['@prisma/client'] !== PRISMA_RUNTIME_VERSION || metadata.devDependencies?.prisma !== PRISMA_RUNTIME_VERSION) throw new Error('Review the exact Prisma runtime/tooling pins');
+  if (metadata.overrides !== undefined && !isDeepStrictEqual(metadata.overrides, {})
+    && !isDeepStrictEqual(metadata.overrides, REVIEWED_OVERRIDE)) throw new Error('Unreviewed runtime override');
+  const hasReviewedOverride = isDeepStrictEqual(metadata.overrides, REVIEWED_OVERRIDE);
+  let overrideApplied = false;
   const roots = edges({dependencies: {...metadata.dependencies, prisma: PRISMA_RUNTIME_VERSION}, optionalDependencies: metadata.optionalDependencies});
-  const selected = new Map(), queue = [{path: '', edges: roots}], graph = [], absentOptional = [];
+  const selected = new Map(), queue = [{path: '', metadata, edges: roots}], graph = [], absentOptional = [];
   for (let i = 0; i < queue.length; i++) {
     const owner = queue[i];
     for (const edge of owner.edges) {
@@ -89,22 +96,31 @@ export async function planRuntimeDependencies(sourceRoot) {
       }
       const locked = lock.packages[found.path];
       if (!locked || locked.link || locked.version !== found.metadata.version || found.metadata.name !== edge.name) throw new Error('Installed/lock identity mismatch: ' + found.path);
-      if (!matchesRange(found.metadata.version, edge.range)) throw new Error('Dependency range mismatch: ' + found.path);
+      let override;
+      if (hasReviewedOverride && owner.path && owner.metadata.name === 'mammoth' && edge.name === 'argparse') {
+        if (owner.metadata.version !== '1.13.0' || edge.range !== '~1.0.3'
+          || edge.kind !== 'dependency' || found.metadata.version !== '2.0.1') throw new Error('Reviewed override identity mismatch: ' + found.path);
+        override = {parent: 'mammoth', parentVersion: owner.metadata.version, version: '2.0.1'};
+        overrideApplied = true;
+      }
+      if (!matchesRange(found.metadata.version, override?.version ?? edge.range)) throw new Error('Dependency range mismatch: ' + found.path);
       for (const field of ['dependencies', 'optionalDependencies', 'peerDependencies', 'peerDependenciesMeta']) {
         if (!isDeepStrictEqual(found.metadata[field] ?? {}, locked[field] ?? {})) throw new Error('Installed dependency graph differs from lock: ' + found.path + ':' + field);
       }
-      graph.push({from: owner.path, ...edge, to: found.path});
+      graph.push({from: owner.path, ...edge, ...(override ? {override} : {}), to: found.path});
       if (!selected.has(found.path)) {
         selected.set(found.path, {...found, integrity: locked.integrity ?? null, resolved: locked.resolved ?? null});
-        queue.push({path: found.path, edges: edges(found.metadata)});
+        queue.push({path: found.path, metadata: found.metadata, edges: edges(found.metadata)});
       }
     }
   }
+  if (hasReviewedOverride && !overrideApplied) throw new Error('Reviewed runtime override was not applied');
   return {formatVersion: 1, sourceRoot: root, packageJsonSha256: digest(manifestBytes), lockSha256: digest(lockBytes),
     roots, packages: [...selected.values()].sort((a,b) => a.path.localeCompare(b.path, 'en')), edges: graph, absentOptional,
     excludedLockPackages: ordered(Object.keys(lock.packages).filter(path => path && !selected.has(path))),
     limitations: ['Exact installed versions and metadata graph, not re-verification of archive contents',
       'Optional packages/peers already installed for this host are retained; absent optional edges are recorded',
+      'Only the exact reviewed Mammoth 1.13.0 direct argparse 2.0.1 override is supported; other npm override semantics fail closed',
       'Generated Prisma client is retained separately and must match the pinned client and project schema']};
 }
 

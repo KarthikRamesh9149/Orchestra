@@ -51,6 +51,66 @@ test('stages exact production graph, nested versions, required Prisma and presen
   await assert.rejects(stageRuntimeDependencies({sourceRoot:f.root,destination:f.destination}),{code:'EEXIST'});
  }finally{await rm(f.temp,{recursive:true,force:true});}
 });
+async function addReviewedMammoth(f) {
+ f.manifest.dependencies.mammoth='^1.13.0';
+ f.manifest.overrides={mammoth:{argparse:'2.0.1'}};
+ for(const [path,metadata] of [
+  ['node_modules/mammoth',{name:'mammoth',version:'1.13.0',dependencies:{argparse:'~1.0.3'}}],
+  ['node_modules/argparse',{name:'argparse',version:'2.0.1',license:'Python-2.0'}],
+ ]) {
+  const {name,...locked}=metadata;f.lock.packages[path]=locked;
+  await f.put(join(f.root,path,'package.json'),JSON.stringify(metadata));
+ }
+ await f.put(join(f.root,'package.json'),JSON.stringify(f.manifest));
+ await f.put(join(f.root,'package-lock.json'),JSON.stringify(f.lock));
+}
+test('stages only the exact reviewed Mammoth security override and records original/effective identity',async()=>{
+ const f=await fixture();try{
+  await addReviewedMammoth(f);
+  const report=await stageRuntimeDependencies({sourceRoot:f.root,destination:f.destination});
+  const edge=report.edges.find(e=>e.from==='node_modules/mammoth'&&e.name==='argparse');
+  assert.equal(edge.range,'~1.0.3');
+  assert.deepEqual(edge.override,{parent:'mammoth',parentVersion:'1.13.0',version:'2.0.1'});
+  assert.equal(report.stagedResolutionVerified,true);
+  assert.equal(JSON.parse(await readFile(join(f.destination,'argparse/package.json'))).version,'2.0.1');
+  assert.deepEqual(report.packages.filter(p=>p.name==='foo').map(p=>p.version).sort(),['1.0.0','2.0.0']);
+ }finally{await rm(f.temp,{recursive:true,force:true});}
+});
+test('unreviewed override shapes or pins fail closed',async()=>{
+ const f=await fixture();try{
+  await addReviewedMammoth(f);
+  for(const overrides of [null,[],{argparse:'2.0.1'},{mammoth:{argparse:'^2.0.1'}},{mammoth:{argparse:'2.0.2'}},{mammoth:{argparse:'$argparse'}},{'mammoth@1':{argparse:'2.0.1'}},{mammoth:{argparse:{'.':'2.0.1'}}},{mammoth:{argparse:'2.0.1',extra:'1.0.0'}},{mammoth:{argparse:'2.0.1'},other:{argparse:'2.0.1'}}]) {
+   await f.put(join(f.root,'package.json'),JSON.stringify({...f.manifest,overrides}));
+   await assert.rejects(planRuntimeDependencies(f.root),/Unreviewed runtime override/);
+  }
+ }finally{await rm(f.temp,{recursive:true,force:true});}
+});
+test('reviewed override cannot change another parent, declared range, parent version or installed identity',async()=>{
+ for(const mutation of ['other-parent','range','parent-version','installed-version','installed-build-version','peer']) {
+  const f=await fixture();try{
+   await addReviewedMammoth(f);
+   const path=mutation==='other-parent'?'node_modules/app':mutation.startsWith('installed-')?'node_modules/argparse':'node_modules/mammoth';
+   const metadata=JSON.parse(await readFile(join(f.root,path,'package.json')));
+   if(mutation==='other-parent')metadata.dependencies.argparse='~1.0.3';
+   if(mutation==='range')metadata.dependencies.argparse='^1.0.0';
+   if(mutation==='parent-version')metadata.version='1.13.1';
+   if(mutation==='installed-version')metadata.version='1.0.10';
+   if(mutation==='installed-build-version')metadata.version='2.0.1+unexpected';
+   if(mutation==='peer'){delete metadata.dependencies;metadata.peerDependencies={argparse:'~1.0.3'};}
+   const {name,...locked}=metadata;f.lock.packages[path]=locked;
+   await f.put(join(f.root,path,'package.json'),JSON.stringify(metadata));
+   await f.put(join(f.root,'package-lock.json'),JSON.stringify(f.lock));
+   await assert.rejects(planRuntimeDependencies(f.root),/range mismatch|override identity mismatch/);
+  }finally{await rm(f.temp,{recursive:true,force:true});}
+ }
+});
+test('an unused reviewed override is not accepted as release provenance',async()=>{
+ const f=await fixture();try{
+  f.manifest.overrides={mammoth:{argparse:'2.0.1'}};
+  await f.put(join(f.root,'package.json'),JSON.stringify(f.manifest));
+  await assert.rejects(planRuntimeDependencies(f.root),/Reviewed runtime override was not applied/);
+ }finally{await rm(f.temp,{recursive:true,force:true});}
+});
 test('missing required peer fails but absent optional dependencies and peers are recorded',async()=>{
  const f=await fixture();try{
   await rm(join(f.root,'node_modules/peer'),{recursive:true});
