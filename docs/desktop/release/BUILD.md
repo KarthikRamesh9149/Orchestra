@@ -82,6 +82,15 @@ the TypeScript/Vitest gates above; `npm test` remains the upstream suite. These
 are local source/fixture checks, not native compilation or packaged runtime
 qualification. No GitHub Actions or paid runner is required.
 
+The owner-authorised `Desktop source checks` GitHub workflow can also be run
+manually on an explicit `main` candidate. It compiles the backend, frontend,
+Electron entrypoints and extension; runs desktop source and packaging tests;
+and reports all four dependency audits, the secret scan and mock guard
+independently. An audit failure remains a failing job. It uses a bounded
+standard Ubuntu runner, read-only repository access and no deployment,
+publication, production secrets or artifact uploads. Linux source checks do
+not replace the Mac package, real-provider or database-runtime gates.
+
 The publication audit intentionally returns nonzero while publication is blocked.
 It reports metadata and pending review, not a security certificate. The full
 upstream test selection has [documented exclusions](../upstream-checks.json).

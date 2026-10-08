@@ -48,6 +48,10 @@ jobs:
         run: |
           npm run typecheck
           npx --no-install tsc -p tsconfig.json
+      - name: Desktop shell typecheck and build
+        run: |
+          npm --prefix apps/desktop run typecheck
+          npm --prefix apps/desktop run build
       - name: Desktop backend tests
         run: npx --no-install vitest run --config vitest.desktop.config.ts
       - name: Packaging regression tests
@@ -58,11 +62,26 @@ jobs:
           npm --prefix apps/beta-web run build
       - name: Extension build
         run: npm --prefix apps/vscode-extension run build
-      - name: Dependency audits and local security checks
-        run: |
-          npm run audit:all
-          npm run security:scan:local
-          npm run beta:web:no-prod-mocks
+      # Independent gates expose every result even if another audit fails.
+      # Failed gates still fail the job; no vulnerabilities are suppressed.
+      - name: Backend dependency audit
+        if: ${{ !cancelled() }}
+        run: npm audit --audit-level=moderate
+      - name: Desktop dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/desktop audit --audit-level=moderate
+      - name: Frontend dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/beta-web audit --audit-level=moderate
+      - name: Extension dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/vscode-extension audit --audit-level=moderate
+      - name: Local secret and source security scan
+        if: ${{ !cancelled() }}
+        run: npm run security:scan:local
+      - name: Production mock guard
+        if: ${{ !cancelled() }}
+        run: npm run beta:web:no-prod-mocks
 
 # This is source-level evidence, not signed Mac/package/provider qualification.
 # No caches or artifacts are uploaded, and no deployment/publication occurs.
