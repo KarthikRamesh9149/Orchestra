@@ -20,10 +20,10 @@ jobs:
       DATABASE_URL: postgresql://fixture:fixture@127.0.0.1:5432/orchestra_unused
       CI: 'true'
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, Node 24
         with:
           persist-credentials: false
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, Node 24
         with:
           node-version: '24.19.0'
       - name: Install locked dependencies
@@ -56,12 +56,28 @@ jobs:
         run: npx --no-install vitest run --config vitest.desktop.config.ts
       - name: Packaging regression tests
         run: npm run test:desktop:packaging
+      - name: Install the locked Chromium test browser
+        working-directory: apps/beta-web
+        run: npx --no-install playwright install --with-deps chromium
       - name: Frontend tests and build
         run: |
           npm --prefix apps/beta-web test
+          npm --prefix apps/beta-web run test:styles
           npm --prefix apps/beta-web run build
       - name: Extension build
         run: npm --prefix apps/vscode-extension run build
+      - name: Fresh isolated database and migrations
+        run: |
+          node scripts/desktop/dev-db.mjs up
+          node scripts/desktop/dev-db.mjs migrate
+          node scripts/desktop/dev-db.mjs provision-runtime
+      - name: Durable database job recovery
+        run: node scripts/desktop/dev-db.mjs test
+      - name: Restricted engine, approvals and backup restoration
+        run: node scripts/desktop/dev-db.mjs test-engine
+      - name: Stop the disposable database
+        if: ${{ always() }}
+        run: node scripts/desktop/dev-db.mjs stop
       # Independent gates expose every result even if another audit fails.
       # Failed gates still fail the job; no vulnerabilities are suppressed.
       - name: Backend dependency audit
@@ -83,5 +99,5 @@ jobs:
         if: ${{ !cancelled() }}
         run: npm run beta:web:no-prod-mocks
 
-# This is source-level evidence, not signed Mac/package/provider qualification.
+# This is source and isolated database evidence, not signed Mac/package/provider qualification.
 # No caches or artifacts are uploaded, and no deployment/publication occurs.

@@ -1,3 +1,5 @@
+import { isDesktop } from "../desktop";
+
 const warmedRoutes = new Map<string, Promise<void>>();
 
 /**
@@ -59,7 +61,7 @@ async function prefetch(route: string, projectId: string, canManage: boolean) {
       api.getIntegrationsList(projectId),
       api.getWorkspace(projectId),
       api.getMembersList(projectId),
-      canManage ? api.listWorkspaceInvites(projectId) : Promise.resolve([]),
+      canManage && !isDesktop() ? api.listWorkspaceInvites(projectId) : Promise.resolve([]),
       api.getProfile(),
       api.getSessions(),
       api.getLinkedAccounts(),

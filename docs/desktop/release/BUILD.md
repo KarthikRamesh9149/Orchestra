@@ -89,7 +89,13 @@ and reports all four dependency audits, the secret scan and mock guard
 independently. An audit failure remains a failing job. It uses a bounded
 standard Ubuntu runner, read-only repository access and no deployment,
 publication, production secrets or artifact uploads. Linux source checks do
-not replace the Mac package, real-provider or database-runtime gates.
+not replace the Mac package or real-provider gates. The workflow also creates
+the hash-pinned disposable development PostgreSQL container, applies the full
+migration history, provisions its restricted runtime role, and exercises the
+durable-job, engine-authorisation, approval, restart and backup/restore tests.
+Generated fixture credentials stay in the runner's private `.desktop` files;
+no customer database is used and no credentials or database artifacts are
+uploaded. The container is stopped even when a preceding check fails.
 
 The publication audit intentionally returns nonzero while publication is blocked.
 It reports metadata and pending review, not a security certificate. The full

@@ -21,6 +21,15 @@ test('source verification explicitly compiles every Electron entrypoint',()=>{
   assert.match(workflow,/npm --prefix apps\/desktop run typecheck/);
   assert.match(workflow,/npm --prefix apps\/desktop run build/);
   assert.match(workflow,/npm run test:desktop:packaging/);
+  assert.match(workflow,/npx --no-install playwright install --with-deps chromium/);
+  assert.match(workflow,/npm --prefix apps\/beta-web run test:styles/);
+});
+
+test('database migration and recovery checks use only the isolated development fixture',()=>{
+  for(const action of ['up','migrate','provision-runtime','test','test-engine','stop'])assert.match(workflow,new RegExp(`node scripts/desktop/dev-db\\.mjs ${action}(?:\\n|$)`));
+  const cleanup=steps.find(step=>step.includes('node scripts/desktop/dev-db.mjs stop'));
+  assert.match(cleanup,/if: \$\{\{ always\(\) \}\}/);
+  assert.doesNotMatch(workflow,/dev-db\.mjs.*(?:reset|down)|docker.*(?:volume rm|system prune)/);
 });
 
 test('all four dependency trees and source security checks run independently without masking failure',()=>{

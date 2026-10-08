@@ -9,10 +9,40 @@ import {Selections} from '../apps/desktop/src/selections.js';
 import {verifyNativeBundle} from '../apps/desktop/src/integrity.js';
 import {createHash} from 'node:crypto';
 import {loadVault} from '../apps/desktop/src/vault.js';
+import {runInNewContext} from 'node:vm';
+import {EventEmitter} from 'node:events';
+import ts from 'typescript';
 const directories:string[]=[];
 async function temporary(){const path=await realpath(await mkdtemp(join(tmpdir(),'orchestra-shell-test-')));directories.push(path);return path;}
 afterEach(async()=>{for(const path of directories.splice(0))await rm(path,{recursive:true,force:true});});
 describe('desktop bridge authority',()=>{
+ for(const alreadyClosed of [false,true])it(`waits for engine shutdown across repeated quits with ${alreadyClosed?'closed':'open'} renderer`,async()=>{
+  const source=await readFile(new URL('../apps/desktop/src/main.ts',import.meta.url),'utf8');
+  const handlers=source.slice(source.indexOf("app.on('before-quit'"),source.indexOf("void app.whenReady()"));
+  const callbacks=new Map<string,(event?:unknown)=>void>();
+  const events:string[]=[];let complete!:()=>void;let closes=0;let quits=0;
+  const stopped=new Promise<void>(resolve=>{complete=resolve;});
+  const renderer=Object.assign(new EventEmitter(),{
+   isDestroyed:()=>alreadyClosed,
+   close:()=>{events.push('renderer normal close');renderer.emit('closed');callbacks.get('window-all-closed')?.();},
+   destroy:()=>{throw new Error('Destroy bypasses draft flush');},
+  });
+  const context={closing:false,shutdownComplete:false,window:renderer,
+   slackAuthorization:undefined,githubAuthorization:undefined,driveAuthorization:undefined,
+   host:{close:()=>{closes++;events.push('engine close');return stopped;}},
+   app:{on:(name:string,callback:(event?:unknown)=>void)=>callbacks.set(name,callback),quit:()=>{quits++;}},
+  };
+  runInNewContext(ts.transpileModule(handlers,{compilerOptions:{target:ts.ScriptTarget.ES2022}}).outputText,context);
+  const before=callbacks.get('before-quit')!;
+  let prevented=0;before({preventDefault:()=>prevented++});
+  await new Promise(resolve=>setImmediate(resolve));
+  expect(events).toEqual(alreadyClosed?['engine close']:['renderer normal close','engine close']);
+  before({preventDefault:()=>prevented++});callbacks.get('window-all-closed')?.();
+  expect(prevented).toBe(2);expect(closes).toBe(1);expect(quits).toBe(0);
+  complete();await new Promise(resolve=>setImmediate(resolve));
+  expect(quits).toBe(1);expect(context.shutdownComplete).toBe(true);
+  before({preventDefault:()=>prevented++});expect(prevented).toBe(2);expect(closes).toBe(1);
+ });
  it('refuses unavailable credential protection before writing secrets',async()=>{
   const root=await temporary();await expect(loadVault(root,{isEncryptionAvailable:()=>false,encryptString:()=>{throw new Error('must not run');},decryptString:()=>{throw new Error('must not run');}})).rejects.toThrow('plaintext fallback is forbidden');
  });

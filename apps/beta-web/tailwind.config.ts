@@ -4,6 +4,9 @@ export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
+      // v4 renames the smallest scales; keep existing component classes stable.
+      borderRadius: { DEFAULT: "0.25rem", sm: "0.125rem", full: "9999px" },
+      boxShadow: { sm: "0 1px 2px 0 rgb(0 0 0 / 0.05)" },
       colors: {
         bg: "var(--bg)",
         bg1: "var(--bg-1)",

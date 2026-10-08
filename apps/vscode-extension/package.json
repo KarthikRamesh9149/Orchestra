@@ -5,6 +5,12 @@
   "version": "0.1.0",
   "private": true,
   "publisher": "orchestra",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KarthikRamesh9149/Orchestra.git",
+    "directory": "apps/vscode-extension"
+  },
   "icon": "media/icon.png",
   "engines": {
     "vscode": "^1.90.0"
@@ -68,7 +74,7 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/vscode": "^1.90.0",
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "4.0.0",
     "typescript": "^5.7.2"
   }
 }

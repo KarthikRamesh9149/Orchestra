@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 725,
+  "unchangedImportedFiles": 719,
   "changes": [
     {
       "path": ".gitattributes",
@@ -11,8 +11,20 @@
     {
       "path": "apps/beta-web/package-lock.json",
       "sourceSha256": "2d65c3585760d08690bca738db400890b485a5d10af1de95bda1d486f140a8cc",
-      "importedSha256": "7f4d1122c11ed363d915d1ccce29f7963b55a13485dc676c5ccc7a888642923b",
-      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived."
+      "importedSha256": "492184d2d01e59614f79214039fe7b54b861d9aa339c156975f24cefc1ae01b4",
+      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived. October 8 CI follow-up: replace the vulnerable legacy compiler graph with the pinned maintained compiler/plugin closure; no audit exclusions or fake version overrides."
+    },
+    {
+      "path": "apps/beta-web/package.json",
+      "sourceSha256": "794c0a3b21298f3cd3d7112d1143b806d49d3225e00bfb5ffde519f821ee3e3a",
+      "importedSha256": "a4c7a682cb0bf2d79aaaccdd2bcdd0adf2a1c464d89f738cb1111053e14e2223",
+      "reason": "October 8 CI security repair: pin maintained Tailwind 4.3.3 and its PostCSS plugin, removing the unpatched braces and vulnerable selector build chains; retain React, UI components, API and theme semantics."
+    },
+    {
+      "path": "apps/beta-web/postcss.config.js",
+      "sourceSha256": "082f9a07aae22ae329bfc652d405ba5a704cba1ee86f4b78c7c70f98d628a610",
+      "importedSha256": "65572d5fde836180cba54e1ac6ff1ec309ef6aa925662e9cd04b32b53c5bee35",
+      "reason": "October 8 CI security repair: use the maintained Tailwind PostCSS plugin and its built-in prefixing rather than vulnerable legacy compiler dependencies; no runtime service changes."
     },
     {
       "path": "apps/beta-web/src/App.tsx",
@@ -75,6 +87,12 @@
       "reason": "Step 6 retains shared authenticated context when remote sign-out is unconfirmed; browser behavior unchanged."
     },
     {
+      "path": "apps/beta-web/src/index.css",
+      "sourceSha256": "b9edf7cf2c75d445d5019b7e3e353b1b4c6cd34b50aa0efbd16bd06f33ea62fd",
+      "importedSha256": "1c950b4f84a844c3aafc15a7c67551beab07e95c56cd7e5bf721701cd4176c15",
+      "reason": "October 8 compiler compatibility: explicitly scope source detection and load the existing theme; retain legacy preflight and used utility semantics, with computed-style/pixel and packaged interaction verification. Existing authored product styles remain unchanged."
+    },
+    {
       "path": "apps/beta-web/src/lib/api/client.test.ts",
       "sourceSha256": "0031cd86344f87dff315c8990611fb72509c78650d470ab118f76fa9ba5134ea",
       "importedSha256": "56d05492abe85136b7c937c6b6ffb9d46d19dc88d523adccd76c9301629fe4a4",
@@ -133,6 +151,12 @@
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
       "importedSha256": "e52d1aff4aa9bbb752dfe29776a3378d1c81b1824d85cd4b2474d9c3361defe8",
       "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+    },
+    {
+      "path": "apps/beta-web/src/lib/performance/prefetch.ts",
+      "sourceSha256": "dab56c0138d8dee235068bae78873676a213678b54d95b9a67baa46e39f34bc7",
+      "importedSha256": "cec8a11382481600f4e825c382b36dbc45e67a9b35937524fa928deb69c26762",
+      "reason": "October 8 packaged regression: preserve Settings warm-up but do not request shared-workspace invitations from a local desktop manager; browser/shared manager access remains unchanged and server authorization stays enforced."
     },
     {
       "path": "apps/beta-web/src/lib/types.ts",
@@ -249,6 +273,12 @@
       "reason": "Step 4 bounded local-desktop draft persistence across app restart; hosted session privacy unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
     },
     {
+      "path": "apps/beta-web/tailwind.config.ts",
+      "sourceSha256": "edfc0b73fea4b3047aac7a1f4e07d1e52aad4843ef7d19b86fa71df835e2dc99",
+      "importedSha256": "8819b610cf0122361d0da66d6043c597e67efce1e145bd0c270d1fbd1f4dc58c",
+      "reason": "October 8 compiler compatibility: retain existing small radius and shadow scales without changing component classes, product colours, spacing or typography."
+    },
+    {
       "path": "apps/beta-web/vite.config.ts",
       "sourceSha256": "c9f2b1d8adb74ccdf5b3279875524ab2f6c1dccf88474c85e96d02aec6964910",
       "importedSha256": "c50a21cd9ca628ada55dc179b710325b33a962c8bd9f1890431cca9f421a347a",
@@ -257,8 +287,14 @@
     {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
-      "importedSha256": "f209a326eade348231ea33f230afc5ba75925c8286ef6bcfcc56e7ce5f5105e3",
-      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed."
+      "importedSha256": "97e013c1ba7ad05627eb5524f30c2d12a69b598ee99018e25a301d69ceab433e",
+      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed. October 8 CI follow-up: maintained VSCE 4.0.0 removes braces rather than suppressing the advisory; exact package contents and secret-scan path verified."
+    },
+    {
+      "path": "apps/vscode-extension/package.json",
+      "sourceSha256": "cc053d35f4e95fab6816aa9fcd6d3dcb31703b8d0520369cea50be0bdf6cbcd6",
+      "importedSha256": "859d23a445b8b329ccb27cabd525bc0d2914581ebd050e74b321fc05534bd339",
+      "reason": "October 8 CI security repair: pin Microsoft VSCE 4.0.0, removing the vulnerable glob/secretlint CLI chain; preserve extension API, commands and minimum editor version. Include the owner-approved Apache licence and exact original icon with actual unsigned VSIX regression coverage; no Marketplace publication."
     },
     {
       "path": "apps/vscode-extension/tsconfig.json",

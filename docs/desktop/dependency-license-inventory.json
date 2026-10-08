@@ -3888,27 +3888,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/@nodelib/fs.scandir",
-      "version": "2.1.5",
-      "license": "MIT",
-      "integrity": "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/@nodelib/fs.stat",
-      "version": "2.0.5",
-      "license": "MIT",
-      "integrity": "sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/@nodelib/fs.walk",
-      "version": "1.2.8",
-      "license": "MIT",
-      "integrity": "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/@open-draft/deferred-promise",
       "version": "3.0.0",
       "license": "MIT",
@@ -4144,6 +4123,111 @@
       "version": "0.3.0",
       "license": "MIT",
       "integrity": "sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/node",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-krXjAikiaFSPaK/FkAQT5UTx3VormQaiZ5hBFlJZ9UFQGB/rwg1MZIhHAG9smMQRTdyJxP6Qt5MwMtdyU5FWrA=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-android-arm64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-Y85A2gmPSkl5Ve5qR86GL4HT509cFqQh1aes9p3sSkyTPwt0Pppf3GkwGe4JPACcRYjgJIEhQgM6dBClnr0NYw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-darwin-arm64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-BiaWatpBcERQFDlOjRDpIVXuFK5PJez5SA4JMg6VYZdBYU+qKfV/vqjcIs+IYmtitf1xYQZTwXvU/8y4lfZUGw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-darwin-x64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-fAeUqfV5ndhxRwai8cXGzdLvul9utWOmeTkv69unv4ZXixjn61Z+p9lCWdwOwA3TYboG3BwdVuN/RDjhBRl0mw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-freebsd-x64",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-iyf5bV6+wnAlflVeEy7R25dupxTNECZN5QMI0qNT6eT+EgaGdZcKhGkr5SdoaWiLJ3spLqIY9VCeSGrwmtg4kw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-linux-arm-gnueabihf",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-aAYUprJAJQWWbRrPvtjdroZ56Md+JM8pMiopS6xGEwDfLhqj+2ver2p4nU4Mb3CRqcMmNBjo8KkUgcxhkzVQGQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-linux-arm64-gnu",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-nDxldcEENOxZRzC2uu9jrutZdAAQtb+8WWDCSnWL1zvBk1+FN+x6MtDViPB5AJMfttVCUhehGWus3XBPgatM/w=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-linux-arm64-musl",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-Md44bD6veX/PC5iyF8cDVnw4HBIANZepRZZ7a8DQOvkfo5WUBwcp6iAuCUz23u+4SUkhJlD3eL7hNdW8ezd/kA=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-linux-x64-gnu",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-tx7us1muwOKAKWao2v/GaafFeQboE6aj88vC6ziN2NCGcRm8gWUhwjzg+YdVB1e4boAtdtma4L43onunI6NS4w=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-linux-x64-musl",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-SJxX60smvHgasZoBy11dX6YRjXJFovwWBoedhbQPOBzgFWBHGB+TVPWB9BxzR7TTxU8FQZAI2AyiNCMzFm8Img=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-wasm32-wasi",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-jx1+rPhY/5Ympkktd656HBWEBLxP7dH06losBLjjf5vgCODXvi9KhtftWcMIwTFIDqBr7cRnQkdLnAG+IOlGvQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-win32-arm64-msvc",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-3rc292Ca2ceK6Ulcc/bAVnTs/3nDtoPhyEKlgPv+yQJQi/JS/AMJlqzxvlDacL1nekbrcf6bTqp/jV4qgnPxNQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/oxide-win32-x64-msvc",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-yJ0pwIVc/nYeGoV02WtsN8KYyLQv7kyI2wDnkezyJlGGjkd4QLwDGAwl47YpPJeuI0M0ObaXGSPjvWDPeTPggw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/@tailwindcss/postcss",
+      "version": "4.3.3",
+      "license": "MIT",
+      "integrity": "sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4476,27 +4560,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/any-promise",
-      "version": "1.3.0",
-      "license": "MIT",
-      "integrity": "sha512-7UvmKalWRt1wgjL1RrGxoSJW/0QZFIegpeGvZG9kjp8vrRu55XTHbwnqq2GpXm9uLbcuhxm3IqX9OB4MZR1b2A=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/anymatch",
-      "version": "3.1.3",
-      "license": "ISC",
-      "integrity": "sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/arg",
-      "version": "5.0.2",
-      "license": "MIT",
-      "integrity": "sha512-PYjyFOLKQ9y57JvQ6QLo8dAgNqswh8M1RMJYdQduT6xbWSgK36P/Z/v+p888pM69jMMfS8Xd8F6I1kQ/I9HUGg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/aria-query",
       "version": "5.3.0",
       "license": "Apache-2.0",
@@ -4508,13 +4571,6 @@
       "version": "2.0.1",
       "license": "MIT",
       "integrity": "sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/autoprefixer",
-      "version": "10.5.0",
-      "license": "MIT",
-      "integrity": "sha512-FMhOoZV4+qR6aTUALKX2rEqGG+oyATvwBt9IIzVR5rMa2HRWPkxf+P+PAJLD1I/H5/II+HuZcBJYEFBpq39ong=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4546,31 +4602,10 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/binary-extensions",
-      "version": "2.3.0",
-      "license": "MIT",
-      "integrity": "sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/braces",
-      "version": "3.0.3",
-      "license": "MIT",
-      "integrity": "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/browserslist",
       "version": "4.28.9",
       "license": "MIT",
       "integrity": "sha512-EWazOblFYUvlGZcfGhPUPmYh3nikUxBVb+y9MJun5f3hBi812X+8MSQTujLBtgK3cf51fJWbWfOjyeO954d+Eg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/camelcase-css",
-      "version": "2.0.1",
-      "license": "MIT",
-      "integrity": "sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4623,20 +4658,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/chokidar",
-      "version": "3.6.0",
-      "license": "MIT",
-      "integrity": "sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/chokidar/node_modules/glob-parent",
-      "version": "5.1.2",
-      "license": "ISC",
-      "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/cli-width",
       "version": "4.1.0",
       "license": "ISC",
@@ -4679,13 +4700,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/commander",
-      "version": "4.1.1",
-      "license": "MIT",
-      "integrity": "sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/convert-source-map",
       "version": "2.0.0",
       "license": "MIT",
@@ -4711,13 +4725,6 @@
       "version": "1.5.1",
       "license": "MIT",
       "integrity": "sha512-YUifsXXuknHlUsmlgyY0PKzgPOr7/FjCePfHNt0jxm83wHZi44VDMQ7/fGNkjY3/jV1MC+1CmZbaHzugyeRtpg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/cssesc",
-      "version": "3.0.0",
-      "license": "MIT",
-      "integrity": "sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4854,24 +4861,17 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/detect-libc",
+      "version": "2.1.2",
+      "license": "Apache-2.0",
+      "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/devlop",
       "version": "1.1.0",
       "license": "MIT",
       "integrity": "sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/didyoumean",
-      "version": "1.2.2",
-      "license": "Apache-2.0",
-      "integrity": "sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/dlv",
-      "version": "1.1.3",
-      "license": "MIT",
-      "integrity": "sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4896,17 +4896,17 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/enhanced-resolve",
+      "version": "5.26.0",
+      "license": "MIT",
+      "integrity": "sha512-9vhedylFonb2YGogzUKX6+Ja72gOJbN1QHAqdrvqLwhdl/QWbKopzoUC9EbQNVsAns/bx/4uyqalrQAoy1IByw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/entities",
       "version": "8.0.0",
       "license": "BSD-2-Clause",
       "integrity": "sha512-zwfzJecQ/Uej6tusMqwAqU/6KL2XaB2VZ2Jg54Je6ahNBGNH6Ek6g3jjNCF0fG9EWQKGZNddNjU5F1ZQn/sBnA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/es-errors",
-      "version": "1.3.0",
-      "license": "MIT",
-      "integrity": "sha512-Zf5H2Kxt2xjTvbJvP2ZWLEICxA6j+hAmMzIlypy4xcBg1vKVnx89Wy0GbS+kf5cwCVFFzdCFh2XSCFNULS6csw=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -4980,20 +4980,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/fast-glob",
-      "version": "3.3.3",
-      "license": "MIT",
-      "integrity": "sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/fast-glob/node_modules/glob-parent",
-      "version": "5.1.2",
-      "license": "ISC",
-      "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/fast-string-truncated-width",
       "version": "3.0.3",
       "license": "MIT",
@@ -5015,27 +5001,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/fastq",
-      "version": "1.20.1",
-      "license": "ISC",
-      "integrity": "sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/fill-range",
-      "version": "7.1.1",
-      "license": "MIT",
-      "integrity": "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/fraction.js",
-      "version": "5.3.4",
-      "license": "MIT",
-      "integrity": "sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/framer-motion",
       "version": "12.38.0",
       "license": "MIT",
@@ -5047,13 +5012,6 @@
       "version": "2.3.3",
       "license": "MIT",
       "integrity": "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/function-bind",
-      "version": "1.1.2",
-      "license": "MIT",
-      "integrity": "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5071,10 +5029,10 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/glob-parent",
-      "version": "6.0.2",
+      "location": "node_modules/graceful-fs",
+      "version": "4.2.11",
       "license": "ISC",
-      "integrity": "sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A=="
+      "integrity": "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5082,13 +5040,6 @@
       "version": "16.14.2",
       "license": "MIT",
       "integrity": "sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/hasown",
-      "version": "2.0.3",
-      "license": "MIT",
-      "integrity": "sha512-ej4AhfhfL2Q2zpMmLo7U1Uv9+PyhIZpgQLGT1F9miIGmiCJIoCgSmczFdrc97mWT4kVY72KA+WnnhJ5pghSvSg=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5176,20 +5127,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/is-binary-path",
-      "version": "2.1.0",
-      "license": "MIT",
-      "integrity": "sha512-ZMERYes6pDydyuGidse7OsHxtbI7WVeUEozgR/g7rd0xUimYNlvZRE/K2MgZTjWy725IfelLeVcEM97mmtRGXw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/is-core-module",
-      "version": "2.16.1",
-      "license": "MIT",
-      "integrity": "sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/is-decimal",
       "version": "2.0.1",
       "license": "MIT",
@@ -5197,24 +5134,10 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/is-extglob",
-      "version": "2.1.1",
-      "license": "MIT",
-      "integrity": "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/is-fullwidth-code-point",
       "version": "3.0.0",
       "license": "MIT",
       "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/is-glob",
-      "version": "4.0.3",
-      "license": "MIT",
-      "integrity": "sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5229,13 +5152,6 @@
       "version": "1.2.0",
       "license": "MIT",
       "integrity": "sha512-Vg4o6/fqPxIjtxgUH5QLJhwZ7gW5diGCVlXpuUfELC62CuxM1iHcRe51f2W1FDy04Ai4KJkagKjx3XaqyfRKXw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/is-number",
-      "version": "7.0.0",
-      "license": "MIT",
-      "integrity": "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5254,9 +5170,9 @@
     {
       "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/jiti",
-      "version": "1.21.7",
+      "version": "2.7.0",
       "license": "MIT",
-      "integrity": "sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A=="
+      "integrity": "sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5295,17 +5211,87 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/lilconfig",
-      "version": "3.1.3",
-      "license": "MIT",
-      "integrity": "sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw=="
+      "location": "node_modules/lightningcss",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-NXYBzinNrblfraPGyrbPoD19C1h9lfI/1mzgWYvXUTe414Gz/X1FD2XBZSZM7rRTrMA8JL3OtAaGifrIKhQ5yQ=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/lines-and-columns",
-      "version": "1.2.4",
-      "license": "MIT",
-      "integrity": "sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg=="
+      "location": "node_modules/lightningcss-android-arm64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-YK7/ClTt4kAK0vo6w3X+Pnm0D2cf2vPHbhOXdoNti1Ga0al1P4TBZhwjATvjNwLEBCnKvjJc2jQgHXH0NEwlAg=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-darwin-arm64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-RzeG9Ju5bag2Bv1/lwlVJvBE3q6TtXskdZLLCyfg5pt+HLz9BqlICO7LZM7VHNTTn/5PRhHFBSjk5lc4cmscPQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-darwin-x64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-U+QsBp2m/s2wqpUYT/6wnlagdZbtZdndSmut/NJqlCcMLTWp5muCrID+K5UJ6jqD2BFshejCYXniPDbNh73V8w=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-freebsd-x64",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-JCTigedEksZk3tHTTthnMdVfGf61Fky8Ji2E4YjUTEQX14xiy/lTzXnu1vwiZe3bYe0q+SpsSH/CTeDXK6WHig=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-linux-arm-gnueabihf",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-x6rnnpRa2GL0zQOkt6rts3YDPzduLpWvwAF6EMhXFVZXD4tPrBkEFqzGowzCsIWsPjqSK+tyNEODUBXeeVHSkw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-linux-arm64-gnu",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-0nnMyoyOLRJXfbMOilaSRcLH3Jw5z9HDNGfT/gwCPgaDjnx0i8w7vBzFLFR1f6CMLKF8gVbebmkUN3fa/kQJpQ=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-linux-arm64-musl",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-UpQkoenr4UJEzgVIYpI80lDFvRmPVg6oqboNHfoH4CQIfNA+HOrZ7Mo7KZP02dC6LjghPQJeBsvXhJod/wnIBg=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-linux-x64-gnu",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-V7Qr52IhZmdKPVr+Vtw8o+WLsQJYCTd8loIfpDaMRWGUZfBOYEJeyJIkqGIDMZPwPx24pUMfwSxxI8phr/MbOA=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-linux-x64-musl",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-bYcLp+Vb0awsiXg/80uCRezCYHNg1/l3mt0gzHnWV9XP1W5sKa5/TCdGWaR/zBM2PeF/HbsQv/j2URNOiVuxWg=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-win32-arm64-msvc",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-8SbC8BR40pS6baCM8sbtYDSwEVQd4JlFTOlaD3gWGHfThTcABnNDBda6eTZeqbofalIJhFx0qKzgHJmcPTnGdw=="
+    },
+    {
+      "lock": "apps/beta-web/package-lock.json",
+      "location": "node_modules/lightningcss-win32-x64-msvc",
+      "version": "1.32.0",
+      "license": "MPL-2.0",
+      "integrity": "sha512-Amq9B/SoZYdDi1kFrojnoqPLxYhQ4Wo5XiL8EVJrVsB8ARoC1PWW6VGtT0WKCemjy8aC+louJnjS7U18x3b06Q=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5467,13 +5453,6 @@
       "version": "2.27.1",
       "license": "CC0-1.0",
       "integrity": "sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/merge2",
-      "version": "1.4.1",
-      "license": "MIT",
-      "integrity": "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5673,13 +5652,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/micromatch",
-      "version": "4.0.8",
-      "license": "MIT",
-      "integrity": "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/min-indent",
       "version": "1.0.1",
       "license": "MIT",
@@ -5722,13 +5694,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/mz",
-      "version": "2.7.0",
-      "license": "MIT",
-      "integrity": "sha512-z81GNO7nnYMEhrGh9LeymoE4+Yr0Wn5McHIZMK5cfQCl+NDX08sCZgUc9/6MHni9IWuFLm1Z3HTCXu2z9fN62Q=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/nanoid",
       "version": "3.3.18",
       "license": "MIT",
@@ -5743,31 +5708,10 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/normalize-path",
-      "version": "3.0.0",
-      "license": "MIT",
-      "integrity": "sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/normalize-wheel",
       "version": "1.0.1",
       "license": "BSD-3-Clause",
       "integrity": "sha512-1OnlAPZ3zgrk8B91HyRj+eVv+kS5u+Z0SCsak6Xil/kmgEia50ga7zfkumayonZrImffAxPU/5WcyGhzetHNPA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/object-assign",
-      "version": "4.1.1",
-      "license": "MIT",
-      "integrity": "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/object-hash",
-      "version": "3.0.0",
-      "license": "MIT",
-      "integrity": "sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5806,13 +5750,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/path-parse",
-      "version": "1.0.7",
-      "license": "MIT",
-      "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/path-to-regexp",
       "version": "6.3.0",
       "license": "MIT",
@@ -5831,27 +5768,6 @@
       "version": "1.1.1",
       "license": "ISC",
       "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/picomatch",
-      "version": "2.3.2",
-      "license": "MIT",
-      "integrity": "sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/pify",
-      "version": "2.3.0",
-      "license": "MIT",
-      "integrity": "sha512-udgsAY+fTnvv7kI7aaxbqwWNb0AHiB0qBO89PZKPkoTmGOgdbrHDKD+0B2X4uTfJ/FT1R09r9gTsjUjNJotuog=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/pirates",
-      "version": "4.0.7",
-      "license": "MIT",
-      "integrity": "sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -5883,48 +5799,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-import",
-      "version": "15.1.0",
-      "license": "MIT",
-      "integrity": "sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-js",
-      "version": "4.1.0",
-      "license": "MIT",
-      "integrity": "sha512-oIAOTqgIo7q2EOwbhb8UalYePMvYoIeRY2YKntdpFQXNosSu3vLrniGgmH9OKs/qAkfoj5oB3le/7mINW1LCfw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-load-config",
-      "version": "6.0.1",
-      "license": "MIT",
-      "integrity": "sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-nested",
-      "version": "6.2.0",
-      "license": "MIT",
-      "integrity": "sha512-HQbt28KulC5AJzG+cZtj9kvKB93CFCdLvog1WFLf1D+xmMvPGlBstkpTEZfK5+AN9hfJocyBFCNiqyS48bpgzQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-selector-parser",
-      "version": "6.1.4",
-      "license": "MIT",
-      "integrity": "sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/postcss-value-parser",
-      "version": "4.2.0",
-      "license": "MIT",
-      "integrity": "sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/pretty-format",
       "version": "27.5.1",
       "license": "MIT",
@@ -5950,13 +5824,6 @@
       "version": "2.3.1",
       "license": "MIT",
       "integrity": "sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/queue-microtask",
-      "version": "1.2.3",
-      "license": "MIT",
-      "integrity": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6027,20 +5894,6 @@
       "version": "7.18.2",
       "license": "MIT",
       "integrity": "sha512-AIKJ/jgGlFb3EbfCXk5Gzshiwt+l3mqbCrNjmEWMMjqQxNJ3svBa6bgzFyCC2Sw3RA0VWF1kg3uQf2OFhxb8hw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/read-cache",
-      "version": "1.0.0",
-      "license": "MIT",
-      "integrity": "sha512-Owdv/Ft7IjOgm/i0xvNDZ1LrRANRfew4b2prF3OWMQLxLfu3bS8FVhCsrSCMK4lR56Y9ya+AThoTpDCTxCmpRA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/readdirp",
-      "version": "3.6.0",
-      "license": "MIT",
-      "integrity": "sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6121,13 +5974,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/resolve",
-      "version": "1.22.12",
-      "license": "MIT",
-      "integrity": "sha512-TyeJ1zif53BPfHootBGwPRYT1RUt6oGWsaQr8UyZW/eAm9bKoijtvruSDEmZHm92CwS9nj7/fWttqPCgzep8CA=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/rettime",
       "version": "0.11.11",
       "license": "MIT",
@@ -6135,24 +5981,10 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/reusify",
-      "version": "1.1.0",
-      "license": "MIT",
-      "integrity": "sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/rollup",
       "version": "4.60.2",
       "license": "MIT",
       "integrity": "sha512-J9qZyW++QK/09NyN/zeO0dG/1GdGfyp9lV8ajHnRVLfo/uFsbji5mHnDgn/qYdUHyCkM2N+8VyspgZclfAh0eQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/run-parallel",
-      "version": "1.2.0",
-      "license": "MIT",
-      "integrity": "sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6282,20 +6114,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/sucrase",
-      "version": "3.35.1",
-      "license": "MIT",
-      "integrity": "sha512-DhuTmvZWux4H1UOnWMB3sk0sbaCVOoQZjv8u1rDoTV0HTdGem9hkAZtl4JZy8P2z4Bg0nT+YMeOFyVr4zcG5Tw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/supports-preserve-symlinks-flag",
-      "version": "1.0.0",
-      "license": "MIT",
-      "integrity": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/symbol-tree",
       "version": "3.2.4",
       "license": "MIT",
@@ -6311,23 +6129,16 @@
     {
       "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/tailwindcss",
-      "version": "3.4.19",
+      "version": "4.3.3",
       "license": "MIT",
-      "integrity": "sha512-3ofp+LL8E+pK/JuPLPggVAIaEuhvIz4qNcf3nA1Xn2o/7fb7s/TYpHhwGDv1ZU3PkBluUVaF8PyCHcm48cKLWQ=="
+      "integrity": "sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/thenify",
-      "version": "3.3.1",
+      "location": "node_modules/tapable",
+      "version": "2.3.3",
       "license": "MIT",
-      "integrity": "sha512-RVZSIV5IG10Hk3enotrhvz0T9em6cyHBLkH/YAZuKqd8hRkKhSfCGIcP2KUY0EPxndzANBmNllzWPwak+bheSw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/thenify-all",
-      "version": "1.6.0",
-      "license": "MIT",
-      "integrity": "sha512-RNxQH/qI8/t3thXJDwcstUO4zeqo64+Uy/+sNVRBx4Xn2OX+OZ9oP+iJnNFqplFra2ZUVeKCSa2oVWi3T4uVmA=="
+      "integrity": "sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6394,13 +6205,6 @@
     },
     {
       "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/to-regex-range",
-      "version": "5.0.1",
-      "license": "MIT",
-      "integrity": "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
       "location": "node_modules/tough-cookie",
       "version": "6.0.2",
       "license": "BSD-3-Clause",
@@ -6426,13 +6230,6 @@
       "version": "2.2.0",
       "license": "MIT",
       "integrity": "sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/ts-interface-checker",
-      "version": "0.1.13",
-      "license": "Apache-2.0",
-      "integrity": "sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6531,13 +6328,6 @@
       "version": "1.6.0",
       "license": "MIT",
       "integrity": "sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w=="
-    },
-    {
-      "lock": "apps/beta-web/package-lock.json",
-      "location": "node_modules/util-deprecate",
-      "version": "1.0.2",
-      "license": "MIT",
-      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
     },
     {
       "lock": "apps/beta-web/package-lock.json",
@@ -6709,143 +6499,185 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@azu/format-text",
-      "version": "1.0.2",
-      "license": "BSD-3-Clause",
-      "integrity": "sha512-Swi4N7Edy1Eqq82GxgEECXSSLyn6GOb5htRFPzBDdUkECGXtlf12ynO5oJSpWKPwCaUssOu7NfhDcCWpIC6Ywg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@azu/style-format",
-      "version": "1.0.1",
-      "license": "WTFPL",
-      "integrity": "sha512-AHcTojlNBdD/3/KxIKlg8sxIWHfOtQszLvOpagLTO+bjC3u7SAszu1lf//u7JJC50aUSH+BVWDD/KvaA6Gfn5g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/abort-controller",
-      "version": "2.1.2",
+      "version": "2.2.0",
       "license": "MIT",
-      "integrity": "sha512-nBrLsEWm4J2u5LpAPjxADTlq3trDgVZZXHNKabeXZtpq3d3AbN/KGO82R87rdDz5/lYB024rtEf10/q0urNgsA=="
+      "integrity": "sha512-fNAjWnA/nZ2jz31kxR/AqRaUT8ewHBw/WuBIosK0moMy1C9e5ValbDfFdIxJzVOOYaYkV/b2F1S4H/aHiqfVQg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/core-auth",
-      "version": "1.10.1",
+      "version": "1.11.0",
       "license": "MIT",
-      "integrity": "sha512-ykRMW8PjVAn+RS6ww5cmK9U2CyH9p4Q88YJwvUslfuMmN98w/2rdGRLPqJYObapBCdzBVeDgYWdJnFPFb7qzpg=="
+      "integrity": "sha512-IUZydyTUkDnYdstOW9pFOOUQlBjAepK5teihDE3x6yxsPJs/hsAaaYpeGxdxrgtOiJbBKSjKW7MDk7AEhb4LRg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/core-client",
-      "version": "1.10.1",
+      "version": "1.11.1",
       "license": "MIT",
-      "integrity": "sha512-Nh5PhEOeY6PrnxNPsEHRr9eimxLwgLlpmguQaHKBinFYA/RU9+kOYVOQqOrTsCL+KSxrLLl1gD8Dk5BFW/7l/w=="
+      "integrity": "sha512-2QygG2F76ZpMP2eMztiJvAiFMu71M9rDeU7vO/QKg5Css7MgM4frUOslFjhVjRhbGaCNPtz/S8M6y46/fFKVuQ=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@azure/core-process",
+      "version": "1.0.0",
+      "license": "MIT",
+      "integrity": "sha512-/shnJ+ooO8WPxDhPEeI/2oRQuubn16gZ6CvlbpWbEswZfzwI9tI/sMAHmF3x1LuQ9yZYXfLW3TjzGMLEC5blKg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/core-rest-pipeline",
-      "version": "1.23.0",
+      "version": "1.25.0",
       "license": "MIT",
-      "integrity": "sha512-Evs1INHo+jUjwHi1T6SG6Ua/LHOQBCLuKEEE6efIpt4ZOoNonaT1kP32GoOcdNDbfqsD2445CPri3MubBy5DEQ=="
+      "integrity": "sha512-bMs8ekJLjX8wPV+9IPBges1SLPyuDtE9g5gLDWOpxzKcoOFQnpLGkbcT1tdw3FaAmDS1gnPmMmJ6y/T5B96kIA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/core-tracing",
-      "version": "1.3.1",
+      "version": "1.4.0",
       "license": "MIT",
-      "integrity": "sha512-9MWKevR7Hz8kNzzPLfX4EAtGM2b8mr50HPDBvio96bURP/9C+HjdH3sBlLSNNrvRAr5/k/svoH457gB5IKpmwQ=="
+      "integrity": "sha512-eGwxD0AtncrxeBM4tG8R55Pc3rdX1hNW2WibJAgYpCVA6E93mvvVH+LcssoVjOBrSKWS55yEIHsk0X8ctHmfOQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/core-util",
-      "version": "1.13.1",
+      "version": "1.14.0",
       "license": "MIT",
-      "integrity": "sha512-XPArKLzsvl0Hf0CaGyKHUyVgF7oDnhKoP85Xv6M4StF/1AhfORhZudHtOyf2s+FcbuQ9dPRAjB8J2KvRRMUK2A=="
+      "integrity": "sha512-9n2pWK61veAuN0V20t9lOuoV4CFMdyAZ1ygZzvBGk/pBBJRib/PjL9PLXa/aI2CcPpyHfqVsxxqLCYl6uZlfDw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/identity",
-      "version": "4.13.1",
+      "version": "4.13.3",
       "license": "MIT",
-      "integrity": "sha512-5C/2WD5Vb1lHnZS16dNQRPMjN6oV/Upba+C9nBIs15PmOi6A3ZGs4Lr2u60zw4S04gi+u3cEXiqTVP7M4Pz3kw=="
+      "integrity": "sha512-zGQPtqvXPgSA8yfV2CkIQ1qirqk0p9AIVpC5uEkdXQYcKl07QHvyaGYRnZOk0AsQUmxNb4wfkcwY5di8Z5xa9A=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/logger",
-      "version": "1.3.0",
+      "version": "1.4.0",
       "license": "MIT",
-      "integrity": "sha512-fCqPIfOcLE+CGqGPd66c8bZpwAji98tZ4JI9i/mlTNTlsIWslCfpg48s/ypyLxZTump5sypjrKn2/kY7q8oAbA=="
+      "integrity": "sha512-rbAE25KUfjU/s3XHUdJgceoCP5dEOpMx85J04kF+QMdta73XkuG9JGHHinch+XIoKpBdqljin+KqURpJriSzLA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/msal-browser",
-      "version": "5.11.0",
+      "version": "5.25.0",
       "license": "MIT",
-      "integrity": "sha512-zkGNYS3TwY8lUpPIafAmsFCYZbgFixY9y/LZB9GUg0IILoHTqpN26j5OrkL1AQThh/YdZsawe4iWXfp85lFVxg=="
+      "integrity": "sha512-7GyXzDUrdLG5zPDCYJbQdJqbl9a2U9SWUSC4lxr7cXjkBq6diTfWcJsi0UjdGWlqy+EevQg9dSC4g3s3BEp19g=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/msal-common",
-      "version": "16.6.2",
+      "version": "16.14.2",
       "license": "MIT",
-      "integrity": "sha512-hQjjsekAjB00cM1EmatWJlzhEoK2Qhz7Rj5gvM6tYf8iL7RM3tkxlpU9fG0+ofkulzg9AEEA6dIEnSmDr5ZqUA=="
+      "integrity": "sha512-HOBR0Gfo39TMrkxNG8k6cfjRkrRjXZc3JQs3ebMWQc9S4cihuknMYra3sgmzbZB752oQBqBN9+WF7c826p2vIQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@azure/msal-node",
-      "version": "5.2.2",
+      "version": "6.0.1",
       "license": "MIT",
-      "integrity": "sha512-toS+2AePxqyzb0YOKttDOOiSl3jrkK9aiqIvpurpis0O34QcIS5gToqrgT39p04Dpxw3YoUU0lxJKTpSFFfA6Q=="
+      "integrity": "sha512-ixSO1Y/kCVRthRs+hSx/5qkwaunX1/RAePhlMN0wIpIQ4WEZ6AREGGnGd1AP0qspHVsAwzWQKGubpjh50JyJIQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@babel/code-frame",
-      "version": "7.29.7",
+      "location": "node_modules/@azure/msal-node/node_modules/@azure/msal-common",
+      "version": "16.14.1",
       "license": "MIT",
-      "integrity": "sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw=="
+      "integrity": "sha512-Or6xhPNyi4zHW25158yxBoyxuCqNSPa5YBVqfF1J5Ks4MJWBo/USXdp05DQIPu1Zli00YZu6t0+h6KvHJealxQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@babel/helper-validator-identifier",
-      "version": "7.29.7",
+      "location": "node_modules/@napi-rs/keyring",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg=="
+      "integrity": "sha512-WrOw/bcXm0f9qHkumlT1QlArXSTWqaY9sunsDpOk+yCCorCKMxvWT/a3xko4EYHVdeZoh00yI2TydXn6eyICDA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@nodelib/fs.scandir",
-      "version": "2.1.5",
+      "location": "node_modules/@napi-rs/keyring-darwin-arm64",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
+      "integrity": "sha512-pl76hJvdYUBn6I24bXiOBMA9nbDapo3I5B+f3OorjDU4dUMSypXeKbOVehJe8fhgTiH24flMyTS3aAIy43xegQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@nodelib/fs.stat",
-      "version": "2.0.5",
+      "location": "node_modules/@napi-rs/keyring-darwin-x64",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-RkhPPp2zrqDAQA/2jNhnztcPAlv64XdhIp7a7454A5ovI7Bukxgt7MX7udwAu3zg1DcpPU0rz3VV1SeaqvY4+A=="
+      "integrity": "sha512-YcJtEV5LA3cvA4z3BurgxH5IhTsW1JfIvcAAcqcecwk06Si9F9NqkxbZVIfDwQ8oRHgaBmT3zZJnLAotCrVahw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@nodelib/fs.walk",
-      "version": "1.2.8",
+      "location": "node_modules/@napi-rs/keyring-freebsd-x64",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg=="
+      "integrity": "sha512-vlLf31TGhfRAaxLDBhg8b89ss0HHD/lyNmL5F3UjSaz5CUXElsJmKYq9fqA/B+cZKUEUcLHHGhF0I/CqcFdaVw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/config-creator",
-      "version": "10.2.2",
+      "location": "node_modules/@napi-rs/keyring-linux-arm-gnueabihf",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-BynOBe7Hn3LJjb3CqCHZjeNB09s/vgf0baBaHVw67w7gHF0d25c3ZsZ5+vv8TgwSchRdUCRrbbcq5i2B1fJ2QQ=="
+      "integrity": "sha512-KiWdMMu/Inz/bHHIAGrnF7r54FZDYXuHO6UFF/rhIrshUsxbMG1Rl9lEymNtqqsVo927G0VYcb02FzWQ3iBQRQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/config-loader",
-      "version": "10.2.2",
+      "location": "node_modules/@napi-rs/keyring-linux-arm64-gnu",
+      "version": "1.3.0",
       "license": "MIT",
-      "integrity": "sha512-ndjjQNgLg4DIcMJp4iaRD6xb9ijWQZVbd9694Ol2IszBIbGPPkwZHzJYKICbTBmh6AH/pLr0CiCaWdGJU7RbpQ=="
+      "integrity": "sha512-eyKGpY40lm9Jvs1aD294XRH4y7+TlJM0YVAryZeXA6TX0mb4gMkxVXwSQv7MCwgah7raeUd0dKUb4BPAYIgcMg=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-linux-arm64-musl",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-iIK6JWHXAJqDrEyLY3TmswwloVyt2vj+04TZnew+uSJ9gnDO8EwRbp3/iw3LpWaXiDO7VomGO6y8I0Id8uBZSw=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-linux-riscv64-gnu",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-/PGqrwn6EwgtK6vccASSXJRfOSP4vN1F4ASsIQ+7MdrK6hNvAJ1FZPrIuD5gGGdxezo3F++To2Wq7DbuGIeuNQ=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-linux-x64-gnu",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-2PDK1WKWTu9lBGq9VvNEkSlQD3O7YwVpmnyN2M3cy4v7NJ/8gDMd9GXv3G+FVXN13uhp4gnnPBS+ScefmEeD2A=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-linux-x64-musl",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-oJ2HkX8YUo46QBkn0pG+HuIKQNqr523q6vBobCn+P95s4C4K6/kLBqHY/1bg5J4ap31DzsznhnFKcfBNBsjCnw=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-win32-arm64-msvc",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-tOd3c/uAaeoE4ycVlmAdSvygz0Zt3zdca6Y7gokBeIbaRDWpjDIUOpU3MvML59XAaqyuKGsVVu0F/DZb1lHPmw=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-win32-ia32-msvc",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-sPSqeAFZMGqP1R++M2JTza7GQJJ/TpCo6JU6Vcd4jnebvOaEDs9b7eipakU1PJdSvhpC2yXMCNRk9gXfrhuwHQ=="
+    },
+    {
+      "lock": "apps/vscode-extension/package-lock.json",
+      "location": "node_modules/@napi-rs/keyring-win32-x64-msvc",
+      "version": "1.3.0",
+      "license": "MIT",
+      "integrity": "sha512-4DnCWXwDc0HRKwyRlG5y0VhKZW2tNRQfKKfyj6IX/KWfDNyq9hn4n+GL1auyDcOO/v8PwnhmYo2+rOOqCkvvOg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -6856,45 +6688,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/formatter",
-      "version": "10.2.2",
-      "license": "MIT",
-      "integrity": "sha512-10f/eKV+8YdGKNQmoDUD1QnYL7TzhI2kzyx95vsJKbEa8akzLAR5ZrWIZ3LbcMmBLzxlSQMMccRmi05yDQ5YDA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/formatter/node_modules/chalk",
-      "version": "5.6.2",
-      "license": "MIT",
-      "integrity": "sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/node",
-      "version": "10.2.2",
-      "license": "MIT",
-      "integrity": "sha512-eZGJQgcg/3WRBwX1bRnss7RmHHK/YlP/l7zOQsrjexYt6l+JJa5YhUmHbuGXS94yW0++3YkEJp0kQGYhiw1DMQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@secretlint/profiler",
       "version": "10.2.2",
       "license": "MIT",
       "integrity": "sha512-qm9rWfkh/o8OvzMIfY8a5bCmgIniSpltbVlUVl983zDG1bUuQNd1/5lUEeWx5o/WJ99bXxS7yNI4/KIXfHexig=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/resolver",
-      "version": "10.2.2",
-      "license": "MIT",
-      "integrity": "sha512-3md0cp12e+Ae5V+crPQYGd6aaO7ahw95s28OlULGyclyyUtf861UoRGS2prnUrKh7MZb23kdDOyGCYb9br5e4w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@secretlint/secretlint-formatter-sarif",
-      "version": "10.2.2",
-      "license": "MIT",
-      "integrity": "sha512-ojiF9TGRKJJw308DnYBucHxkpNovDNu1XvPh7IfUp0A12gzTtxuWDqdpuVezL7/IP8Ua7mp5/VkDMN9OLp1doQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -6926,87 +6723,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@sindresorhus/merge-streams",
-      "version": "2.3.0",
-      "license": "MIT",
-      "integrity": "sha512-LtoMMhxAlorcGhmFYI+LhPgbPZCkgP6ra1YL604EeF6U98pLlQ3iWIGMdWSC+vWmPBWBNgmDBAhnAobLROJmwg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/ast-node-types",
-      "version": "15.8.0",
-      "license": "MIT",
-      "integrity": "sha512-5CiH9COYmovWmExQgs7763DzX6Gy9zjkjJ7JxCC95wyTcjwQn/8poNF6fv3qzRlmx8CRRde8DHr9FcgAAiPzgw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/linter-formatter",
-      "version": "15.8.0",
-      "license": "MIT",
-      "integrity": "sha512-+oU3A235NATv6Lzi4xa4kJ65PuNJlIxesaO4AvDhDWA9FWm7y4XKWaoQCW1esgaQQ6dwnUiFKArQ8TcJ86mC4w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/linter-formatter/node_modules/ansi-regex",
-      "version": "5.0.1",
-      "license": "MIT",
-      "integrity": "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/linter-formatter/node_modules/pluralize",
-      "version": "2.0.0",
-      "license": "MIT",
-      "integrity": "sha512-TqNZzQCD4S42De9IfnnBvILN7HAW7riLqsCyp8lgjXeysyPlX5HhqKAcJHHHb9XskE4/a+7VGC9zzx8Ls0jOAw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/linter-formatter/node_modules/strip-ansi",
-      "version": "6.0.1",
-      "license": "MIT",
-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/module-interop",
-      "version": "15.8.0",
-      "license": "MIT",
-      "integrity": "sha512-rt+OR1WYGoLOY8HkA/aBPrqufF6yUUEsKEAh7XohTsT3lp9IyZFT6zOIbjul9P4FAzsmSPkcrYjVx3Bz/IUfkg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/resolver",
-      "version": "15.8.0",
-      "license": "MIT",
-      "integrity": "sha512-E88tzfX3K8Jykk+38aJ9cy8RquD8ABVOPTO2rFEESq0wcg8x6/ypdAS8ZgR7OKiGqlRF0hkO/m5PbQwVfKM3VA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@textlint/types",
-      "version": "15.8.0",
-      "license": "MIT",
-      "integrity": "sha512-Anhc6y5736YIsvqae0U6k0YmB2M/QVHkEeOv2aydAn/WIkdI69dCOiDbe3/+RagS3qstFTSFWJzNRA2lUjv19w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@types/node",
       "version": "22.19.19",
       "license": "MIT",
       "integrity": "sha512-dyh/xO2Fh5bYrfWaaqGrRQQGkNdmYw6AmaAUvYeUMNTWQtvb796ikLdmTchRmOlOiIJ1TDXfWgVx1QkUlQ6Hew=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@types/normalize-package-data",
-      "version": "2.4.4",
-      "license": "MIT",
-      "integrity": "sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/@types/sarif",
-      "version": "2.1.7",
-      "license": "MIT",
-      "integrity": "sha512-kRz0VEkJqWLf1LLVN4pT1cg1Z9wAuvI6L97V3m2f5B76Tg8d413ddvLBPTEHAZJlnn4XSvu0FkZtViCQGVyrXQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7018,23 +6738,23 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@typespec/ts-http-runtime",
-      "version": "0.3.5",
+      "version": "0.3.9",
       "license": "MIT",
-      "integrity": "sha512-yURCknZhvywvQItHMMmFSo+fq5arCUIyz/CVk7jD89MSai7dkaX8ufjCWp3NttLojoTVbcE72ri+be/TnEbMHw=="
+      "integrity": "sha512-edSdeAqkdxBVzA1yL1LrLCml1YjyCVvPMtMqJpbF+6K609tHe8V6sQUzFQSGcYNhcuhOceZtjvN32+mpIth30A=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@vscode/vsce",
-      "version": "3.9.2",
+      "version": "4.0.0",
       "license": "MIT",
-      "integrity": "sha512-XSxMosEEDO6vLxELAHVkwmhC0qe0ijZni2jB9Rcs8kQsW4lhTDQ/wMzmwFs/buotAWSnpmUp/dRWD2ufG3UYKA=="
+      "integrity": "sha512-NImwuLaenMmb5D5Jer9/lzi/F9ZQUBOp8Azhj/BVYcTFgixv8KehFXqEUDjQlD2tAiw2E6dDGyjTuAB//di60A=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/@vscode/vsce-sign",
-      "version": "2.0.9",
+      "version": "2.1.0",
       "license": "SEE LICENSE IN LICENSE.txt",
-      "integrity": "sha512-8IvaRvtFyzUnGGl3f5+1Cnor3LqaUWvhaUjAYO8Y39OUYlOf3cRd+dowuQYLpZcP3uwSG+mURwjEBOSq4SOJ0g=="
+      "integrity": "sha512-9AQrqazrBgTgRSuwleLVXUrIUphY02/SFCh2TKYoLV/xifJAdblhdmEmw5gUrYSPQ3sRwNs9iyCMD14sATEE6g=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7108,55 +6828,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ajv",
-      "version": "8.20.0",
-      "license": "MIT",
-      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ansi-escapes",
-      "version": "7.3.0",
-      "license": "MIT",
-      "integrity": "sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ansi-regex",
-      "version": "6.3.0",
-      "license": "MIT",
-      "integrity": "sha512-WpDfL7NO6j7tH88IDBNVdUJxDh9nmCteAVW9dsep846XdwF4naCBK+/tGLX3KJgcpgMRXCFlTM2hKGoK9FsdrQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ansi-styles",
-      "version": "4.3.0",
-      "license": "MIT",
-      "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/argparse",
-      "version": "2.0.1",
-      "license": "Python-2.0",
-      "integrity": "sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/astral-regex",
-      "version": "2.0.0",
-      "license": "MIT",
-      "integrity": "sha512-Z7tMw1ytTXt5jqMcOP+OQteU1VuNK9Y02uuJtKQ1Sv69jXQKKg5cibLwGJow8yzZP+eAc18EmLGPal0bp36rvQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/asynckit",
-      "version": "0.4.0",
-      "license": "MIT",
-      "integrity": "sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/azure-devops-node-api",
       "version": "12.5.0",
       "license": "MIT",
@@ -7171,31 +6842,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/base64-js",
-      "version": "1.5.1",
-      "license": "MIT",
-      "integrity": "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/binaryextensions",
       "version": "6.11.0",
       "license": "Artistic-2.0",
       "integrity": "sha512-sXnYK/Ij80TO3lcqZVV2YgfKN5QjUWIRk/XSm2J/4bd/lPko3lvk0O4ZppH6m+6hB2/GTu+ptNwVFe1xh+QLQw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/bl",
-      "version": "4.1.0",
-      "license": "MIT",
-      "integrity": "sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/boolbase",
-      "version": "1.0.0",
-      "license": "ISC",
-      "integrity": "sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7210,20 +6860,6 @@
       "version": "5.0.12",
       "license": "MIT",
       "integrity": "sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/braces",
-      "version": "3.0.3",
-      "license": "MIT",
-      "integrity": "sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/buffer",
-      "version": "5.7.1",
-      "license": "MIT",
-      "integrity": "sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7242,9 +6878,9 @@
     {
       "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/bundle-name",
-      "version": "4.1.0",
+      "version": "4.1.1",
       "license": "MIT",
-      "integrity": "sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q=="
+      "integrity": "sha512-DdH81/zPLVS11EUgWq3tEu/xn+EzljlMYooDNdzWEnFha3R3NBMpMV1UqYIpjYHV/SgpFKMIX1Oh7o06SjM/oA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7262,59 +6898,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/chalk",
-      "version": "4.1.2",
-      "license": "MIT",
-      "integrity": "sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/cheerio",
-      "version": "1.2.0",
-      "license": "MIT",
-      "integrity": "sha512-WDrybc/gKFpTYQutKIK6UvfcuxijIZfMfXaYm8NMsPQxSYvf+13fXUJ4rztGGbJcBQ/GF55gvrZ0Bc0bj/mqvg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/cheerio-select",
-      "version": "2.1.0",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-9v9kG0LvzrlcungtnJtpGNxY+fzECQKhK4EGJX2vByejiMX84MFNQw4UxPJl3bFbTMw+Dfs37XaIkCwTZfLh4g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/chownr",
-      "version": "1.1.4",
-      "license": "ISC",
-      "integrity": "sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/cockatiel",
       "version": "3.2.1",
       "license": "MIT",
       "integrity": "sha512-gfrHV6ZPkquExvMh9IOkKsBzNDk6sDuZ6DdBGUBkvFnTCqCxzpuq48RySgP0AnaqQkw2zynOFj9yly6T1Q2G5Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/color-convert",
-      "version": "2.0.1",
-      "license": "MIT",
-      "integrity": "sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/color-name",
-      "version": "1.1.4",
-      "license": "MIT",
-      "integrity": "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/combined-stream",
-      "version": "1.0.8",
-      "license": "MIT",
-      "integrity": "sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7325,20 +6912,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/css-select",
-      "version": "5.2.2",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-TizTzUddG/xYLA3NXodFM0fSbNizXjOKhqiQQwvhlspadZokn1KDy0NZFS0wuEubIYAV5/c1/lAr0TaaFXEXzw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/css-what",
-      "version": "6.2.2",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-u/O3vwbptzhMs3L1fQE82ZSLHQQfto5gyZzwteVIEyeaY5Fc7R4dapF/BvRoSYFeqfBk4m0V1Vafq5Pjv25wvA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/debug",
       "version": "4.4.3",
       "license": "MIT",
@@ -7346,24 +6919,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/decompress-response",
-      "version": "6.0.0",
-      "license": "MIT",
-      "integrity": "sha512-aW35yZM6Bb/4oJlZncMH2LCoZtJXTRxES17vE3hoRiowU2kWHaJKFkSBDnDR+cm9J+9QhXmREyIfv0pji9ejCQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/deep-extend",
-      "version": "0.6.0",
-      "license": "MIT",
-      "integrity": "sha512-LOHxIOaPYdHlJRtCQfDIVZtfw/ufM8+rVj649RIHzcm/vGwQRXFt6OPqIFWsm2XEMrNIEtWR64sY1LEKD2vAOA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/default-browser",
-      "version": "5.5.0",
+      "version": "5.5.1",
       "license": "MIT",
-      "integrity": "sha512-H9LMLr5zwIbSxrmvikGuI/5KGhZ8E2zH3stkMgM5LpOWDutGM2JZaj460Udnf1a+946zc7YBgrqEWwbk7zHvGw=="
+      "integrity": "sha512-m1pAzaJgZ/gssEqlOhJkPJp8Xly7QyW6xcrkUa2KKcDeDSEMP7X8xipU3snUcfisTQx0w1AGae+9UtJSfVnXGw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7378,48 +6937,6 @@
       "version": "3.0.0",
       "license": "MIT",
       "integrity": "sha512-N+MeXYoqr3pOgn8xfyRPREN7gHakLYjhsHhWGT3fWAiL4IkAt0iDw14QiiEm2bE30c5XX5q0FtAA3CK5f9/BUg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/delayed-stream",
-      "version": "1.0.0",
-      "license": "MIT",
-      "integrity": "sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/detect-libc",
-      "version": "2.1.2",
-      "license": "Apache-2.0",
-      "integrity": "sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/dom-serializer",
-      "version": "2.0.0",
-      "license": "MIT",
-      "integrity": "sha512-wIkAryiqt/nV5EQKqQpo3SToSOV9J0DnbJqwK7Wv/Trc92zIAYZ4FlMu+JPFW1DfGFt81ZTCGgDEabffXeLyJg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/domelementtype",
-      "version": "2.3.0",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-OLETBj6w0OsagBwdXnPdN0cnMfF9opN69co+7ZrbfPGrdpPVNBUj02spi6B1N7wChLQiPn4CSH/zJvXw56gmHw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/domhandler",
-      "version": "5.0.3",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-cgwlv/1iFQiFnU96XXgROh8xTeetsnJiDsTc7TYCLFd9+/WNkIqPTxiM/8pSd8VIrhXGTf1Ny1q1hquVqDJB5w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/domutils",
-      "version": "3.2.2",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7444,38 +6961,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/emoji-regex",
-      "version": "8.0.0",
-      "license": "MIT",
-      "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/encoding-sniffer",
-      "version": "0.2.1",
-      "license": "MIT",
-      "integrity": "sha512-5gvq20T6vfpekVtqrYQsSCFZ1wEg5+wW0/QaZMWkFr6BqD3NfKs0rLCx4rrVlSWJeZb5NBJgVLswK/w2MWU+Gw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/end-of-stream",
-      "version": "1.4.5",
-      "license": "MIT",
-      "integrity": "sha512-ooEGc6HP26xXq/N+GCGOT0JKCLDGrq2bQUZrQ7gyrJiZANJ/8YDTxTpQBXGMn+WbIQXNVpyWymm7KYVICQnyOg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/entities",
-      "version": "4.5.0",
+      "version": "8.1.0",
       "license": "BSD-2-Clause",
-      "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/environment",
-      "version": "1.1.0",
-      "license": "MIT",
-      "integrity": "sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q=="
+      "integrity": "sha512-kxL7msIffSuh9aaFAMD7rxAIuTRMAHMeBtgHW2yUdWw732ZNh4MehkF2gdjvtdmikkaIP9bFDDJOPlsvm7avrA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7500,73 +6989,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/es-set-tostringtag",
-      "version": "2.1.0",
+      "location": "node_modules/fdir",
+      "version": "6.5.0",
       "license": "MIT",
-      "integrity": "sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/expand-template",
-      "version": "2.0.3",
-      "license": "(MIT OR WTFPL)",
-      "integrity": "sha512-XYfuKMvj4O35f/pOXLObndIRvyQ+/+6AhODh+OKWj9S9498pHHn/IMszH+gt0fBCRWMNfk1ZSp5x3AifmnI2vg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fast-deep-equal",
-      "version": "3.1.3",
-      "license": "MIT",
-      "integrity": "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fast-glob",
-      "version": "3.3.3",
-      "license": "MIT",
-      "integrity": "sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fast-uri",
-      "version": "3.1.8",
-      "license": "BSD-3-Clause",
-      "integrity": "sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fastq",
-      "version": "1.20.1",
-      "license": "ISC",
-      "integrity": "sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fill-range",
-      "version": "7.1.1",
-      "license": "MIT",
-      "integrity": "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/form-data",
-      "version": "4.0.6",
-      "license": "MIT",
-      "integrity": "sha512-vKatAh4SlVfgbv+YtmhiRjhEMJsYpsG1Y2rMQtR+SVSbytsSD1YGzDIcrAJmdFec88u/+VoGmxnl+80gL1tRCQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fs-constants",
-      "version": "1.0.0",
-      "license": "MIT",
-      "integrity": "sha512-y6OAwoSIf7FyjMIv94u+b5rdheZEjzR63GTyZJm5qh4Bi+2YgwLCcI/fPFZkL5PSixOt6ZNKm+w+Hfp/Bciwow=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/fs-extra",
-      "version": "11.4.0",
-      "license": "MIT",
-      "integrity": "sha512-EQsFzMUJkCKGr1ePqlYADkIUmHW1s3ZXr5Yqy6wbGrfUCphpl2maM/kyOIRA2HpP3AaFQTZXD4ldjek+nccddA=="
+      "integrity": "sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7591,34 +7017,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/github-from-package",
-      "version": "0.0.0",
-      "license": "MIT",
-      "integrity": "sha512-SyHy3T1v2NUXn29OsWdxmK6RwHD+vkj3v8en8AOBZ1wBQ/hCAQ5bAQTD02kW4W9tUp/3Qh6J8r9EvntiyCmOOw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/glob",
-      "version": "13.0.6",
-      "license": "BlueOak-1.0.0",
-      "integrity": "sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/glob-parent",
-      "version": "5.1.2",
-      "license": "ISC",
-      "integrity": "sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/globby",
-      "version": "14.1.0",
-      "license": "MIT",
-      "integrity": "sha512-0Ia46fDOaT7k4og1PDW4YbodWWr3scS2vAr2lTbsplOt2WkKp0vQbkI9wKis/T5LV/dqPjO3bpS/z6GTJB82LA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/gopd",
       "version": "1.2.0",
       "license": "MIT",
@@ -7633,24 +7031,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/has-flag",
-      "version": "4.0.0",
-      "license": "MIT",
-      "integrity": "sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/has-symbols",
       "version": "1.1.0",
       "license": "MIT",
       "integrity": "sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/has-tostringtag",
-      "version": "1.0.2",
-      "license": "MIT",
-      "integrity": "sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7668,20 +7052,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/htmlparser2",
-      "version": "10.1.0",
-      "license": "MIT",
-      "integrity": "sha512-VTZkM9GWRAtEpveh7MSF6SjjrpNVNNVJfFup7xTY3UpFtm67foy9HDVXneLtFVt4pMz5kZtgNcvCniNFb1hlEQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/htmlparser2/node_modules/entities",
-      "version": "7.0.1",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/http-proxy-agent",
       "version": "7.0.2",
       "license": "MIT",
@@ -7696,48 +7066,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/iconv-lite",
-      "version": "0.6.3",
-      "license": "MIT",
-      "integrity": "sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ieee754",
-      "version": "1.2.1",
-      "license": "BSD-3-Clause",
-      "integrity": "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ignore",
-      "version": "7.0.6",
-      "license": "MIT",
-      "integrity": "sha512-BAg6QkE8W+TuQLrrw0Ugr7HegXduRuuj8/ti2kSOc+jz1dmx8/WNcjr6XGnq5YpDWxFwwaavqD0+jIUOKelTsw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/index-to-position",
-      "version": "1.2.0",
-      "license": "MIT",
-      "integrity": "sha512-Yg7+ztRkqslMAS2iFaU+Oa4KTSidr63OsFGlOrJoW981kIYO3CGCS3wA95P1mUi/IVSJkn0D479KTJpVpvFNuw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/inherits",
-      "version": "2.0.4",
-      "license": "ISC",
-      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/ini",
-      "version": "1.3.8",
-      "license": "ISC",
-      "integrity": "sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/is-docker",
       "version": "3.0.0",
       "license": "MIT",
@@ -7745,38 +7073,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/is-extglob",
-      "version": "2.1.1",
-      "license": "MIT",
-      "integrity": "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/is-fullwidth-code-point",
-      "version": "3.0.0",
-      "license": "MIT",
-      "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/is-glob",
-      "version": "4.0.3",
-      "license": "MIT",
-      "integrity": "sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/is-inside-container",
       "version": "1.0.0",
       "license": "MIT",
       "integrity": "sha512-KIYLCCJghfHZxqjYBE7rEy0OBuTd5xCHS7tHVgvCLkx7StIoaxwNW3hCALgEUjFfeRk+MG/Qxmp/vtETEF3tRA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/is-number",
-      "version": "7.0.0",
-      "license": "MIT",
-      "integrity": "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7794,45 +7094,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/js-tokens",
-      "version": "4.0.0",
-      "license": "MIT",
-      "integrity": "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/js-yaml",
-      "version": "4.3.2",
-      "license": "MIT",
-      "integrity": "sha512-SFNOvSJ+Dgf/9An904Yx+CgSlIPCkIpao4qo51lpee25TIRejdH3rhR4EZMGoNx3/TP3O+wzWuiTFl4sqbltzA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/json-schema-traverse",
-      "version": "1.0.0",
-      "license": "MIT",
-      "integrity": "sha512-NM8/P9n3XjXhIZn1lLhkFaACTOURQXjWhV4BA/RnOv8xvgqtqpAX9IO4mRQxSx1Rlo4tqzeqb0sOlruaOy3dug=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/json5",
-      "version": "2.2.3",
-      "license": "MIT",
-      "integrity": "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/jsonc-parser",
       "version": "3.3.1",
       "license": "MIT",
       "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/jsonfile",
-      "version": "6.2.1",
-      "license": "MIT",
-      "integrity": "sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7854,34 +7119,6 @@
       "version": "4.0.1",
       "license": "MIT",
       "integrity": "sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/keytar",
-      "version": "7.9.0",
-      "license": "MIT",
-      "integrity": "sha512-VPD8mtVtm5JNtA2AErl6Chp06JBfy7diFQ7TQQhdpWOl6MrCRB+eRbvAZUsbGQS9kiMq0coJsy0W0vHpDCkWsQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/leven",
-      "version": "3.1.0",
-      "license": "MIT",
-      "integrity": "sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/linkify-it",
-      "version": "5.0.2",
-      "license": "MIT",
-      "integrity": "sha512-ONTm2jCMAVZjgQa/Fy1kScXsuOoF5NPTsoFBdE1KVIZ2vAh/r9+Bqo+0jINCBYnavTPQZz38QzFTme79ENoN3Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/lodash",
-      "version": "4.18.1",
-      "license": "MIT",
-      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7934,13 +7171,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/lodash.truncate",
-      "version": "4.4.2",
-      "license": "MIT",
-      "integrity": "sha512-jttmRe7bRse52OsWIMDLaXxWqRAmtIUccAQ3garviCqJjafXOfNMO0yMfNpdD6zbGaTU0P5Nz7e7gAT6cKmJRw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/lru-cache",
       "version": "6.0.0",
       "license": "ISC",
@@ -7948,10 +7178,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/markdown-it",
-      "version": "14.3.2",
+      "location": "node_modules/marked",
+      "version": "18.1.0",
       "license": "MIT",
-      "integrity": "sha512-sHHjZ5fJKlgrG4qns2YwVcdNep35h5fERrfkD2YNsb9UFk0UIHarbiTaHKVMlPuWAoiilyK8Fv/jAm11slsY7Q=="
+      "integrity": "sha512-PamYXWWWg2nboG3oX5Ffzpy3EFZROqZJK9hSlMmUnekp7TxPs5DcT95vwd46m73/exfKCRVMtgXoPMI4FEJL6w=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -7962,27 +7192,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/mdurl",
-      "version": "2.1.0",
-      "license": "MIT",
-      "integrity": "sha512-1+HBaOx0zi/dQWht8rNv9MYf9qqpqL/kxI0hXImU6Y547zM6Sni8BQibt7ifgMcYtQg41ao3Ivd6cnSM86inpg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/merge2",
-      "version": "1.4.1",
-      "license": "MIT",
-      "integrity": "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/micromatch",
-      "version": "4.0.8",
-      "license": "MIT",
-      "integrity": "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/mime",
       "version": "1.6.0",
       "license": "MIT",
@@ -7990,52 +7199,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/mime-db",
-      "version": "1.52.0",
-      "license": "MIT",
-      "integrity": "sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/mime-types",
-      "version": "2.1.35",
-      "license": "MIT",
-      "integrity": "sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/mimic-response",
-      "version": "3.1.0",
-      "license": "MIT",
-      "integrity": "sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/minimatch",
       "version": "10.2.6",
       "license": "BlueOak-1.0.0",
       "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/minimist",
-      "version": "1.2.8",
-      "license": "MIT",
-      "integrity": "sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/minipass",
-      "version": "7.1.3",
-      "license": "BlueOak-1.0.0",
-      "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/mkdirp-classic",
-      "version": "0.5.3",
-      "license": "MIT",
-      "integrity": "sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8053,73 +7220,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/napi-build-utils",
-      "version": "2.0.0",
-      "license": "MIT",
-      "integrity": "sha512-GEbrYkbfF7MoNaoh2iGG84Mnf/WZfB0GdGEsM8wz7Expx/LlWf5U8t9nvJKXSp3qr5IsEbK04cBGhol/KwOsWA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/node-abi",
-      "version": "3.92.0",
-      "license": "MIT",
-      "integrity": "sha512-KdHvFWZjEKDf0cakgFjebl371GPsISX2oZHcuyKqM7DtogIsHrqKeLTo8wBHxaXRAQlY2PsPlZmfo+9ZCxEREQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/node-addon-api",
-      "version": "4.3.0",
-      "license": "MIT",
-      "integrity": "sha512-73sE9+3UaLYYFmDsFZnqCInzPyh3MqIwZO9cw58yIqAZhONrrabrYyYe3TuIqtIiOuTXVhsGau8hcrhhwSsDIQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/node-sarif-builder",
-      "version": "3.4.0",
-      "license": "MIT",
-      "integrity": "sha512-tGnJW6OKRii9u/b2WiUViTJS+h7Apxx17qsMUjsUeNDiMMX5ZFf8F8Fcz7PAQ6omvOxHZtvDTmOYKJQwmfpjeg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/normalize-package-data",
-      "version": "6.0.2",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-V6gygoYb/5EmNI+MEGrWkC+e6+Rr7mTmfHrxDbLzxQogBkgzo76rkok0Am6thgSF7Mv2nLOajAJj5vDJZEFn7g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/normalize-package-data/node_modules/hosted-git-info",
-      "version": "7.0.2",
-      "license": "ISC",
-      "integrity": "sha512-puUZAUKT5m8Zzvs72XWy3HtvVbTWljRE66cP60bxJzAqf2DgICo7lYTY2IHUmLnNpjYvw5bvmoHvPc0QO2a62w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/normalize-package-data/node_modules/lru-cache",
-      "version": "10.4.3",
-      "license": "ISC",
-      "integrity": "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/nth-check",
-      "version": "2.1.1",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/object-inspect",
       "version": "1.13.4",
       "license": "MIT",
       "integrity": "sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/once",
-      "version": "1.4.0",
-      "license": "ISC",
-      "integrity": "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8130,80 +7234,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/p-map",
-      "version": "7.0.6",
-      "license": "MIT",
-      "integrity": "sha512-I4Prw6ivkd6p8PiYR1tXASOAOBzIJwu0TB7fqaX0c/8c3QAehNYmX57EijyGGGBt3c/BIowGwV03RVBtXvHEVg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse-json",
-      "version": "8.3.0",
-      "license": "MIT",
-      "integrity": "sha512-ybiGyvspI+fAoRQbIPRddCcSTV9/LsJbf0e/S85VLowVGzRmokfneg2kwVW/KU5rOXrPSbF1qAKPMgNTqqROQQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse-semver",
-      "version": "1.1.1",
-      "license": "MIT",
-      "integrity": "sha512-Eg1OuNntBMH0ojvEKSrvDSnwLmvVuUOSdylH/pSCPNMIspLlweJyIWXCE+k/5hm3cj/EBUYwmWkjhBALNP4LXQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse-semver/node_modules/semver",
-      "version": "5.7.2",
-      "license": "ISC",
-      "integrity": "sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/parse5",
-      "version": "7.3.0",
+      "version": "8.0.1",
       "license": "MIT",
-      "integrity": "sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse5-htmlparser2-tree-adapter",
-      "version": "7.1.0",
-      "license": "MIT",
-      "integrity": "sha512-ruw5xyKs6lrpo9x9rCZqZZnIUntICjQAd0Wsmp396Ul9lN/h+ifgVV1x1gZHi8euej6wTfpqX8j+BFQxF0NS/g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse5-parser-stream",
-      "version": "7.1.2",
-      "license": "MIT",
-      "integrity": "sha512-JyeQc9iwFLn5TbvvqACIF/VXG6abODeB3Fwmv/TGdLk2LfbWkaySGY72at4+Ty7EkPZj854u4CrICqNk2qIbow=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/parse5/node_modules/entities",
-      "version": "6.0.1",
-      "license": "BSD-2-Clause",
-      "integrity": "sha512-aN97NXWF6AWBTahfVOIrB/NShkzi5H7F9r1s9mD3cDj4Ko5f2qhhVoYMibXF7GlLveb/D2ioWay8lxI97Ven3g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/path-scurry",
-      "version": "2.0.2",
-      "license": "BlueOak-1.0.0",
-      "integrity": "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/path-scurry/node_modules/lru-cache",
-      "version": "11.5.2",
-      "license": "BlueOak-1.0.0",
-      "integrity": "sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/path-type",
-      "version": "6.0.0",
-      "license": "MIT",
-      "integrity": "sha512-Vj7sf++t5pBD637NSfkxpHSMfWaeig5+DKWLhcqIYx6mWQz5hdJTGDVMQiJcw1ZYkhs7AazKDGpRVji1LJCZUQ=="
+      "integrity": "sha512-z1e/HMG90obSGeidlli3hj7cbocou0/wa5HacvI3ASx34PecNjNQeaHNo5WIZpWofN9kgkqV1q5YvXe3F0FoPw=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8214,45 +7248,17 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/picocolors",
-      "version": "1.1.1",
-      "license": "ISC",
-      "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/picomatch",
-      "version": "2.3.2",
+      "version": "4.0.7",
       "license": "MIT",
-      "integrity": "sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA=="
+      "integrity": "sha512-qcJu88Q2IWqJsDD529JKMdwGm/dvInW4HvQnRwiH9JtihJvzGOscDtHE3x1pBKeUOTysQ8kVmLnJ2kJu7yhcGA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/pluralize",
-      "version": "8.0.0",
+      "location": "node_modules/proper-lockfile",
+      "version": "4.1.2",
       "license": "MIT",
-      "integrity": "sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/prebuild-install",
-      "version": "7.1.3",
-      "license": "MIT",
-      "integrity": "sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/pump",
-      "version": "3.0.4",
-      "license": "MIT",
-      "integrity": "sha512-VS7sjc6KR7e1ukRFhQSY5LM2uBWAUPiOPa/A3mkKmiMwSmRFUITt0xuj+/lesgnCv+dPIEYlkzrcyXgquIHMcA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/punycode.js",
-      "version": "2.3.1",
-      "license": "MIT",
-      "integrity": "sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA=="
+      "integrity": "sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8263,27 +7269,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/queue-microtask",
-      "version": "1.2.3",
-      "license": "MIT",
-      "integrity": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/rc",
-      "version": "1.2.8",
-      "license": "(BSD-2-Clause OR MIT OR Apache-2.0)",
-      "integrity": "sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/rc-config-loader",
-      "version": "4.1.4",
-      "license": "MIT",
-      "integrity": "sha512-3GiwEzklkbXTDp52UR5nT8iXgYAx1V9ZG/kDZT7p60u2GCv2XTwQq4NzinMoMpNtXhmt3WkhYXcj6HH8HdwCEQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/read",
       "version": "1.0.7",
       "license": "ISC",
@@ -8291,38 +7276,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/read-pkg",
-      "version": "9.0.1",
+      "location": "node_modules/retry",
+      "version": "0.12.0",
       "license": "MIT",
-      "integrity": "sha512-9viLL4/n1BJUCT1NXVTdS1jtm80yDEgR5T4yCelII49Mbj0v1rZdKqj7zCiYdbB0CuCgdrvHcNogAKTFPBocFA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/read-pkg/node_modules/unicorn-magic",
-      "version": "0.1.0",
-      "license": "MIT",
-      "integrity": "sha512-lRfVq8fE8gz6QMBuDM6a+LO3IAzTi05H6gCVaUpir2E1Rwpo4ZUog45KpNXKC/Mn3Yb9UDuHumeFTo9iV/D9FQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/readable-stream",
-      "version": "3.6.2",
-      "license": "MIT",
-      "integrity": "sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/require-from-string",
-      "version": "2.0.2",
-      "license": "MIT",
-      "integrity": "sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/reusify",
-      "version": "1.1.0",
-      "license": "MIT",
-      "integrity": "sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw=="
+      "integrity": "sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8333,24 +7290,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/run-parallel",
-      "version": "1.2.0",
-      "license": "MIT",
-      "integrity": "sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/safe-buffer",
       "version": "5.2.1",
       "license": "MIT",
       "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/safer-buffer",
-      "version": "2.1.2",
-      "license": "MIT",
-      "integrity": "sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8361,17 +7304,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/secretlint",
-      "version": "10.2.2",
-      "license": "MIT",
-      "integrity": "sha512-xVpkeHV/aoWe4vP4TansF622nBEImzCY73y/0042DuJ29iKIaqgoJ8fGxre3rVSHHbxar4FdJobmTnLp9AU0eg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/semver",
-      "version": "7.8.1",
+      "version": "7.8.5",
       "license": "ISC",
-      "integrity": "sha512-rkVq3IXh+4FDGch+KwzX3aV9W3kO54GyEgpvBzSyctDA6Xtd7RJQV1xmXbeQp5v7+VzLOfVqiutSE6GICgPFvg=="
+      "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8403,101 +7339,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/simple-concat",
-      "version": "1.0.1",
-      "license": "MIT",
-      "integrity": "sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/simple-get",
-      "version": "4.0.1",
-      "license": "MIT",
-      "integrity": "sha512-brv7p5WgH0jmQJr1ZDDfKDOSeWWg+OVypG99A/5vYGPqJ6pxiaHLy8nxtFjBA7oMa01ebA9gfh1uMCFqOuXxvA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/slash",
-      "version": "5.1.0",
-      "license": "MIT",
-      "integrity": "sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/slice-ansi",
-      "version": "4.0.0",
-      "license": "MIT",
-      "integrity": "sha512-qMCMfhY040cVHT43K9BFygqYbUPFZKHOg7K73mtTWJRb8pyP3fzf4Ixd5SzdEJQ6MRUg/WBnOLxghZtKKurENQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/spdx-correct",
-      "version": "3.2.0",
-      "license": "Apache-2.0",
-      "integrity": "sha512-kN9dJbvnySHULIluDHy32WHRUu3Og7B9sbY7tsFLctQkIqnMh3hErYgdMjTYuqmcXX+lK5T1lnUt3G7zNswmZA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/spdx-exceptions",
-      "version": "2.5.0",
-      "license": "CC-BY-3.0",
-      "integrity": "sha512-PiU42r+xO4UbUS1buo3LPJkjlO7430Xn5SVAhdpzzsPHsjbYVflnnFdATgabnLude+Cqu25p6N+g2lw/PFsa4w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/spdx-expression-parse",
-      "version": "3.0.1",
-      "license": "MIT",
-      "integrity": "sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/spdx-license-ids",
-      "version": "3.0.23",
-      "license": "CC0-1.0",
-      "integrity": "sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/string_decoder",
-      "version": "1.3.0",
-      "license": "MIT",
-      "integrity": "sha512-hkRX8U1WjJFd8LsDJ2yQ/wWWxaopEsABU1XfkM8A+j0+85JAGppt16cr1Whg6KIbb4okU6Mql6BOj+uup/wKeA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/string-width",
-      "version": "4.2.3",
-      "license": "MIT",
-      "integrity": "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/string-width/node_modules/ansi-regex",
-      "version": "5.0.1",
-      "license": "MIT",
-      "integrity": "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/string-width/node_modules/strip-ansi",
-      "version": "6.0.1",
-      "license": "MIT",
-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/strip-ansi",
-      "version": "7.2.0",
-      "license": "MIT",
-      "integrity": "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/strip-json-comments",
-      "version": "2.0.1",
-      "license": "MIT",
-      "integrity": "sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ=="
+      "location": "node_modules/signal-exit",
+      "version": "3.0.7",
+      "license": "ISC",
+      "integrity": "sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8508,69 +7353,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/supports-color",
-      "version": "7.2.0",
-      "license": "MIT",
-      "integrity": "sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/supports-hyperlinks",
-      "version": "3.2.0",
-      "license": "MIT",
-      "integrity": "sha512-zFObLMyZeEwzAoKCyu1B91U79K2t7ApXuQfo8OuxwXLDgcKxuwM+YvcbIhm6QWqz7mHUH1TVytR1PwVVjEuMig=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/table",
-      "version": "6.9.0",
-      "license": "BSD-3-Clause",
-      "integrity": "sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/table/node_modules/ansi-regex",
-      "version": "5.0.1",
-      "license": "MIT",
-      "integrity": "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/table/node_modules/strip-ansi",
-      "version": "6.0.1",
-      "license": "MIT",
-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/tar-fs",
-      "version": "2.1.4",
-      "license": "MIT",
-      "integrity": "sha512-mDAjwmZdh7LTT6pNleZ05Yt65HC3E+NiQzl672vQG38jIrehtJk/J3mNwIg+vShQPcLF/LV7CMnDW6vjj6sfYQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/tar-stream",
-      "version": "2.2.0",
-      "license": "MIT",
-      "integrity": "sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/terminal-link",
-      "version": "4.0.0",
-      "license": "MIT",
-      "integrity": "sha512-lk+vH+MccxNqgVqSnkMVKx4VLJfnLjDBGzH16JVZjKE2DoxP57s6/vt6JmXV5I3jBcfGrxNrYtC+mPtU7WJztA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/text-table",
-      "version": "0.2.0",
-      "license": "MIT",
-      "integrity": "sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/textextensions",
       "version": "6.11.0",
       "license": "Artistic-2.0",
@@ -8578,17 +7360,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/tmp",
-      "version": "0.2.7",
+      "location": "node_modules/tinyglobby",
+      "version": "0.2.17",
       "license": "MIT",
-      "integrity": "sha512-e0votIpp4Uo2AJYSzVHV6xCcawuiez3DzqDAbrTc3YxBkplN6e+dM13ZeIcZnDg/QpSuU2zfZ3rzwY8ukEnaXw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/to-regex-range",
-      "version": "5.0.1",
-      "license": "MIT",
-      "integrity": "sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ=="
+      "integrity": "sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8606,20 +7381,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/tunnel-agent",
-      "version": "0.6.0",
-      "license": "Apache-2.0",
-      "integrity": "sha512-McnNiV1l8RYeY8tBgEpuodCC1mLUdbSN+CYBL7kJsJNInOP8UjDDEwdk6Mw60vdLLrr5NHKZhMAOSrR2NZuQ+w=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/type-fest",
-      "version": "4.41.0",
-      "license": "(MIT OR CC0-1.0)",
-      "integrity": "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/typed-rest-client",
       "version": "1.8.11",
       "license": "MIT",
@@ -8634,24 +7395,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/uc.micro",
-      "version": "2.1.0",
-      "license": "MIT",
-      "integrity": "sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/underscore",
       "version": "1.13.8",
       "license": "MIT",
       "integrity": "sha512-DXtD3ZtEQzc7M8m4cXotyHR+FAS18C64asBYY5vqZexfYryNNnDc02W4hKg3rdQuqOYas1jkseX0+nZXjTXnvQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/undici",
-      "version": "7.30.0",
-      "license": "MIT",
-      "integrity": "sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
@@ -8662,20 +7409,6 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/unicorn-magic",
-      "version": "0.3.0",
-      "license": "MIT",
-      "integrity": "sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/universalify",
-      "version": "2.0.1",
-      "license": "MIT",
-      "integrity": "sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/url-join",
       "version": "4.0.1",
       "license": "MIT",
@@ -8683,45 +7416,10 @@
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/util-deprecate",
-      "version": "1.0.2",
-      "license": "MIT",
-      "integrity": "sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/validate-npm-package-license",
-      "version": "3.0.4",
-      "license": "Apache-2.0",
-      "integrity": "sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
       "location": "node_modules/version-range",
       "version": "4.15.0",
       "license": "Artistic-2.0",
       "integrity": "sha512-Ck0EJbAGxHwprkzFO966t4/5QkRuzh+/I1RxhLgUKKwEn+Cd8NwM60mE3AqBZg5gYODoXW0EFsQvbZjRlvdqbg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/whatwg-encoding",
-      "version": "3.1.1",
-      "license": "MIT",
-      "integrity": "sha512-6qN4hJdMwfYBtE3YBTTHhoeuUrDBPZmbQaxWAqSALV/MeEnR5z1xd8UKud2RAkFoPkmB+hli1TZSnyi84xz1vQ=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/whatwg-mimetype",
-      "version": "4.0.0",
-      "license": "MIT",
-      "integrity": "sha512-QaKxh0eNIi2mE9p2vEdzfagOKHCcj1pJ56EEHGQOVxp8r9/iszLUUV7v89x9O1p/T+NlTM5W7jW6+cz4Fq1YVg=="
-    },
-    {
-      "lock": "apps/vscode-extension/package-lock.json",
-      "location": "node_modules/wrappy",
-      "version": "1.0.2",
-      "license": "ISC",
-      "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ=="
     },
     {
       "lock": "apps/vscode-extension/package-lock.json",

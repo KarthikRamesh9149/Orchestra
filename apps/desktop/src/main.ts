@@ -40,6 +40,7 @@ protocol.registerSchemesAsPrivileged([{scheme:'orchestra',privileges:{standard:t
 const single=app.requestSingleInstanceLock();
 let window:BrowserWindow|undefined;
 let closing=false;
+let shutdownComplete=false;
 let slackAuthorization:AbortController|undefined;
 let githubAuthorization:AbortController|undefined;
 let driveAuthorization:AbortController|undefined;
@@ -49,8 +50,17 @@ if(!single)app.quit();
 else {
  app.on('open-url',(event,url)=>{event.preventDefault();if(slackNativeCallback.accept(url)){window?.show();window?.focus();}});
  app.on('second-instance',()=>{window?.show();window?.focus();});
- app.on('before-quit',event=>{if(!closing){event.preventDefault();closing=true;slackAuthorization?.abort();githubAuthorization?.abort();driveAuthorization?.abort();void host.close().finally(()=>app.quit());}});
- app.on('window-all-closed',()=>app.quit());
+ app.on('before-quit',event=>{
+  if(shutdownComplete)return;
+  event.preventDefault();if(closing)return;closing=true;
+  slackAuthorization?.abort();githubAuthorization?.abort();driveAuthorization?.abort();
+  void (async()=>{
+   // Normal close lets the renderer flush pending drafts before its engine stops.
+   if(window&&!window.isDestroyed())await new Promise<void>(resolve=>{window!.once('closed',()=>resolve());window!.close();});
+   await host.close();
+  })().finally(()=>{shutdownComplete=true;app.quit();});
+ });
+ app.on('window-all-closed',()=>{if(!closing)app.quit();});
  void app.whenReady().then(async()=>{
   const resources=app.isPackaged?join(process.resourcesPath,'runtime'):join(app.getAppPath(),'../../.desktop/runtime');
   await protocol.handle('orchestra',request=>new URL(request.url).pathname.startsWith('/v1/')?localHttp(request,host):assetResponse(join(resources,'ui'),request.url,request.method));
