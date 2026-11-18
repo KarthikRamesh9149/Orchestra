@@ -1,19 +1,26 @@
 name: Desktop source checks
 
-# Deliberate manual runs only. The owner authorized included Actions minutes
-# with the existing account-wide $0/stop-usage budget; no paid runners or storage.
+# Standard public-repository runners only. If visibility changes to private,
+# the job guards prevent spending the account's included or paid minutes.
 on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '23 2 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: desktop-source-checks-${{ github.ref }}
+  group: desktop-source-checks-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   source:
+    if: ${{ toJSON(github.event.repository.private) == 'false' && github.event_name != 'schedule' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
@@ -78,26 +85,38 @@ jobs:
       - name: Stop the disposable database
         if: ${{ always() }}
         run: node scripts/desktop/dev-db.mjs stop
-      # Independent gates expose every result even if another audit fails.
-      # Failed gates still fail the job; no vulnerabilities are suppressed.
-      - name: Backend dependency audit
-        if: ${{ !cancelled() }}
-        run: npm audit --include=dev --audit-level=info
-      - name: Desktop dependency audit
-        if: ${{ !cancelled() }}
-        run: npm --prefix apps/desktop audit --include=dev --audit-level=info
-      - name: Frontend dependency audit
-        if: ${{ !cancelled() }}
-        run: npm --prefix apps/beta-web audit --include=dev --audit-level=info
-      - name: Extension dependency audit
-        if: ${{ !cancelled() }}
-        run: npm --prefix apps/vscode-extension audit --include=dev --audit-level=info
       - name: Local secret and source security scan
         if: ${{ !cancelled() }}
         run: npm run security:scan:local
       - name: Production mock guard
         if: ${{ !cancelled() }}
         run: npm run beta:web:no-prod-mocks
+
+  dependency-audit:
+    if: ${{ toJSON(github.event.repository.private) == 'false' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6, Node 24
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, Node 24
+        with:
+          node-version: '24.19.0'
+      # No install or lifecycle scripts. Audit each locked tree even if
+      # another tree fails, without suppressing any severity or exit code.
+      - name: Backend dependency audit
+        if: ${{ !cancelled() }}
+        run: npm audit --package-lock-only --include=dev --audit-level=info
+      - name: Desktop dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/desktop audit --package-lock-only --include=dev --audit-level=info
+      - name: Frontend dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/beta-web audit --package-lock-only --include=dev --audit-level=info
+      - name: Extension dependency audit
+        if: ${{ !cancelled() }}
+        run: npm --prefix apps/vscode-extension audit --package-lock-only --include=dev --audit-level=info
 
 # This is source and isolated database evidence, not signed Mac/package/provider qualification.
 # No caches or artifacts are uploaded, and no deployment/publication occurs.

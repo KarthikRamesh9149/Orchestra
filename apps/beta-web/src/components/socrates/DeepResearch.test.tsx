@@ -117,6 +117,14 @@ describe("[FIX-22] Deep Research truthful UI", () => {
     expect(mocks.getResearchSourcePreview).toHaveBeenCalledWith("project-1", runId, "E2");
     expect(screen.getByLabelText("Current route")).toHaveTextContent("/chat");
   });
+  it("labels the combined engineering count as GitHub records in an existing report", async () => {
+    mocks.getDeepResearchRun.mockResolvedValue({
+      ...completedRun, results: { ...completedRun.results, stats: { ...completedRun.results.stats, commits: 2 } },
+    });
+    await showResults();
+    expect(screen.getByText(/2 GitHub records/)).toBeVisible();
+    expect(screen.queryByText(/2 commits/)).not.toBeInTheDocument();
+  });
   it('lets the native backend validate configured AI instead of blocking every desktop request', async () => {
     vi.stubGlobal('orchestra', {});
     const user = userEvent.setup(); renderModal();

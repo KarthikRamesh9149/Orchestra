@@ -182,6 +182,7 @@ export const deepResearchLlmSchema = z.preprocess(normalizeReport, deepResearchR
 export const deepResearchStatsSchema = z.object({
   totalSources: z.number().int().nonnegative(),
   slackMessages: z.number().int().nonnegative(),
+  // Stored v1 field name; includes all unique GitHub records, not just commits.
   commits: z.number().int().nonnegative(),
   docs: z.number().int().nonnegative(),
   webSources: z.number().int().nonnegative(),

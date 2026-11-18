@@ -27,7 +27,7 @@ import {
   type SocratesScope,
   type SocratesSessionSummary,
 } from "../lib/api/socrates";
-import { resolveOpenTarget, targetForCitation } from "../lib/socratesPresentation";
+import { resolveOpenTarget, safeMarkdownUrl, targetForCitation, type ResolvedOpenTarget } from "../lib/socratesPresentation";
 import { saveSocratesFeedback, type SocratesFeedbackReason } from "../lib/api/feedback";
 import { DeepResearchButton, DeepResearchMinimizedPill, DeepResearchModal } from "../components/socrates/DeepResearch";
 import {
@@ -77,15 +77,14 @@ useChatStore.subscribe((state, previous) => {
 });
 
 const FAILED_ANSWER = "Socrates could not complete this answer. Try asking again.";
-const PROVIDER_SOURCE_KEYS = new Set(["slack", "microsoft_teams", "clickup", "granola", "fireflies_ai", "zoho_mail", "zoho_cliq", "zoho_crm"]);
 const SocratesMarkdown = lazy(() => import("../components/ui/SocratesMarkdown").then((module) => ({ default: module.SocratesMarkdown })));
 
-function AnswerMarkdown({ content, streaming = false, citations, openTargets }: {
-  content: string; streaming?: boolean; citations?: Citation[]; openTargets?: OpenTarget[];
+function AnswerMarkdown({ content, streaming = false, citations, openTargets, primarySource }: {
+  content: string; streaming?: boolean; citations?: Citation[]; openTargets?: OpenTarget[]; primarySource?: ResolvedOpenTarget;
 }) {
   return (
     <Suspense fallback={<p className="whitespace-pre-wrap font-sans text-[14px] leading-relaxed text-[var(--text-default)]">{content}</p>}>
-      <SocratesMarkdown content={content} streaming={streaming} citations={citations} openTargets={openTargets} />
+      <SocratesMarkdown content={content} streaming={streaming} citations={citations} openTargets={openTargets} primarySource={primarySource} />
     </Suspense>
   );
 }
@@ -273,6 +272,37 @@ function OpenTargetLink({ target, label }: { target: OpenTarget; label?: string 
   );
 }
 
+function answerNotices(msg: Message) {
+  const gaps = new Map<string, boolean>();
+  for (const state of Object.values(msg.sourceStates ?? {})) {
+    if (state.state === "ready" || !state.message || /^(?:Not searched for this question\.)$|did not need|was skipped/i.test(state.message)) continue;
+    // Empty and unconfigured sources are routine; a failed search may
+    // materially change an otherwise useful answer.
+    const unavailable = state.state === "unavailable" && !/not (?:connected|configured|enabled)/i.test(state.message);
+    gaps.set(state.message, unavailable || gaps.get(state.message) === true);
+  }
+  const warnings = new Set([...gaps].flatMap(([message, unavailable]) => unavailable ? [message] : []));
+  const details = new Set([...gaps].flatMap(([message, unavailable]) => unavailable ? [] : [message]));
+  for (const limitation of msg.limitations ?? []) {
+    if (gaps.has(limitation)) continue;
+    if (/^Project evidence was skipped because the prompt (?:was simple chat|did not ask about the project)\.$/i.test(limitation)) continue;
+    if (/^(?:Communication messages(?: and GitHub evidence)? are evidence, not|GitHub evidence is not) accepted product truth unless accepted through review\.$/i.test(limitation)) {
+      details.add(limitation);
+    } else {
+      warnings.add(limitation);
+    }
+  }
+  return { warnings: [...warnings], details: [...details] };
+}
+
+function extractEvidenceFallback(msg: Message) {
+  if (msg.isStreaming || !msg.modelMetadata?.degraded) return null;
+  // Persisted answers and non-UI clients keep the full server explanation.
+  // Move that exact opening note into the one visible warning on this view.
+  const note = /^## Evidence-only fallback\r?\n\r?\n(The AI synthesis provider is unavailable,[^\r\n]+)\r?\n\r?\n(?=\S)/.exec(msg.content);
+  return note ? { explanation: note[1], body: msg.content.slice(note[0].length) } : null;
+}
+
 const AssistantMessage = memo(function AssistantMessage({
   msg,
   isTyping,
@@ -295,18 +325,34 @@ const AssistantMessage = memo(function AssistantMessage({
   const [feedbackBusy, setFeedbackBusy] = useState(false);
   const [feedbackError, setFeedbackError] = useState<string | null>(null);
   const openTargets = msg.openTargets ?? [];
-  const citationTargetIds = new Set(
-    (msg.citations ?? [])
-      .map((citation) => targetForCitation(citation, openTargets)?.id)
-      .filter((id): id is string => Boolean(id))
-  );
-  const standaloneTargets = openTargets.filter((target) => !target.id || !citationTargetIds.has(target.id));
-  const unavailableSources = Object.entries(msg.sourceStates ?? {})
-    .filter(([, state]) => state.state !== "ready" && state.message && state.message !== "Not searched for this question." && !/did not need|was skipped/i.test(state.message));
-  const providerSpecificSources = unavailableSources.filter(([source]) => PROVIDER_SOURCE_KEYS.has(source));
-  const sourceGaps = Array.from(new Set(
-    (providerSpecificSources.length > 0 ? providerSpecificSources : unavailableSources).map(([, state]) => state.message!)
-  )).slice(0, 3);
+  const citationTargets = new Set((msg.citations ?? []).map((citation) => targetForCitation(citation, openTargets)));
+  const standaloneTargets = openTargets.filter((target) => !citationTargets.has(target));
+  const singleCitation = msg.citations?.length === 1 && standaloneTargets.length === 0 ? msg.citations[0] : undefined;
+  const singleTarget = singleCitation && targetForCitation(singleCitation, openTargets);
+  const resolvedSource = singleTarget && (!singleCitation?.openTargetId || singleTarget.id === singleCitation.openTargetId)
+    ? resolveOpenTarget(singleTarget) : null;
+  const primarySource = !msg.isError && resolvedSource && safeMarkdownUrl(resolvedSource.href) ? resolvedSource : undefined;
+  const evidenceQuote = primarySource ? singleCitation?.excerpt : undefined;
+  const { warnings, details } = msg.isStreaming ? { warnings: [], details: [] } : answerNotices(msg);
+  const fallback = extractEvidenceFallback(msg);
+  const degraded = msg.modelMetadata?.degraded;
+  const evidenceOnly = fallback || msg.citations?.length || warnings.some((warning) => /evidence.only|retrieved evidence/i.test(warning));
+  const warningPanel = !msg.isStreaming && (warnings.length > 0 || degraded) ? (
+    <div role="status" aria-label="Answer limitations" className="my-3 rounded-lg border border-[var(--border-soft)] bg-[var(--tint-amber)] px-3 py-2">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--amber-text)]">
+        <TriangleAlert size={13} aria-hidden="true" />
+        {degraded && evidenceOnly ? "Evidence-only fallback" : "Answer limitations"}
+      </p>
+      {fallback || warnings.length === 0 ? (
+        <p className="mt-1 text-xs text-[var(--text-default)]">{fallback?.explanation ?? "AI synthesis did not complete; verify the answer before acting."}</p>
+      ) : null}
+      {warnings.length > 0 ? (
+        <ul className="mt-1 list-disc space-y-1 pl-4 text-xs text-[var(--text-default)]">
+          {warnings.map((warning) => <li key={warning}>{warning}</li>)}
+        </ul>
+      ) : null}
+    </div>
+  ) : null;
 
   const submitFeedback = async (reason: SocratesFeedbackReason, correction?: string) => {
     if (!projectId || !sessionId || feedbackBusy) return;
@@ -344,6 +390,7 @@ const AssistantMessage = memo(function AssistantMessage({
           <TypingIndicator />
         ) : (
           <>
+            {degraded ? warningPanel : null}
             {msg.isError ? (
               <div
                 className="flex items-start gap-2.5 rounded-xl border px-4 py-3"
@@ -353,12 +400,12 @@ const AssistantMessage = memo(function AssistantMessage({
                 <p className="font-sans text-[13.5px] leading-relaxed text-[var(--text-default)]">{msg.content}</p>
               </div>
             ) : (
-              <AnswerMarkdown content={msg.content} streaming={msg.isStreaming} citations={msg.citations} openTargets={openTargets} />
+              <AnswerMarkdown content={fallback?.body ?? msg.content} streaming={msg.isStreaming} citations={msg.citations} openTargets={openTargets} primarySource={primarySource} />
             )}
             {msg.isStreaming && msg.content ? (
               <span className="mt-2 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]" role="status">Writing answer…</span>
             ) : null}
-            {msg.citations && msg.citations.length > 0 && (
+            {!primarySource && msg.citations && msg.citations.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {msg.citations.map((c: Citation, i: number) => {
                   const target = targetForCitation(c, openTargets);
@@ -391,36 +438,17 @@ const AssistantMessage = memo(function AssistantMessage({
                 ))}
               </div>
             )}
-            {!msg.isStreaming && (msg.confidence || msg.modelMetadata?.degraded) && (
-              <div className="mt-3 flex flex-wrap items-center gap-2" aria-label="Answer status">
-                {msg.confidence ? (
-                  <span className="rounded-full bg-[var(--bg-inset)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">
-                    {msg.confidence} confidence
-                  </span>
-                ) : null}
-                {msg.modelMetadata?.degraded ? (
-                  <span className="rounded-full border border-[var(--border-soft)] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">
-                    Evidence-only fallback
-                  </span>
-                ) : null}
-              </div>
-            )}
-            {!msg.isStreaming && sourceGaps.length > 0 && (
-              <div className="mt-3 rounded-lg border border-[var(--border-soft)] bg-[var(--bg-inset)] px-3 py-2" aria-label="Unavailable evidence sources">
-                <p className="font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Source coverage</p>
-                <ul className="mt-1 list-disc space-y-1 pl-4 text-[11px] text-[var(--text-muted)]">
-                  {sourceGaps.map((gap) => <li key={gap}>{gap}</li>)}
-                </ul>
-              </div>
-            )}
-            {!msg.isStreaming && msg.limitations && msg.limitations.length > 0 && (
+            {!degraded ? warningPanel : null}
+            {!msg.isStreaming && (details.length > 0 || evidenceQuote || (msg.confidence && msg.citations?.length)) ? (
               <details className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2">
-                <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Limitations ({msg.limitations.length})</summary>
+                <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Answer details</summary>
                 <ul className="mt-2 list-disc space-y-1 pl-4 text-[11px] text-[var(--text-muted)]">
-                  {msg.limitations.map((limitation) => <li key={limitation}>{limitation}</li>)}
+                  {evidenceQuote ? <li>Evidence excerpt: <q>{evidenceQuote}</q></li> : null}
+                  {msg.confidence ? <li>{msg.confidence} confidence</li> : null}
+                  {details.map((detail) => <li key={detail}>{detail}</li>)}
                 </ul>
               </details>
-            )}
+            ) : null}
             {!msg.isStreaming && msg.artifact && (
               <section className="mt-3 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-4" aria-label={`Artifact: ${msg.artifact.title}`}>
                 <p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--terracotta-text)]">{msg.artifact.type.replace(/_/g, " ")} artifact</p>

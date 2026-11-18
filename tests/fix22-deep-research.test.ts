@@ -110,7 +110,7 @@ describe("[FIX-22] Deep Research authoritative contracts", () => {
   it("completes only the selected recommendation for its current viewer and run", async () => {
     const { service, run, prisma } = createService();
     const other = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
-    const actions = [{ priority: "IMMEDIATE", action: "Confirm the release owner.", source: "E1" }];
+    const actions = [{ priority: "IMMEDIATE", action: "Check the providedEvidenceReferences.", source: "E1" }];
     prisma.deepResearchRun.findUnique.mockImplementation(async ({ where: { id } }: any) =>
       ({ ...run, id, resultsJson: { ...run.resultsJson, recommendedActions: actions } }));
     const checked = new Set<string>();
@@ -123,6 +123,7 @@ describe("[FIX-22] Deep Research authoritative contracts", () => {
     };
     const owner = { userId: run.createdByUserId, orgId: run.orgId };
     const first = await service.getRun(run.projectId, run.id, owner);
+    expect(first.results?.recommendedActions[0]?.action).toBe("Check the retrieved evidence references.");
     const id = (first.results?.recommendedActions[0] as any)?.id;
     expect(id).toMatch(/^[a-f0-9]{64}$/);
     await (service as any).setActionCompletion(run.projectId, run.id, owner, id, true);

@@ -1,14 +1,19 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type RGB } from "pdf-lib";
 import { AppError } from "../../app/errors.js";
-import type { DeepResearchResults } from "./schemas.js";
+import { presentResearchReport } from "./report-copy.js";
+import type { DeepResearchResults, DeepResearchStats } from "./schemas.js";
 
-export function renderReportMarkdown(focus: string, results: DeepResearchResults): string {
+function reportStats(stats: DeepResearchStats) {
+  const gitHubRecords = `${stats.commits} GitHub record${stats.commits === 1 ? "" : "s"}`;
+  return `Analyzed ${stats.totalSources} sources · ${stats.slackMessages} messages · ${gitHubRecords} · ${stats.docs} docs · ${stats.webSources} web sources · ${stats.duration}`;
+}
+
+export function renderReportMarkdown(focus: string, report: DeepResearchResults): string {
+  const results = presentResearchReport(report);
   const lines: string[] = [];
   lines.push(`# Deep Research — ${focus}`);
   lines.push("");
-  lines.push(
-    `_Analyzed ${results.stats.totalSources} sources · ${results.stats.slackMessages} messages · ${results.stats.commits} commits · ${results.stats.docs} docs · ${results.stats.webSources} web sources · ${results.stats.duration}_`
-  );
+  lines.push(`_${reportStats(results.stats)}_`);
   lines.push("");
   lines.push("## Executive summary");
   lines.push(results.executiveSummary || "_No summary._");
@@ -60,7 +65,8 @@ export function renderReportMarkdown(focus: string, results: DeepResearchResults
   return lines.join("\n");
 }
 
-export async function renderReportPdf(focus: string, results: DeepResearchResults): Promise<Buffer> {
+export async function renderReportPdf(focus: string, report: DeepResearchResults): Promise<Buffer> {
+  const results = presentResearchReport(report);
   const ink = rgb(0x1a / 255, 0x17 / 255, 0x14 / 255);
   const accent = rgb(0xc8 / 255, 0x4a / 255, 0x1f / 255);
   const muted = rgb(0x8a / 255, 0x83 / 255, 0x78 / 255);
@@ -75,9 +81,7 @@ export async function renderReportPdf(focus: string, results: DeepResearchResult
   const meta = (value: string) => text(value, 9, muted, 0.2);
 
   h1(`Deep Research — ${focus}`);
-  meta(
-    `Analyzed ${results.stats.totalSources} sources · ${results.stats.slackMessages} messages · ${results.stats.commits} commits · ${results.stats.docs} docs · ${results.stats.webSources} web sources · ${results.stats.duration}`
-  );
+  meta(reportStats(results.stats));
   h2("Executive summary");
   body(results.executiveSummary || "No summary.");
 

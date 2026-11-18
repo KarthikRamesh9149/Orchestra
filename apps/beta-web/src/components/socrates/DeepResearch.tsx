@@ -137,7 +137,7 @@ function DeepResearchResults({
         <div>
           <h2 id="deep-research-dialog-title" className="font-sans text-[28px] font-medium leading-none text-[var(--text-default)]">Deep Research Complete</h2>
           <p className="mt-2 font-mono text-[11px] text-[var(--text-muted)]">
-            Analyzed {s.totalSources} sources · {s.slackMessages} messages · {s.commits} commits · {s.docs} docs · {s.webSources} web sources
+            Analyzed {s.totalSources} sources · {s.slackMessages} messages · {s.commits} GitHub record{s.commits === 1 ? "" : "s"} · {s.docs} docs · {s.webSources} web sources
           </p>
           <p className="mt-1 font-mono text-[11px] text-[var(--text-muted)]">Completed in {s.duration}</p>
         </div>

@@ -1,0 +1,18 @@
+# Current maintainer. Do not add an unchecked account or treat this file as
+# independent approval. Recovery and backup assignment: docs/desktop/release/VERIFICATION.md.
+/.github/ @KarthikRamesh9149
+/apps/desktop/ @KarthikRamesh9149
+/docs/desktop/release/ @KarthikRamesh9149
+/infra/self-host/ @KarthikRamesh9149
+/prisma/ @KarthikRamesh9149
+/scripts/desktop/ @KarthikRamesh9149
+/src/lib/ai/ @KarthikRamesh9149
+/src/lib/auth/ @KarthikRamesh9149
+/src/modules/auth/ @KarthikRamesh9149
+/src/modules/beta-timeline/ @KarthikRamesh9149
+/src/modules/dashboard/ @KarthikRamesh9149
+/src/modules/deep-research/ @KarthikRamesh9149
+/src/modules/socrates/ @KarthikRamesh9149
+/src/modules/suggestions/ @KarthikRamesh9149
+/package-lock.json @KarthikRamesh9149
+/apps/*/package-lock.json @KarthikRamesh9149
