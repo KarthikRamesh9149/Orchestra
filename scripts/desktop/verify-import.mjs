@@ -253,6 +253,14 @@ for (const [files, reason] of [
    'tests/deep-research-citation-contract.test.ts','tests/fix22-deep-research.test.ts'],
   'November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations.']
 ]) for (const file of files) adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+reason;
+for (const [files, reason] of [
+ [['apps/beta-web/src/components/ui/SocratesMarkdown.tsx','apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pages/ChatPage.test.tsx'],
+  'November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations.'],
+ [['apps/beta-web/src/components/socrates/DeepResearch.tsx','apps/beta-web/src/components/socrates/DeepResearch.test.tsx',
+   'src/modules/deep-research/report-render.ts','src/modules/deep-research/schemas.ts','src/modules/deep-research/service.ts',
+   'tests/deep-research-citation-contract.test.ts','tests/deep-research-pdf.test.ts','tests/fix22-deep-research.test.ts'],
+  'November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity.']
+]) for (const file of files) adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+reason;
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

@@ -5,9 +5,25 @@ import {readFile} from 'node:fs/promises';
 const workflow=await readFile(new URL('../.github/workflows/desktop-source-checks.yml',import.meta.url),'utf8');
 const steps=workflow.split(/^      - name: /m).slice(1);
 
-test('manual source verification has bounded read-only runners and no publication authority',()=>{
-  assert.match(workflow,/^on:\n  workflow_dispatch:\s*\n/m);
-  assert.doesNotMatch(workflow,/^  (push|pull_request|schedule|pull_request_target):/m);
+test('source verification runs for main pull requests, main pushes and explicit rechecks',()=>{
+  assert.match(workflow,/^  workflow_dispatch:\s*$/m);
+  assert.match(workflow,/^  pull_request:\n    branches: \[main\]$/m);
+  assert.match(workflow,/^  push:\n    branches: \[main\]$/m);
+  assert.doesNotMatch(workflow,/^  pull_request_target:/m);
+});
+
+test('scheduled alerts run only the dependency job, on standard public-repository runners',()=>{
+  assert.match(workflow,/^  schedule:\n    - cron: '23 2 \* \* \*'$/m);
+  const source = workflow.split(/^  dependency-audit:/m)[0];
+  const audits = workflow.slice(source.length);
+  assert.match(source,/toJSON\(github\.event\.repository\.private\) == 'false' && github\.event_name != 'schedule'/);
+  assert.match(audits,/toJSON\(github\.event\.repository\.private\) == 'false'/);
+  assert.match(audits,/runs-on: ubuntu-24\.04/);
+  assert.match(audits,/timeout-minutes: 5/);
+  assert.doesNotMatch(audits,/npm ci|npm run|secrets\.|persist-credentials: true|upload-artifact@/);
+});
+
+test('source checks have bounded read-only runners and no publication authority',()=>{
   assert.match(workflow,/^permissions:\n  contents: read\s*\n/m);
   assert.match(workflow,/runs-on: ubuntu-24\.04/);
   assert.match(workflow,/timeout-minutes: 20/);
@@ -33,7 +49,7 @@ test('database migration and recovery checks use only the isolated development f
 });
 
 test('all four dependency trees and source security checks run independently without masking failure',()=>{
-  const audit='audit --include=dev --audit-level=info';
+  const audit='audit --package-lock-only --include=dev --audit-level=info';
   for(const command of [`npm ${audit}`,...['apps/desktop','apps/beta-web','apps/vscode-extension'].map(path=>`npm --prefix ${path} ${audit}`),'npm run security:scan:local','npm run beta:web:no-prod-mocks']){
     const step=steps.find(step=>step.split('\n').some(line=>line.trim()===`run: ${command}`));
     assert(step,`Missing independently reported gate: ${command}`);

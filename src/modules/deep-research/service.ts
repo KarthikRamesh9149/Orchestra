@@ -20,6 +20,7 @@ import { getMvpEnabledCommunicationProviders } from "../../lib/mvp/policy.js";
 import type { AuditService } from "../audit/service.js";
 import type { ProjectService } from "../projects/service.js";
 import { buildDeepResearchEvidencePack } from "./evidence.js";
+import { presentResearchReport } from "./report-copy.js";
 import { renderReportMarkdown, renderReportPdf } from "./report-render.js";
 import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt, buildWebQueries, isAcceptedDecision } from "./prompts.js";
 import {
@@ -164,13 +165,14 @@ export class DeepResearchService {
       run = await this.loadRun(projectId, runId);
     }
     const dto = this.toDto(run);
-    if (!dto.results?.recommendedActions.length) return dto;
+    if (!dto.results) return dto;
+    if (!dto.results.recommendedActions.length) return { ...dto, results: presentResearchReport(dto.results) };
     const done = await this.prisma.deepResearchActionCompletion.findMany({
       where: { runId, userId: actor.userId }, select: { actionId: true }
     });
     const completed = new Set(done.map(item => item.actionId));
-    return { ...dto, results: { ...dto.results,
-      recommendedActions: identifyActions(dto.results.recommendedActions).map(action => ({ ...action, completed: completed.has(action.id) })) } };
+    return { ...dto, results: presentResearchReport({ ...dto.results,
+      recommendedActions: identifyActions(dto.results.recommendedActions).map(action => ({ ...action, completed: completed.has(action.id) })) }) };
   }
 
   private async readCompletedRun(projectId: string, runId: string, actor: Actor) {
@@ -1026,15 +1028,18 @@ function cleanExcerpt(value: unknown, maxChars = 1600) {
   return String(value ?? "").replace(/\s+/g, " ").trim().slice(0, maxChars);
 }
 
+function isGithubSource(sourceType: string) {
+  return /github|commit|pull_request|\bpr\b/i.test(sourceType);
+}
+
 export function filterCardsBySources(cards: EvidenceCard[], selected: Set<string>): EvidenceCard[] {
   return cards.filter((card) => {
     const t = card.sourceType.toLowerCase();
     const isComm = /message|thread|comm|slack|teams|chat/.test(t);
     const isDoc = /document|doc|section|chunk|brain|live_doc|product_brain/.test(t);
-    const isGithub = /github|commit|pull_request|\bpr\b/.test(t);
     const isCalendar = /calendar|meeting|event/.test(t);
+    if (isGithubSource(t)) return selected.has("github");
     if (isComm) return selected.has("slack");
-    if (isGithub) return selected.has("github");
     if (isCalendar) return selected.has("calendar");
     // "Uploaded docs" alone is not permission to substitute derived Brain or
     // Live Doc summaries for the source documents the user selected.
@@ -1096,6 +1101,9 @@ function sourceDocumentId(card: EvidenceCard) {
 
 function sourceIdentity(card: EvidenceCard) {
   const documentId = sourceDocumentId(card);
+  const target = card.openTarget;
+  const githubId = target?.targetType === "github_evidence" && target.targetRef.evidenceId;
+  if (isGithubSource(card.sourceType) && typeof githubId === "string" && githubId) return `github:${githubId}`;
   return documentId ? `document:${documentId}` : `evidence:${card.citationRef?.type ?? card.sourceType}:${card.citationRef?.id ?? card.evidenceId}`;
 }
 
@@ -1194,7 +1202,7 @@ function safeSourceLabel(value: string, fallback: string) {
 
 function providerLabel(sourceType: string) {
   const value = sourceType.toLowerCase();
-  if (/github|commit|pull_request|\bpr\b/.test(value)) return "GitHub";
+  if (isGithubSource(value)) return "GitHub";
   if (/message|thread|comm|slack|teams|chat/.test(value)) return value.includes("teams") ? "Microsoft Teams" : "Communications";
   if (/calendar|meeting|event/.test(value)) return "Calendar";
   if (/brain|live_doc|product_brain/.test(value)) return "Product Memory";
@@ -1248,9 +1256,10 @@ export function computeStats(cards: EvidenceCard[], webResults: SearchResult[], 
     const ref = card.openTarget?.targetRef ?? {};
     const id = card.citationRef?.id ?? card.evidenceId;
     const documentId = sourceDocumentId(card);
-    sources.add(sourceIdentity(card));
-    if (/message|thread|comm|slack|teams|chat/.test(t)) messages.add(String(card.trace?.messageId ?? ref.messageId ?? id));
-    else if (/github|commit|pull_request|pr\b/.test(t)) engineering.add(id);
+    const identity = sourceIdentity(card);
+    sources.add(identity);
+    if (isGithubSource(t)) engineering.add(identity);
+    else if (/message|thread|comm|slack|teams|chat/.test(t)) messages.add(String(card.trace?.messageId ?? ref.messageId ?? id));
     // Derived Product Brain/Live Doc cards and unidentified chunks are not
     // additional uploaded documents. Never deduplicate by a display title.
     else if (documentId && /document|doc|section|chunk/.test(t) && !/brain|live_doc/.test(t)) documents.add(documentId);

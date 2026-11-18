@@ -82,8 +82,9 @@ the TypeScript/Vitest gates above; `npm test` remains the upstream suite. These
 are local source/fixture checks, not native compilation or packaged runtime
 qualification. No GitHub Actions or paid runner is required.
 
-The owner-authorised `Desktop source checks` GitHub workflow can also be run
-manually on an explicit `main` candidate. It compiles the backend, frontend,
+The owner-authorised `Desktop source checks` GitHub workflow runs on pull
+requests to `main` and pushes to `main`, and can also be run on an explicit
+candidate branch. It compiles the backend, frontend,
 Electron entrypoints and extension; runs desktop source and packaging tests;
 and reports all four dependency audits, the secret scan and mock guard
 independently. An audit failure remains a failing job. It uses a bounded
@@ -96,6 +97,8 @@ durable-job, engine-authorisation, approval, restart and backup/restore tests.
 Generated fixture credentials stay in the runner's private `.desktop` files;
 no customer database is used and no credentials or database artifacts are
 uploaded. The container is stopped even when a preceding check fails.
+See [VERIFICATION.md](VERIFICATION.md) for the evidence checklist, advisory
+cadence and recovery handoff.
 
 The publication audit intentionally returns nonzero while publication is blocked.
 It reports metadata and pending review, not a security certificate. The full

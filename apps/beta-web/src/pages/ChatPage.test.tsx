@@ -394,10 +394,10 @@ describe("server-authoritative Socrates chat", () => {
     expect(screen.getByRole("link", { name: "Safe link" })).toHaveAttribute("href", "https://example.com/plan");
     expect(screen.queryByRole("link", { name: "Unsafe link" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open document/ })).toHaveAttribute("href", expect.stringContaining("/memory/docs/"));
-    await userEvent.click(screen.getByText("Limitations (1)"));
+    await userEvent.click(screen.getByText("Answer details"));
     expect(screen.getByText("Evidence-only fallback.")).toBeVisible();
     expect(screen.getByText("ClickUp is not connected.")).toBeVisible();
-    expect(screen.queryByText("No indexed communication-layer evidence found.")).not.toBeInTheDocument();
+    expect(screen.getByText("Answer details").closest("details")).toContainElement(screen.getByText("No indexed communication-layer evidence found."));
     expect(screen.getByRole("region", { name: "Artifact: Launch brief" })).toBeVisible();
     first.unmount();
     useChatStore.setState({ projectId: null, conversations: [], activeId: null });
@@ -421,6 +421,53 @@ describe("server-authoritative Socrates chat", () => {
     await user.click(await screen.findByRole("link", { name: /Open document/ }));
 
     expect(screen.getByTestId("location")).toHaveTextContent("/memory/docs/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/view");
+  });
+
+  it("gives a short answer one named keyboard-accessible source and folds routine coverage into details", async () => {
+    const rich = assistantRow("The **Launch plan – Introduction** [E1] names Mira [E1].\n\nSource cited:\n\n- **Launch plan - Introduction** (document, evidence) [E1].");
+    rich.answerPayloadJson = {
+      ...rich.answerPayloadJson,
+      citations: [{ evidenceNumber: 1, refId: "chunk:launch", sourceType: "document", label: "Launch plan – Introduction", excerpt: "Mira", openTargetId: "target:launch" }],
+      open_targets: [{ id: "target:launch", sourceType: "document", targetType: "document_section", targetRef: { documentId: "doc-launch", anchorId: "intro" } }],
+      confidence: "medium",
+      limitations: ["No indexed Google Drive document chunks found."],
+      sourceStates: { google_drive: { state: "empty", count: 0, message: "No indexed Google Drive document chunks found." } },
+    };
+    history = [userRow("Who owns launch?"), rich];
+    const user = userEvent.setup();
+    renderChat(`/chat/${SESSION_ID}`);
+
+    const source = await screen.findByRole("link", { name: "Open document: Launch plan – Introduction" });
+    expect(source).toHaveAttribute("href", "/memory/docs/doc-launch/view?anchor=intro");
+    expect(source.closest("p")).toHaveTextContent("names Mira.");
+    expect(screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.includes("/memory/docs/doc-launch/"))).toEqual([source]);
+    expect(screen.queryByText("Source cited:")).not.toBeInTheDocument();
+    const details = screen.getByText("Answer details").closest("details");
+    expect(details).not.toHaveAttribute("open");
+    expect(details).toContainElement(screen.getByText("No indexed Google Drive document chunks found."));
+    expect(details).toContainElement(screen.getByText(/medium confidence/i));
+    source.focus();
+    expect(source).toHaveFocus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByTestId("location")).toHaveTextContent("/memory/docs/doc-launch/view");
+  });
+
+  it("keeps specific degraded and incomplete coverage warnings outside collapsed diagnostics", async () => {
+    const rich = assistantRow("The current documents name Mira, but this is not a complete answer.");
+    rich.answerPayloadJson = {
+      ...rich.answerPayloadJson,
+      limitations: ["AI synthesis timed out. Only retrieved evidence is shown.", "GitHub could not be searched."],
+      sourceStates: { github: { state: "unavailable", count: 0, message: "GitHub could not be searched." } },
+      modelMetadata: { degraded: true },
+    };
+    history = [userRow("Who owns launch and which PR delivered it?"), rich];
+    renderChat(`/chat/${SESSION_ID}`);
+    const warning = await screen.findByRole("status", { name: "Answer limitations" });
+    expect(warning).toHaveTextContent("Evidence-only fallback");
+    expect(warning).toHaveTextContent("AI synthesis timed out. Only retrieved evidence is shown.");
+    expect(warning).toHaveTextContent("GitHub could not be searched.");
+    expect(warning.closest("details")).toBeNull();
+    expect(screen.getAllByText("GitHub could not be searched.")).toHaveLength(1);
   });
 
   it("restores explicit sparse citation numbers after reload and opens the matching source", async () => {
@@ -562,10 +609,9 @@ describe("server-authoritative Socrates chat", () => {
 
     await userEvent.type(screen.getByPlaceholderText("Ask Socrates anything about your project…"), "Answer without a second wait{Enter}");
 
-    await waitFor(() => expect(screen.getByLabelText("Answer status")).toHaveTextContent("high confidence"));
-    expect(screen.getAllByText("Fast final answer.").length).toBeGreaterThan(0);
+    expect((await screen.findAllByText("Fast final answer.")).length).toBeGreaterThan(0);
+    await waitFor(() => expect(mocks.getSocratesHistory).toHaveBeenCalledTimes(2));
     expect(screen.queryByText("Writing answer…")).not.toBeInTheDocument();
-    expect(mocks.getSocratesHistory).toHaveBeenCalledTimes(2);
 
     await act(async () => resolveReconciliation([
       userRow("Answer without a second wait"),

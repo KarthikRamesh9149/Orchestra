@@ -53,14 +53,14 @@
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
       "sourceSha256": "142cb4169d9a8500a9b9e4f7bbffaf3c4b70fc6965e52a77cef79b09df86d9e4",
-      "importedSha256": "0d00a2cda65e9f1dd8f632701b03ef0c53a168efcab7edd89736b059f7ae30bf",
-      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "6c8c002efc94e4d97fbd8170a8cf00b748d4a486edb4c05f6fdf01506d0ff81c",
+      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
       "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
-      "importedSha256": "626ed881a8edd7871344f76cbe1a281145b7f499204029acac09ad5a54175f4c",
-      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "52a1768b56422fab74ec22823cf15e82e38cf55e603bed714069a246eb08838a",
+      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx",
@@ -71,8 +71,8 @@
     {
       "path": "apps/beta-web/src/components/ui/SocratesMarkdown.tsx",
       "sourceSha256": "f29eea8229ed2997406c45405f6f96305f666b848b84d4ae2c87542345c1c37e",
-      "importedSha256": "4d818217d6fcf03693ea6fa0216335f958ef7c16bc3dc1d25c2eaf9f1bbe9008",
-      "reason": "September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "8d5e5b5580044996ad9a2f6294b7d208c7d6c32382afb51a3f4feac3933ffd9b",
+      "reason": "September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations."
     },
     {
       "path": "apps/beta-web/src/context/AuthContext.bootstrap.test.tsx",
@@ -167,14 +167,14 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
       "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
-      "importedSha256": "1c56d7a830199b23531503525a7e5a036fe82fa73cd8558cbbbbbc230389b940",
-      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes."
+      "importedSha256": "49d282077a3d5af19ffa28f168cb830e27001f2766859fcd13a6f504bc1f43bc",
+      "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations."
     },
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "56465238c93e275476ab7692bfbf8e68bdaef35aab7bd923374c2970fa114560",
-      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "2214849eafe68a4d07697263f49c61fdedb4cfd286e58c2ebff07f502baadffa",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations."
     },
     {
       "path": "apps/beta-web/src/pages/DashboardPage.tsx",
@@ -551,8 +551,8 @@
     {
       "path": "src/modules/deep-research/report-render.ts",
       "sourceSha256": "71e3145bcdc018ee0f325e14b59a41f778f89c01029f8db1b3b6dba46906d20a",
-      "importedSha256": "3bf2f59076112eca623df621ac15b0bc7f8e373d1c5660c61315a7d58bce8275",
-      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF. Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "d6e5fa3ddc4ad916f5401f8a356bf7d67b68aadfe39b0499d7c9d19166047527",
+      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF. Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "src/modules/deep-research/routes.ts",
@@ -563,14 +563,14 @@
     {
       "path": "src/modules/deep-research/schemas.ts",
       "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
-      "importedSha256": "4c9db5adb278dba70ebf9e95e351caa292307423709802ef87296e942af73468",
-      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "4d7e720d155256242d3cafb1ad4301026ce005b28405e75e600f9909e2a15fd8",
+      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "3f110cbb3c35d683e25125da48087d6dc805241d1f1c685cb9f12fdadf737093",
-      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence. November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "f694643b755fac1dcefd06275b646a3fcc19ade41d439b62d1856cb4157fb779",
+      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence. November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "src/modules/delivery/schemas.ts",
@@ -773,8 +773,8 @@
     {
       "path": "tests/deep-research-citation-contract.test.ts",
       "sourceSha256": "d5042d1d41322eef6a61a78d54976569b2b13cbf7358effac22e0fc7e813eae0",
-      "importedSha256": "eb8cf1d2df2938ae3139a2626276245122dac63476a001d31645d5541801982c",
-      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "9a293c2e86145fb0e4975408df523f7867ae272dcaa0875b079fd6841102af26",
+      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "tests/deep-research-evidence-coverage.test.ts",
@@ -797,8 +797,8 @@
     {
       "path": "tests/fix22-deep-research.test.ts",
       "sourceSha256": "fb96bdeb8d8cf407378d98a90ee920e679b1916eb814c4b3599a5aa79abef357",
-      "importedSha256": "92e4238aec86cd99df061476594a46bcda78de6eda1ac5f9fd7d0722525e8dd3",
-      "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+      "importedSha256": "6bd1919986ae9e872f0f25901107706cbe94ab35a1bca2a3f97450528f8d0d51",
+      "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity."
     },
     {
       "path": "tests/gmail-invite-sender.test.ts",

@@ -44,7 +44,7 @@ describe("Deep Research PDF export", () => {
     const text = compact(extracted.text);
     for (const expected of [
       "Deep Research — Café launch — Q4",
-      "Analyzed 2 sources · 0 messages · 0 commits · 1 docs · 1 web sources · 20s",
+      "Analyzed 2 sources · 0 messages · 0 GitHub records · 1 docs · 1 web sources · 20s",
       "Executive summary", results.executiveSummary,
       "Critical findings", "[HIGH] DELIVERY — Owner confirmed", results.findings[0]!.description, "Evidence: E1 · E2",
       "Domain & market context", results.marketContext[0]!.title, results.marketContext[0]!.body,
@@ -53,6 +53,27 @@ describe("Deep Research PDF export", () => {
       "Sources", "E1 · E2 — Launch PRD — docs", "W1 — Public source — web",
       ...results.sources.flatMap(source => source.href ? [source.href] : [])
     ]) expect(text).toContain(compact(expected));
+    expect(JSON.stringify(results)).toBe(original);
+  });
+
+  it("uses understandable report language in both exports without rewriting source labels", async () => {
+    const results = report({
+      stats: { ...report().stats, commits: 2 },
+      executiveSummary: "No acceptedDecisionReferences were supplied [E1].",
+      findings: [{ ...report().findings[0]!, description: "The completeProjectInventory was not available [E1]." }],
+      recommendedActions: [{ ...report().recommendedActions[0]!, action: "Review the providedEvidenceReferences." }],
+      sources: [{ provider: "docs", kind: "internal", label: "acceptedDecisionReferences fixture", href: null }]
+    });
+    const original = JSON.stringify(results);
+    const pdf = await extract(await renderReportPdf("Delivery", results));
+    for (const text of [compact(pdf.text), compact(renderReportMarkdown("Delivery", results))]) {
+      expect(text).toContain(compact("2 GitHub records"));
+      expect(text).not.toContain(compact("2 commits"));
+      expect(text).toContain(compact("No recorded decision references were supplied [E1]."));
+      expect(text).toContain(compact("The complete project inventory was not available [E1]."));
+      expect(text).toContain(compact("Review the retrieved evidence references."));
+      expect(text).toContain(compact("acceptedDecisionReferences fixture"));
+    }
     expect(JSON.stringify(results)).toBe(original);
   });
 

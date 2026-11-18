@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { groundDeepResearchOutput, assertDeepResearchRetrievalAvailable, computeStats, buildDeepResearchSources } from "../src/modules/deep-research/service.js";
+import { groundDeepResearchOutput, assertDeepResearchRetrievalAvailable, computeStats, buildDeepResearchSources, filterCardsBySources } from "../src/modules/deep-research/service.js";
 import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt } from "../src/modules/deep-research/prompts.js";
 import { renderReportMarkdown } from "../src/modules/deep-research/report-render.js";
 import { deepResearchResultsSchema } from "../src/modules/deep-research/schemas.js";
@@ -16,6 +16,26 @@ describe("Deep Research citation contract", () => {
     expect(computeStats([{ ...card, sourceType: "brain_node" }], [], Date.now()).docs).toBe(0);
     const section = { ...a, citationRef: { ...card.citationRef, label: "Delivery PRD - requirements" } };
     expect(buildDeepResearchSources([a, section, c], [])).toHaveLength(2);
+  });
+  it("counts one pull request and one commit once each, even with different evidence aliases", () => {
+    const pr = { ...card, sourceType: "github_evidence", evidenceId: "pr-excerpt",
+      citationRef: { type: "github_evidence", id: "row-pr" }, title: "PR #12",
+      openTarget: { targetType: "github_evidence", targetRef: { evidenceId: "row-pr" } } };
+    const commit = { ...card, sourceType: "github_commit", evidenceId: "commit-excerpt",
+      citationRef: { type: "github_commit", id: "row-commit" }, title: "Fix export",
+      openTarget: { targetType: "github_evidence", targetRef: { evidenceId: "row-commit" } } };
+    const alias = { ...commit, evidenceId: "commit-retrieval", sourceType: "github_evidence",
+      citationRef: { type: "github_evidence", id: "alias-commit" } };
+    const cards = [pr, commit, alias, pr];
+    expect(filterCardsBySources(cards, new Set(["github"]))).toEqual(cards);
+    expect(filterCardsBySources(cards, new Set(["slack"]))).toEqual([]);
+    const stats = computeStats(cards, [], Date.now());
+    expect(stats).toMatchObject({ totalSources: 2, slackMessages: 0, commits: 2 });
+    const sources = buildDeepResearchSources(cards, []);
+    expect(sources.map(source => source.refs)).toEqual([["E1", "E4"], ["E2", "E3"]]);
+    const markdown = renderReportMarkdown("Delivery", { ...report, stats, sources });
+    expect(markdown).toContain("2 GitHub records");
+    expect(markdown).not.toContain("2 commits");
   });
   it("does not present failed retrieval branches as a successful empty search", () => {
     expect(() => assertDeepResearchRetrievalAvailable({ candidates: [], telemetry: { retrievalBranchFailureCount: 1 } })).toThrow(/retrieval/i);
