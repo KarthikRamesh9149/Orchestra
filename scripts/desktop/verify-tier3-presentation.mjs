@@ -126,28 +126,25 @@ try {
     progress: {percent: 100, stage: 'completed'}, results: presentResearchReport(rawReport), error: null,
     createdAt: new Date().toISOString(), completedAt: new Date().toISOString(),
   };
-  // Chromium network routing does not reliably intercept Electron's custom
-  // protocol. Replay precisely these two requests inside the synthetic renderer.
-  await page.evaluate(({run, path}) => {
+  // Open the saved-report route directly. Replay only its GET inside the
+  // synthetic renderer; the app remains offline and no run is started.
+  await page.addInitScript(({run, path}) => {
     const realFetch = window.fetch.bind(window);
     window.fetch = (input, init) => {
       const url = new URL(input instanceof Request ? input.url : input, location.href);
       const method = init?.method ?? (input instanceof Request ? input.method : 'GET');
-      if (url.protocol === 'orchestra:' && url.host === 'app' && (
-        (url.pathname === path && method === 'POST') ||
-        (url.pathname === path + '/' + run.id && method === 'GET')
-      )) return Promise.resolve(Response.json({data: run}));
+      if (url.protocol === 'orchestra:' && url.host === 'app' && url.pathname === path && method === 'GET') {
+        return Promise.resolve(Response.json({data: run}));
+      }
       return realFetch(input, init);
     };
-  }, {run, path: `/v1/projects/${projectId}/deep-research`});
-  await page.getByRole('button', {name: 'Deep Research', exact: true}).click();
+  }, {run, path: `/v1/projects/${projectId}/deep-research/${id}`});
+  await page.goto(`${chat}?researchRun=${id}`);
   const dialog = page.getByRole('dialog');
-  await dialog.getByRole('textbox').fill(focus);
-  await dialog.getByRole('button', {name: 'Run Research', exact: true}).click();
   await dialog.getByText(/2 GitHub records/).waitFor();
   const research = await dialog.innerText();
   assert(!/2 commits|acceptedDecisionReferences/.test(research));
-  assert.match(research, /recorded decision references were supplied/i);
+  assert.match(research, /No recorded decision references were supplied/i);
   const markdown = renderReportMarkdown(focus, rawReport);
   const pdf = new PDFParse({data: await renderReportPdf(focus, rawReport)});
   try {
