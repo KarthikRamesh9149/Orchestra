@@ -1,8 +1,12 @@
 # Desktop execution and parity contract
 
-Repository: private `KarthikRamesh9149/Orchestra`. Production `orchestrav2` is outside the write/deployment scope.
+Repository: `KarthikRamesh9149/Orchestra`, a public source preview. The separately hosted Orchestra service is outside this repository's write and deployment scope.
 
-Execute only user-authorized work. On 15 September 2026 the owner requested one branch only: `main` now contains the historical step work with ancestry preserved. Commit focused changes there after applicable verification. Branch consolidation does not certify unfinished gates. No public repository, release, spending or third-party client configuration changes without the specified authorization.
+Execute only user-authorized work. Use a review branch for changes and preserve
+their ancestry when integrating into `main` after applicable verification.
+The owner approved public **source** visibility on 5 October 2026. Installer
+publication, rollout, spending and third-party client configuration require
+separate authorization. A merged change does not certify a release.
 
 ## Gates
 

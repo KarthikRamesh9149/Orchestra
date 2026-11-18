@@ -715,6 +715,22 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(allSourcesPrompt).not.toContain("Asha Raman");
     expect(prisma.$queryRaw.mock.calls.some(([sql]: [{ values?: unknown[] }]) => sql.values?.includes(deliveryId))).toBe(true);
 
+    prisma.communicationMessageChunk.findMany.mockResolvedValue([{
+      id: "slack-chunk", messageId: "slack-message", threadId: "slack-thread", provider: "slack",
+      content: "Delivery escalation window is 83 minutes.", lexicalContent: "delivery escalation window 83 minutes",
+      message: { senderLabel: "Reviewer", sentAt: new Date("2026-06-02T00:00:00Z") },
+      thread: { subject: "#release" }, connector: { provider: "slack", accountLabel: "Synthetic workspace" },
+    }]);
+    const combinedQuestion = "Use the Orchestra test Delivery PRD and Slack #release: who is the Product Lead and what is the escalation window?";
+    for (const selectedSources of [["all"], ["documents"]] as const) {
+      await service.askV1ProjectMemory({ projectId: PROJECT_ID, actorUserId: USER_ID,
+        question: combinedQuestion, selectedSources: [...selectedSources], maxEvidence: 2, includeArtifacts: false, includeHistory: false });
+      const prompt = String(generationProvider.generateObject.mock.calls.at(-1)?.[0].prompt);
+      expect(prompt).toContain("Maya Reddy");
+      expect(prompt).not.toContain("Asha Raman");
+      expect(prompt.includes("83 minutes")).toBe(selectedSources[0] === "all");
+    }
+
     generationProvider.generateObject.mockRejectedValueOnce(new Error("staging provider unavailable"));
     const failedSynthesis = await service.askV1ProjectMemory({ projectId: PROJECT_ID, actorUserId: USER_ID, question: "In Orchestra test Delivery PRD, who are the Product Lead and Backend Lead? State the non-goals.", selectedSources: ["documents"], includeArtifacts: false, includeHistory: false });
     expect(failedSynthesis.modelMetadata).toMatchObject({ provider: "deterministic", degraded: true });

@@ -72,6 +72,13 @@ async function verifyNative(bundle, fixtures, ai) {
       await pause(350);
     }
     assert(indexed, 'Synthetic documents did not become searchable');
+    const timestamp = Math.floor(Date.now() / 1000 - 60) + '.000001';
+    // Start durable Slack indexing before the independent document controls.
+    await request({ operation: 'desktop.slack.ingest', projectId: workspace.id, teamId: 'TPILOT', teamName: 'Synthetic pilot',
+      channel: { id: 'CPILOT', name: 'helix-operations' }, messages: [{ ts: timestamp, threadTs: timestamp,
+        user: 'Reviewer', text: 'Helix escalation window is 83 minutes. No change to approved pilot capacity.' }], deletedTimestamps: [],
+      snapshot: { oldestMs: Date.now() - 30 * 86400_000, latestMs: Date.now(), complete: true },
+    });
     async function ask(question, selectedSources) {
       const start = performance.now();
       // Use the same versioned stream as Chat.
@@ -113,6 +120,7 @@ async function verifyNative(bundle, fixtures, ai) {
       assert.match(result.answer, /Iona Flint/i);
       assert(result.citations.some(label => label.includes('Juniper Exit Runbook')));
       retention.push({ scope, ...result });
+      console.log(JSON.stringify({ check: 'five-PDF recall', scope, ...result }));
     }
     const sales = await ask('A teammate says Helix has approval for 480 production seats. What should I tell sales today?', ['all']);
     assert.match(sales.answer, /180/);
@@ -121,21 +129,17 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.doesNotMatch(sales.answer, /Latest timestamped evidence|No elapsed duration is inferred/i);
     assert(sales.citations.some(label => label.includes('Helix Rollout Decision')));
     assert(sales.citations.some(label => label.includes('Helix Customer Request')));
-    const timestamp = Math.floor(Date.now() / 1000 - 60) + '.000001';
-    await request({ operation: 'desktop.slack.ingest', projectId: workspace.id, teamId: 'TPILOT', teamName: 'Synthetic pilot',
-      channel: { id: 'CPILOT', name: 'helix-operations' }, messages: [{ ts: timestamp, threadTs: timestamp,
-        user: 'Reviewer', text: 'Helix escalation window is 83 minutes. No change to approved pilot capacity.' }], deletedTimestamps: [],
-      snapshot: { oldestMs: Date.now() - 30 * 86400_000, latestMs: Date.now(), complete: true },
-    });
+    console.log(JSON.stringify({ check: 'false-premise sales decision', ...sales }));
     const combined = await ask('Use the Helix Rollout Decision PDF and Slack helix-operations: what is the pilot seat limit and escalation window?', ['all']);
     assert.match(combined.answer, /180/);
     assert.match(combined.answer, /83[\s*]+minutes/i);
     assert(combined.citations.some(label => label.includes('Helix Rollout Decision')));
     assert(combined.sourceTypes.some(type => /slack|communication/i.test(type)), 'Both documents and messages must support the answer');
+    console.log(JSON.stringify({ check: 'named document plus Slack', ...combined }));
     const researchStart = performance.now();
     const run = await api('/deep-research', { method: 'POST', body: {
       researchFocus: 'Compare Helix Rollout Decision and Helix Customer Request. Contrast the 180-seat pilot approval with the pending 480-seat request. State whether any actual Orchestra record establishes approval and what sales should confirm before promising production.',
-      sources: ['docs'], outputFormat: 'exec_summary', privacyMode: 'internal_only', webSearchEnabled: false,
+      sources: ['docs', 'decisions'], outputFormat: 'exec_summary', privacyMode: 'internal_only', webSearchEnabled: false,
     } });
     const runPath = '/deep-research/' + run.id;
     let report;
@@ -149,6 +153,8 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.match(report.results.executiveSummary, /480/);
     assert.match(report.results.executiveSummary, /(?:no |not |cannot |can’t |unverified)[^.!?]{0,90}(?:record|approv|authoriz)/i);
     assert(report.results.sources.some(source => source.href?.includes('versionId=')));
+    assert(!report.results.sources.some(source => source.target?.kind === 'decision_record'));
+    console.log(JSON.stringify({ check: 'research without recorded approval', summary: report.results.executiveSummary }));
     const checked = report.results.recommendedActions[0];
     assert(checked?.id, 'No durable recommended action in the report');
     await api(runPath + '/actions/' + checked.id, { method: 'PUT', body: { completed: true } });

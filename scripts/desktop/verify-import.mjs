@@ -267,6 +267,13 @@ for (const file of ['apps/beta-web/src/components/socrates/DeepResearch.tsx','ap
   adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+
     'Pre-launch: add an explicit project-scoped recorded decisions source and exact authorized previews; distinguish human acceptance from source claims.';
 }
+for (const file of ['src/modules/socrates/service.ts', 'tests/socrates-v1-service.test.ts']) {
+  adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+
+    'Pre-launch: preserve expressly requested companion sources without broadening named-document scope.';
+}
+for (const file of ['src/modules/deep-research/service.ts', 'tests/fix22-deep-research.test.ts']) {
+  adjustments[file]+=' Pre-launch citation recheck: active project link, repository and installation are required for GitHub previews.';
+}
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

@@ -3879,6 +3879,12 @@ export class SocratesService {
     selectedSources: Set<string>
   ) {
     const ranked = this.rankSocratesV1Evidence(evidence, query, intent);
+    const honorNarrowSourceSelection = selectedSources.size > 0 && selectedSources.size < 5;
+    const requestedCommunicationProviders = this.requestedCommunicationProviderSubTypes(query);
+    const isCommunication = (item: SocratesV1Evidence) => item.sourceType === "slack_message" || item.sourceType === "communication_message";
+    const providerCommunicationEvidence = requestedCommunicationProviders.size
+      ? ranked.filter((item) => isCommunication(item) && requestedCommunicationProviders.has(item.sourceSubType ?? ""))
+      : [];
     const documentEvidence = selectSocratesV1DocumentCoverage(
       ranked.filter((item) => item.sourceType === "document" || item.sourceType === "google_drive_document"),
       ranked.length,
@@ -3890,19 +3896,25 @@ export class SocratesService {
     );
     if (explicitlyScopedDocumentEvidence.length > 0) {
       const githubWasExplicitlyRequested =
-        (selectedSources.size < 5 && selectedSources.has("github")) || this.queryRequestsGithubEvidence(query);
-      const explicitlyRequestedGithub = githubWasExplicitlyRequested
-        ? ranked.filter((item) => item.sourceType === "github_evidence")
-        : [];
-      if (explicitlyRequestedGithub.length === 0 || maxEvidence < 2) {
-        return explicitlyScopedDocumentEvidence.slice(0, maxEvidence);
-      }
+        (honorNarrowSourceSelection && selectedSources.has("github")) || this.queryRequestsGithubEvidence(query);
+      // Naming a document narrows document selection, not the other sources
+      // the user expressly requested. Reserve a slot without dropping a named
+      // document, and keep unrequested sources out of a named-document answer.
+      const companions = [
+        githubWasExplicitlyRequested ? ranked.find((item) => item.sourceType === "github_evidence") : undefined,
+        ...[...requestedCommunicationProviders].map((provider) =>
+          providerCommunicationEvidence.find((item) => item.sourceSubType === provider)),
+        requestedCommunicationProviders.size === 0 && honorNarrowSourceSelection && (selectedSources.has("slack") || selectedSources.has("communications"))
+          ? ranked.find(isCommunication) : undefined
+      ].filter((item): item is SocratesV1Evidence => item !== undefined);
+      const namedDocuments = new Set(explicitlyScopedDocumentEvidence.map((item) => item.documentId ?? item.evidenceId));
+      const budget = Math.min(maxEvidence, 10);
+      const included = companions.slice(0, Math.max(0, budget - namedDocuments.size));
       return [
-        ...explicitlyScopedDocumentEvidence.slice(0, maxEvidence - 1),
-        explicitlyRequestedGithub[0]
+        ...explicitlyScopedDocumentEvidence.slice(0, budget - included.length),
+        ...included
       ];
     }
-    const honorNarrowSourceSelection = selectedSources.size > 0 && selectedSources.size < 5;
     const wantsReadiness = queryRequestsReadinessEvidence(query);
     const wantsGithub = (honorNarrowSourceSelection && selectedSources.has("github")) || wantsReadiness || this.queryRequestsGithubEvidence(query);
     const wantsDocuments =
@@ -3915,15 +3927,6 @@ export class SocratesService {
       intent === "slack_question" ||
       wantsReadiness ||
       this.queryRequestsCommunicationEvidence(query);
-    const requestedCommunicationProviders = this.requestedCommunicationProviderSubTypes(query);
-    const providerCommunicationEvidence = requestedCommunicationProviders.size
-      ? ranked.filter(
-          (item) =>
-            (item.sourceType === "slack_message" || item.sourceType === "communication_message") &&
-            typeof item.sourceSubType === "string" &&
-            requestedCommunicationProviders.has(item.sourceSubType)
-        )
-      : [];
     const wantsTimeline =
       (honorNarrowSourceSelection && (selectedSources.has("timeline") || selectedSources.has("activity"))) ||
       intent === "timeline_view" ||
