@@ -30,6 +30,27 @@ async function probe(markup, run, theme = "light", width = 1280) {
 }
 
 for (const theme of ["light", "dark"]) {
+  test(`${theme}: selected chat timestamps meet normal-text contrast`, async () => {
+    const nav = await readFile(new URL("src/components/shell/NavRail.tsx", root), "utf8");
+    const timestampClass = nav.match(/<span className="([^"]+)">\s*\{formatDistanceToNow\(conv\.timestamp\)\}/)?.[1];
+    assert(timestampClass, "Use the class from the actual chat history timestamp");
+    await probe(`<a id="selected" class="bg-[var(--bg-inset)]"><span id="timestamp" class="${timestampClass}">Yesterday</span></a>`, async (page) => {
+      const ratio = await page.locator("#timestamp").evaluate((label) => {
+        const luminance = (color) => {
+          const rgb = color.match(/\d+/g).slice(0, 3).map((channel) => {
+            const s = Number(channel) / 255;
+            return s <= .04045 ? s / 12.92 : ((s + .055) / 1.055) ** 2.4;
+          });
+          return .2126 * rgb[0] + .7152 * rgb[1] + .0722 * rgb[2];
+        };
+        const text = luminance(getComputedStyle(label).color);
+        const background = luminance(getComputedStyle(label.parentElement).backgroundColor);
+        return (Math.max(text, background) + .05) / (Math.min(text, background) + .05);
+      });
+      assert(ratio >= 4.5, `Selected chat timestamp contrast ${ratio.toFixed(3)}:1 must reach 4.5:1`);
+    }, theme);
+  });
+
   test(`${theme}: retained semantic surfaces, typography, radius and small shadow`, async () => {
     await probe('<div id="card" class="bg-bg1 text-text1 rounded shadow-sm font-sans">Card</div><div id="small" class="rounded-sm">Small</div><div id="pill" class="rounded-full">Pill</div>', async (page) => {
       const values = await page.evaluate(() => {

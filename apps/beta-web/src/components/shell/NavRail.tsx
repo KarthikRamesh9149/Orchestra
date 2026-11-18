@@ -392,7 +392,7 @@ export function NavRail() {
                         <span className="block truncate font-sans text-[11px] text-[var(--text-default)]">
                           {conv.title}
                         </span>
-                        <span className="font-mono text-[10px] text-[var(--text-faint)]">
+                        <span className="font-mono text-[10px] text-[var(--text-muted)]">
                           {formatDistanceToNow(conv.timestamp)}
                         </span>
                       </>

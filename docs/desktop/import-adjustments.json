@@ -47,8 +47,8 @@
     {
       "path": "apps/beta-web/src/components/shell/NavRail.tsx",
       "sourceSha256": "3480ca2ab69d0d131022bd6b698fe5e987a185383d3fca851f44b56859fde0e6",
-      "importedSha256": "91374666971165229bf37f07d0b70df3bf6d42993802acaa71eaf1eb47793c79",
-      "reason": "Step 4 use the existing accessible terracotta text token for selected navigation."
+      "importedSha256": "0e3b2891d126483ef5dd803fd28f791c035597a5a5cd548d454da4688c2cdb2d",
+      "reason": "Step 4 use the existing accessible terracotta text token for selected navigation. Pre-launch: keep chat history timestamps readable on the selected inset surface in both themes."
     },
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
