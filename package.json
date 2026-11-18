@@ -8,7 +8,7 @@
     "worker": "tsx watch src/worker.ts",
     "build": "tsc -p tsconfig.json && npm --prefix apps/beta-web ci --include=dev && npm --prefix apps/beta-web run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "audit:all": "npm audit --audit-level=moderate && npm --prefix apps/beta-web audit --audit-level=moderate && npm --prefix apps/vscode-extension audit --audit-level=moderate",
+    "audit:all": "npm audit --include=dev --audit-level=info && npm --prefix apps/desktop audit --include=dev --audit-level=info && npm --prefix apps/beta-web audit --include=dev --audit-level=info && npm --prefix apps/vscode-extension audit --include=dev --audit-level=info",
     "remediation:ledger:check": "vitest run tests/remediation-ledger.test.ts",
     "remediation:staging:check": "vitest run tests/staging-isolation.test.ts",
     "remediation:staging:runtime": "tsx scripts/ops/verify-staging-runtime.ts",
@@ -152,6 +152,7 @@
     "zod": "4.6.7"
   },
   "overrides": {
+    "picomatch": "$picomatch",
     "mammoth": {
       "argparse": "2.0.1"
     }
@@ -160,6 +161,7 @@
     "@types/jsonwebtoken": "^9.0.8",
     "@types/mime-types": "^2.1.4",
     "@types/node": "^22.10.5",
+    "picomatch": "file:scripts/desktop/tooling-glob",
     "prisma": "6.6.0",
     "semver": "7.7.4",
     "tsx": "^4.22.4",

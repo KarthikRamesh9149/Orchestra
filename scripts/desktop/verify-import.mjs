@@ -167,6 +167,12 @@ for (const file of [
  adjustments[file]=(adjustments[file]??'')+' November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile.';
 }
 for (const file of [
+ 'package.json','package-lock.json','apps/beta-web/package.json','apps/beta-web/package-lock.json',
+ 'apps/vscode-extension/package.json','apps/vscode-extension/package-lock.json',
+]) {
+ adjustments[file]+=' November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs.';
+}
+for (const file of [
  "apps/desktop/src/ai-settings-session.ts",
  "apps/desktop/src/connector-sync-state.ts",
  "apps/desktop/src/contracts.ts",

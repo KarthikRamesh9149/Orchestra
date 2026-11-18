@@ -1,0 +1,10 @@
+{
+  "name": "@orchestra/build-glob",
+  "version": "1.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "main": "index.cjs",
+  "dependencies": {
+    "minimatch": "11.0.9"
+  }
+}

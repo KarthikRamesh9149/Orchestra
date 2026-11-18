@@ -82,16 +82,16 @@ jobs:
       # Failed gates still fail the job; no vulnerabilities are suppressed.
       - name: Backend dependency audit
         if: ${{ !cancelled() }}
-        run: npm audit --audit-level=moderate
+        run: npm audit --include=dev --audit-level=info
       - name: Desktop dependency audit
         if: ${{ !cancelled() }}
-        run: npm --prefix apps/desktop audit --audit-level=moderate
+        run: npm --prefix apps/desktop audit --include=dev --audit-level=info
       - name: Frontend dependency audit
         if: ${{ !cancelled() }}
-        run: npm --prefix apps/beta-web audit --audit-level=moderate
+        run: npm --prefix apps/beta-web audit --include=dev --audit-level=info
       - name: Extension dependency audit
         if: ${{ !cancelled() }}
-        run: npm --prefix apps/vscode-extension audit --audit-level=moderate
+        run: npm --prefix apps/vscode-extension audit --include=dev --audit-level=info
       - name: Local secret and source security scan
         if: ${{ !cancelled() }}
         run: npm run security:scan:local

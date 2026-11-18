@@ -11,14 +11,14 @@
     {
       "path": "apps/beta-web/package-lock.json",
       "sourceSha256": "2d65c3585760d08690bca738db400890b485a5d10af1de95bda1d486f140a8cc",
-      "importedSha256": "33b024cdaab112f681d82b0953bc997674484a0f93d4986ae78d13cdcae4e370",
-      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived. October 8 CI follow-up: replace the vulnerable legacy compiler graph with the pinned maintained compiler/plugin closure; no audit exclusions or fake version overrides. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "acce04870c23b7af4d201d55505867acca8156599bd9a5be0aadba78dc57ef65",
+      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived. October 8 CI follow-up: replace the vulnerable legacy compiler graph with the pinned maintained compiler/plugin closure; no audit exclusions or fake version overrides. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/beta-web/package.json",
       "sourceSha256": "794c0a3b21298f3cd3d7112d1143b806d49d3225e00bfb5ffde519f821ee3e3a",
-      "importedSha256": "5d51262387caa8471482832215911cfeeeae692cd773f31e7c8de0205e5db943",
-      "reason": "October 8 CI security repair: pin maintained Tailwind 4.3.3 and its PostCSS plugin, removing the unpatched braces and vulnerable selector build chains; retain React, UI components, API and theme semantics. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "b704653daa5e932e62654d7187017ff8b7ed1d4683492903f92c4d1bb0f2b073",
+      "reason": "October 8 CI security repair: pin maintained Tailwind 4.3.3 and its PostCSS plugin, removing the unpatched braces and vulnerable selector build chains; retain React, UI components, API and theme semantics. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/beta-web/postcss.config.js",
@@ -287,14 +287,14 @@
     {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
-      "importedSha256": "d8169a0d86576913df07783bb899039b5b2deffa2bf5fdb841ba0ac1ee9bb72f",
-      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed. October 8 CI follow-up: maintained VSCE 4.0.0 removes braces rather than suppressing the advisory; exact package contents and secret-scan path verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "d395784ee1c67217b2c2c0f449b97dda4f9243de23d19f8094dd74ef76705a2c",
+      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed. October 8 CI follow-up: maintained VSCE 4.0.0 removes braces rather than suppressing the advisory; exact package contents and secret-scan path verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/vscode-extension/package.json",
       "sourceSha256": "cc053d35f4e95fab6816aa9fcd6d3dcb31703b8d0520369cea50be0bdf6cbcd6",
-      "importedSha256": "e41e1fc8723b006b7637bbd850e23e7fd5bae1061cb4d2ff67addc95dea90625",
-      "reason": "October 8 CI security repair: pin Microsoft VSCE 4.0.0, removing the vulnerable glob/secretlint CLI chain; preserve extension API, commands and minimum editor version. Include the owner-approved Apache licence and exact original icon with actual unsigned VSIX regression coverage; no Marketplace publication. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "6d6980ebd905a201c93c60026aea722ca29969ebd6d8023e5ede3e11f014d7b6",
+      "reason": "October 8 CI security repair: pin Microsoft VSCE 4.0.0, removing the vulnerable glob/secretlint CLI chain; preserve extension API, commands and minimum editor version. Include the owner-approved Apache licence and exact original icon with actual unsigned VSIX regression coverage; no Marketplace publication. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/vscode-extension/tsconfig.json",
@@ -305,14 +305,14 @@
     {
       "path": "package-lock.json",
       "sourceSha256": "33714f0d9de659613f0d5112a9bd1f41b4e2ce1a71981e645eb2e5f829225782",
-      "importedSha256": "f7705c8bbcb251d52b4a06c9f962172d4e5b75c5ee499627d6058f408d5dc734",
-      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades. October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "3d68202886b9c353b0d7e9968aacc42873f711b228e3f4bab8f06350e63eb439",
+      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades. October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "package.json",
       "sourceSha256": "dc9bca392bfa6997c3db4c32de7362f7947cfa3ba96fb1bc91812e7f3dc1a984",
-      "importedSha256": "c2e4c6b2fe7c6235eaa0a5b8228c3047adcfe9e838020ef4ca28ca0c677c81d4",
-      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate. October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile."
+      "importedSha256": "b8a6ae99438a69ec9533711a5919f27acd9dcfa779b25fe38f87f9623506e762",
+      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate. October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "prisma/schema.prisma",
