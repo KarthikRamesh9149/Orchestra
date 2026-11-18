@@ -295,6 +295,14 @@ function answerNotices(msg: Message) {
   return { warnings: [...warnings], details: [...details] };
 }
 
+function extractEvidenceFallback(msg: Message) {
+  if (msg.isStreaming || !msg.modelMetadata?.degraded) return null;
+  // Persisted answers and non-UI clients keep the full server explanation.
+  // Move that exact opening note into the one visible warning on this view.
+  const note = /^## Evidence-only fallback\r?\n\r?\n(The AI synthesis provider is unavailable,[^\r\n]+)\r?\n\r?\n(?=\S)/.exec(msg.content);
+  return note ? { explanation: note[1], body: msg.content.slice(note[0].length) } : null;
+}
+
 const AssistantMessage = memo(function AssistantMessage({
   msg,
   isTyping,
@@ -326,6 +334,25 @@ const AssistantMessage = memo(function AssistantMessage({
   const primarySource = !msg.isError && resolvedSource && safeMarkdownUrl(resolvedSource.href) ? resolvedSource : undefined;
   const evidenceQuote = primarySource ? singleCitation?.excerpt : undefined;
   const { warnings, details } = msg.isStreaming ? { warnings: [], details: [] } : answerNotices(msg);
+  const fallback = extractEvidenceFallback(msg);
+  const degraded = msg.modelMetadata?.degraded;
+  const evidenceOnly = fallback || msg.citations?.length || warnings.some((warning) => /evidence.only|retrieved evidence/i.test(warning));
+  const warningPanel = !msg.isStreaming && (warnings.length > 0 || degraded) ? (
+    <div role="status" aria-label="Answer limitations" className="my-3 rounded-lg border border-[var(--border-soft)] bg-[var(--tint-amber)] px-3 py-2">
+      <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--amber-text)]">
+        <TriangleAlert size={13} aria-hidden="true" />
+        {degraded && evidenceOnly ? "Evidence-only fallback" : "Answer limitations"}
+      </p>
+      {fallback || warnings.length === 0 ? (
+        <p className="mt-1 text-xs text-[var(--text-default)]">{fallback?.explanation ?? "AI synthesis did not complete; verify the answer before acting."}</p>
+      ) : null}
+      {warnings.length > 0 ? (
+        <ul className="mt-1 list-disc space-y-1 pl-4 text-xs text-[var(--text-default)]">
+          {warnings.map((warning) => <li key={warning}>{warning}</li>)}
+        </ul>
+      ) : null}
+    </div>
+  ) : null;
 
   const submitFeedback = async (reason: SocratesFeedbackReason, correction?: string) => {
     if (!projectId || !sessionId || feedbackBusy) return;
@@ -363,6 +390,7 @@ const AssistantMessage = memo(function AssistantMessage({
           <TypingIndicator />
         ) : (
           <>
+            {degraded ? warningPanel : null}
             {msg.isError ? (
               <div
                 className="flex items-start gap-2.5 rounded-xl border px-4 py-3"
@@ -372,7 +400,7 @@ const AssistantMessage = memo(function AssistantMessage({
                 <p className="font-sans text-[13.5px] leading-relaxed text-[var(--text-default)]">{msg.content}</p>
               </div>
             ) : (
-              <AnswerMarkdown content={msg.content} streaming={msg.isStreaming} citations={msg.citations} openTargets={openTargets} primarySource={primarySource} />
+              <AnswerMarkdown content={fallback?.body ?? msg.content} streaming={msg.isStreaming} citations={msg.citations} openTargets={openTargets} primarySource={primarySource} />
             )}
             {msg.isStreaming && msg.content ? (
               <span className="mt-2 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]" role="status">Writing answer…</span>
@@ -410,19 +438,7 @@ const AssistantMessage = memo(function AssistantMessage({
                 ))}
               </div>
             )}
-            {!msg.isStreaming && (warnings.length > 0 || msg.modelMetadata?.degraded) && (
-              <div role="status" aria-label="Answer limitations" className="mt-3 rounded-lg border border-[var(--border-soft)] bg-[var(--tint-amber)] px-3 py-2">
-                <p className="flex items-center gap-1.5 text-xs font-semibold text-[var(--amber-text)]">
-                  <TriangleAlert size={13} aria-hidden="true" />
-                  {msg.modelMetadata?.degraded ? "Evidence-only fallback" : "Answer limitations"}
-                </p>
-                {warnings.length > 0 ? (
-                  <ul className="mt-1 list-disc space-y-1 pl-4 text-xs text-[var(--text-default)]">
-                    {warnings.map((warning) => <li key={warning}>{warning}</li>)}
-                  </ul>
-                ) : <p className="mt-1 text-xs text-[var(--text-default)]">AI synthesis did not complete; check the available evidence before acting.</p>}
-              </div>
-            )}
+            {!degraded ? warningPanel : null}
             {!msg.isStreaming && (details.length > 0 || evidenceQuote || (msg.confidence && msg.citations?.length)) ? (
               <details className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2">
                 <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Answer details</summary>

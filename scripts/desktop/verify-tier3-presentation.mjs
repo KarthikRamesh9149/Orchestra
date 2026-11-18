@@ -22,6 +22,8 @@ const [{computeStats, buildDeepResearchSources}, {presentResearchReport}, {rende
 ]);
 const hash = async file => createHash('sha256').update(await readFile(file)).digest('hex');
 const profile = await mkdtemp('/private/tmp/orch-tier3-');
+const source = resolve(import.meta.dirname, '../..');
+const lockfiles = ['package-lock.json', ...['desktop', 'beta-web', 'vscode-extension'].map(name => `apps/${name}/package-lock.json`)];
 const proof = {
   commit, tree, appPath, profile, checkedAt: new Date().toISOString(),
   scope: 'One Mac; real offline chat and local document; synthetic report transport; actual candidate report renderers; Chromium AX tree, not human VoiceOver qualification.',
@@ -29,6 +31,8 @@ const proof = {
   nativeManifest: await hash(join(resources, 'runtime/native-manifest.json')),
   reportRenderer: await hash(join(backend, 'report-render.js')),
   uiEntry: await hash(join(resources, 'runtime/ui/index.html')),
+  nativeBuildProvenance: await hash(join(source, '.desktop/native/darwin-arm64/build-provenance.json')),
+  npmLockfileSha256: Object.fromEntries(await Promise.all(lockfiles.map(async file => [file, await hash(join(source, file))]))),
   checks: [],
 };
 const pass = name => { proof.checks.push(name); console.log('PASS', name); };
@@ -76,6 +80,8 @@ try {
   await link.waitFor();
   assert.equal(await page.locator('a[href^="/memory/docs/"]').count(), 1);
   assert.match(await warning.innerText(), /Evidence-only fallback/i);
+  assert.equal(await page.getByText('Evidence-only fallback', {exact: true}).count(), 1);
+  assert.match(await warning.innerText(), /AI synthesis provider is unavailable/i);
   assert.match(await page.locator('.socrates-markdown').last().innerText(), /21 October 2026/);
   const session = await app.context().newCDPSession(page);
   const {nodes} = await session.send('Accessibility.getFullAXTree');
@@ -120,9 +126,20 @@ try {
     progress: {percent: 100, stage: 'completed'}, results: presentResearchReport(rawReport), error: null,
     createdAt: new Date().toISOString(), completedAt: new Date().toISOString(),
   };
-  for (const path of [`**/v1/projects/${projectId}/deep-research`, `**/v1/projects/${projectId}/deep-research/${id}`]) {
-    await page.route(path, route => route.fulfill({status: 200, json: {data: run}}));
-  }
+  // Chromium network routing does not reliably intercept Electron's custom
+  // protocol. Replay precisely these two requests inside the synthetic renderer.
+  await page.evaluate(({run, path}) => {
+    const realFetch = window.fetch.bind(window);
+    window.fetch = (input, init) => {
+      const url = new URL(input instanceof Request ? input.url : input, location.href);
+      const method = init?.method ?? (input instanceof Request ? input.method : 'GET');
+      if (url.protocol === 'orchestra:' && url.host === 'app' && (
+        (url.pathname === path && method === 'POST') ||
+        (url.pathname === path + '/' + run.id && method === 'GET')
+      )) return Promise.resolve(Response.json({data: run}));
+      return realFetch(input, init);
+    };
+  }, {run, path: `/v1/projects/${projectId}/deep-research`});
   await page.getByRole('button', {name: 'Deep Research', exact: true}).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByRole('textbox').fill(focus);

@@ -167,13 +167,13 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.test.tsx",
       "sourceSha256": "dc3dd456336450e4661b2b4c15bbbc6ccc7288633880b29b1e99bd297cc1c5c6",
-      "importedSha256": "49d282077a3d5af19ffa28f168cb830e27001f2766859fcd13a6f504bc1f43bc",
+      "importedSha256": "ed9c1ec4aaa6b0f7aa591f83011d9545e467cb5469abcaa8c24d59b809efc04e",
       "reason": "Step 4 regression coverage for delayed first-session acceptance across navigation and explicit new-chat selection. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations."
     },
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "2214849eafe68a4d07697263f49c61fdedb4cfd286e58c2ebff07f502baadffa",
+      "importedSha256": "132517da65ea9e05e840c66b7b5629383337ba6e0eb81d0402a3ade8ed6d9081",
       "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: make one source actionable without duplicating it; retain evidence excerpts and immediately visible material limitations."
     },
     {

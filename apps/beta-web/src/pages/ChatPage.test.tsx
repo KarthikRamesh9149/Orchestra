@@ -470,6 +470,19 @@ describe("server-authoritative Socrates chat", () => {
     expect(screen.getAllByText("GitHub could not be searched.")).toHaveLength(1);
   });
 
+  it("presents the persisted fallback explanation once before the retrieved excerpts", async () => {
+    const reason = "The AI synthesis provider is unavailable, so these are query-matched excerpts.";
+    const rich = assistantRow(`## Evidence-only fallback\n\n${reason}\n\n- The launch is on Friday.`);
+    rich.answerPayloadJson = { ...rich.answerPayloadJson, modelMetadata: { degraded: true } };
+    history = [userRow("When is the launch?"), rich];
+    renderChat(`/chat/${SESSION_ID}`);
+    const warning = await screen.findByRole("status", { name: "Answer limitations" });
+    expect(warning).toHaveTextContent(reason);
+    expect(screen.getAllByText("Evidence-only fallback", { exact: true })).toHaveLength(1);
+    const excerpt = await screen.findByText("The launch is on Friday.");
+    expect(warning.compareDocumentPosition(excerpt) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
   it("restores explicit sparse citation numbers after reload and opens the matching source", async () => {
     const rich = assistantRow("First claim [E8]. Second claim [E2]. Legacy [E1].");
     rich.answerPayloadJson = {
