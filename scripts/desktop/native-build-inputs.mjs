@@ -8,7 +8,7 @@ async function realDirectory(path,{create=false,optional=false}={}){
   try{stat=await lstat(path);}catch(error){
     if(error.code!=='ENOENT')throw error;
     if(create){
-      try{await mkdir(path);}catch(error){if(error.code!=='EEXIST')throw error;}
+      try{await mkdir(path,{mode:0o700});}catch(error){if(error.code!=='EEXIST')throw error;}
       stat=await lstat(path);
     }else if(optional){return false;}else{throw error;}
   }

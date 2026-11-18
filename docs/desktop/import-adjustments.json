@@ -569,7 +569,7 @@
     {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "3798435c4d9da1806775ff45ac9841a5733d79ca014d42a4978fd49c3b9b148d",
+      "importedSha256": "879d0768b13135af83ea8fb69c8216ecd73dd168fdb3b55811082e3b4c99df5d",
       "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence. November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity. Pre-launch: add an explicit project-scoped recorded decisions source and exact authorized previews; distinguish human acceptance from source claims."
     },
     {
@@ -797,7 +797,7 @@
     {
       "path": "tests/fix22-deep-research.test.ts",
       "sourceSha256": "fb96bdeb8d8cf407378d98a90ee920e679b1916eb814c4b3599a5aa79abef357",
-      "importedSha256": "0ea3a72a36b441cf68011fe71019b352f44c22f1bd6564e429f8ee4bd965b920",
+      "importedSha256": "41717cbe8ebfaf851eec062c86ed8e05e43ef18d2def70ad559481304b2abc1f",
       "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations. November Tier 3: deduplicate GitHub record identities and use reader-facing labels in reports and exports without changing source or saved action identity. Pre-launch: add an explicit project-scoped recorded decisions source and exact authorized previews; distinguish human acceptance from source claims."
     },
     {

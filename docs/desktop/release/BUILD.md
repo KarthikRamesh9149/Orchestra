@@ -21,7 +21,6 @@ npm run prisma:generate
 npm run build
 npm --prefix apps/desktop run typecheck
 npm --prefix apps/desktop run build
-mkdir -p .desktop
 export DEVELOPER_DIR=/Library/Developer/CommandLineTools
 export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
 node scripts/desktop/build-native-mac.mjs

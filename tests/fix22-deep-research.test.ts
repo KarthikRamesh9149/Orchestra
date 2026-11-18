@@ -153,6 +153,25 @@ describe("[FIX-22] Deep Research authoritative contracts", () => {
     expect(findFirst).toHaveBeenCalledTimes(2);
   });
 
+  it("requires active GitHub access when opening a retained exact citation", async () => {
+    const { service, prisma, run } = createService();
+    const id = "b7ffad33-4d00-4fdd-ba0f-cceabafda0e1";
+    const actor = { userId: run.createdByUserId, orgId: run.orgId };
+    prisma.deepResearchRun.findUnique.mockResolvedValue({ ...run, resultsJson: { ...results, sources: [
+      { provider: "GitHub", label: "Export PR", kind: "internal", href: null, ref: "E1", target: { kind: "github_record", id } }
+    ] } });
+    const states = { repositoryLink: "active", repository: "active", installation: "active" };
+    const findFirst = vi.fn(async ({ where }) => Object.entries(states).every(([key, state]) => where[key]?.status === state && where[key]?.archivedAt === null)
+      ? { title: "Export PR", summary: "Adds validation to exports.", sha: "c123456" } : null);
+    prisma.gitHubEngineeringEvidence = { findFirst };
+    await expect(service.getSourcePreview(run.projectId, run.id, actor, "E1")).resolves.toMatchObject({
+      text: "Adds validation to exports.", detail: "c123456"
+    });
+    expect(findFirst.mock.calls[0]?.[0].where).toMatchObject({ id, projectId: run.projectId, orgId: actor.orgId, evidenceStatus: "active" });
+    states.installation = "suspended";
+    await expect(service.getSourcePreview(run.projectId, run.id, actor, "E1")).rejects.toMatchObject({ code: "deep_research_source_unavailable" });
+  });
+
   it("[LR-01] keeps a healthy owner alive through pending work and fences a late failure", async () => {
     vi.useFakeTimers();
     const { service, prisma, run } = createService();

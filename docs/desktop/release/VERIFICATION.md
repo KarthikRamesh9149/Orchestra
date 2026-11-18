@@ -9,14 +9,16 @@ covers an **internal Mac ARM candidate**, not public installer qualification.
    Open a pull request to `main`, or dispatch **Desktop source checks** on that
    branch. Both `source` and `dependency-audit` must pass. Record the run link
    and confirm its tested tree matches the package's source. A skipped job
-   is not a pass.
+   is not a pass. After integration, record the `push` run on the exact
+   remote `main` SHA. A green PR run alone does not qualify `main`.
 2. Build and package on Apple Silicon using [BUILD.md](BUILD.md). Record the
    new package path from the packager. Record SHA-256 for
    `Contents/Resources/app.asar` and
    `Contents/Resources/runtime/native-manifest.json` in that app, and for
    `.desktop/native/darwin-arm64/build-provenance.json`. Record the Mac and OS
-   used and the source revision alongside those digests. Rebuild and recheck
-   when source, lockfiles or native inputs change.
+   used and the source revision alongside those digests. Build the final
+   package from that exact `main` revision; rerun the affected checks if
+   source, lockfiles or native inputs change.
 3. Verify private chat projections from the checkout:
    `npx --no-install vitest run --config vitest.desktop.config.ts tests/dashboard-service.test.ts tests/beta-timeline-service.test.ts tests/suggestions-service.test.ts`.
    In an isolated shared fixture with two signed-in actors, confirm the second

@@ -19,6 +19,8 @@ test('repository audit cannot certify a public release', () => {
   assert.equal(report.releaseReady,false);
   assert.ok(report.blockers.length >= 5);
   assert.match(report.firstPartyLicense,/Apache-2.0/);
+  assert.match(report.firstPartyLicense,/public source/);
+  assert.ok(report.blockers.some(item => /separate approval to publish installers/.test(item)));
   assert.ok(report.dependencies > 100);
   assert.match(report.sourceHead,/^[a-f0-9]{40}$/);
 });

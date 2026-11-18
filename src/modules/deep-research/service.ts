@@ -228,7 +228,9 @@ export class DeepResearchService {
       if (decision?.acceptedAt) detail = `Recorded acceptance · ${decision.acceptedAt.toISOString()}`;
     } else if (target?.kind === "github_record") {
       const evidence = await this.prisma.gitHubEngineeringEvidence.findFirst({
-        where: { id: target.id, projectId, orgId: actor.orgId, evidenceStatus: "active" },
+        where: { id: target.id, projectId, orgId: actor.orgId, evidenceStatus: "active",
+          repositoryLink: { status: "active", archivedAt: null },
+          repository: { status: "active", archivedAt: null }, installation: { status: "active", archivedAt: null } },
         select: { title: true, summary: true, sha: true }
       });
       text = evidence?.summary || evidence?.title;
