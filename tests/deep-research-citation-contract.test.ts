@@ -36,6 +36,25 @@ describe("Deep Research citation contract", () => {
     const named = ["doc-a", "doc-b"].map(documentId => ({ ...card, openTarget: { targetRef: { documentId } } }));
     expect(buildDeepResearchSources(named, [])).toHaveLength(2);
   });
+  it("preserves exact Slack, Brain, document-revision and GitHub destinations", () => {
+    const id = "11111111-1111-4111-8111-111111111111";
+    const versionId = "22222222-2222-4222-8222-222222222222";
+    const sources = buildDeepResearchSources([
+      { ...card, evidenceId: "slack", citationRef: { type: "message", id }, sourceType: "slack_message",
+        openTarget: { targetType: "message", targetRef: { messageId: id } } },
+      { ...card, evidenceId: "brain", citationRef: { type: "brain_node", id }, sourceType: "brain_node",
+        openTarget: { targetType: "product_brain", targetRef: { brainNodeId: id } } },
+      { ...card, openTarget: { targetType: "document_section", targetRef: { documentId: id, documentVersionId: versionId, anchorId: "acceptance" } } },
+      { ...card, evidenceId: "github", citationRef: { type: "github_commit", id }, sourceType: "github_commit",
+        openTarget: { targetType: "github_evidence", targetRef: { url: "https://github.com/example/example/commit/abc1234" } } },
+      { ...card, evidenceId: "unknown", sourceType: "other", citationRef: { type: "other", id } },
+    ], []);
+    expect(sources[0]).toMatchObject({ href: null, target: { kind: "message", id } });
+    expect(sources[1]).toMatchObject({ href: null, target: { kind: "brain_node", id } });
+    expect(sources[2]?.href).toBe(`/memory/docs/${id}/view?versionId=${versionId}#acceptance`);
+    expect(sources[3]?.href).toBe("https://github.com/example/example/commit/abc1234");
+    expect(sources[4]).toMatchObject({ href: null, excerpt: card.excerpt });
+  });
   it("groups public URLs without losing citation aliases and labels derived evidence explicitly", () => {
     const sources = buildDeepResearchSources([{ ...card, sourceType: "brain_node" }], [
       { title: "Public source", url: "https://example.com/report", snippet: "First excerpt" },

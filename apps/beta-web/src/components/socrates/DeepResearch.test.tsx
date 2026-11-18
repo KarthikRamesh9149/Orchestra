@@ -11,6 +11,8 @@ const mocks = vi.hoisted(() => ({
   getDeepResearchUsage: vi.fn(),
   addDeepResearchToMemory: vi.fn(),
   downloadDeepResearchReport: vi.fn(),
+  setResearchActionCompletion: vi.fn(),
+  getResearchSourcePreview: vi.fn(),
 }));
 vi.mock("../../lib/api/research", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../../lib/api/research")>()),
@@ -71,6 +73,50 @@ async function showResults() {
 
 describe("[FIX-22] Deep Research truthful UI", () => {
   afterEach(() => vi.unstubAllGlobals());
+  it("reopens a report and restores the correct recommendation after a confirmed save", async () => {
+    const actionId = "a".repeat(64);
+    let checked = false;
+    mocks.getDeepResearchRun.mockImplementation(async (_projectId, requestedRun) => ({
+      ...completedRun, id: requestedRun,
+      results: { ...completedRun.results, recommendedActions: [{
+        ...completedRun.results.recommendedActions[0], id: actionId, completed: requestedRun === runId && checked
+      }] },
+    }));
+    mocks.setResearchActionCompletion.mockImplementation(async (_project, id, action, completed) => {
+      expect(id).toBe(runId); expect(action).toBe(actionId); checked = completed;
+      return { actionId, completed };
+    });
+    const show = (id: string) => render(<MemoryRouter><DeepResearchModal projectId="project-1" existingRunId={id}
+      open minimized={false} onClose={vi.fn()} onMinimize={vi.fn()} onElapsedChange={vi.fn()} /></MemoryRouter>);
+    const user = userEvent.setup();
+    const first = show(runId);
+    const action = await screen.findByRole("button", { name: /Run the missing check/ });
+    expect(action).toHaveAttribute("aria-pressed", "false");
+    await user.click(action);
+    expect(action).toHaveAttribute("aria-pressed", "true");
+    first.unmount();
+    const reopened = show(runId);
+    expect(await screen.findByRole("button", { name: /Run the missing check/ })).toHaveAttribute("aria-pressed", "true");
+    reopened.unmount();
+    show(contextId);
+    expect(await screen.findByRole("button", { name: /Run the missing check/ })).toHaveAttribute("aria-pressed", "false");
+    expect(mocks.startDeepResearch).not.toHaveBeenCalled();
+  });
+
+  it("opens the selected message in the report rather than navigating to Memory", async () => {
+    mocks.getDeepResearchRun.mockResolvedValue({
+      ...completedRun, results: { ...completedRun.results, sources: [
+        { provider: "Slack", label: "Release conversation", kind: "internal", href: null,
+          target: { kind: "message", id: contextId }, ref: "E2" }
+      ] }
+    });
+    mocks.getResearchSourcePreview.mockResolvedValue({ title: "Release conversation", detail: "Launch coordinator", text: "The final gate is Thursday." });
+    const { user } = await showResults();
+    await user.click(screen.getByRole("button", { name: /Release conversation/ }));
+    expect(await screen.findByText("The final gate is Thursday.")).toBeVisible();
+    expect(mocks.getResearchSourcePreview).toHaveBeenCalledWith("project-1", runId, "E2");
+    expect(screen.getByLabelText("Current route")).toHaveTextContent("/chat");
+  });
   it('lets the native backend validate configured AI instead of blocking every desktop request', async () => {
     vi.stubGlobal('orchestra', {});
     const user = userEvent.setup(); renderModal();

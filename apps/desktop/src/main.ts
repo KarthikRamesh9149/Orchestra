@@ -4,7 +4,7 @@ import {copyPlainText} from './clipboard.js';
 import {join} from 'node:path';
 import {open} from 'node:fs/promises';
 import {constants} from 'node:fs';
-import {commandSchema,isTrustedFrame} from './contracts.js';
+import {commandSchema,isTrustedFrame,type StartupTiming} from './contracts.js';
 import {assetResponse} from './assets.js';
 import {loadVault} from './vault.js';
 import {ProtectedSettingsStore,aiPreferencesSchema} from './protected-settings.js';
@@ -25,8 +25,7 @@ import {listSlackChannels,readSlackChannel} from './slack-sources.js';
 import {connectGitHub,refreshGitHub,listGitHubRepositories} from './github-oauth.js';
 import {readGitHubSnapshot} from './github-sources.js';
 import {connectDrive,refreshDrive,revokeDrive,DriveAuthorizationError,parseDriveClient} from './drive-oauth.js';
-import {readSelectedDriveFile} from './drive-sources.js';
-import {rememberSyncTarget,refreshSelectedSource} from './connector-sync.js';
+import {rememberSyncTarget,savedSyncTarget,refreshSelectedSource,importSelectedDriveRevision} from './connector-sync.js';
 import {dueTarget,finishedTarget,type SyncTarget} from './connector-sync-state.js';
 import {z} from 'zod';
 import {SharedConnectionStore} from './shared-store.js';
@@ -44,7 +43,9 @@ let shutdownComplete=false;
 let slackAuthorization:AbortController|undefined;
 let githubAuthorization:AbortController|undefined;
 let driveAuthorization:AbortController|undefined;
-const host=new HostClient(delta=>{if(window&&!window.isDestroyed())window.webContents.send('orchestra:delta',delta);});
+const startup:StartupTiming={};
+const elapsed=()=>Math.round(process.uptime()*1000);
+const host=new HostClient(delta=>{if(window&&!window.isDestroyed())window.webContents.send('orchestra:delta',delta);},startup);
 const selections=new Selections();
 if(!single)app.quit();
 else {
@@ -62,6 +63,7 @@ else {
  });
  app.on('window-all-closed',()=>{if(!closing)app.quit();});
  void app.whenReady().then(async()=>{
+  startup.mainReadyMs=elapsed();
   const resources=app.isPackaged?join(process.resourcesPath,'runtime'):join(app.getAppPath(),'../../.desktop/runtime');
   await protocol.handle('orchestra',request=>new URL(request.url).pathname.startsWith('/v1/')?localHttp(request,host):assetResponse(join(resources,'ui'),request.url,request.method));
   session.defaultSession.setPermissionRequestHandler((_contents,_permission,callback)=>callback(false));
@@ -86,9 +88,9 @@ else {
   let configuringAi=false;
   let syncController:AbortController|undefined;
   const runRefresh=async(target:SyncTarget)=>{
-   syncController=new AbortController();const timer=setTimeout(()=>syncController?.abort(),60000);let ok=false;
-   try{return await refreshSelectedSource(target,settings,host,syncController.signal).then(result=>{ok=true;return result;});}
-   finally{clearTimeout(timer);syncController=undefined;const state=await settings.read();await settings.write({...state,syncTargets:state.syncTargets?.map(t=>t.id===target.id?finishedTarget(t,ok,Date.now()):t)});}
+   const controller=syncController=new AbortController();const timer=setTimeout(()=>controller.abort(),60000);let ok=false;
+   try{return await refreshSelectedSource(target,settings,host,controller.signal).then(result=>{ok=true;return result;});}
+   finally{clearTimeout(timer);syncController=undefined;const state=await settings.read();await settings.write({...state,syncTargets:state.syncTargets?.map(t=>t.id===target.id?finishedTarget({...t,checkpointPaused:controller.signal.reason==='user_cancelled'?true:target.checkpointPaused},ok,Date.now()):t)});}
   };
   const pumpRefresh=async(wake=false)=>{
    if(configuringAi||closing||host.status.state!=='ready')return;configuringAi=true;
@@ -99,16 +101,16 @@ else {
   const syncTimer=setInterval(()=>void pumpRefresh(),15000);syncTimer.unref();
   powerMonitor.on('resume',()=>void pumpRefresh(true));
   app.on('before-quit',()=>{clearInterval(syncTimer);syncController?.abort();});
-  ipcMain.handle('orchestra:sync-inspect',async event=>{if(!trusted(event))throw new Error('Unauthorized frame');try{return {ok:true,data:{targets:(await settings.read()).syncTargets??[],running:!!syncController}};}catch{return {ok:false,error:{code:'sync_status_unavailable',message:'Source refresh status could not be read.'}};}});
-  ipcMain.handle('orchestra:sync-cancel',event=>{if(!trusted(event))throw new Error('Unauthorized frame');syncController?.abort();return {ok:true,data:{cancelled:true}};});
+  ipcMain.handle('orchestra:sync-inspect',async event=>{if(!trusted(event))throw new Error('Unauthorized frame');try{return {ok:true,data:{targets:((await settings.read()).syncTargets??[]).map(({checkpoint,...target})=>({...target,inProgress:!!checkpoint})),running:!!syncController}};}catch{return {ok:false,error:{code:'sync_status_unavailable',message:'Source refresh status could not be read.'}};}});
+  ipcMain.handle('orchestra:sync-cancel',event=>{if(!trusted(event))throw new Error('Unauthorized frame');syncController?.abort('user_cancelled');return {ok:true,data:{cancelled:true}};});
   ipcMain.handle('orchestra:sync-update',async(event,value:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');const input=z.object({id:z.string().guid(),action:z.enum(['enable','pause','remove','refresh'])}).strict().safeParse(value);
    if(!input.success)return {ok:false,error:{code:'invalid_sync_selection',message:'Choose a saved source selection.'}};
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'A native operation is active. Cancel refresh or retry when it finishes.'}};configuringAi=true;
    try{const state=await settings.read(),target=state.syncTargets?.find(t=>t.id===input.data.id);if(!target)throw new Error('Selection missing');
-    if(input.data.action==='refresh')return {ok:true,data:await runRefresh(target)};
+    if(input.data.action==='refresh')return {ok:true,data:await runRefresh({...target,checkpointPaused:false})};
     if(input.data.action==='enable'){const consent=await dialog.showMessageBox(window!,{type:'question',message:'Enable background refresh for this selected source?',detail:`Only the saved ${target.provider} selection in its original local workspace will be refreshed. While Orchestra is open, changes are checked approximately every five minutes and after wake. Existing size and history bounds remain; failures are shown here. Newly imported content may be sent to your configured AI for indexing. Pause or remove this selection at any time.`,buttons:['Cancel','Enable refresh'],defaultId:0,cancelId:0});if(consent.response!==1)return {ok:true,data:{cancelled:true}};}
-    await settings.write({...state,syncTargets:input.data.action==='remove'?state.syncTargets!.filter(t=>t.id!==target.id):state.syncTargets!.map(t=>t.id===target.id?{...t,enabled:input.data.action==='enable',nextAt:0}:t)});return {ok:true,data:{updated:true}};
+    await settings.write({...state,syncTargets:input.data.action==='remove'?state.syncTargets!.filter(t=>t.id!==target.id):state.syncTargets!.map(t=>t.id===target.id?{...t,enabled:input.data.action==='enable',checkpointPaused:input.data.action==='pause',nextAt:0}:t)});return {ok:true,data:{updated:true}};
    }catch{return {ok:false,error:{code:'source_refresh_failed',message:'Source refresh was not confirmed. Check its connection, permissions and snapshot limits, then retry.'}};}finally{configuringAi=false;}
   });
   ipcMain.handle('orchestra:github-inspect',async event=>{
@@ -156,14 +158,18 @@ else {
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
    configuringAi=true;
    try{
-    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Import selected GitHub repository evidence?',detail:'Read-only snapshot of pull-request descriptions and commit messages, up to 200 of each. Text excerpts are limited to 4,000 characters with credential-pattern redaction. No source files or provider writes. Saved evidence may be sent to your configured AI when you ask a question. It is not accepted product truth.',buttons:['Cancel','Import evidence'],defaultId:0,cancelId:0});
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:'Import selected GitHub repository evidence?',detail:'Read-only import of pull-request descriptions and commit messages, in batches of up to 200 of each. Larger imports resume while Orchestra is open. Text excerpts are limited to 4,000 characters with credential-pattern redaction. No source files or provider writes. Saved evidence may be sent to your configured AI when you ask a question. It is not accepted product truth.',buttons:['Cancel','Import evidence'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
     const state=await settings.read();if(!state.github)throw new Error('GitHub not connected');
     const credential=await refreshGitHub(state.github);await settings.write({...state,github:credential});
-    const snapshot=await readGitHubSnapshot(credential,input.data.repositoryId);
+    const selection={provider:'github' as const,projectId:input.data.projectId,resourceIds:[String(input.data.repositoryId)]};
+    const previous=(await savedSyncTarget(settings,selection))?.checkpoint;
+    const {checkpoint,...snapshot}=await readGitHubSnapshot(credential,input.data.repositoryId,fetch,previous?.provider==='github'?previous.cursor:undefined);
     const imported=await host.request({operation:'desktop.github.ingest',projectId:input.data.projectId,...snapshot});
-    if(imported.ok)await rememberSyncTarget(settings,{provider:'github',projectId:input.data.projectId,resourceIds:[String(input.data.repositoryId)]});return imported;
-   }catch{return {ok:false,error:{code:'github_import_failed',message:'GitHub import was not confirmed. Check workspace access, connectivity and repository permissions. Snapshots exceeding 200 pull requests or 200 commits fail rather than silently dropping evidence.'}};}
+    if(!imported.ok)return imported;
+    await rememberSyncTarget(settings,selection,checkpoint?{provider:'github',cursor:checkpoint}:null);
+    return {ok:true,data:{...imported.data as object,inProgress:!!checkpoint}};
+   }catch{return {ok:false,error:{code:'github_import_failed',message:'GitHub import was not confirmed. Check workspace access, connectivity and repository permissions; previously saved batches are retained.'}};}
    finally{configuringAi=false;}
   });
   const reconcileSlackRevocation=async()=>{const state=await settings.read();if(!state.slackRevokedTeamId)return;const result=await host.request({operation:'desktop.slack.disconnect',teamId:state.slackRevokedTeamId});if(!result.ok)throw new Error('Local revocation pending');const {slackRevokedTeamId:_,...rest}=state;await settings.write(rest);};
@@ -183,12 +189,17 @@ else {
     if(!projects.ok||!Array.isArray(projects.data)||!projects.data.some(project=>project.id===input.data.projectId))throw new Error('Project unavailable');
     const state=await settings.read();if(!state.slack)throw new Error('Not connected');const credential=await refreshSlack(state.slack);await settings.write({...state,slack:credential});
     const channel=(await listSlackChannels(credential)).find(item=>item.id===input.data.channelId);if(!channel)throw new Error('Channel unavailable');
-    const consent=await dialog.showMessageBox(window!,{type:'question',message:`Import #${channel.name} into the selected local project?`,detail:'Read up to 200 messages and thread replies from the past 30 days. Messages become local evidence, not accepted truth. Configured AI may process the imported evidence. No other channels or direct messages are read.',buttons:['Cancel','Import selected channel'],defaultId:0,cancelId:0});
+    const consent=await dialog.showMessageBox(window!,{type:'question',message:`Import #${channel.name} into the selected local project?`,detail:'Read messages and thread replies from the past 30 days, up to 200 per batch. Larger imports resume while Orchestra is open. Messages become local evidence, not accepted truth. Configured AI may process the imported evidence. No other channels or direct messages are read.',buttons:['Cancel','Import selected channel'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
-    const snapshot=await readSlackChannel(credential,channel);
+    const selection={provider:'slack' as const,projectId:input.data.projectId,resourceIds:[channel.id],teamId:credential.teamId};
+    const previous=(await savedSyncTarget(settings,selection))?.checkpoint;
+    const {checkpoint,...snapshot}=await readSlackChannel(credential,channel,fetch,previous?.provider==='slack'?previous.cursor:undefined);
     const imported=await host.request({operation:'desktop.slack.ingest',projectId:input.data.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,...snapshot});
-    if(imported.ok)await rememberSyncTarget(settings,{provider:'slack',projectId:input.data.projectId,resourceIds:[channel.id],teamId:credential.teamId});return imported;
-   }catch{return {ok:false,error:{code:'slack_import_failed',message:'Slack import was not confirmed. Check Memory before retrying. The snapshot is limited to 200 messages and 20 API pages; rate limits and unavailable channels are reported as failures, not empty imports.'}};}finally{configuringAi=false;}
+    if(!imported.ok)return imported;
+    const historyLimited=!checkpoint&&!snapshot.snapshot.complete;
+    await rememberSyncTarget(settings,selection,checkpoint?{provider:'slack',cursor:checkpoint}:null,historyLimited);
+    return {ok:true,data:{...imported.data as object,inProgress:!!checkpoint,historyLimited}};
+   }catch{return {ok:false,error:{code:'slack_import_failed',message:'Slack import was not confirmed. Check Memory before retrying. Previously saved batches are retained; rate limits and unavailable channels are reported as failures.'}};}finally{configuringAi=false;}
   });
   ipcMain.handle('orchestra:slack-inspect',async event=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
@@ -285,10 +296,7 @@ else {
     for(const fileId of state.drive.fileIds){
      driveAuthorization.signal.throwIfAborted();
      const credential=await refreshDrive(state.drive!);state={...state,drive:credential};await settings.write(state);
-     const file=await readSelectedDriveFile(credential,fileId,driveAuthorization.signal);
-     driveAuthorization.signal.throwIfAborted();
-     const result=await host.request({operation:'desktop.drive.ingest',projectId:project.data,fileId:file.fileId,name:file.name,mimeType:file.mimeType,modifiedTime:file.modifiedTime,version:file.version,contentType:file.contentType as 'text/plain',fileName:file.fileName,base64:file.bytes.toString('base64')});
-     if(!result.ok)throw new Error('Persistence not confirmed');files.push(result.data);saved++;
+     files.push(await importSelectedDriveRevision(project.data,credential,fileId,host,driveAuthorization.signal));saved++;
     }
     await rememberSyncTarget(settings,{provider:'drive',projectId:project.data,resourceIds:state.drive!.fileIds});return {ok:true,data:{saved,files}};
    }catch{return {ok:false,error:{code:'drive_import_failed',message:`Drive import stopped; ${saved} file(s) were confirmed saved. Check connectivity, selected-file access and supported file types, then retry. Already saved files are retained and retries do not create duplicate documents.`}};}
@@ -453,13 +461,21 @@ else {
    {label:'Edit',submenu:[{role:'undo'},{role:'redo'},{type:'separator'},{role:'cut'},{role:'copy'},{role:'paste'},{role:'selectAll'}]},
    {label:'View',submenu:[{role:'resetZoom'},{role:'zoomIn'},{role:'zoomOut'}]}
   ]));
-  await window.loadURL('orchestra://app/');window.show();
+  const rendererLoaded=window.loadURL('orchestra://app/').then(()=>{
+   startup.rendererLoadedMs=elapsed();
+   if(!closing&&!window?.isDestroyed())window?.show();
+  });
+  const nativeStarted=(async()=>{
   try{
    await verifyNativeBundle(resources);
-   const root=join(app.getPath('userData'),'local-runtime');const vault=await loadVault(root,safeStorage);
-   const providers=await settings.read();
+   startup.nativeBundleVerifiedMs=elapsed();
+   const root=join(app.getPath('userData'),'local-runtime');
+   const [vault,providers]=await Promise.all([loadVault(root,safeStorage),settings.read()]);
+   if(closing)return;
    host.start(join(resources,'native/node',process.platform==='win32'?'node.exe':'bin/node'),join(resources,'backend/dist/src/desktop/native-host.js'),{root,bundle:resources,vault,ai:providers.ai??undefined});
   }catch{host.status={state:'failed',message:'Local runtime could not start. OS credential protection and bundled runtime are required.'};}
+  })();
+  await Promise.all([rendererLoaded,nativeStarted]);
  }).catch(()=>{app.exit(1);});
 }
 }

@@ -11,6 +11,8 @@ import {
   downloadDeepResearchReport,
   getDeepResearchRun,
   getDeepResearchUsage,
+  getResearchSourcePreview,
+  setResearchActionCompletion,
   startDeepResearch,
   type DeepResearchResults as DeepResearchResultsData,
   type DeepResearchSourceKey,
@@ -59,12 +61,47 @@ function severityStyle(severity: "HIGH" | "MEDIUM") {
     : { color: "var(--amber)", tint: "var(--tint-amber)" };
 }
 
+function ResearchSourceCard({ source, projectId, runId }: {
+  source: DeepResearchResultsData["sources"][number]; projectId: string; runId: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState<Awaited<ReturnType<typeof getResearchSourcePreview>> | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const className = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-3 transition-colors hover:border-[var(--teal)]";
+  const refs = source.refs?.length ? source.refs : source.ref ? [source.ref] : [];
+  const generic = source.href === "/memory" || source.href === "/timeline?source=github";
+  const href = !generic && source.href ? safeMarkdownUrl(source.href) : null;
+  const content = <><span className="block font-sans text-[13px] font-medium text-[var(--text-default)]">{source.label}</span><span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--text-muted)]">{refs.length ? `${refs.join(" · ")} — ` : ""}{source.provider}</span></>;
+  const show = async () => {
+    if (open) { setOpen(false); return; }
+    if (!refs[0]) return;
+    setOpen(true); setBusy(true); setError(null); setPreview(null);
+    try { setPreview(await getResearchSourcePreview(projectId, runId, refs[0])); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : "The cited source could not be opened."); }
+    finally { setBusy(false); }
+  };
+  if (source.target && refs.length) return <div className={className}>
+    <button type="button" aria-expanded={open} disabled={busy} className="w-full text-left" onClick={() => void show()}>{content}</button>
+    {open && (busy ? <p role="status" className="mt-2 text-xs text-[var(--text-muted)]">Opening source…</p>
+      : error ? <p role="alert" className="mt-2 text-xs text-[var(--text-muted)]">{error}</p>
+      : preview && <div className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{preview.detail && <p>{preview.detail}</p>}<p className="whitespace-pre-wrap break-words">{preview.text}</p></div>)}
+  </div>;
+  if (href) return href.startsWith("/")
+    ? <Link to={href} className={className}>{content}</Link>
+    : <a href={href} target="_blank" rel="noopener noreferrer" className={className}>{content}</a>;
+  return <div className={className}>{content}<p className="mt-2 text-xs text-[var(--text-muted)]">No exact source link is available.</p>
+    {source.excerpt && <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{source.excerpt}</p>}</div>;
+}
+
 // ─── Results ──────────────────────────────────────────────────────────────────
 
 function DeepResearchResults({
   results,
-  doneActions,
-  setDoneActions,
+  projectId,
+  runId,
+  pendingAction,
+  onToggleAction,
   onClose,
   onAddToMemory,
   onDownload,
@@ -77,8 +114,10 @@ function DeepResearchResults({
   onOpenSaved
 }: {
   results: DeepResearchResultsData;
-  doneActions: Set<number>;
-  setDoneActions: React.Dispatch<React.SetStateAction<Set<number>>>;
+  projectId: string;
+  runId: string;
+  pendingAction: string | null;
+  onToggleAction: (actionId: string, completed: boolean) => void;
   onClose: () => void;
   onAddToMemory: () => void;
   onDownload: () => void;
@@ -90,15 +129,6 @@ function DeepResearchResults({
   actionError: string | null;
   onOpenSaved: () => void;
 }) {
-  const toggleDone = (index: number) => {
-    setDoneActions((current) => {
-      const next = new Set(current);
-      if (next.has(index)) next.delete(index);
-      else next.add(index);
-      return next;
-    });
-  };
-
   const s = results.stats;
 
   return (
@@ -158,16 +188,7 @@ function DeepResearchResults({
           <section className="mt-7">
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--teal-text)]">Sources</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              {results.sources.map((source, index) => {
-                const className = "rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-3 transition-colors hover:border-[var(--teal)]";
-                const refs = source.refs?.length ? source.refs : source.ref ? [source.ref] : [];
-                const content = <><span className="block font-sans text-[13px] font-medium text-[var(--text-default)]">{source.label}</span><span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--text-muted)]">{refs.length ? `${refs.join(" · ")} — ` : ""}{source.provider}</span></>;
-                const safeHref = safeMarkdownUrl(source.href);
-                if (!safeHref) return <div key={`${source.label}-${index}`} className={className}>{content}</div>;
-                return safeHref.startsWith("/")
-                  ? <Link key={`${safeHref}-${index}`} to={safeHref} className={className}>{content}</Link>
-                  : <a key={`${safeHref}-${index}`} href={safeHref} target="_blank" rel="noopener noreferrer" className={className}>{content}</a>;
-              })}
+              {results.sources.map((source, index) => <ResearchSourceCard key={`${runId}-${source.ref ?? index}`} source={source} projectId={projectId} runId={runId} />)}
             </div>
           </section>
         )}
@@ -208,9 +229,10 @@ function DeepResearchResults({
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--teal-text)]">Recommended Actions</p>
             <div className="mt-3 space-y-2">
               {results.recommendedActions.map((item, index) => {
-                const done = doneActions.has(index);
+                const done = item.completed === true;
                 return (
-                  <button key={`${item.action}-${index}`} type="button" onClick={() => toggleDone(index)} className="flex w-full items-start gap-3 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-3 text-left">
+                  <button key={item.id ?? index} type="button" aria-pressed={done} aria-busy={pendingAction === item.id} disabled={!item.id || pendingAction !== null}
+                    onClick={() => { if (item.id) onToggleAction(item.id, !done); }} className="flex w-full items-start gap-3 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-3 text-left">
                     <motion.span
                       animate={{ scale: done ? [1, 1.16, 1] : 1 }}
                       className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border"
@@ -247,6 +269,8 @@ function DeepResearchResults({
 
 export function DeepResearchModal({
   projectId,
+  existingRunId,
+  onRunOpened,
   open,
   minimized,
   onClose,
@@ -254,6 +278,8 @@ export function DeepResearchModal({
   onElapsedChange
 }: {
   projectId: string;
+  existingRunId?: string | null;
+  onRunOpened?: (id: string) => void;
   open: boolean;
   minimized: boolean;
   onClose: () => void;
@@ -268,7 +294,8 @@ export function DeepResearchModal({
   const [progress, setProgress] = useState(0);
   const [progressStage, setProgressStage] = useState("queued");
   const [startedAt, setStartedAt] = useState<number | null>(null);
-  const [doneActions, setDoneActions] = useState<Set<number>>(new Set());
+  const [pendingAction, setPendingAction] = useState<string | null>(null);
+  const actionRequest = useRef<symbol | null>(null);
   const [showWebTip, setShowWebTip] = useState(false);
   const [privacyMode, setPrivacyMode] = useState<PrivacyMode>("internal_only");
   const [webSearchEnabled, setWebSearchEnabled] = useState(false);
@@ -307,10 +334,13 @@ export function DeepResearchModal({
     setProgress(0);
     setProgressStage("queued");
     setStartedAt(null);
-    setRunId(null);
+    setRunId(existingRunId ?? null);
+    if (existingRunId) setPhase("running");
     setResults(null);
     setErrorMsg(null);
     setActionError(null);
+    setPendingAction(null);
+    actionRequest.current = null;
     setDownloadSelection(null);
     setConfigError(null);
     setStarting(false);
@@ -323,7 +353,7 @@ export function DeepResearchModal({
       .then((u) => { if (!cancelled) setUsage(u); })
       .catch((error) => { if (!cancelled) setUsageError(error instanceof Error ? error.message : "Could not load Deep Research usage."); });
     return () => { cancelled = true; };
-  }, [open]); // eslint-disable-line
+  }, [open, projectId, existingRunId]); // eslint-disable-line
 
   useEffect(() => {
     if (phase !== "running" || !startedAt) return;
@@ -411,12 +441,33 @@ export function DeepResearchModal({
       setProgressStage(run.progress.stage);
       onElapsedChange(0);
       setPhase("running");
+      onRunOpened?.(run.id);
     } catch (error) {
       setErrorMsg(error instanceof Error ? error.message : "Could not start Deep Research.");
       setPhase("error");
     } finally {
       startInFlightRef.current = false;
       setStarting(false);
+    }
+  };
+
+  const handleToggleAction = async (actionId: string, completed: boolean) => {
+    if (!runId || actionRequest.current) return;
+    const request = Symbol("research action");
+    actionRequest.current = request;
+    setPendingAction(actionId);
+    setActionError(null);
+    try {
+      const saved = await setResearchActionCompletion(projectId, runId, actionId, completed);
+      if (actionRequest.current !== request) return;
+      if (saved.actionId !== actionId || saved.completed !== completed) throw new Error("The saved recommendation state was not confirmed. Reopen this report to check it.");
+      setResults(current => current && ({
+        ...current, recommendedActions: current.recommendedActions.map(action => action.id === actionId ? { ...action, completed: saved.completed } : action),
+      }));
+    } catch (caught) {
+      if (actionRequest.current === request) setActionError(caught instanceof Error ? caught.message : "Could not save this recommendation.");
+    } finally {
+      if (actionRequest.current === request) { actionRequest.current = null; setPendingAction(null); }
     }
   };
 
@@ -666,8 +717,10 @@ export function DeepResearchModal({
           {phase === "results" && results && (
             <DeepResearchResults
               results={results}
-              doneActions={doneActions}
-              setDoneActions={setDoneActions}
+              projectId={projectId}
+              runId={runId!}
+              pendingAction={pendingAction}
+              onToggleAction={(actionId, completed) => void handleToggleAction(actionId, completed)}
               onClose={onClose}
               onAddToMemory={handleAddToMemory}
               onDownload={handleDownload}

@@ -1,5 +1,5 @@
 import type { ProjectContextEntry } from "../api";
-import { apiEnvelope, ApiError } from "./client";
+import { apiEnvelope, apiJson, ApiError } from "./client";
 
 export {
   addDeepResearchToMemory,
@@ -10,6 +10,14 @@ export {
   startDeepResearch
 } from "../api";
 export type { DeepResearchResults, DeepResearchSourceKey, DeepResearchUsage, ProjectContextEntry } from "../api";
+
+export const setResearchActionCompletion = (projectId: string, runId: string, actionId: string, completed: boolean) =>
+  apiJson<{ actionId: string; completed: boolean }>(`/v1/projects/${projectId}/deep-research/${runId}/actions/${encodeURIComponent(actionId)}`, {
+    method: "PUT", body: JSON.stringify({ completed })
+  });
+
+export const getResearchSourcePreview = (projectId: string, runId: string, sourceRef: string) =>
+  apiJson<{ title: string; detail: string | null; text: string }>(`/v1/projects/${projectId}/deep-research/${runId}/sources/${encodeURIComponent(sourceRef)}`);
 
 export type SavedResearchPage = {
   items: ProjectContextEntry[];

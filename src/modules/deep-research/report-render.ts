@@ -50,7 +50,10 @@ export function renderReportMarkdown(focus: string, results: DeepResearchResults
 
   if (results.sources.length) {
     lines.push("## Sources");
-    for (const source of results.sources) lines.push(`- ${sourceRefsLabel(source)}[${source.label}](${source.href}) — ${source.provider}`);
+    for (const source of results.sources) {
+      const href = exportableSourceHref(source);
+      lines.push(`- ${sourceRefsLabel(source)}${href ? `[${source.label}](${href})` : source.label} — ${source.provider}`);
+    }
     lines.push("");
   }
 
@@ -106,7 +109,10 @@ export async function renderReportPdf(focus: string, results: DeepResearchResult
   }
   if (results.sources.length) {
     h2("Sources");
-    for (const source of results.sources) body(`${sourceRefsLabel(source)}${source.label} — ${source.provider}\n${source.href}`);
+    for (const source of results.sources) {
+      const href = exportableSourceHref(source);
+      body(`${sourceRefsLabel(source)}${source.label} — ${source.provider}${href ? `\n${href}` : ""}`);
+    }
   }
 
   const doc = await PDFDocument.create();
@@ -189,6 +195,10 @@ function wrapPdfText(text: string, font: PDFFont, size: number, width: number, a
     }
   }
   return lines;
+}
+
+function exportableSourceHref(source: DeepResearchResults["sources"][number]) {
+  return source.href === "/memory" || source.href === "/timeline?source=github" ? null : source.href;
 }
 
 function sourceRefsLabel(source: DeepResearchResults["sources"][number]) {

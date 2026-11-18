@@ -1,9 +1,37 @@
 import {describe,it,expect,vi} from 'vitest';
-import {readSelectedDriveFile} from '../apps/desktop/src/drive-sources.js';
+import * as drive from '../apps/desktop/src/drive-sources.js';
 import {DRIVE_FILE_SCOPE,type DriveCredential} from '../apps/desktop/src/drive-oauth.js';
 const credential:DriveCredential={accessToken:'synthetic-access',refreshToken:'synthetic-refresh',expiresAt:Date.now()+600000,fileIds:['synthetic-file'],scope:DRIVE_FILE_SCOPE};
 const metadata={id:'synthetic-file',name:'Synthetic qualification',mimeType:'application/vnd.google-apps.document',modifiedTime:'2026-09-01T00:00:00Z',version:'7',trashed:false,capabilities:{canDownload:true}};
+const {readSelectedDriveFile}=drive;
 describe('desktop selected Drive file reader',()=>{
+ it('confirms authorized unchanged Drive metadata without a media download',async()=>{
+  expect(typeof (drive as any).refreshSelectedDriveFile).toBe('function');
+  const request=vi.fn().mockImplementation(async()=>Response.json(metadata));
+  const existing={documentId:'saved',documentVersionId:'revision',unchanged:true};
+  const lookup=vi.fn().mockResolvedValue(existing);
+  const upload=vi.fn();
+  expect(await (drive as any).refreshSelectedDriveFile(credential,'synthetic-file',lookup,upload,undefined,request)).toEqual(existing);
+  expect(request).toHaveBeenCalledTimes(1);
+  expect(lookup).toHaveBeenCalledWith({fileId:'synthetic-file',version:'7',modifiedTime:metadata.modifiedTime});
+  expect(upload).not.toHaveBeenCalled();
+  const trashed=vi.fn().mockImplementation(async()=>Response.json({...metadata,trashed:true}));
+  await expect((drive as any).refreshSelectedDriveFile(credential,'synthetic-file',lookup,upload,undefined,trashed)).rejects.toThrow('unavailable');
+  expect(lookup).toHaveBeenCalledTimes(1);
+ });
+ it('downloads new authorized revisions once and does not use the local lookup for revoked access',async()=>{
+  const changed={...metadata,version:'8'};
+  const request=vi.fn().mockResolvedValueOnce(Response.json(changed)).mockResolvedValueOnce(new Response('Updated source')).mockResolvedValueOnce(Response.json(changed));
+  const lookup=vi.fn().mockResolvedValue(null);
+  const upload=vi.fn(async file=>({saved:file.version}));
+  expect(await drive.refreshSelectedDriveFile(credential,'synthetic-file',lookup,upload,undefined,request)).toEqual({saved:'8'});
+  expect(request).toHaveBeenCalledTimes(3);
+  expect(upload).toHaveBeenCalledOnce();
+  const denied=vi.fn(async()=>new Response('',{status:403}));
+  await expect(drive.refreshSelectedDriveFile(credential,'synthetic-file',lookup,upload,undefined,denied)).rejects.toThrow();
+  expect(lookup).toHaveBeenCalledTimes(1);
+  expect(upload).toHaveBeenCalledOnce();
+ });
  it('rejects unselected files before making any request',async()=>{
   const request=vi.fn();await expect(readSelectedDriveFile(credential,'other-file',undefined,request)).rejects.toThrow('selected');expect(request).not.toHaveBeenCalled();
  });

@@ -17,6 +17,18 @@ describe('selected source refresh lifecycle',()=>{
   await rememberSyncTarget(settings as any,input);await rememberSyncTarget(settings as any,input);
   expect(state.syncTargets).toHaveLength(1);expect(state.syncTargets[0].enabled).toBe(false);
  });
+ it('resumes persisted continuation without certifying a partial import as a successful refresh',async()=>{
+  let state:any={version:1,ai:null};
+  const settings={read:async()=>JSON.parse(JSON.stringify(state)),write:async(value:unknown)=>{state=value;}};
+  const continuation={provider:'github' as const,cursor:{pulls:null,commits:{next:3},commitHead:'a'.repeat(40)}};
+  const progress=await rememberSyncTarget(settings as any,{provider:'github',projectId:target.projectId,resourceIds:['42']},continuation);
+  const saved=(await settings.read()).syncTargets;
+  expect(saved[0].enabled).toBe(false);
+  expect(saved[0].lastSuccessAt).toBeUndefined();
+  expect(dueTarget(saved,progress.nextAt)?.checkpoint).toEqual(continuation);
+  expect(dueTarget([{...saved[0],enabled:true,checkpointPaused:true}],progress.nextAt)).toBeUndefined();
+  expect(finishedTarget({...saved[0],checkpoint:null},true,progress.nextAt).lastSuccessAt).toBeTruthy();
+ });
  it('does not use a changed grant or an inaccessible project',async()=>{
   const settings={read:vi.fn(async()=>({version:1,ai:null,drive:null}))};
   const host={request:vi.fn().mockResolvedValue({ok:true,data:[]})};

@@ -8,3 +8,7 @@ export const desktopDriveFileSchema=z.object({
  base64:z.string().min(4).max(14*1024*1024).regex(/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/)
 }).strict();
 export type DesktopDriveFile=z.infer<typeof desktopDriveFileSchema>;
+export const desktopDriveRevisionSchema=desktopDriveFileSchema.pick({projectId:true,fileId:true,modifiedTime:true,version:true}).extend({
+ operation:z.literal('desktop.drive.revision')
+}).strict();
+export type DesktopDriveRevision=z.infer<typeof desktopDriveRevisionSchema>;

@@ -241,6 +241,18 @@ for (const file of [
 ]) {
  adjustments[file]=(adjustments[file]??'')+' November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator.';
 }
+for (const [files, reason] of [
+ [['apps/beta-web/src/pages/TruthChangePacketPage.tsx','apps/beta-web/src/pages/TruthChangePacketPage.test.tsx'],
+  'November Tier 2: headline persisted proposal state separately from viewer actionability, retaining existing styles.'],
+ [['src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts'],
+  'November Tier 2: distinguish operational advice from elapsed-time assertions without misclassifying cited quantities.'],
+ [['apps/beta-web/src/components/socrates/DeepResearch.tsx','apps/beta-web/src/components/socrates/DeepResearch.test.tsx',
+   'apps/beta-web/src/lib/api.ts','apps/beta-web/src/lib/api/research.ts','apps/beta-web/src/pages/ChatPage.tsx',
+   'apps/beta-web/src/pages/LiveDocViewerPage.tsx','apps/beta-web/src/pages/LiveDocViewerPage.test.tsx','prisma/schema.prisma','src/modules/deep-research/report-render.ts',
+   'src/modules/deep-research/routes.ts','src/modules/deep-research/schemas.ts','src/modules/deep-research/service.ts',
+   'tests/deep-research-citation-contract.test.ts','tests/fix22-deep-research.test.ts'],
+  'November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations.']
+]) for (const file of files) adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+reason;
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

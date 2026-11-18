@@ -758,8 +758,9 @@ export const cancelSocratesV1 = (
   { method: "POST", body: JSON.stringify({}) }
 );
 
-export const getDocViewer = async (projectId: string, docId: string): Promise<DocViewerPayload> => {
-  return apiJson<DocViewerPayload>(`/v1/projects/${projectId}/documents/${docId}/view`);
+export const getDocViewer = async (projectId: string, docId: string, target?: { versionId: string; anchorId?: string }): Promise<DocViewerPayload> => {
+  const query = target ? `?${new URLSearchParams({ versionId: target.versionId, ...(target.anchorId ? { anchorId: target.anchorId } : {}) })}` : "";
+  return apiJson<DocViewerPayload>(`/v1/projects/${projectId}/documents/${docId}/view${query}`);
 };
 
 export const getDocFileBlob = async (projectId: string, docId: string, signal?: AbortSignal): Promise<Blob> => {
@@ -928,9 +929,10 @@ export interface DeepResearchResults {
   findings: { category: string; severity: "HIGH" | "MEDIUM"; title: string; description: string; sources: string }[];
   marketContext: { title: string; body: string }[];
   expansionOpportunities: string[];
-  recommendedActions: { priority: "IMMEDIATE" | "THIS WEEK" | "THIS SPRINT"; action: string; source: string }[];
+  recommendedActions: { priority: "IMMEDIATE" | "THIS WEEK" | "THIS SPRINT"; action: string; source: string; id?: string; completed?: boolean }[];
   stats: { totalSources: number; slackMessages: number; commits: number; docs: number; webSources: number; duration: string };
-  sources: { provider: string; label: string; kind: "internal" | "web"; href: string; ref?: string; refs?: string[] }[];
+  sources: { provider: string; label: string; kind: "internal" | "web"; href: string | null; ref?: string; refs?: string[];
+    target?: { kind: "message" | "brain_node" | "brain_version" | "github_record"; id: string }; excerpt?: string }[];
 }
 
 export interface DeepResearchRun {

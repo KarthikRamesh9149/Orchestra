@@ -135,6 +135,26 @@ function renderPage() {
 }
 
 describe("TruthChangePacketPage", () => {
+  it.each([
+    ["accepted", "review_only", "Accepted"],
+    ["rejected", "review_only", "Rejected"],
+    ["needs_review", "review_only", "Pending"],
+    ["needs_review", "decision_ready", "Pending"],
+  ])("heads a %s packet with its stored decision state (%s)", async (status, readiness, label) => {
+    mocks.getTruthChangePacket.mockResolvedValue(packet({
+      proposedChange: { ...packet().proposedChange, status },
+      readiness,
+    }));
+    const first = renderPage();
+    for (const view of ["initial", "reopened"]) {
+      if (view === "reopened") renderPage();
+      const statusRegion = await screen.findByRole("group", { name: "Packet status" });
+      expect(statusRegion).toHaveTextContent(label);
+      expect(statusRegion).not.toHaveTextContent(/proposed change/i);
+      if (view === "initial") first.unmount();
+    }
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.getTruthChangePacket.mockResolvedValue(packet());

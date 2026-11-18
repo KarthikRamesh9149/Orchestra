@@ -1,4 +1,4 @@
-import type {Prisma,PrismaClient} from '@prisma/client';
+import {Prisma,type PrismaClient} from '@prisma/client';
 import {desktopSlackBatchSchema} from './slack-contract.js';
 import {authorizeActiveProject,requireAuthorizedProjectRole} from '../lib/auth/authorization.js';
 import {MessageIngestionService} from '../modules/communications/message-ingestion.service.js';
@@ -15,15 +15,24 @@ export async function ingestDesktopSlack(prisma:PrismaClient,actor:{id:string;or
   // Serialize this connector's create/upsert and all its evidence effects.
   await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`desktop-slack:${input.projectId}`},0))::text`;
   const existing=await tx.communicationConnector.findUnique({where:{projectId_provider:{projectId:input.projectId,provider:'slack'}}});
-  const config=existing?.configJson as {desktop?:boolean;teamId?:string;channelIds?:string[];snapshotCutoffs?:Record<string,number>}|null;
+  const config=existing?.configJson as {desktop?:boolean;teamId?:string;channelIds?:string[];snapshotCutoffs?:Record<string,number>;
+   snapshotProgress?:Record<string,{timestamp:number;lastIndex:number}>}|null;
   if(existing&&(!config?.desktop||config.teamId!==input.teamId))throw new Error('Different Slack connector already belongs to this project');
   const previousCutoff=config?.snapshotCutoffs?.[input.channel.id]??0;
-  if(existing&&input.snapshot&&input.snapshot.latestMs<=previousCutoff){
+  const active=config?.snapshotProgress?.[input.channel.id];
+  const window=input.snapshot,batch=window?.batch;
+  if(existing&&window&&(window.latestMs<=previousCutoff||active&&
+   (window.latestMs<active.timestamp||(window.latestMs===active.timestamp&&!!batch&&batch.index<=active.lastIndex)))){
    return {connectorId:existing.id,channelId:input.channel.id,messageCount:0,deletedMessageCount:0,superseded:true};
   }
+  if(batch&&batch.index>0&&(!active||active.timestamp!==window!.latestMs||active.lastIndex!==batch.index-1)){
+   throw new Error('Slack continuation does not follow its last saved batch');
+  }
   const channelIds=[...new Set([...(config?.channelIds??[]),input.channel.id])];
-  const snapshotCutoffs={...config?.snapshotCutoffs,...(input.snapshot?{[input.channel.id]:input.snapshot.latestMs}:{})};
-  const configJson={desktop:true,teamId:input.teamId,channelIds,snapshotCutoffs};
+  const snapshotCutoffs={...config?.snapshotCutoffs,...(window&&(!batch||batch.final)?{[input.channel.id]:window.latestMs}:{})};
+  const snapshotProgress={...config?.snapshotProgress};
+  if(window){if(batch&&!batch.final)snapshotProgress[input.channel.id]={timestamp:window.latestMs,lastIndex:batch.index};else delete snapshotProgress[input.channel.id];}
+  const configJson={desktop:true,teamId:input.teamId,channelIds,snapshotCutoffs,snapshotProgress};
   const connector=await tx.communicationConnector.upsert({where:{projectId_provider:{projectId:input.projectId,provider:'slack'}},
    create:{projectId:input.projectId,provider:'slack',accountLabel:input.teamName,status:'connected',createdBy:actor.id,configJson},
    update:{configJson,status:'connected'}});
@@ -45,17 +54,34 @@ export async function ingestDesktopSlack(prisma:PrismaClient,actor:{id:string;or
   }
   const withdrawn:Prisma.CommunicationMessageWhereInput[]=[];
   if(deletedTimestamps.size)withdrawn.push({providerMessageId:{in:[...deletedTimestamps].map(providerId)}});
-  if(input.snapshot?.complete){
+  // Retain positive sightings across crash/restart without storing source
+  // text or a growing manifest of IDs in the encrypted settings.
+  const multiBatch=!!batch&&(batch.index>0||!batch.final);
+  if(multiBatch&&liveIds.length){
+   await tx.$executeRaw(Prisma.sql`UPDATE communication_messages
+    SET raw_metadata_json=COALESCE(raw_metadata_json,'{}'::jsonb)||jsonb_build_object('desktopSnapshotMs',${String(window!.latestMs)})
+    WHERE project_id=${input.projectId}::uuid AND connector_id=${connector.id}::uuid AND provider_message_id IN (${Prisma.join(liveIds)})`);
+  }
+  if(window?.complete&&!multiBatch){
    // Replies to older roots were not enumerated. An absence is authoritative
    // only inside the fully fetched channel window (including the thread root).
-   const window={gte:new Date(input.snapshot.oldestMs),lte:new Date(input.snapshot.latestMs)};
-   withdrawn.push({sentAt:window,providerMessageId:{startsWith:`${input.channel.id}:`,notIn:liveIds},
-    thread:{startedAt:window}});
+   const dates={gte:new Date(window.oldestMs),lte:new Date(window.latestMs)};
+   withdrawn.push({sentAt:dates,providerMessageId:{startsWith:`${input.channel.id}:`,notIn:liveIds},
+    thread:{startedAt:dates}});
   }
-  const deletedMessageCount=withdrawn.length
+  let deletedMessageCount=withdrawn.length
    ? (await tx.communicationMessage.updateMany({where:{...messageScope,isDeletedByProvider:false,OR:withdrawn},data:{isDeletedByProvider:true}})).count
    : 0;
-  await tx.communicationConnector.update({where:{id:connector.id},data:{lastSyncedAt:new Date(),lastError:null}});
+  if(window?.complete&&multiBatch){
+   const previous=new Date(window.oldestMs),latest=new Date(window.latestMs);
+   deletedMessageCount+=await tx.$executeRaw`UPDATE communication_messages m SET is_deleted_by_provider=true
+    FROM communication_threads t WHERE m.thread_id=t.id AND m.project_id=${input.projectId}::uuid
+    AND m.connector_id=${connector.id}::uuid AND m.provider='slack' AND NOT m.is_deleted_by_provider
+    AND starts_with(m.provider_message_id,${input.channel.id+':'}) AND m.sent_at BETWEEN ${previous} AND ${latest}
+    AND t.started_at BETWEEN ${previous} AND ${latest}
+    AND m.raw_metadata_json->>'desktopSnapshotMs' IS DISTINCT FROM ${String(window.latestMs)}`;
+  }
+  await tx.communicationConnector.update({where:{id:connector.id},data:{...(!batch||batch.final?{lastSyncedAt:new Date()}:{}),lastError:null}});
   // An explicitly repeated import may repair failed indexing for these exact
   // verified messages. Never restart unrelated or accepted-effect jobs.
   const saved=await tx.communicationMessage.findMany({where:{...messageScope,providerMessageId:{in:liveIds},isDeletedByProvider:false},select:{id:true,bodyHash:true}});

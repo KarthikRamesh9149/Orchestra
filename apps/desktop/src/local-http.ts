@@ -7,6 +7,8 @@ const patterns=routes.map(route=>({method:route.method,segments:route.path.split
 function validParameter(key:string,value:string){
  if(value.includes('%')||value.includes('\\')||value.includes('\0'))return false;
  if(key===':itemId')return /^(suggestion|proposal|fde|agent_drift|connector):[A-Za-z0-9_.:-]{1,280}$/.test(value);
+ if(key===':actionId')return /^[0-9a-f]{64}$/.test(value);
+ if(key===':sourceRef')return /^E[1-9]\d{0,2}$/.test(value);
  if(key===':filePath')return value.length<=1024&&!value.startsWith('/')&&value.split('/').every(part=>part!=='.'&&part!=='..'&&/^[A-Za-z0-9_. -]+$/.test(part));
  if([':sectionKey',':anchorId',':action'].includes(key))return /^[A-Za-z0-9_ .:-]{1,200}$/.test(value)&&value!=='.'&&value!=='..';
  return uuid.test(value);

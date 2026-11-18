@@ -5,8 +5,9 @@ export const desktopSlackBatchSchema=z.object({
  operation:z.literal('desktop.slack.ingest'),projectId:z.string().guid(),teamId:z.string().regex(/^T[A-Z0-9]+$/),teamName:z.string().max(255),channel:slackChannelSchema,
  messages:z.array(z.object({ts:slackTimestampSchema,threadTs:slackTimestampSchema,text:z.string().trim().min(1).max(40000),user:z.string().max(100)}).strict()).max(200),
  deletedTimestamps:z.array(slackTimestampSchema).max(200),
- snapshot:z.object({oldestMs:z.number().int().nonnegative(),latestMs:z.number().int().nonnegative(),complete:z.boolean()}).strict().refine(
-  window=>window.latestMs>window.oldestMs&&window.latestMs-window.oldestMs<=30*86400_000,
+ snapshot:z.object({oldestMs:z.number().int().nonnegative(),latestMs:z.number().int().nonnegative(),complete:z.boolean(),
+  batch:z.object({index:z.number().int().nonnegative(),final:z.boolean()}).strict().optional()}).strict().refine(
+  window=>window.latestMs>window.oldestMs&&window.latestMs-window.oldestMs<=30*86400_000&&(!window.batch||!window.complete||window.batch.final),
   'Invalid Slack history window'
  ).optional()
 }).strict();

@@ -51,7 +51,7 @@ describe("Deep Research PDF export", () => {
       "Expansion opportunities", `• ${results.expansionOpportunities[0]}`,
       "Recommended actions", "THIS WEEK — Review the launch gate", "Evidence: E1 · W1",
       "Sources", "E1 · E2 — Launch PRD — docs", "W1 — Public source — web",
-      ...results.sources.map(source => source.href)
+      ...results.sources.flatMap(source => source.href ? [source.href] : [])
     ]) expect(text).toContain(compact(expected));
     expect(JSON.stringify(results)).toBe(original);
   });

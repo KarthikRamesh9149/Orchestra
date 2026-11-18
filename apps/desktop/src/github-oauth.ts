@@ -58,7 +58,7 @@ export async function refreshGitHub(input:GitHubCredential,fetcher:typeof fetch=
 /** API paths come exclusively from native adapters, never arbitrary UI URLs. */
 export async function githubRead(path:string,token:string,fetcher:typeof fetch=fetch):Promise<unknown>{
  const inventory=/^\/user\/installations(?:\/[1-9][0-9]*\/repositories)?\?per_page=100&page=[1-9][0-9]*$/;
- const evidence=/^\/repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/(?:pulls\?state=all&sort=updated&direction=desc|commits\?)&per_page=100&page=[1-9][0-9]*$/;
+ const evidence=/^\/repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/(?:pulls\?state=all&sort=created&direction=asc&|commits\?(?:sha=[a-f0-9]{40}&)?)per_page=100&page=[1-9][0-9]*$/;
  if((!inventory.test(path)&&!evidence.test(path))||path.split('/').some(part=>part==='.'||part==='..'))throw new Error('Unapproved GitHub API path');
  return boundedJson(await fetcher(`https://api.github.com${path}`,{headers:{authorization:`Bearer ${token}`,accept:'application/vnd.github+json','X-GitHub-Api-Version':'2026-03-10'},redirect:'error',signal:AbortSignal.timeout(15000)}));
 }

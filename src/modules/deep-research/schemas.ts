@@ -84,7 +84,12 @@ export const deepResearchSourceSchema = z.object({
     } catch {
       return false;
     }
-  }, "Source href must be an internal path or HTTP(S) URL")
+  }, "Source href must be an internal path or HTTP(S) URL").nullable(),
+  target: z.object({
+    kind: z.enum(["message", "brain_node", "brain_version", "github_record"]),
+    id: z.string().guid()
+  }).optional(),
+  excerpt: z.string().max(900).optional()
 });
 export type DeepResearchSource = z.infer<typeof deepResearchSourceSchema>;
 

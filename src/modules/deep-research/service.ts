@@ -38,6 +38,16 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 const RESEARCH_LEASE_MS = 120_000;
 const RESEARCH_HEARTBEAT_MS = 20_000;
 
+function identifyActions(actions: DeepResearchResults["recommendedActions"]) {
+  const occurrences = new Map<string, number>();
+  return actions.map(action => {
+    const identity = JSON.stringify([action.action, action.priority, action.source]);
+    const occurrence = (occurrences.get(identity) ?? 0) + 1;
+    occurrences.set(identity, occurrence);
+    return { ...action, id: createHash("sha256").update(JSON.stringify([identity, occurrence])).digest("hex") };
+  });
+}
+
 export class DeepResearchService {
   constructor(
     private readonly prisma: PrismaClient,
@@ -86,6 +96,9 @@ export class DeepResearchService {
     await this.projectService.ensureProjectAccess(projectId, actor.userId);
 
     if (this.env.RUNTIME_PROFILE === 'desktop-local' && !hasConfiguredGeneration(this.env)) throw new AppError(409, 'Configure desktop AI before starting research. No run was created or charged. Offline document reading and search remain available.', 'ai_not_configured');
+    if (this.env.RUNTIME_PROFILE === "desktop-local" && this.embeddingProvider.unavailable) {
+      throw new AppError(409, "Deep Research needs an active embedding index. Check AI and indexing in Settings, then try again. No research slot was used.", "research_embeddings_required");
+    }
 
     const now = new Date();
     const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
@@ -150,7 +163,70 @@ export class DeepResearchService {
       } });
       run = await this.loadRun(projectId, runId);
     }
-    return this.toDto(run);
+    const dto = this.toDto(run);
+    if (!dto.results?.recommendedActions.length) return dto;
+    const done = await this.prisma.deepResearchActionCompletion.findMany({
+      where: { runId, userId: actor.userId }, select: { actionId: true }
+    });
+    const completed = new Set(done.map(item => item.actionId));
+    return { ...dto, results: { ...dto.results,
+      recommendedActions: identifyActions(dto.results.recommendedActions).map(action => ({ ...action, completed: completed.has(action.id) })) } };
+  }
+
+  private async readCompletedRun(projectId: string, runId: string, actor: Actor) {
+    this.assertEnabled();
+    await this.projectService.ensureProjectAccess(projectId, actor.userId);
+    const run = await this.loadRun(projectId, runId);
+    if (run.orgId !== actor.orgId) throw new AppError(404, "Deep Research run not found", "deep_research_not_found");
+    if (run.status !== "completed" || !run.resultsJson) throw new AppError(409, "Deep Research run is not complete", "deep_research_not_complete");
+    return deepResearchResultsSchema.parse(run.resultsJson);
+  }
+
+  async setActionCompletion(projectId: string, runId: string, actor: Actor, actionId: string, completed: boolean) {
+    const results = await this.readCompletedRun(projectId, runId, actor);
+    if (!identifyActions(results.recommendedActions).some(action => action.id === actionId)) {
+      throw new AppError(404, "Recommendation is not part of this report", "deep_research_action_not_found");
+    }
+    const key = { runId, userId: actor.userId, actionId };
+    if (completed) await this.prisma.deepResearchActionCompletion.upsert({
+      where: { runId_userId_actionId: key }, create: key, update: {}
+    });
+    else await this.prisma.deepResearchActionCompletion.deleteMany({ where: key });
+    return { actionId, completed };
+  }
+
+  async getSourcePreview(projectId: string, runId: string, actor: Actor, sourceRef: string) {
+    const results = await this.readCompletedRun(projectId, runId, actor);
+    const cited = results.sources.find(source => source.ref === sourceRef || source.refs?.includes(sourceRef));
+    const target = cited?.target;
+    let text: string | null | undefined, detail: string | undefined;
+    if (target?.kind === "message") {
+      const message = await this.prisma.communicationMessage.findFirst({
+        where: { id: target.id, projectId, isDeletedByProvider: false, connector: { status: "connected" } },
+        select: { bodyText: true, senderLabel: true, sentAt: true }
+      });
+      text = message?.bodyText;
+      if (message) detail = `${message.senderLabel} · ${message.sentAt.toISOString()}`;
+    } else if (target?.kind === "brain_node") {
+      const node = await this.prisma.brainNode.findFirst({ where: { id: target.id, projectId }, select: { title: true, summary: true } });
+      text = node?.summary;
+      detail = node?.title;
+    } else if (target?.kind === "brain_version") {
+      const version = await this.prisma.artifactVersion.findFirst({
+        where: { id: target.id, projectId, artifactType: "product_brain" },
+        select: { versionNumber: true }
+      });
+      if (version) { text = cited?.excerpt; detail = `Product Brain version ${version.versionNumber}`; }
+    } else if (target?.kind === "github_record") {
+      const evidence = await this.prisma.gitHubEngineeringEvidence.findFirst({
+        where: { id: target.id, projectId, orgId: actor.orgId, evidenceStatus: "active" },
+        select: { title: true, summary: true, sha: true }
+      });
+      text = evidence?.summary || evidence?.title;
+      detail = evidence?.sha ?? undefined;
+    }
+    if (!cited || !text) throw new AppError(404, "The cited source is no longer available in this workspace.", "deep_research_source_unavailable");
+    return { title: cited.label, detail: detail ?? null, text: text.slice(0, 6000) };
   }
 
   async runResearchJob(projectId: string, runId: string, actorUserId: string | null) {
@@ -165,6 +241,14 @@ export class DeepResearchService {
       if (run.status === "running") throw new Error("Deep Research is still running under another active owner");
     }
     if (run.status !== "queued") return;
+    if (this.env.RUNTIME_PROFILE === "desktop-local" && this.embeddingProvider.unavailable) {
+      await this.prisma.deepResearchRun.updateMany({
+        where: { id: runId, projectId, status: "queued", startedAt: null },
+        data: { status: "failed", progressStage: "failed", completedAt: new Date(),
+          errorMessage: "Deep Research needs an active embedding index. Check AI and indexing in Settings, then try again. No research slot was used." }
+      });
+      return;
+    }
 
     const ownerToken = randomUUID();
     const claimed = await this.prisma.deepResearchRun.updateMany({
@@ -979,13 +1063,18 @@ export function buildDeepResearchSources(cards: EvidenceCard[], webResults: Sear
     const ref = `E${index + 1}`;
     // A generic fallback route or shared title is not source identity. Only
     // verified document IDs or exact typed evidence IDs can group citations.
-    append(sourceIdentity(card), {
+    const version = card.openTarget?.targetRef.documentVersionId;
+    const target = researchPreviewTarget(card);
+    const href = safeInternalHref(card);
+    append(sourceIdentity(card) + (documentId && typeof version === "string" ? `:${version}` : ""), {
       provider: providerLabel(card.sourceType),
       ref,
       refs: [ref],
       label: derivedKind ? `${label.slice(0, 220)} (${derivedKind})` : label,
       kind: "internal",
-      href: safeInternalHref(card)
+      href,
+      ...(target ? { target } : {}),
+      ...(!href && (!target || target.kind === "brain_version") ? { excerpt: card.excerpt.slice(0, 900) } : {})
     });
   }
   for (const [index, result] of webResults.entries()) {
@@ -1124,17 +1213,29 @@ function safeExternalHref(value: unknown) {
 
 function safeInternalHref(card: EvidenceCard) {
   const ref = card.openTarget?.targetRef ?? {};
-  const external = safeExternalHref(ref.url);
-  if (external) return external;
   const targetType = card.openTarget?.targetType ?? "";
   if ((targetType.includes("document") || card.sourceType.includes("document")) && typeof ref.documentId === "string") {
-    return `/memory/docs/${encodeURIComponent(ref.documentId)}/view`;
+    const version = typeof ref.documentVersionId === "string" ? `?versionId=${encodeURIComponent(ref.documentVersionId)}` : "";
+    const anchor = typeof ref.anchorId === "string" ? `#${encodeURIComponent(ref.anchorId)}` : "";
+    return `/memory/docs/${encodeURIComponent(ref.documentId)}/view${version}${anchor}`;
   }
   if (targetType === "project_context" && typeof ref.contextId === "string") {
     return `/memory/context/${encodeURIComponent(ref.contextId)}`;
   }
-  const source = providerLabel(card.sourceType).toLowerCase().includes("github") ? "github" : "all";
-  return source === "all" ? "/memory" : `/timeline?source=${source}`;
+  return safeExternalHref(ref.url ?? ref.sourceUrl);
+}
+
+function researchPreviewTarget(card: EvidenceCard): DeepResearchSource["target"] {
+  const ref = card.openTarget?.targetRef ?? {};
+  const typed = (kind: NonNullable<DeepResearchSource["target"]>["kind"], id: unknown) =>
+    typeof id === "string" && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id) ? { kind, id } : undefined;
+  if (card.openTarget?.targetType === "message") return typed("message", ref.messageId);
+  if (card.sourceType === "brain_node") return typed("brain_node", ref.brainNodeId ?? card.citationRef?.id);
+  if (card.sourceType === "product_brain") return typed("brain_version", ref.artifactVersionId ?? card.citationRef?.id);
+  if (card.openTarget?.targetType === "github_evidence" && !safeExternalHref(ref.url ?? ref.sourceUrl)) {
+    return typed("github_record", ref.evidenceId ?? card.citationRef?.id);
+  }
+  return undefined;
 }
 
 export function computeStats(cards: EvidenceCard[], webResults: SearchResult[], startedAtMs: number): DeepResearchStats {

@@ -7,6 +7,8 @@ import { fork,spawnSync } from 'node:child_process';
 import { once } from 'node:events';
 import { describe,it,expect,afterAll,beforeAll } from 'vitest';
 import { createLocalEngine } from '../src/desktop/engine.js';
+import { ingestDesktopSlack } from '../src/desktop/slack-ingest.js';
+import { driveIdentity,findStoredDesktopDriveRevision } from '../src/desktop/drive-ingest.js';
 import { PostgresWorker } from '../src/lib/jobs/postgres-worker.js';
 import { PostgresJobDispatcher } from '../src/lib/jobs/postgres.js';
 import { PostgresAiLimiter } from '../src/lib/ai-ops/postgres-limits.js';
@@ -201,4 +203,70 @@ describe.skipIf(!enabled)('real restricted desktop engine',()=>{
   await queue.cancel(job.id);await worker.runOnce();
   expect((await owner.deepResearchRun.findUniqueOrThrow({where:{id:run.id}})).status).toBe('failed');
  });
+ it('reconciles complete Slack batches after restart and persists per-viewer research actions',async()=>{
+  const version=await owner.documentVersion.findUniqueOrThrow({where:{id:savedVersionId}});
+  const project=await owner.project.findUniqueOrThrow({where:{id:version.projectId}});
+  const actor={id:version.uploadedBy,orgId:project.orgId};
+  const root=await mkdtemp(join(tmpdir(),'orchestra-research-actions-'));
+  const engineInput={databaseUrl:process.env.DESKTOP_RUNTIME_DATABASE_URL!,installationRoot:root};
+  let engine=await createLocalEngine(engineInput);
+  const latestMs=Date.now(),oldestMs=latestMs-30*86400_000, sec=Math.floor(latestMs/1000)-120;
+  const rows=['Preserved first batch','Preserved final batch','Withdrawn message'].map((text,i)=>{
+   const ts=`${sec}.${String(i+1).padStart(6,'0')}`;return {ts,threadTs:ts,text,user:'Local fixture'};
+  });
+  const data={operation:'desktop.slack.ingest',teamId:'TSLACKTIER',teamName:'Synthetic team',projectId:project.id,channel:{id:'CBATCHES',name:'synthetic'},deletedTimestamps:[]};
+  const ingest=(messages:typeof rows,snapshot:{oldestMs:number;latestMs:number;complete:boolean;batch?:{index:number;final:boolean}})=>
+   ingestDesktopSlack(engine.context.prisma,actor,{...data,messages,snapshot});
+  try{
+   await ingest(rows,{oldestMs:oldestMs-1,latestMs:latestMs-1,complete:true});
+   expect((await ingest([rows[0]!],{oldestMs,latestMs,complete:false,batch:{index:0,final:false}})).deletedMessageCount).toBe(0);
+   await engine.close();
+   engine=await createLocalEngine(engineInput);
+   const replay=await ingest([rows[0]!],{oldestMs,latestMs,complete:false,batch:{index:0,final:false}});
+   expect(replay.superseded).toBe(true);
+   expect((await ingest([rows[1]!],{oldestMs,latestMs,complete:true,batch:{index:1,final:true}})).deletedMessageCount).toBe(1);
+   const messages=await owner.communicationMessage.findMany({where:{projectId:project.id,providerMessageId:{startsWith:'CBATCHES:'}},orderBy:{providerMessageId:'asc'}});
+   expect(messages.map(m=>m.isDeletedByProvider)).toEqual([false,false,true]);
+   const run=await owner.deepResearchRun.create({data:{orgId:project.orgId,projectId:project.id,
+    createdByUserId:actor.id,researchFocus:'Synthetic connector acceptance',outputFormat:'brief',privacyMode:'internal_only',
+    status:'completed',resultsJson:{
+     executiveSummary:'Test evidence summary.',findings:[],recommendedActions:[{priority:'IMMEDIATE',action:'Check the exact release evidence.',source:'E1'}],
+     marketContext:[],expansionOpportunities:[],stats:{totalSources:2,slackMessages:2,commits:0,docs:0,webSources:0,duration:'1s'},
+     sources:[0,2].map((index,i)=>({provider:'Slack',label:`Message ${i+1}`,kind:'internal',href:null,ref:`E${i+1}`,
+      target:{kind:'message',id:messages[index]!.id}}))
+    }}});
+   const bearer=engine.app.jwt.sign({userId:actor.id,orgId:actor.orgId,typ:'access',globalRole:'owner',workspaceRoleDefault:'manager'});
+   const rootUrl=`/v1/projects/${project.id}/deep-research/${run.id}`;
+   const headers=()=>({'x-orchestra-local-token':engine.localToken,authorization:`Bearer ${bearer}`});
+   const send=(url:string,method:'GET'|'PUT'='GET',payload?:object)=>engine.app.inject({method,url:rootUrl+url,headers:headers(),payload});
+   expect((await send('/sources/E1')).json().data.text).toBe(rows[0]!.text);
+   expect((await send('/sources/E2')).statusCode).toBe(404);
+   const id=(await send('')).json().data.results.recommendedActions[0].id;
+   expect((await send('/actions/'+id,'PUT',{completed:true})).statusCode).toBe(200);
+   await engine.close();engine=await createLocalEngine(engineInput);
+   expect((await send('')).json().data.results.recommendedActions[0]).toMatchObject({id,completed:true});
+   expect((await engine.app.inject({url:rootUrl})).statusCode).toBe(401);
+   const connectionId=driveIdentity(project.id,'t2-drive-test');
+   const stamp='2026-11-18T00:00:00.000Z';
+   await owner.projectDriveConnection.create({data:{id:connectionId,projectId:project.id,orgId:project.orgId,
+    connectedByUserId:actor.id,status:'connected',accessMode:'selected_files',metadataJson:{desktop:true}}});
+   await owner.projectDriveFile.create({data:{projectId:project.id,orgId:project.orgId,connectionId,
+    driveFileId:'test_drive_revision',name:'Synthetic source',mimeType:'text/plain',metadataJson:{desktop:true},
+    documentId:version.documentId,documentVersionId:version.id,modifiedTime:new Date(stamp),version:'7',contentHash:'synthetic-saved-hash'}});
+   const stored={operation:'desktop.drive.revision',projectId:project.id,fileId:'test_drive_revision',modifiedTime:stamp,version:'7'};
+   expect(await findStoredDesktopDriveRevision(engine.context.prisma,actor,stored)).toMatchObject({documentVersionId:version.id,unchanged:true});
+   expect(await findStoredDesktopDriveRevision(engine.context.prisma,actor,{...stored,version:'8'})).toBeNull();
+   await owner.projectDriveConnection.update({where:{id:connectionId},data:{status:'needs_reauth'}});
+   expect(await findStoredDesktopDriveRevision(engine.context.prisma,actor,stored)).toBeNull();
+  } finally {
+   await engine.close();
+   // Dispose only jobs originating in this synthetic project and channel.
+   const ids=(await owner.communicationMessage.findMany({where:{projectId:project.id,providerMessageId:{startsWith:'CBATCHES:'}},select:{id:true}})).map(m=>m.id);
+   await owner.desktopJob.deleteMany({where:{name:'index_communication_message',OR:ids.map(id=>({payload:{path:['messageId'],equals:id}}))}});
+   await owner.desktopJob.deleteMany({where:{name:'refresh_dashboard_snapshot',OR:[
+    {idempotencyKey:{startsWith:`dashboard:project:${project.id}:communication_ingested:`}},
+    {idempotencyKey:{startsWith:`dashboard:general:${project.orgId}:communication_ingested:`}},
+   ]}});
+  }
+ },20000);
 });

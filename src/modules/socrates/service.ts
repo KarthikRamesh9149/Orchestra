@@ -4409,8 +4409,10 @@ export class SocratesService {
   }
 
   private socratesV1HasTemporalArithmetic(answer: string) {
-    return /\b(?:temporal gap|elapsed|earlier|later|ago|since)\b[\s\S]{0,180}\b\d+(?:\.\d+)?\s*(?:d(?:ays?)?|h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?)/i.test(answer) ||
-      /\b\d+(?:\.\d+)?[dhms]\d+(?:\.\d+)?[dhms]/i.test(answer);
+    // A unit must be a word, not the opening letter of "seats" or "deliveries".
+    const duration = String.raw`\b\d+(?:\.\d+)?\s*(?:days?|hours?|minutes?|seconds?|mins?|secs?|[dhms])\b`;
+    return new RegExp(String.raw`\b(?:temporal gap|elapsed(?: time)?)\b[^.!?\n]{0,60}${duration}|${duration}\s+(?:earlier|later|ago|since)\b|\b(?:earlier|later)\b[^.!?\n]{0,60}\bby\s+${duration}`, "i").test(answer) ||
+      /\b(?:\d+(?:\.\d+)?[dhms]){2,}\b/i.test(answer);
   }
 
   private async generateSocratesV1GeneralChatAnswer(input: {
@@ -4725,6 +4727,7 @@ export class SocratesService {
 A document's claim that something is approved does not establish accepted Product Brain truth; attribute it as the document's claim unless supplied truthStatus metadata establishes accepted status.
 Retrieved evidence is a subset, not an exhaustive inventory. Do not describe a retrieved item as the only project source, or another source as overridden, superseded or archived unless supplied evidence explicitly establishes that status.
 Mention temporal uncertainty only when timing materially affects the question or the evidence's applicability. For ordinary factual questions where timing is immaterial, do not print observation/request timestamps or add a temporal caveat merely because timestamp metadata is supplied. A source title containing current does not by itself make the question temporal.
+When asked what to tell someone today, lead with what the cited evidence supports saying. "Today" can be the communication deadline, not a question about elapsed time. Distinguish a source explicitly recording an approval from acceptance recorded in Orchestra; report the former with its source and qualify the latter separately.
 sourceType, truthStatus, observedAt and requestAt are internal reasoning metadata; describe source roles and acceptance status naturally, not as raw keys or enum values. Preserve exact timestamps when needed to explain a material temporal gap.
 ${EVIDENCE_AUTHORITY_AND_COVERAGE_RULES}`;
   }

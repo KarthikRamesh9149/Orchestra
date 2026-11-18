@@ -43,6 +43,8 @@ function versionStatus(payload: DocViewerPayload | null): string | null {
 export function LiveDocViewerPage() {
   const { docId = "" } = useParams();
   const location = useLocation();
+  const versionId = new URLSearchParams(location.search).get("versionId");
+  const citedAnchor = versionId ? safeAnchor(location.hash) : null;
   const projectId = useWorkspaceStore((state) => state.activeProjectId);
   const selectionChat = useAddSelectionToChat();
   const [payload, setPayload] = useState<DocViewerPayload | null>(null);
@@ -57,7 +59,10 @@ export function LiveDocViewerPage() {
     setError(null);
     setDownloading(false);
     if (!projectId) return;
-    void getDocViewer(projectId, docId)
+    const request = versionId
+      ? getDocViewer(projectId, docId, { versionId, ...(citedAnchor ? { anchorId: citedAnchor } : {}) })
+      : getDocViewer(projectId, docId);
+    void request
       .then((nextPayload) => {
         if (!cancelled) {
           setPayload(nextPayload);
@@ -71,7 +76,7 @@ export function LiveDocViewerPage() {
       cancelled = true;
       downloadRequest.current?.abort();
     };
-  }, [docId, projectId]);
+  }, [docId, projectId, versionId, citedAnchor]);
 
   useEffect(() => {
     if (!payload || !location.hash) return;
@@ -129,6 +134,7 @@ export function LiveDocViewerPage() {
         </h1>
         <div className="mt-2 flex flex-wrap items-center gap-3 font-sans text-[13px] text-[var(--text-muted)]">
           <span>Source document view. Socrates citations open back to these uploaded project memory sections.</span>
+          {versionId && payload ? <span>Viewing the cited revision.</span> : null}
           {status ? (
             <span className="rounded-full border border-[rgba(26,22,18,0.08)] bg-[var(--bg-card)] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
               {status}
@@ -155,7 +161,7 @@ export function LiveDocViewerPage() {
             ))}
           </div>
         ) : null}
-        {payload ? <button type="button" disabled={downloading} onClick={() => void downloadOriginal()} className="mt-4 rounded-full border border-[var(--border-soft)] px-4 py-2 font-sans text-[12px] text-[var(--text-default)] disabled:opacity-50">{downloading ? "Downloading original…" : "Download original"}</button> : null}
+        {payload && !versionId ? <button type="button" disabled={downloading} onClick={() => void downloadOriginal()} className="mt-4 rounded-full border border-[var(--border-soft)] px-4 py-2 font-sans text-[12px] text-[var(--text-default)] disabled:opacity-50">{downloading ? "Downloading original…" : "Download original"}</button> : null}
         {error ? (
           <p role="alert" className="mt-4 rounded-xl border border-[#9E3B2E]/20 bg-[var(--bg-card)] px-4 py-3 font-sans text-[13px] text-[var(--red-text)]">
             {error}

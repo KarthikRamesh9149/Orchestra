@@ -987,6 +987,7 @@ model Organization {
 }
 
 model User {
+  deepResearchActionCompletions DeepResearchActionCompletion[]
   id                                      String                           @id @default(uuid()) @db.Uuid
   orgId                                   String                           @map("org_id") @db.Uuid
   email                                   String
@@ -3559,10 +3560,24 @@ model DeepResearchRun {
   updatedAt          DateTime             @updatedAt @map("updated_at") @db.Timestamptz(6)
   project            Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
   memoryEntry        ProjectContextEntry?
+  actionCompletions  DeepResearchActionCompletion[]
 
   @@index([orgId, projectId, status, createdAt(sort: Desc)], map: "deep_research_runs_scope_idx")
   @@index([projectId, createdByUserId, createdAt(sort: Desc)], map: "deep_research_runs_user_idx")
   @@map("deep_research_runs")
+}
+
+model DeepResearchActionCompletion {
+  runId       String          @map("run_id") @db.Uuid
+  userId      String          @map("user_id") @db.Uuid
+  actionId    String          @map("action_id") @db.VarChar(64)
+  completedAt DateTime        @default(now()) @map("completed_at") @db.Timestamptz(6)
+  run         DeepResearchRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([runId, userId, actionId])
+  @@index([userId])
+  @@map("deep_research_action_completions")
 }
 
 model EngineeringEvidenceManualEntry {

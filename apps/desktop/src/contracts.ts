@@ -11,7 +11,11 @@ export const commandSchema=z.discriminatedUnion('operation',[
  z.object({operation:z.literal('evidence.upload'),projectId:z.string().guid(),selectionId:z.string().guid()}).strict()
 ]);
 export type Command=z.infer<typeof commandSchema>;
-export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string};
+export type StartupTiming={
+ mainReadyMs?:number; rendererLoadedMs?:number; nativeBundleVerifiedMs?:number;
+ databaseReadyMs?:number; migrationsReadyMs?:number; engineReadyMs?:number; usedMigrationFastPath?:boolean;
+};
+export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string;startup?:StartupTiming};
 export type OperationResult={ok:true;data:unknown}|{ok:false;error:{code:string;message:string}};
 export interface DesktopBridge {
  transfer:{export(projectId:string):Promise<OperationResult>;preview(projectId:string):Promise<OperationResult>;commit(input:unknown):Promise<OperationResult>};

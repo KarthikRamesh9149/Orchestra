@@ -20,7 +20,7 @@ const results = {
   sources: [{ provider: "Documents", label: "Product brief", kind: "internal", href: "/memory" }]
 };
 
-function createService(envOverrides: Record<string, unknown> = {}) {
+function createService(envOverrides: Record<string, unknown> = {}, embeddingUnavailable = false) {
   const run = {
     id: "11111111-1111-4111-8111-111111111111",
     orgId: "22222222-2222-4222-8222-222222222222",
@@ -68,7 +68,7 @@ function createService(envOverrides: Record<string, unknown> = {}) {
     prisma,
     { BETA_DEEP_RESEARCH_ENABLED: true, DEEP_RESEARCH_MONTHLY_LIMIT: 20, ...envOverrides } as any,
     {} as any,
-    {} as any,
+    { unavailable: embeddingUnavailable } as any,
     {} as any,
     projectService,
     audit,
@@ -95,6 +95,43 @@ describe("[FIX-22] Deep Research authoritative contracts", () => {
       researchFocus: "release readiness", sources: ["docs"], outputFormat: "full_report", privacyMode: "internal_only", webSearchEnabled: false
     })).rejects.toMatchObject({ code: "ai_not_configured" });
     expect(prisma.deepResearchRun.create).not.toHaveBeenCalled();
+  });
+
+  it("refuses generation-only research before allocating a monthly slot", async () => {
+    const { service, run, prisma, jobs } = createService({ RUNTIME_PROFILE: "desktop-local", DESKTOP_AI_PROVIDER: "anthropic" }, true);
+    await expect(service.startRun(run.projectId, { userId: run.createdByUserId, orgId: run.orgId }, {
+      researchFocus: "release readiness", sources: ["docs"], outputFormat: "full_report", privacyMode: "internal_only", webSearchEnabled: false
+    })).rejects.toMatchObject({ code: "research_embeddings_required", message: expect.stringMatching(/Settings/) });
+    expect(prisma.deepResearchRun.create).not.toHaveBeenCalled();
+    expect(jobs.enqueue).not.toHaveBeenCalled();
+    expect(prisma.$transaction).not.toHaveBeenCalled();
+  });
+
+  it("completes only the selected recommendation for its current viewer and run", async () => {
+    const { service, run, prisma } = createService();
+    const other = "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+    const actions = [{ priority: "IMMEDIATE", action: "Confirm the release owner.", source: "E1" }];
+    prisma.deepResearchRun.findUnique.mockImplementation(async ({ where: { id } }: any) =>
+      ({ ...run, id, resultsJson: { ...run.resultsJson, recommendedActions: actions } }));
+    const checked = new Set<string>();
+    prisma.deepResearchActionCompletion = {
+      findMany: async ({ where }: any) => [...checked].map(entry => entry.split("/"))
+        .filter(([runId, userId]) => runId === where.runId && userId === where.userId)
+        .map(([, , actionId]) => ({ actionId })),
+      upsert: async ({ create }: any) => { checked.add(`${create.runId}/${create.userId}/${create.actionId}`); },
+      deleteMany: async ({ where }: any) => { checked.delete(`${where.runId}/${where.userId}/${where.actionId}`); },
+    };
+    const owner = { userId: run.createdByUserId, orgId: run.orgId };
+    const first = await service.getRun(run.projectId, run.id, owner);
+    const id = (first.results?.recommendedActions[0] as any)?.id;
+    expect(id).toMatch(/^[a-f0-9]{64}$/);
+    await (service as any).setActionCompletion(run.projectId, run.id, owner, id, true);
+    expect((await service.getRun(run.projectId, run.id, owner)).results?.recommendedActions[0]).toMatchObject({ id, completed: true });
+    expect((await service.getRun(run.projectId, run.id, { ...owner, userId: other })).results?.recommendedActions[0]).toMatchObject({ completed: false });
+    expect((await service.getRun(run.projectId, other, owner)).results?.recommendedActions[0]).toMatchObject({ completed: false });
+    await expect((service as any).setActionCompletion(run.projectId, run.id, owner, "0".repeat(64), true)).rejects.toMatchObject({ statusCode: 404 });
+    await (service as any).setActionCompletion(run.projectId, run.id, owner, id, false);
+    expect((await service.getRun(run.projectId, run.id, owner)).results?.recommendedActions[0]).toMatchObject({ completed: false });
   });
 
   it("[LR-01] keeps a healthy owner alive through pending work and fences a late failure", async () => {

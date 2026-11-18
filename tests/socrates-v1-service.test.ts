@@ -2498,6 +2498,23 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(result.limitations).toContainEqual(expect.stringMatching(/failed evidence-marker validation/i));
   });
 
+  it("keeps grounded quantities in an operational answer with a today deadline", async () => {
+    const answer = "Tell sales that the earlier request for 480 seats was not approved. The recorded approval is for the 180-seat pilot only. [E1]";
+    const { service } = makeService(
+      { OPENAI_API_KEY: "sk-test-openai-key", SOCRATES_MODEL: "gpt-5.4-mini" },
+      { answer_md: answer, confidence: "high", limitations: [], suggested_prompts: [] }
+    );
+    const result = await service.askV1ProjectMemory({
+      projectId: PROJECT_ID,
+      actorUserId: USER_ID,
+      question: "A teammate says Helix has approval for 480 production seats. What should I tell sales today?",
+      selectedSources: ["documents"],
+      includeArtifacts: false
+    });
+    expect(result.answer_md).toBe(answer);
+    expect(result.modelMetadata.degraded).toBe(false);
+  });
+
   it("rejects invented elapsed-time arithmetic in current-state answers", async () => {
     const { service } = makeService(
       { OPENAI_API_KEY: "sk-test-openai-key", SOCRATES_MODEL: "gpt-5.4-mini" },

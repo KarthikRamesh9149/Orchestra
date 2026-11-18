@@ -85,6 +85,23 @@ test('unreviewed override shapes or pins fail closed',async()=>{
   }
  }finally{await rm(f.temp,{recursive:true,force:true});}
 });
+test('the exact audited build matcher replacement cannot enter the shipped runtime',async()=>{
+ const f=await fixture();try{
+  await addReviewedMammoth(f);
+  const spec='file:scripts/desktop/tooling-glob';
+  f.manifest.devDependencies.picomatch=spec;f.manifest.overrides.picomatch='$picomatch';
+  const locked=f.lock.packages['node_modules/picomatch']={name:'@orchestra/build-glob',version:'1.0.0',resolved:spec,dev:true,dependencies:{minimatch:'11.0.9'}};
+  await f.put(join(f.root,'node_modules/picomatch/package.json'),JSON.stringify(locked));
+  await f.put(join(f.root,'package.json'),JSON.stringify(f.manifest));
+  await f.put(join(f.root,'package-lock.json'),JSON.stringify(f.lock));
+  const plan=await planRuntimeDependencies(f.root);
+  assert(plan.excludedLockPackages.includes('node_modules/picomatch'));
+  assert(!plan.packages.some(pkg=>pkg.path==='node_modules/picomatch'));
+  locked.dev=false;
+  await f.put(join(f.root,'package-lock.json'),JSON.stringify(f.lock));
+  await assert.rejects(planRuntimeDependencies(f.root),/expected dev-only build matcher/i);
+ }finally{await rm(f.temp,{recursive:true,force:true});}
+});
 test('reviewed override cannot change another parent, declared range, parent version or installed identity',async()=>{
  for(const mutation of ['other-parent','range','parent-version','installed-version','installed-build-version','peer']) {
   const f=await fixture();try{

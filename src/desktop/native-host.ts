@@ -13,8 +13,9 @@ import {desktopAiSchema} from './ai-provider.js';
 import {startMcpSocket} from './mcp-socket.js';
 import {ingestDesktopSlack} from './slack-ingest.js';
 import {ingestDesktopGitHub} from './github-ingest.js';
-import {ingestDesktopDrive,driveIdentity} from './drive-ingest.js';
+import {ingestDesktopDrive,driveIdentity,findStoredDesktopDriveRevision} from './drive-ingest.js';
 import {desktopSlackDisconnectSchema} from './slack-contract.js';
+import {migrationLedgerSql,readMigrationManifest,verifyAppliedMigrations} from './migration-manifest.js';
 
 const secret=z.string().regex(/^[a-f0-9]{64}$/);
 const configSchema=z.object({root:z.string().refine(isAbsolute),bundle:z.string().refine(isAbsolute),vault:z.object({version:z.literal(1),admin:secret,runtime:secret,installation:installationSecretsSchema}).strict(),ai:desktopAiSchema.optional()}).strict();
@@ -59,6 +60,7 @@ async function shutdown(){
 }
 process.on('disconnect',()=>{void shutdown();});process.on('SIGTERM',()=>{void shutdown();});process.on('SIGINT',()=>{void shutdown();});
 async function initialize(config:Config){
+ const began=performance.now(),elapsed=()=>Math.round(performance.now()-began);
  stage='provisioning database';
  const {root,bundle,vault}=config;
  installationRoot=root;
@@ -96,11 +98,19 @@ async function initialize(config:Config){
   try{await sql('SELECT 1');ready=true;break;}catch{await new Promise(resolve=>setTimeout(resolve,100));}
  }
  if(!ready||stopping)throw new Error('Owned database did not become ready');
+ const databaseReadyMs=elapsed();
  if((await sql("SELECT 1 FROM pg_database WHERE datname='orchestra'"))!=='1')await sql('CREATE DATABASE orchestra');
  await sql("DO $$ BEGIN CREATE ROLE anon NOLOGIN; EXCEPTION WHEN duplicate_object THEN NULL; END $$; DO $$ BEGIN CREATE ROLE authenticated NOLOGIN; EXCEPTION WHEN duplicate_object THEN NULL; END $$; DO $$ BEGIN CREATE ROLE service_role NOLOGIN; EXCEPTION WHEN duplicate_object THEN NULL; END $$; CREATE SCHEMA IF NOT EXISTS extensions; ALTER DATABASE orchestra SET search_path TO public,extensions;",'orchestra');
  const databaseUrl=`postgresql://orchestra_admin:${vault.admin}@127.0.0.1:${port}/orchestra?schema=public`;
  stage='applying migrations';
- await run(process.execPath,[join(bundle,'backend/node_modules/prisma/build/index.js'),'migrate','deploy','--schema',join(bundle,'backend/prisma/schema.prisma')],{DATABASE_URL:databaseUrl});
+ const approved=readMigrationManifest(join(bundle,'backend/prisma/migrations'));
+ let usedMigrationFastPath=false;
+ try{
+  verifyAppliedMigrations(approved,JSON.parse(await sql(migrationLedgerSql,'orchestra')));
+  usedMigrationFastPath=true;
+ }catch{/* A new database or an inexact ledger still requires Prisma's full migration path. */}
+ if(!usedMigrationFastPath)await run(process.execPath,[join(bundle,'backend/node_modules/prisma/build/index.js'),'migrate','deploy','--schema',join(bundle,'backend/prisma/schema.prisma')],{DATABASE_URL:databaseUrl});
+ const migrationsReadyMs=elapsed();
  await sql(`DO $$ BEGIN CREATE ROLE orchestra_desktop_runtime LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS; EXCEPTION WHEN duplicate_object THEN NULL; END $$;
  ALTER ROLE orchestra_desktop_runtime PASSWORD '${vault.runtime}';
  GRANT USAGE ON SCHEMA public,extensions TO orchestra_desktop_runtime;
@@ -122,7 +132,8 @@ async function initialize(config:Config){
  stage='listening';await engine.start();const address=engine.app.server.address();
  const publishAuthority=()=>{if(engine&&owner&&address&&typeof address==='object')send({type:'authority',value:{port:address.port,token:engine.localToken,bearer:engine.app.jwt.sign({userId:owner.id,orgId:owner.orgId,typ:'access',globalRole:'owner',workspaceRoleDefault:'manager'},{expiresIn:'15m'})}});};
  mcpSocket=await startMcpSocket(root,(authorization,request)=>engine!.context.services.mcpService.handleJsonRpc(authorization,request));
- publishAuthority();setInterval(publishAuthority,5*60*1000).unref();send({type:'ready',port:address&&typeof address==='object'?address.port:undefined});
+ publishAuthority();setInterval(publishAuthority,5*60*1000).unref();send({type:'ready',port:address&&typeof address==='object'?address.port:undefined,
+  startup:{databaseReadyMs,migrationsReadyMs,engineReadyMs:elapsed(),usedMigrationFastPath}});
 }
 async function bootstrap(){
  if(!engine||!owner)throw new Error('Runtime unavailable');
@@ -144,6 +155,7 @@ async function command(value:unknown,selection?:unknown){
   case 'desktop.slack.ingest':return ingestDesktopSlack(engine.context.prisma,owner,value);
   case 'desktop.github.ingest':return ingestDesktopGitHub(engine.context.prisma,owner,value);
   case 'desktop.drive.ingest':return ingestDesktopDrive(engine.context.prisma,owner,value,services.documentService);
+  case 'desktop.drive.revision':return findStoredDesktopDriveRevision(engine.context.prisma,owner,value);
   case 'local.bootstrap':z.object({operation:z.literal('local.bootstrap')}).strict().parse(value);return bootstrap();
   case 'local.onboard':{z.object({operation:z.literal('local.onboard')}).strict().parse(value);await saveLocalState(installationRoot,undefined,true);return bootstrap();}
   case 'workspace.list':z.object({operation:z.literal('workspace.list')}).strict().parse(value);return services.projectService.listProjects(owner.id,owner.orgId);
