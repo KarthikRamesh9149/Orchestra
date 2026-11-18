@@ -13,8 +13,9 @@ test('README links resolve locally and distinguish public source from internal p
     await access(new URL(target.split('#')[0], root));
   }
   assert.match(text, /Product Brain for High Speed Teams/);
-  assert.match(text, /Source publication was authorised by the owner on 5 October 2026/);
-  assert.match(text, /Packaged public downloads remain pending/);
+  assert.match(text, /Public source preview for Apple Silicon Macs/);
+  assert.match(text, /No public installer is available\./);
+  assert.match(text, /\[Release status\]\(docs\/desktop\/release\/README\.md\)|href="docs\/desktop\/release\/README\.md">Release status/);
   assert.match(text, /Real OpenAI answers in a sample project; edited timing/);
   assert.match(text, /\[Recording details\]\(docs\/desktop\/media\/PRODUCT-FILM\.md\)/);
   assert.doesNotMatch(text, /still being recorded and reviewed/);

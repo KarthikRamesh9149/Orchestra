@@ -42,9 +42,10 @@ describe("desktop Step 1 boundary", () => {
   });
 
   it("keeps publication, signing, licensing and sequential execution explicit", () => {
-    expect(read("README.md")).toContain("approved by the owner after confirming ownership");
-    expect(read("README.md")).toContain("Source publication was authorised by the owner on 5 October 2026");
-    expect(read("README.md")).toContain("Packaged public downloads remain pending");
+    const status = read("docs/desktop/release/README.md");
+    expect(status).toMatch(/confirmed original code\/asset ownership, approved Apache-2\.0 and\s+authorised public source visibility on 5 October 2026/);
+    expect(status).toMatch(/Installer and release\s+publication remain pending/);
+    expect(read("README.md")).toContain("No public installer is available.");
     expect(read("docs/desktop/CONTRACT.md")).toContain("No automatic progression");
     expect(read("docs/desktop/RELEASE-DEPENDENCIES.md")).toContain("Not confirmed; blocks signed release");
     expect(read("LICENSE")).toContain("Apache License");

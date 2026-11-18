@@ -120,7 +120,7 @@ async function verifyNative(bundle, fixtures, ai) {
       assert.match(result.answer, /Iona Flint/i);
       assert(result.citations.some(label => label.includes('Juniper Exit Runbook')));
       retention.push({ scope, ...result });
-      console.log(JSON.stringify({ check: 'five-PDF recall', scope, ...result }));
+      process.send?.({ observation: { check: 'five-PDF recall', scope, ...result } });
     }
     const sales = await ask('A teammate says Helix has approval for 480 production seats. What should I tell sales today?', ['all']);
     assert.match(sales.answer, /180/);
@@ -129,13 +129,13 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.doesNotMatch(sales.answer, /Latest timestamped evidence|No elapsed duration is inferred/i);
     assert(sales.citations.some(label => label.includes('Helix Rollout Decision')));
     assert(sales.citations.some(label => label.includes('Helix Customer Request')));
-    console.log(JSON.stringify({ check: 'false-premise sales decision', ...sales }));
+    process.send?.({ observation: { check: 'false-premise sales decision', ...sales } });
     const combined = await ask('Use the Helix Rollout Decision PDF and Slack helix-operations: what is the pilot seat limit and escalation window?', ['all']);
     assert.match(combined.answer, /180/);
     assert.match(combined.answer, /83[\s*]+minutes/i);
     assert(combined.citations.some(label => label.includes('Helix Rollout Decision')));
     assert(combined.sourceTypes.some(type => /slack|communication/i.test(type)), 'Both documents and messages must support the answer');
-    console.log(JSON.stringify({ check: 'named document plus Slack', ...combined }));
+    process.send?.({ observation: { check: 'named document plus Slack', ...combined } });
     const researchStart = performance.now();
     const run = await api('/deep-research', { method: 'POST', body: {
       researchFocus: 'Compare Helix Rollout Decision and Helix Customer Request. Contrast the 180-seat pilot approval with the pending 480-seat request. State whether any actual Orchestra record establishes approval and what sales should confirm before promising production.',
@@ -154,7 +154,7 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.match(report.results.executiveSummary, /(?:no |not |cannot |can’t |unverified)[^.!?]{0,90}(?:record|approv|authoriz)/i);
     assert(report.results.sources.some(source => source.href?.includes('versionId=')));
     assert(!report.results.sources.some(source => source.target?.kind === 'decision_record'));
-    console.log(JSON.stringify({ check: 'research without recorded approval', summary: report.results.executiveSummary }));
+    process.send?.({ observation: { check: 'research without recorded approval', summary: report.results.executiveSummary } });
     const checked = report.results.recommendedActions[0];
     assert(checked?.id, 'No durable recommended action in the report');
     await api(runPath + '/actions/' + checked.id, { method: 'PUT', body: { completed: true } });
@@ -231,15 +231,17 @@ if (process.argv[2] === '--native-worker') {
           stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
         });
         let result;
+        const observations = [];
         const timer = setTimeout(() => { worker.kill('SIGTERM'); reject(Error('AI qualification timed out')); }, 150000);
         worker.on('message', message => {
+          if (message.observation) { observations.push(message.observation); return; }
           if (message.readyForSettings !== true) { result = message; return; }
           worker.send({ apiKey: settings.ai.apiKey, preferences: { provider: 'openai', generationModel: settings.ai.preferences.generationModel,
             embeddingProvider: 'openai', embeddingModel: 'text-embedding-3-small', embeddingDimensions: 1536,
             maxRequestsPerDay: 24, maxOutputTokens: 1536 } });
         });
         worker.once('error', error => { clearTimeout(timer); reject(error); });
-        worker.once('exit', () => { clearTimeout(timer); resolve(result ?? { passed: false, error: 'Missing worker result' }); });
+        worker.once('exit', () => { clearTimeout(timer); resolve({ ...(result ?? { passed: false, error: 'Missing worker result' }), observations }); });
       });
     }, { profile, sourceSettings, entry: fileURLToPath(import.meta.url), node: process.execPath, fixtures,
       bundle: join(appPath, 'Contents/Resources/runtime') });
