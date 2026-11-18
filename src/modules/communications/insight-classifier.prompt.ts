@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const insightRefSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().guid(),
   confidence: z.number().min(0).max(1).default(0.5)
 });
 

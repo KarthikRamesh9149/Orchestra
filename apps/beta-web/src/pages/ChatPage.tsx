@@ -775,7 +775,14 @@ function RotatingSuggestion({ paused, onSelect }: { paused: boolean; onSelect: (
 export function ChatPage() {
   const chatParams = useParams<{ "*": string }>();
   const conversationId = chatParams["*"]?.split("/")[0] || undefined;
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const researchParam = searchParams.get("researchRun");
+  const savedResearchRun = researchParam && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(researchParam) ? researchParam : null;
+  const setResearchRun = (id: string | null) => setSearchParams(current => {
+    const next = new URLSearchParams(current);
+    if (id) next.set("researchRun", id); else next.delete("researchRun");
+    return next;
+  }, { replace: true });
   const navigate = useNavigate();
   const { activeProject } = useAuth();
   const projectId = activeProject?.id ?? null;
@@ -1378,14 +1385,16 @@ export function ChatPage() {
 
       <DeepResearchModal
         projectId={activeProject?.id ?? ""}
-        open={deepResearchOpen}
+        existingRunId={savedResearchRun}
+        onRunOpened={setResearchRun}
+        open={!!activeProject?.id && (deepResearchOpen || !!savedResearchRun)}
         minimized={deepResearchMinimized}
-        onClose={() => { setDeepResearchOpen(false); setDeepResearchMinimized(false); }}
+        onClose={() => { setDeepResearchOpen(false); setDeepResearchMinimized(false); if (savedResearchRun) setResearchRun(null); }}
         onMinimize={() => setDeepResearchMinimized(true)}
         onElapsedChange={setDeepResearchElapsed}
       />
       <DeepResearchMinimizedPill
-        visible={deepResearchOpen && deepResearchMinimized}
+        visible={(deepResearchOpen || !!savedResearchRun) && deepResearchMinimized}
         elapsedSeconds={deepResearchElapsed}
         onView={() => setDeepResearchMinimized(false)}
       />

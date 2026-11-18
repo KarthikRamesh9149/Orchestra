@@ -17,9 +17,9 @@ export function desktopAiSearchStatus(runtime:OperationResult){
 export const aiKeyImportSchema=z.object({
  target:z.enum(['generation','embedding']),
  preferences:z.object({provider:z.enum(['openai','anthropic','google','openai-compatible']).optional(),baseUrl:z.string().max(2048).optional(),embeddingProvider:z.enum(['none','openai','openai-compatible']).optional(),embeddingBaseUrl:z.string().max(2048).optional()})
-}).strict().transform(({target,preferences})=>({target,preferences:{
- ...(target==='generation'?{provider:preferences.provider,baseUrl:preferences.baseUrl,embeddingProvider:'none'}:{provider:'openai',embeddingProvider:preferences.embeddingProvider??((preferences.provider??'openai')==='openai'?'openai':'none'),embeddingBaseUrl:preferences.embeddingBaseUrl}),
- generationModel:'credential-import',embeddingModel:'text-embedding-3-small',embeddingDimensions:1536,maxRequestsPerDay:50,maxOutputTokens:2048
+}).strict().transform(({target,preferences}):{target:typeof target;preferences:z.input<typeof desktopAiPreferencesSchema>}=>({target,preferences:{
+ ...(target==='generation'?{provider:preferences.provider,baseUrl:preferences.baseUrl,embeddingProvider:'none' as const}:{provider:'openai' as const,embeddingProvider:preferences.embeddingProvider??((preferences.provider??'openai')==='openai'?'openai':'none'),embeddingBaseUrl:preferences.embeddingBaseUrl}),
+ generationModel:'credential-import',embeddingModel:'text-embedding-3-small',embeddingDimensions:1536 as const,maxRequestsPerDay:50,maxOutputTokens:2048
 }})).pipe(z.object({target:z.enum(['generation','embedding']),preferences:desktopAiPreferencesSchema}).strict());
 const draftLifetimeMs=15*60*1000;
 const endpoint=(value:string|undefined)=>value?new URL(value).href.replace(/\/$/,''):'';

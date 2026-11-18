@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const engineeringEvidenceParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const engineeringEvidenceItemParamsSchema = engineeringEvidenceParamsSchema.extend({
-  evidenceId: z.string().uuid()
+  evidenceId: z.string().guid()
 });
 
 export const listEngineeringEvidenceQuerySchema = z.object({
@@ -29,9 +29,9 @@ export const manualEngineeringEvidenceSchema = z.object({
   status: z.string().trim().min(1).max(120),
   confidence: z.enum(["low", "medium", "high"]).default("medium"),
   severity: z.enum(["info", "low", "medium", "high", "critical"]).optional().nullable(),
-  citations: z.array(z.record(z.unknown())).max(25).default([]),
-  openTargets: z.array(z.record(z.unknown())).max(25).default([]),
-  metadata: z.record(z.unknown()).default({})
+  citations: z.array(z.record(z.string(), z.unknown())).max(25).default([]),
+  openTargets: z.array(z.record(z.string(), z.unknown())).max(25).default([]),
+  metadata: z.record(z.string(), z.unknown()).default({})
 });
 
 export type RefreshEngineeringEvidenceInput = z.infer<typeof refreshEngineeringEvidenceSchema>;

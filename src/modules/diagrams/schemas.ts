@@ -24,15 +24,15 @@ const safeText = (label: string, min: number, max: number) =>
     .max(max)
     .refine((value) => !safeTextPattern.test(value), { message: `${label} contains unsafe content` });
 
-const linkedIdsSchema = z.array(z.string().uuid()).max(50).default([]);
+const linkedIdsSchema = z.array(z.string().guid()).max(50).default([]);
 
 export const projectDiagramParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const projectDiagramEntryParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  diagramId: z.string().uuid()
+  projectId: z.string().guid(),
+  diagramId: z.string().guid()
 });
 
 export const liveDocDiagramParamsSchema = projectDiagramEntryParamsSchema.extend({
@@ -47,7 +47,7 @@ const baseDiagramFields = {
   linkedDocumentSectionIds: linkedIdsSchema,
   linkedBrainNodeIds: linkedIdsSchema,
   linkedContextEntryIds: linkedIdsSchema,
-  linkedArtifactVersionId: z.string().uuid().optional().nullable()
+  linkedArtifactVersionId: z.string().guid().optional().nullable()
 };
 
 export const createDiagramSchema = z
@@ -73,10 +73,10 @@ export const updateDiagramSchema = z
     description: baseDiagramFields.description,
     diagramType: baseDiagramFields.diagramType.optional(),
     mermaidSource: baseDiagramFields.mermaidSource.optional(),
-    linkedDocumentSectionIds: linkedIdsSchema.optional(),
-    linkedBrainNodeIds: linkedIdsSchema.optional(),
-    linkedContextEntryIds: linkedIdsSchema.optional(),
-    linkedArtifactVersionId: z.string().uuid().optional().nullable()
+    linkedDocumentSectionIds: linkedIdsSchema.removeDefault().optional(),
+    linkedBrainNodeIds: linkedIdsSchema.removeDefault().optional(),
+    linkedContextEntryIds: linkedIdsSchema.removeDefault().optional(),
+    linkedArtifactVersionId: z.string().guid().optional().nullable()
   })
   .refine((value) => Object.keys(value).length > 0, {
     message: "At least one diagram field must be provided"
@@ -84,7 +84,7 @@ export const updateDiagramSchema = z
 
 export const diagramSourceRefSchema = z.object({
   type: z.enum(["document_section", "brain_node", "project_context", "responsibility", "artifact_version"]),
-  id: z.string().uuid()
+  id: z.string().guid()
 });
 
 export const generateDiagramSchema = z.object({

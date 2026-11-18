@@ -148,11 +148,11 @@ export const listAgentContextPacksQuerySchema = z.object({
 });
 
 export const projectAgentContextParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const agentContextPackParamsSchema = projectAgentContextParamsSchema.extend({
-  packId: z.string().uuid()
+  packId: z.string().guid()
 });
 
 export const agentContextExportRequestSchema = z.object({
@@ -169,7 +169,7 @@ export const agentContextExportRequestSchema = z.object({
 });
 
 export const createAgentRunSchema = z.object({
-  contextPackId: z.string().uuid().optional(),
+  contextPackId: z.string().guid().optional(),
   exportReference: exportReferenceSchema.optional(),
   exportFormat: agentContextExportFormatSchema.optional(),
   targetAgent: z
@@ -240,8 +240,8 @@ export const listAgentRunsQuerySchema = z.object({
     .optional(),
   provider: safeText("provider", 1, 80).optional(),
   taskType: agentRunTaskTypeSchema.optional(),
-  contextPackId: z.string().uuid().optional(),
-  createdByUserId: z.string().uuid().optional(),
+  contextPackId: z.string().guid().optional(),
+  createdByUserId: z.string().guid().optional(),
   reviewState: z.enum(["unreviewed", "accepted", "rejected", "needs_follow_up", "failed"]).optional(),
   needsFollowUp: z.coerce.boolean().optional(),
   branchName: safeText("branch name", 1, 200).optional(),
@@ -253,11 +253,11 @@ export const listAgentRunsQuerySchema = z.object({
 });
 
 export const agentRunParamsSchema = projectAgentContextParamsSchema.extend({
-  runId: z.string().uuid()
+  runId: z.string().guid()
 });
 
 export const agentQualityReviewParamsSchema = projectAgentContextParamsSchema.extend({
-  reviewId: z.string().uuid()
+  reviewId: z.string().guid()
 });
 
 export const createQualityReviewSchema = z.object({

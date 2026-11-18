@@ -136,6 +136,13 @@ export function TruthChangePacketPage() {
   if (state === "loading") return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><p role="status" className="text-sm text-[var(--text-muted)]">Loading change packet…</p></div>;
   if (state === "failed" || !packet) return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><div role="alert" className="rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error ?? "Truth Change Packet unavailable."}</div><button type="button" onClick={() => { setState("loading"); void load(); }} className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)]">Try again</button></div>;
 
+  const proposalStatus = packet.proposedChange?.status;
+  const decided = proposalStatus === "accepted" || proposalStatus === "rejected" || proposalStatus === "superseded";
+  const packetStatus = !proposalStatus ? "Review signal"
+    : proposalStatus === "accepted" ? "Accepted"
+    : proposalStatus === "rejected" ? "Rejected"
+    : proposalStatus === "superseded" ? "Superseded" : "Pending";
+
   return (
     <div className="h-full overflow-y-auto bg-[var(--bg)] px-4 py-5 sm:px-7 lg:px-10" aria-labelledby="packet-heading">
       <div className="mx-auto max-w-6xl pb-8">
@@ -146,9 +153,9 @@ export function TruthChangePacketPage() {
             <h1 id="packet-heading" className="mt-1 max-w-3xl text-2xl font-semibold text-[var(--text-default)]">{packet.item.title}</h1>
             <p className="mt-1 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{packet.item.description}</p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full bg-[var(--bg-inset)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--text-muted)]">{packet.packetKind.replace(/_/g, " ")}</span>
-            <span className={packet.readiness === "decision_ready" ? "rounded-full bg-[var(--tint-teal)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--teal-text)]" : "rounded-full bg-[var(--tint-amber)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--amber-text)]"}>{packet.readiness.replace(/_/g, " ")}</span>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Packet status">
+            <span className="rounded-full bg-[var(--bg-inset)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--text-muted)]">{packetStatus}</span>
+            {!decided && <span className={packet.readiness === "decision_ready" ? "rounded-full bg-[var(--tint-teal)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--teal-text)]" : "rounded-full bg-[var(--tint-amber)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--amber-text)]"}>{packet.readiness === "review_only" ? "View only" : packet.readiness.replace(/_/g, " ")}</span>}
           </div>
         </div>
 

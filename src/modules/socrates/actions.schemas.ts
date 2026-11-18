@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { validateMermaidSource } from "../diagrams/mermaid-validation.js";
 
-const uuidSchema = z.string().uuid();
+const uuidSchema = z.string().guid();
 const isoDateTimeSchema = z.string().datetime({ offset: true });
 const secretKeyPattern = /token|secret|password|credential|apiKey|api[_-]?key|authorization|privateKey|signingKey/i;
 const secretValuePattern =

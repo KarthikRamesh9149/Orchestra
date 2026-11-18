@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from "fastify";
+import { z } from "zod";
 import { internalAuthGuard } from "../../app/auth.js";
 import {
   deepResearchExportQuerySchema,
@@ -60,6 +61,23 @@ export const registerDeepResearchRoutes: FastifyPluginAsync = async (app) => {
       return { data, meta: null, error: null };
     })
   );
+
+  app.put("/projects/:projectId/deep-research/:runId/actions/:actionId", internalAuthGuard(async request => {
+    const params = deepResearchRunParamsSchema.extend({ actionId: z.string().regex(/^[0-9a-f]{64}$/) }).parse(request.params);
+    const { completed } = z.object({ completed: z.boolean() }).strict().parse(request.body);
+    const data = await request.appContext.services.deepResearchService.setActionCompletion(
+      params.projectId, params.runId, { userId: request.authUser!.userId, orgId: request.authUser!.orgId }, params.actionId, completed
+    );
+    return { data, meta: null, error: null };
+  }));
+
+  app.get("/projects/:projectId/deep-research/:runId/sources/:sourceRef", internalAuthGuard(async request => {
+    const params = deepResearchRunParamsSchema.extend({ sourceRef: z.string().regex(/^E[1-9]\d{0,2}$/) }).parse(request.params);
+    const data = await request.appContext.services.deepResearchService.getSourcePreview(
+      params.projectId, params.runId, { userId: request.authUser!.userId, orgId: request.authUser!.orgId }, params.sourceRef
+    );
+    return { data, meta: null, error: null };
+  }));
 
   app.get(
     "/projects/:projectId/deep-research/:runId/export",

@@ -5,7 +5,7 @@ import { AppError } from "../../app/errors.js";
 import { isMvpEqualProjectAccessEnabled, shouldShowVersionHistory } from "../../lib/mvp/policy.js";
 
 const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const registerBrainRoutes: FastifyPluginAsync = async (app) => {

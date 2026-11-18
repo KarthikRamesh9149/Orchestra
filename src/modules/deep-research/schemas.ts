@@ -41,12 +41,12 @@ export const startDeepResearchSchema = z.object({
 export type StartDeepResearchInput = z.infer<typeof startDeepResearchSchema>;
 
 export const deepResearchParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const deepResearchRunParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  runId: z.string().uuid()
+  projectId: z.string().guid(),
+  runId: z.string().guid()
 });
 
 export const deepResearchExportQuerySchema = z.object({
@@ -84,7 +84,12 @@ export const deepResearchSourceSchema = z.object({
     } catch {
       return false;
     }
-  }, "Source href must be an internal path or HTTP(S) URL")
+  }, "Source href must be an internal path or HTTP(S) URL").nullable(),
+  target: z.object({
+    kind: z.enum(["message", "brain_node", "brain_version", "github_record"]),
+    id: z.string().guid()
+  }).optional(),
+  excerpt: z.string().max(900).optional()
 });
 export type DeepResearchSource = z.infer<typeof deepResearchSourceSchema>;
 

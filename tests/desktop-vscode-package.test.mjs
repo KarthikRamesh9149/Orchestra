@@ -12,8 +12,8 @@ const extension=join(root,'apps/vscode-extension');
 test('maintained VS Code packager does not retain the vulnerable glob dependency chain',async()=>{
   const pkg=JSON.parse(await readFile(join(extension,'package.json'),'utf8'));
   const lock=JSON.parse(await readFile(join(extension,'package-lock.json'),'utf8'));
-  assert.equal(pkg.devDependencies['@vscode/vsce'],'4.0.0');
-  assert.equal(lock.packages['node_modules/@vscode/vsce'].version,'4.0.0');
+  assert.equal(pkg.devDependencies['@vscode/vsce'],'4.1.1');
+  assert.equal(lock.packages['node_modules/@vscode/vsce'].version,'4.1.1');
   for(const location of Object.keys(lock.packages))assert.doesNotMatch(location,/(?:^|\/)node_modules\/(?:braces|micromatch|fast-glob|secretlint)$/);
 });
 

@@ -8,7 +8,7 @@ import {authorizePairedRpc,pairedRpcSchema} from './mcp-relay-policy.js';
 const limit=1024*1024;
 export async function runMcpRelay(pairingId:string){
  try{
-  z.string().uuid().parse(pairingId);await app.whenReady();
+  z.string().guid().parse(pairingId);await app.whenReady();
   const root=join(app.getPath('userData'),'local-runtime');
   const store=new ProtectedSettingsStore(root,safeStorage);
   let input=Buffer.alloc(0),pending=Promise.resolve(),queued=0;

@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 719,
+  "unchangedImportedFiles": 675,
   "changes": [
     {
       "path": ".gitattributes",
@@ -11,14 +11,14 @@
     {
       "path": "apps/beta-web/package-lock.json",
       "sourceSha256": "2d65c3585760d08690bca738db400890b485a5d10af1de95bda1d486f140a8cc",
-      "importedSha256": "492184d2d01e59614f79214039fe7b54b861d9aa339c156975f24cefc1ae01b4",
-      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived. October 8 CI follow-up: replace the vulnerable legacy compiler graph with the pinned maintained compiler/plugin closure; no audit exclusions or fake version overrides."
+      "importedSha256": "acce04870c23b7af4d201d55505867acca8156599bd9a5be0aadba78dc57ef65",
+      "reason": "October 8 packaged qualification: compatible source-map-js and undici security updates only; retain Tailwind 3 and unchanged visual design. Unpatched braces build-tool advisories remain disclosed, not waived. October 8 CI follow-up: replace the vulnerable legacy compiler graph with the pinned maintained compiler/plugin closure; no audit exclusions or fake version overrides. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/beta-web/package.json",
       "sourceSha256": "794c0a3b21298f3cd3d7112d1143b806d49d3225e00bfb5ffde519f821ee3e3a",
-      "importedSha256": "a4c7a682cb0bf2d79aaaccdd2bcdd0adf2a1c464d89f738cb1111053e14e2223",
-      "reason": "October 8 CI security repair: pin maintained Tailwind 4.3.3 and its PostCSS plugin, removing the unpatched braces and vulnerable selector build chains; retain React, UI components, API and theme semantics."
+      "importedSha256": "b704653daa5e932e62654d7187017ff8b7ed1d4683492903f92c4d1bb0f2b073",
+      "reason": "October 8 CI security repair: pin maintained Tailwind 4.3.3 and its PostCSS plugin, removing the unpatched braces and vulnerable selector build chains; retain React, UI components, API and theme semantics. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/beta-web/postcss.config.js",
@@ -53,14 +53,14 @@
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
       "sourceSha256": "142cb4169d9a8500a9b9e4f7bbffaf3c4b70fc6965e52a77cef79b09df86d9e4",
-      "importedSha256": "f7973db38c1bd6772f8bac7459de0da90611f36794d2b2bbee5ddb6956920301",
-      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions."
+      "importedSha256": "0d00a2cda65e9f1dd8f632701b03ef0c53a168efcab7edd89736b059f7ae30bf",
+      "reason": "Step 5 regression verifies configured desktop research reaches the backend while inherited research behavior remains covered. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
       "sourceSha256": "181843e04e4a62fa645869e1eb37aec540aed75ce711b7df6de19b318dc21b87",
-      "importedSha256": "6878de85b0ca2cbb55b9c35389bbeabe7807eada6a16d75604e14b7faf923b52",
-      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions."
+      "importedSha256": "626ed881a8edd7871344f76cbe1a281145b7f499204029acac09ad5a54175f4c",
+      "reason": "Step 5 removes the temporary unconditional desktop guard; the authorized backend owns AI readiness validation and returns honest errors without quota allocation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: expose existing PDF/Markdown export contracts, preserve download failures and guard duplicate submissions. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/components/ui/SocratesMarkdown.test.tsx",
@@ -113,8 +113,8 @@
     {
       "path": "apps/beta-web/src/lib/api/research.ts",
       "sourceSha256": "0f257c488076ab481d357664722d21451a9f5bb1205b3a1289280f8eb96d236c",
-      "importedSha256": "94a000b05b3bfca509c420c1f6155cd36e057948a697f650c6c58052dc33d942",
-      "reason": "September 20 readiness follow-up: expose the existing authorized paginated saved-research read with bounded page size, metadata validation and the shared API transport."
+      "importedSha256": "2e78b4267c060209c233f02e7e389e750fa42b619fa6d6d63a83d7913c6f1685",
+      "reason": "September 20 readiness follow-up: expose the existing authorized paginated saved-research read with bounded page size, metadata validation and the shared API transport. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/lib/api.auth.test.ts",
@@ -149,8 +149,8 @@
     {
       "path": "apps/beta-web/src/lib/api.ts",
       "sourceSha256": "fe138c23af9b5dd9d95a1f4d85d6b378135151dc21ccdf1ec307238713f59dc9",
-      "importedSha256": "e52d1aff4aa9bbb752dfe29776a3378d1c81b1824d85cd4b2474d9c3361defe8",
-      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded."
+      "importedSha256": "71e91e763e8ac847956661135469134fdbc0f6806fa9a9d8f595cb42bd5b9841",
+      "reason": "Steps 4/6 honest partial processing, shared logout and provider provenance; Step 7 uncached per-document processing status with cancellation. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/lib/performance/prefetch.ts",
@@ -173,8 +173,8 @@
     {
       "path": "apps/beta-web/src/pages/ChatPage.tsx",
       "sourceSha256": "8f42cfb9a5966cf73e0e799ea6ad50df20ed3bc3fe59647106f72fe8861a4dba",
-      "importedSha256": "74adc991e168f2a60520e954fdd23704890e99c2110b0b71872ba76cdfcc9b6e",
-      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes."
+      "importedSha256": "56465238c93e275476ab7692bfbf8e68bdaef35aab7bd923374c2970fa114560",
+      "reason": "Step 4 retain first-session selection when acceptance arrives after route unmount; preserve explicit user selection and prevent duplicate pending submissions. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. October 8 packaged qualification: preserve immediate New chat typing across pending router navigation and prohibit submission into the previous session; blank/existing new draft and directly opened conversation regressions. No styling changes. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/pages/DashboardPage.tsx",
@@ -189,10 +189,16 @@
       "reason": "Steps 4/5 native context-pack save, clipboard and scoped MCP pairing; preserve hosted behavior and existing visual tokens. Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
     },
     {
+      "path": "apps/beta-web/src/pages/LiveDocViewerPage.test.tsx",
+      "sourceSha256": "d42acfea5bf2cda8bd277553ffab8f8878e18100017657c6b47c6afe0da7d745",
+      "importedSha256": "e9133caffabd6279187f562f26e6e3cb170c0fae7c968bdca38350967e20ecb7",
+      "reason": "November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+    },
+    {
       "path": "apps/beta-web/src/pages/LiveDocViewerPage.tsx",
       "sourceSha256": "5645d0fb0f239d67bbbbd4af8b22865ec1ee704de7417e5114fecbddd72de7d5",
-      "importedSha256": "53ad7ce09f9a45614c8a4ddad531aa1945dd3e980137dbca859543bce69e871f",
-      "reason": "Step 4 user-selected native original-document save; web download remains unchanged."
+      "importedSha256": "9d90b6a0fb499f500f184f1a85d3bf81a0f775799775b9ee103a60387e46d775",
+      "reason": "Step 4 user-selected native original-document save; web download remains unchanged. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "apps/beta-web/src/pages/MemoryContextPage.test.tsx",
@@ -237,10 +243,16 @@
       "reason": "Step 4 reuse existing accessible teal/red theme tokens for approval and review controls; preserve layout and interaction."
     },
     {
+      "path": "apps/beta-web/src/pages/TruthChangePacketPage.test.tsx",
+      "sourceSha256": "ea1427235df5cfe5bf9684d43b6cdd98555076b30db1110e0485cd985f059633",
+      "importedSha256": "fa52a10a255d76fd8b1536e78d210679fbf68375e56e14a992b603f924d81921",
+      "reason": "November Tier 2: headline persisted proposal state separately from viewer actionability, retaining existing styles."
+    },
+    {
       "path": "apps/beta-web/src/pages/TruthChangePacketPage.tsx",
       "sourceSha256": "a0f9f8b79b45941c6e03ee241c579d9ba975a6fe73c57bd55e42058bb1532f5f",
-      "importedSha256": "9df31ae2e28b59b05683ac29c30f4d27dd16125bfd4b09cb6caccf50ef339406",
-      "reason": "Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes."
+      "importedSha256": "ea26e76229f1a923f600929ee3e7a7746f5bfae2718b1cf9e2fcacee18c6d66d",
+      "reason": "Step 8 user-requested concise UI copy; preserve evidence warnings, cancellation uncertainty, authorization and visual classes. November Tier 2: headline persisted proposal state separately from viewer actionability, retaining existing styles."
     },
     {
       "path": "apps/beta-web/src/pages/TruthInboxPage.tsx",
@@ -287,14 +299,14 @@
     {
       "path": "apps/vscode-extension/package-lock.json",
       "sourceSha256": "c22d6733b196b0957ea6913a3a28cfcd5ed75dbc49369d37f5ed585e47339a1f",
-      "importedSha256": "97e013c1ba7ad05627eb5524f30c2d12a69b598ee99018e25a301d69ceab433e",
-      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed. October 8 CI follow-up: maintained VSCE 4.0.0 removes braces rather than suppressing the advisory; exact package contents and secret-scan path verified."
+      "importedSha256": "d395784ee1c67217b2c2c0f449b97dda4f9243de23d19f8094dd74ef76705a2c",
+      "reason": "Compatible js-yaml security patch for packaging dependency advisory GHSA-2883-xcg3-v3hh. October 8: compatible brace-expansion, URI, Markdown and undici packaging updates; unpatched braces tooling risk remains disclosed. October 8 CI follow-up: maintained VSCE 4.0.0 removes braces rather than suppressing the advisory; exact package contents and secret-scan path verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/vscode-extension/package.json",
       "sourceSha256": "cc053d35f4e95fab6816aa9fcd6d3dcb31703b8d0520369cea50be0bdf6cbcd6",
-      "importedSha256": "859d23a445b8b329ccb27cabd525bc0d2914581ebd050e74b321fc05534bd339",
-      "reason": "October 8 CI security repair: pin Microsoft VSCE 4.0.0, removing the vulnerable glob/secretlint CLI chain; preserve extension API, commands and minimum editor version. Include the owner-approved Apache licence and exact original icon with actual unsigned VSIX regression coverage; no Marketplace publication."
+      "importedSha256": "6d6980ebd905a201c93c60026aea722ca29969ebd6d8023e5ede3e11f014d7b6",
+      "reason": "October 8 CI security repair: pin Microsoft VSCE 4.0.0, removing the vulnerable glob/secretlint CLI chain; preserve extension API, commands and minimum editor version. Include the owner-approved Apache licence and exact original icon with actual unsigned VSIX regression coverage; no Marketplace publication. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "apps/vscode-extension/tsconfig.json",
@@ -305,20 +317,20 @@
     {
       "path": "package-lock.json",
       "sourceSha256": "33714f0d9de659613f0d5112a9bd1f41b4e2ce1a71981e645eb2e5f829225782",
-      "importedSha256": "48e8e4c0061465fde94c6b28ad9ea3ee0bdc242c47532e40a69c9d441024bca3",
-      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades. October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade."
+      "importedSha256": "3d68202886b9c353b0d7e9968aacc42873f711b228e3f4bab8f06350e63eb439",
+      "reason": "September 20 readiness follow-up: lock the reviewed PDF replacement dependency closure, remove unused PDFKit dependencies and types, and declare the existing semver build-tool version without unrelated upgrades. October 8: compatible audited Fastify/busboy/URI/copy/source-map patches and Mammoth 1.13 closure; no hosted deployment or forced downgrade. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "package.json",
       "sourceSha256": "dc9bca392bfa6997c3db4c32de7362f7947cfa3ba96fb1bc91812e7f3dc1a984",
-      "importedSha256": "462ac768607390f9d9f76af7fe2524274940bce4d9049c528373ee5618bc008c",
-      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate. October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified."
+      "importedSha256": "b8a6ae99438a69ec9533711a5919f27acd9dcfa779b25fe38f87f9623506e762",
+      "reason": "September 20 readiness follow-up: exact pdf-lib 1.17.1 replaces PDFKit while preserving PDF exports; exact semver 7.7.4 is declared for the dependency-staging build tool. September 23: discover and execute every Node packaging regression through one portable local gate. October 8 package qualification: scoped Mammoth CLI argparse 2.0.1 override removes vulnerable sprintf-js without downgrading document parsing; CLI and parser regressions verified. November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile. November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs."
     },
     {
       "path": "prisma/schema.prisma",
       "sourceSha256": "776a3110bde758919bce00a05942b5660cfef525b7df49e7f59eb84b15b586cb",
-      "importedSha256": "43e0b631a6fc8e34f76e8775443ebb0271236eb117884965ffa5b4e1427cac5a",
-      "reason": "Step 2 desktop queue, cancellation and limiter models; original migrations unchanged. Readiness follow-up: additive database-maintained document search vector; original migration history and hosted deployment state remain untouched."
+      "importedSha256": "e7d36ebaee5852a0dfde97bed0ffd087d894ee82e88e104aa854fa96943b5b5b",
+      "reason": "Step 2 desktop queue, cancellation and limiter models; original migrations unchanged. Readiness follow-up: additive database-maintained document search vector; original migration history and hosted deployment state remain untouched. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "scripts/diag-socrates-v1.ts",
@@ -359,8 +371,8 @@
     {
       "path": "src/config/env.ts",
       "sourceSha256": "602cc1c4412cd1be30a9831d4ce4e1d188459c362cbd883fc6e2a8e286b2c995",
-      "importedSha256": "385f1f70ef1fbc078c758e5135b01f9feab43e9e6a40a28b76561046f4563526",
-      "reason": "Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced. September 20: explicit desktop provider selection and shared-server ownership; no production configuration or UI styling changes."
+      "importedSha256": "caf85e7d975c078e52221a1fafde2ecdd4052bb56c57d9b4b06ae80eb4c79271",
+      "reason": "Step 2 explicit local validation; Step 6 self-hosted HTTPS, stable identity, private storage, offline AI, server-worker controls and bounded operator opt-in cache settings. Managed production restrictions remain enforced. September 20: explicit desktop provider selection and shared-server ownership; no production configuration or UI styling changes. November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/lib/ai/index.ts",
@@ -379,6 +391,12 @@
       "sourceSha256": "33f887bafb7e445f554248db5aac80a84ae1be8b829f5fac36a1df008546e097",
       "importedSha256": "11110126f4510e46b4c3aab3ed93e90ebf7b855eef157773da9f37b7c5956e1a",
       "reason": "Provider-neutral desktop generation readiness and honest vendor metadata; hosted configuration remains separate."
+    },
+    {
+      "path": "src/lib/jobs/handlers.ts",
+      "sourceSha256": "d705ab4eec2768e82f1a79b3531b3914a0b506c3cd544f0df7de633e39cb2ceb",
+      "importedSha256": "e6950577caa52bd01edaa676e4ad1d6091b7022ec8a0525754ee69de618e5d58",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/lib/parsers/docx.ts",
@@ -417,6 +435,12 @@
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
+      "path": "src/modules/agent-context/schemas.ts",
+      "sourceSha256": "4a8b9ccdcda371299ba5f514a4bb9bb291b1498567320e4a5c011adcf3c6c2e7",
+      "importedSha256": "2f1a6e1840bf1f91f8f92196eb3e87acfef4cca2eecda7339e24bbad99f87229",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
       "path": "src/modules/agent-context/service.ts",
       "sourceSha256": "ab81ff1f4e753480eb95f581ea7d07bdb3b00a9c11b1bad0957b2c24c1d5b6a0",
       "importedSha256": "ed793910ba4c666cbdf4f081270915a70434cf0f4705226efb9f665a0ffbc778",
@@ -427,6 +451,60 @@
       "sourceSha256": "1d65767fe42e0b42071506d4d2705821055f647bd0261553d5cea4338a177c36",
       "importedSha256": "8914e7c0f3bd6446fc5735121e0a52b7a752682a048c17d6fda563d57d596572",
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
+    },
+    {
+      "path": "src/modules/agent-files/schemas.ts",
+      "sourceSha256": "891974e5c8bd96e16d8c856a3d209f4f6840ffc1fa16aa19e634b7f8c1acafbf",
+      "importedSha256": "9a537ee8c0deac4cfed0cabba17dc2fe95312e6c0e5089c48b446bcf714dda81",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/auth/routes.ts",
+      "sourceSha256": "31618b070678c8822d36978f781a0ff3e5837a33c8ba490ea14106494e6f571c",
+      "importedSha256": "3a6e48653b47bf60c88c967e1d8882a4478986ac04d6385f8cf94ad2b118aa18",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/beta-timeline/beta-timeline.service.ts",
+      "sourceSha256": "616cb8142eed5c894727f15494c554f09bbd14aa29be2e8d91c65787ac3becd3",
+      "importedSha256": "5b1f61a4a8b841060b7656a5335753b03b10ce8ac990e5dcdc1386a273bfc49f",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
+      "path": "src/modules/beta-timeline/schemas.ts",
+      "sourceSha256": "6e2c7411e7decb5de7b687cd3003cda812e60200fb8bdb082d2084057b763c01",
+      "importedSha256": "15a5b3ccaec27045a1d39ab1c236a6cc463294d325d563454f38f4a0aedaea49",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/brain/routes.ts",
+      "sourceSha256": "db068eeabc5ecf233ee991867592333c2a2dce8badca483c45eb27d910d9797e",
+      "importedSha256": "25dccdb67e611b3f2d012258f54f5cd0320d60b3b0bd2ca0e1ee1e06e27f778c",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/changes/schemas.ts",
+      "sourceSha256": "82911ae887cd02c1fb9070c9a29f92037473ae70140e395ef70805ed46804d4e",
+      "importedSha256": "b5f5d085be551e0da0154dccb108ef1d2c240ad2a9299dfdf00ff8a8e0de309f",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/client-view/client-view.schemas.ts",
+      "sourceSha256": "d881011a3fd4a81b2ce38083b2612c8ea59de8bd3e8c510aaf05cdb24fbd0b41",
+      "importedSha256": "a05a74a466bc1ff38fbbe597995054bb131ad7a6e7afabcbc5c584b813ee55aa",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/coding-requirements/schemas.ts",
+      "sourceSha256": "e3804bd455f82057b11445d30e78c857b06851a36a54dc8bd077bd5115b429b4",
+      "importedSha256": "9938374d6c577d7f293b3c9af68e4c26456c4eadedee22609655bb6fb5204b19",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/communications/insight-classifier.prompt.ts",
+      "sourceSha256": "87bb67f7a2332b1f8bd397d56dfb95eeb182d5a66ade69f0a345e46a0ca8813d",
+      "importedSha256": "b8ce3434ba0dc3f2063bf1edc83fcff9f9e2f6d20e3d316d2962fd2443c5810f",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/modules/communications/message-indexing.service.ts",
@@ -441,6 +519,24 @@
       "reason": "Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked."
     },
     {
+      "path": "src/modules/communications/schemas.ts",
+      "sourceSha256": "6b89009bc6fccdb4ae47070aa23a106316b740feeab80ee1314f51c76d3ed474",
+      "importedSha256": "428558a00c4e096d1a64c402ebe9372a294ebd1bc65f3776dd10d47f465733b4",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/dashboard/schemas.ts",
+      "sourceSha256": "a2c45d2aa1f9a14cf5c915289c076c6b9edf1a7f37fd8238b6381df384ba5929",
+      "importedSha256": "6015af10249e34eded4f1ecedd28d5f8445b58bb95b42f825caa662e8fd9ddc7",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/dashboard/service.ts",
+      "sourceSha256": "4d99b16d92101e9696b9baec680a8b2e1269333ffbf3689b9d645abf771b9f0f",
+      "importedSha256": "aedc848d765e24a4e412d07bb3d88d94d34b0f417c87cbaa2cb293f62b4632df",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "src/modules/deep-research/evidence.ts",
       "sourceSha256": "16ea50c08c7ae2f49a5fc110ae28491c73ca618e8f0225ec3ad1b1bc9e63c60d",
       "importedSha256": "650b5a9ccc9d708f81187b7bd38a934a328ba2becb5496cd2af205994df02b6e",
@@ -449,26 +545,38 @@
     {
       "path": "src/modules/deep-research/prompts.ts",
       "sourceSha256": "0ebded6cddccb4e9e376ae2d53b2dbd7a204b58d10f5f5be339291dcbab16bfc",
-      "importedSha256": "e2b3333242ff5a133fd7c92ba0aed270bdd2f230615e2bcdd283a9c06f6b7609",
-      "reason": "Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls. October 8 actual-model qualification: preserve exact numbered source identities in claims and ground recommendations without cross-document label carryover or promotion of imported vendor instructions. No retrieval, model, schema or styling changes."
+      "importedSha256": "0bc475e5500b5cfe715312657b4e040da2c9bdc84f802190c9bb2ee3b183cf0b",
+      "reason": "Require claim-local citations; September 20 approval/coverage correction retains server-owned source precedence and per-reference accepted-decision authority, with shared non-exhaustive retrieval wording and no added model calls. October 8 actual-model qualification: preserve exact numbered source identities in claims and ground recommendations without cross-document label carryover or promotion of imported vendor instructions. No retrieval, model, schema or styling changes. November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal."
     },
     {
       "path": "src/modules/deep-research/report-render.ts",
       "sourceSha256": "71e3145bcdc018ee0f325e14b59a41f778f89c01029f8db1b3b6dba46906d20a",
-      "importedSha256": "c221e386075ddb6c62fa857e69c2bb1f59f14a27f274a486ba86930433ea0ef5",
-      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF. Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative."
+      "importedSha256": "3bf2f59076112eca623df621ac15b0bc7f8e373d1c5660c61315a7d58bce8275",
+      "reason": "Render all citation aliases for each safely deduplicated research source in Markdown and PDF. Readiness follow-up: replace the PDFKit dependency with pinned PDF-lib, retain complete report text and existing colours, and fail explicitly on unsupported PDF glyphs with a lossless Markdown alternative. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+    },
+    {
+      "path": "src/modules/deep-research/routes.ts",
+      "sourceSha256": "b2d5914b6a3dbaf893c4e6bba7a11d7d42d5f2e78975e3f7f1e8a29230932ece",
+      "importedSha256": "25e70399697a4f0e3a0c9970c1e8d03694e0b4aa754e27cf1910f9b555aba9eb",
+      "reason": "November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "src/modules/deep-research/schemas.ts",
       "sourceSha256": "36754080e94e5f1aad6a10d73c3ef96ae8e6aba5bbf939d143869b23bd11d44a",
-      "importedSha256": "54b86814f21264d213b2cd18c3d807a908559abf4e50755fbf661f9a147155b9",
-      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "4c9db5adb278dba70ebf9e95e351caa292307423709802ef87296e942af73468",
+      "reason": "Step 5 adds a strict all-fields-required native provider wire schema without changing tolerant hosted/persisted report normalization. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "src/modules/deep-research/service.ts",
       "sourceSha256": "5dd65cfba3739efc14567f5366e7cbdcdee31dfbd3e1edb203b3cc998c8df98e",
-      "importedSha256": "d54bac04733b9ad5206ee5574f1a7d5d89b7d5c11a0f0c46e81622604264bd73",
-      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence."
+      "importedSha256": "3f110cbb3c35d683e25125da48087d6dc805241d1f1c685cb9f12fdadf737093",
+      "reason": "Steps 4/5 reject unconfigured local generation before quota allocation; configured native AI uses the existing authorized research and durable worker contracts. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Packaged natural-question regression: index-backed original-document recall, current-version provenance, source-domain coverage and explicit failure when selected uploaded documents were not retrieved; derived notes cannot establish document absence. November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
+    },
+    {
+      "path": "src/modules/delivery/schemas.ts",
+      "sourceSha256": "d0845011a3e23b3042507b36011bde4df484f362fd7da4540008839e3bdf8c6d",
+      "importedSha256": "42ffa436d13b3d42ef91c33a024eba10a30b44cea4830687c4a9fe0877c7b28d",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/modules/delivery/service.ts",
@@ -477,10 +585,58 @@
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
+      "path": "src/modules/diagrams/schemas.ts",
+      "sourceSha256": "260d09d046470179ccfe18ba83e8a44741c38f3c2e5e10e817a3ded2ce05259a",
+      "importedSha256": "fbc420ca72d66675d2a0a0381d4a10b1c1725e5d379ac538b53ad1dca1788987",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/documents/schemas.ts",
+      "sourceSha256": "9ff58bf5b70d858de2a0d3a312b54d1b86229826eca8f52deb735ca98b5741eb",
+      "importedSha256": "4b7ba79c6ec8a271a9bc1415a2ab850d61d67640060ac846cef4637d150e438e",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
       "path": "src/modules/documents/service.ts",
       "sourceSha256": "43457fda10d8fffaa0ba3d416125673b97e48fb22364c49179af98bdc14e499f",
       "importedSha256": "b77e8ad4d462b369e202296d832413c0c55051b40da7b87d6d94da6f4e34fbe3",
       "reason": "Steps 2/4 preserve offline lexical chunks and honest partial status. Step 5 adds private native source-document identity, idempotent version recovery and desktop-only Drive indexing state; public upload schemas and hosted approval semantics remain unchanged."
+    },
+    {
+      "path": "src/modules/editor-connectors/schemas.ts",
+      "sourceSha256": "7d3aa82880e9f54fedf7d60915154b35b0f192967cccb5e9e16727cc4b31d1e6",
+      "importedSha256": "40d24a3168a7007b10e857a33005df5f9735fe16355c6116b46587784d8775b2",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/engineering-evidence/schemas.ts",
+      "sourceSha256": "60cba9fdd4a4522ce6372701865fb9f5a162bae3bb76b238e4f67dc0599c4c5d",
+      "importedSha256": "0f73252bdf199e20e4287d42106231738b1703fc197f2fa6e7c7415079a97e41",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/fde-readiness/schemas.ts",
+      "sourceSha256": "3e624949387cbe990ecc22f60d9516b40709376018a145587b2553ddaa1a7547",
+      "importedSha256": "2ebf0423cb38cdd25ca231ea9ec2c373dd8e5d177c0b53920d68e70907e9a8e3",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/github/schemas.ts",
+      "sourceSha256": "3a30add1f184b749c833515c0848d63e7fa1c267f603cc179fe6ac77bb45c55d",
+      "importedSha256": "fdf01da93c0fc5fbaff62694651f82e78d2c5c9397b9f0c386aa8c95f1c570fe",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/google-drive/schemas.ts",
+      "sourceSha256": "ac7917837651bc46660127b5c2ababfe2144339f0eac1f515c763c20b414a3ab",
+      "importedSha256": "8392fe1cc25655468db28595ddcabd544dc545e079f8fa8d6a41c7c3b04527fa",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/integrations/integrations.routes.ts",
+      "sourceSha256": "a5c5267f8e7cbcba4c8b86a225691b746c015eb6fb26d3b68c80f6e71528cd7d",
+      "importedSha256": "6e27f4f9bfcebb858284da810c86708649246b26049e5880040f164bb5fc9ad6",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/modules/integrations/integrations.service.ts",
@@ -489,16 +645,100 @@
       "reason": "Step 4 truthful desktop capability readiness; provider qualification stays Step 5."
     },
     {
+      "path": "src/modules/live-doc/schemas.ts",
+      "sourceSha256": "670fa0a9b86b86fe8ea2fba916f93320db477fba6f1d91b11cbbb236f1746369",
+      "importedSha256": "cd5804d2e3c91d3cf69165e490d61e51821cb85a9a5464019152cfee6f28ab29",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/mcp/schemas.ts",
+      "sourceSha256": "7d020a4984c9173f1eb2372becb0613f906f630363c87699bd8c42d48367ac5d",
+      "importedSha256": "f75e93c27cb7d7d73cd3b6816877c0a7ad5d1379fc608b848e00e8b91b3dfe3a",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/me/me.schemas.ts",
+      "sourceSha256": "0a77db82995ff2b771f77ddc66101f9f615a52b088d431e54147c8b37ea7e721",
+      "importedSha256": "3f93aa169968d593f2c6a64e6bea7bdce39b3947b3839e8d202987fece5fd87c",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/project-ops/schemas.ts",
+      "sourceSha256": "ede4ce7fb7349aa5dd74ba2aed64d93090fe596d0329ede24aa7bdc76b646667",
+      "importedSha256": "e0d5acb2550b669aba51ddf4816cb25da93a3e57eca5a96b9a7fc0e32606f496",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/projects/context.routes.ts",
+      "sourceSha256": "c59e1d2cda536a6884803a160d612b0eb31285496b8f2782f6c4fb4bf447e98f",
+      "importedSha256": "c490b2b898b935c065c1ceac5716827062660684cd6b71f64a0416d0c313a8b6",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/projects/context.schemas.ts",
+      "sourceSha256": "c8b18084c2e4d3b824bbd7b5bf89a129ff97c5af6f0e1893fc353eff12bd7ac7",
+      "importedSha256": "c3d027cbc76a1296ea2d1758f38ac17afbfc02bbd871cc080d2d009f39e4939f",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/projects/responsibilities.schemas.ts",
+      "sourceSha256": "4f41f3b1de88d4e0fc1435823b945f4b6e1913c78c08be513eab70f1aa592f7a",
+      "importedSha256": "3480ee2a614520fcda08c6d9b5a2689cf0db5a5bcdbafdb1d0aac64513223908",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/projects/routes.ts",
+      "sourceSha256": "0b11598260fce6a152c61581ac5f94098ae9ec994885f19952cb18d5e7bce22d",
+      "importedSha256": "10eedf4d293990d90d982634f0332f0e0ddd42054517cc271366d415699a6ea3",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/socrates/actions.schemas.ts",
+      "sourceSha256": "3cf1097e23c4f44dc88551076e330f59fbad95ceed2f7e3c3342fb0e1689d84a",
+      "importedSha256": "055985659690677e86cd66e24ae640fbbfd2f624eac2d19af1c084c71dd3e66f",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/socrates/routes.ts",
+      "sourceSha256": "e60a6a77e3516f214100469e767a8b5a8bf8e016ae8c4b379439675aebdb0d76",
+      "importedSha256": "c26f634acd6f7a8ad730a17c996127ff6f9ec7692099a41574d0e3190783e05b",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/socrates/schemas.ts",
+      "sourceSha256": "7dc1a2504d3709ef71e86f7bdf29701b12e2c8dc427f38f95f3bbfdbc7d8a909",
+      "importedSha256": "aca8b86fa3b7e7e7c9645803322e861f58d2f5194e47c2ed9c0e89b92e2ff75d",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
       "path": "src/modules/socrates/service.ts",
       "sourceSha256": "43fcddf864919d70cd93079b61af349c66c090a9a49072ab099ecdc2f4dfbe33",
-      "importedSha256": "afbf2ec16d6e9525045f3a505303ab7dca777bb8f1c1cf388377634b83bd08c6",
-      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority."
+      "importedSha256": "1af66813e10141fe3c15bf40b2088683f6265feb52900ba32574a148f0e79b87",
+      "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority. November retrieval review: bounded semantic recall under All, plus live eligibility for withdrawable communication evidence. November Tier 2: distinguish operational advice from elapsed-time assertions without misclassifying cited quantities."
+    },
+    {
+      "path": "src/modules/suggestions/suggestions.schemas.ts",
+      "sourceSha256": "34b7c5a08d22963f04f842c79c2d7368c20a962ff3d15d9eaf6cc1e6646244ca",
+      "importedSha256": "9094d3825f41dac2afbeebe28d142d2504b3d471e0a127dd4c435cff000dd91f",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
+      "path": "src/modules/suggestions/suggestions.service.ts",
+      "sourceSha256": "d72e9de77ad0c8a6e1af121e92226600fc17d3ebd8c2283786ccfb2ec9f44f32",
+      "importedSha256": "51293c608114cff1f275b655a338c0c9be3b6cee0c91a05f7bac4689be379963",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
     },
     {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
       "sourceSha256": "add6f4df391aacd88b1b7a2806564a3cce10a8a77eb8096c58351d614793448b",
       "importedSha256": "5aefdad6a8ba349ef02b33b0d7e89b95695494fb09a81dfc6d0cc3d05bb61a98",
       "reason": "Step 4 packet truth-state boundary reflects persisted accepted/rejected decisions instead of always claiming a pending decision."
+    },
+    {
+      "path": "src/modules/truth-inbox/truth-inbox.schemas.ts",
+      "sourceSha256": "af10495d49b153b1422a341e7dc145ec76cf5badbfc972bba31212f3bc092b78",
+      "importedSha256": "a5f2df6111bb422ee8eab6b38cfec22f189bc298a70be6221f1a8ddade5ebf05",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
     },
     {
       "path": "src/setup-context.ts",
@@ -513,16 +753,28 @@
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
+      "path": "tests/beta-timeline-service.test.ts",
+      "sourceSha256": "4e42f16df4d9511b97a18e49fa1eaf7973d92f3770825cfcfc518e29315d3911",
+      "importedSha256": "4992ff3e7ac19eca69080b96b35553948a738e11303ffdaf8f3c334bf7b60df8",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "tests/communication-providers.test.ts",
       "sourceSha256": "ace44a3e8ee112a041f08a30ac32e5a00bbe6b64f294e51f59bb8678c793ea01",
       "importedSha256": "7ccc7cc0d04334cbd6c1d44a43f8f528a1ca38d2fdd6c0c06aa3771101938cd5",
       "reason": "Step 6 regression for revoked connector reconnect, missing credentials and release gates."
     },
     {
+      "path": "tests/dashboard-service.test.ts",
+      "sourceSha256": "a192e8ad640e8c296bdfb84203be514127db660efe0672831bace60c0266b9cc",
+      "importedSha256": "e8e465780e60167db981f37468bafc087aa764bc8a8323f66ee2a82961d15edd",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "tests/deep-research-citation-contract.test.ts",
       "sourceSha256": "d5042d1d41322eef6a61a78d54976569b2b13cbf7358effac22e0fc7e813eae0",
-      "importedSha256": "6e9a0a7b370a3f219e9724bdf3668cff2fb89490995ac0968114bb5d300a8b72",
-      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged."
+      "importedSha256": "eb8cf1d2df2938ae3139a2626276245122dac63476a001d31645d5541801982c",
+      "reason": "Count distinct source documents and deduplicate document source links without collapsing same-title documents or counting derived truth as uploads. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "tests/deep-research-evidence-coverage.test.ts",
@@ -545,8 +797,8 @@
     {
       "path": "tests/fix22-deep-research.test.ts",
       "sourceSha256": "fb96bdeb8d8cf407378d98a90ee920e679b1916eb814c4b3599a5aa79abef357",
-      "importedSha256": "ba9559317499014a23d357a92266834c64b1eed29fbdd51d68e0a047fd8e0b2e",
-      "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage."
+      "importedSha256": "92e4238aec86cd99df061476594a46bcda78de6eda1ac5f9fd7d0722525e8dd3",
+      "reason": "Provider-neutral desktop generation readiness and expanded bibliography capacity regression coverage. November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations."
     },
     {
       "path": "tests/gmail-invite-sender.test.ts",
@@ -573,10 +825,22 @@
       "reason": "Regression coverage for sectionless document citation provenance."
     },
     {
+      "path": "tests/retrieval-rerank-provider.test.ts",
+      "sourceSha256": "2766faa665d208eda8e3601c76a27bd283f9651c80b2c8d1c9850b61656eafef",
+      "importedSha256": "acbf0019aef38b9496bfec9300d2061571bdb43ce0fa23687ee31e2fd98a55e2",
+      "reason": " November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator."
+    },
+    {
       "path": "tests/socrates-v1-service.test.ts",
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
-      "importedSha256": "ea1d37b53736ce106c0ccad98cadd3af54c42bc257afa2f8f8e9294d4b7e97c7",
-      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads."
+      "importedSha256": "75f52f884bd712f315da7e0062132b64d9fe01eeb098084438c95224ec445162",
+      "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads. November retrieval review: bounded semantic recall under All, plus live eligibility for withdrawable communication evidence. November Tier 2: distinguish operational advice from elapsed-time assertions without misclassifying cited quantities."
+    },
+    {
+      "path": "tests/suggestions-service.test.ts",
+      "sourceSha256": "8b64b0db99eb37a48e1383e58139eb46d05e41b9b1513658f80ff592a1a1a791",
+      "importedSha256": "809434b1654153b96b4766c75cdd97d5943f1f120196490f077a1fe63e30b3bb",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
     }
   ]
 }

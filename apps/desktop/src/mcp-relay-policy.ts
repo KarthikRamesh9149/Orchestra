@@ -1,5 +1,5 @@
 import {z} from 'zod';
-export const pairedRpcSchema=z.object({jsonrpc:z.literal('2.0'),id:z.union([z.string(),z.number(),z.null()]).optional(),method:z.string(),params:z.record(z.unknown()).optional()}).strict();
+export const pairedRpcSchema=z.object({jsonrpc:z.literal('2.0'),id:z.union([z.string(),z.number(),z.null()]).optional(),method:z.string(),params:z.record(z.string(), z.unknown()).optional()}).strict();
 export function authorizePairedRpc(rpc:z.infer<typeof pairedRpcSchema>,pairing:{projectId:string;packId:string}){
  if(['initialize','ping','notifications/initialized','notifications/cancelled','tools/list'].includes(rpc.method))return;
  // Resource and prompt endpoints are not part of this exact-pack capability.

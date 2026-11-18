@@ -1761,6 +1761,10 @@ describe("DashboardService", () => {
     });
     expect(payload.calendarEvents[0]).toMatchObject({ id: "event-1", source: "manual" });
     expect(payload.socratesQueries[0]).toMatchObject({ query: "What changed in onboarding?", askedBy: "Maya Chen" });
+    expect(prisma.socratesMessage.findMany).toHaveBeenCalledTimes(1);
+    expect(prisma.socratesMessage.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { role: "user", session: { projectId: "project-1", userId: "user-1" } }
+    }));
     expect(payload.subscriptions[0]).toMatchObject({ name: "Supabase Pro", amountCents: 2500, billingCadence: "/mo", vendorUrl: "https://supabase.com/dashboard/project/example" });
     expect(payload.subscriptionSummary).toMatchObject({ monthlyTotalCents: 2500, activeCount: 1 });
     expect(payload.githubPreview).toMatchObject({ state: "not_connected", commits: [] });
@@ -1769,7 +1773,7 @@ describe("DashboardService", () => {
     vi.useRealTimers();
   });
 
-  it("serves Mission Control from a fresh project dashboard snapshot without reading raw sources", async () => {
+  it("serves shared Mission Control from a snapshot and reads only the viewer’s private history", async () => {
     const snapshotMissionControl = missionControlFixture();
     const prisma = {
       dashboardSnapshot: {
@@ -1780,6 +1784,7 @@ describe("DashboardService", () => {
       },
       project: { findUniqueOrThrow: vi.fn() },
       projectMember: { count: vi.fn(), findMany: vi.fn() },
+      socratesMessage: { findMany: vi.fn().mockResolvedValue([]) },
       communicationMessage: { count: vi.fn(), findMany: vi.fn() }
     } as any;
     const projectService = { ensureProjectAccess: vi.fn().mockResolvedValue({ projectRole: "manager" }) } as any;
@@ -1789,6 +1794,9 @@ describe("DashboardService", () => {
     const payload = await service.getMissionControl("project-1", "user-1");
 
     expect(payload).toBe(snapshotMissionControl);
+    expect(prisma.socratesMessage.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { role: "user", session: { projectId: "project-1", userId: "user-1" } }
+    }));
     expect(projectService.ensureProjectAccess).toHaveBeenCalledWith("project-1", "user-1");
     expect(prisma.project.findUniqueOrThrow).not.toHaveBeenCalled();
     expect(prisma.projectMember.count).not.toHaveBeenCalled();
@@ -1799,6 +1807,7 @@ describe("DashboardService", () => {
   it("serves stale Mission Control snapshots immediately and refreshes in the background", async () => {
     const staleMissionControl = missionControlFixture({ updatedAt: "2026-05-30T09:00:00.000Z" });
     const prisma = {
+      socratesMessage: { findMany: vi.fn().mockResolvedValue([]) },
       dashboardSnapshot: {
         findFirst: vi.fn().mockResolvedValue({
           computedAt: new Date("2026-05-30T09:00:00.000Z"),

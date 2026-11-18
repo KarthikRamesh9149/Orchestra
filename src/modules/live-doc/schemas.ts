@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const setLiveDocSourceBodySchema = z.object({
-  documentId: z.string().uuid()
+  documentId: z.string().guid()
 });
 
 export const sectionParamsSchema = projectParamsSchema.extend({
@@ -13,7 +13,7 @@ export const sectionParamsSchema = projectParamsSchema.extend({
 });
 
 export const reviewItemParamsSchema = projectParamsSchema.extend({
-  proposalId: z.string().uuid()
+  proposalId: z.string().guid()
 });
 
 export const liveDocCurrentQuerySchema = z.object({
@@ -31,7 +31,7 @@ export const listCommentsQuerySchema = z.object({
 
 export const createCommentBodySchema = z.object({
   sectionKey: z.string().min(1).max(200),
-  draftId: z.string().uuid().optional(),
+  draftId: z.string().guid().optional(),
   bodyText: z.string().min(1).max(4000)
 });
 
@@ -43,8 +43,8 @@ export const liveDocSourceRefSchema = z.object({
   refType: z.enum(["document_section", "brain_node", "change_proposal", "decision_record", "message"]),
   refId: z.string(),
   label: z.string(),
-  documentId: z.string().uuid().optional(),
-  documentVersionId: z.string().uuid().optional(),
+  documentId: z.string().guid().optional(),
+  documentVersionId: z.string().guid().optional(),
   anchorId: z.string().optional(),
   pageNumber: z.number().int().positive().optional()
 });
@@ -60,7 +60,7 @@ export const liveDocSectionArtifactSchema = z.object({
 });
 
 export const liveDocArtifactSchema = z.object({
-  generatedFromProductBrainId: z.string().uuid(),
+  generatedFromProductBrainId: z.string().guid(),
   sections: z.array(liveDocSectionArtifactSchema),
   sourceRefs: z.array(liveDocSourceRefSchema).default([])
 });

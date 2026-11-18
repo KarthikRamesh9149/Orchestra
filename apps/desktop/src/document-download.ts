@@ -5,7 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {constants} from 'node:fs';
 import {localHttp} from './local-http.js';
 import type {HostClient} from './host-client.js';
-export const downloadSchema=z.object({projectId:z.string().uuid(),documentId:z.string().uuid()}).strict();
+export const downloadSchema=z.object({projectId:z.string().guid(),documentId:z.string().guid()}).strict();
 export async function downloadDocument(input:unknown,host:HostClient,selectPath:(name:string)=>Promise<string|undefined>){
  const {projectId,documentId}=downloadSchema.parse(input);
  const response=await localHttp(new Request(`orchestra://app/v1/projects/${projectId}/documents/${documentId}/file`),host);
@@ -15,7 +15,7 @@ export async function downloadDocument(input:unknown,host:HostClient,selectPath:
  return saveResponse(response,`Orchestra-document-${documentId}${extension}`,selectPath);
 }
 export async function downloadPreflight(input:unknown,host:HostClient,selectPath:(name:string)=>Promise<string|undefined>){
- const {projectId,packId}=z.object({projectId:z.string().uuid(),packId:z.string().uuid()}).strict().parse(input);
+ const {projectId,packId}=z.object({projectId:z.string().guid(),packId:z.string().guid()}).strict().parse(input);
  const result=await localHttp(new Request(`orchestra://app/v1/projects/${projectId}/agent-context-packs/${packId}`),host);
  if(!result.ok)throw new Error('The authorized context pack is unavailable.');
  const payload=z.object({data:z.object({id:z.literal(packId),bodyMarkdown:z.string().max(1024*1024)})}).parse(await result.json());

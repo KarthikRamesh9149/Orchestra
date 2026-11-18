@@ -38,7 +38,7 @@ export const codingRequirementsSourceRefSchema = z.object({
     "project_diagram",
     "artifact_version"
   ]),
-  id: z.string().uuid()
+  id: z.string().guid()
 });
 
 export const generateCodingRequirementsSchema = z.object({
@@ -50,11 +50,11 @@ export const generateCodingRequirementsSchema = z.object({
 });
 
 export const codingRequirementsParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const codingRequirementsArtifactParamsSchema = codingRequirementsParamsSchema.extend({
-  codingRequirementsId: z.string().uuid()
+  codingRequirementsId: z.string().guid()
 });
 
 export const codingRequirementsHistoryQuerySchema = z.object({
@@ -103,7 +103,7 @@ export const codingRequirementsPayloadSchema = z
     generatedAt: z.string().datetime(),
     evidenceSummary: z
       .object({
-        sourceCounts: z.record(z.number().int().min(0)),
+        sourceCounts: z.record(z.string(), z.number().int().min(0)),
         lowEvidence: z.boolean(),
         limitations: boundedStringArray(20, 400)
       })

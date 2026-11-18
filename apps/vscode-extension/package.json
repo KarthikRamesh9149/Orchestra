@@ -74,7 +74,14 @@
   "devDependencies": {
     "@types/node": "^22.10.5",
     "@types/vscode": "^1.90.0",
-    "@vscode/vsce": "4.0.0",
+    "@vscode/vsce": "4.1.1",
+    "picomatch": "file:../../scripts/desktop/tooling-glob",
     "typescript": "^5.7.2"
+  },
+  "overrides": {
+    "picomatch": "$picomatch",
+    "@vscode/vsce": {
+      "minimatch": "11.0.9"
+    }
   }
 }

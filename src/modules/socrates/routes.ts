@@ -34,7 +34,7 @@ const listSessionsQuerySchema = z.object({
 });
 
 const assistantMessageParamsSchema = sessionParamsSchema.extend({
-  assistantMessageId: z.string().uuid()
+  assistantMessageId: z.string().guid()
 });
 
 const resumeStreamQuerySchema = z.object({

@@ -26,15 +26,15 @@ export default function DesktopGitHubSettings(){
   const service=api();if(!service||running.current||!activeProject||!selected)return;
   running.current=true;setBusy(true);setError('');setNotice('');
   try{const result=await service.importRepository({projectId:activeProject.id,repositoryId:Number(selected)});if(!result.ok)throw new Error(result.error?.message??'GitHub import failed');
-   const data=result.data as {cancelled?:boolean;created:number;updated:number;evidenceCount:number};
-   if(mounted.current&&!data.cancelled)setNotice(`${data.evidenceCount} GitHub evidence records confirmed: ${data.created} new, ${data.updated} updated. No product truth was approved.`);
+   const data=result.data as {cancelled?:boolean;created:number;updated:number;evidenceCount:number;inProgress?:boolean};
+   if(mounted.current&&!data.cancelled)setNotice(`${data.evidenceCount} GitHub evidence records confirmed: ${data.created} new, ${data.updated} updated. ${data.inProgress?'Import continues in Selected-source refresh.':'No product truth was approved.'}`);
   }catch(error){if(mounted.current)setError(error instanceof Error?error.message:'GitHub import failed');}
   finally{running.current=false;if(mounted.current)setBusy(false);}
  }
  return <section aria-labelledby="desktop-github-heading" className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-5">
   <h2 id="desktop-github-heading" className="font-sans text-lg text-[var(--text-default)]">Desktop GitHub</h2>
   <p role="status" className="mt-2 text-sm text-[var(--text-muted)]">{busy?'Working… Check the native confirmation and GitHub browser prompt.':configured===null?(error?'GitHub status could not be confirmed.':'Reading protected GitHub settings…'):configured?'GitHub credentials saved on this Mac.':'Not connected on this Mac.'}</p>
-  <p className="mt-2 text-sm text-[var(--text-muted)]">Read-only access to selected GitHub App repositories. Credentials stay encrypted on this Mac. Snapshots cover up to 200 pull requests and 200 commits, with redacted text excerpts of up to 4,000 characters. No source files or release certification. Sign-in and listing do not import content. After importing, opt in below under Selected-source refresh.</p>
+  <p className="mt-2 text-sm text-[var(--text-muted)]">Read-only access to selected GitHub App repositories. Credentials stay encrypted on this Mac. Each batch reads up to 200 pull requests and 200 commits. No source files or release certification. Track imports and opt in to automatic refresh below.</p>
   {error&&<p role="alert" className="mt-2 text-sm text-[var(--text-default)]">{error}</p>}
   <div className="mt-4 flex gap-3"><button type="button" disabled={busy||configured===null} onClick={()=>void action(configured?'disconnect':'connect')} className={buttonStyle}>{configured?'Remove GitHub from this Mac':'Connect desktop GitHub'}</button>
    {configured===null&&error&&<button type="button" disabled={busy||!api()} onClick={()=>void action('inspect')} className={buttonStyle}>Retry GitHub status</button>}

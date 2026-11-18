@@ -2,7 +2,22 @@ import {createHash} from 'node:crypto';
 import type {PrismaClient} from '@prisma/client';
 import type {DocumentService} from '../modules/documents/service.js';
 import {authorizeActiveProject,requireAuthorizedProjectRole} from '../lib/auth/authorization.js';
-import {desktopDriveFileSchema} from './drive-contract.js';
+import {desktopDriveFileSchema,desktopDriveRevisionSchema} from './drive-contract.js';
+
+export async function findStoredDesktopDriveRevision(prisma:PrismaClient,actor:{id:string;orgId:string},value:unknown){
+ const input=desktopDriveRevisionSchema.parse(value);
+ requireAuthorizedProjectRole(await authorizeActiveProject(prisma,{userId:actor.id,orgId:actor.orgId,projectId:input.projectId}),['manager']);
+ const file=await prisma.projectDriveFile.findFirst({
+  where:{projectId:input.projectId,orgId:actor.orgId,driveFileId:input.fileId,version:input.version,modifiedTime:new Date(input.modifiedTime),
+   contentHash:{not:null},trashed:false,metadataJson:{path:['desktop'],equals:true},
+   connection:{connectedByUserId:actor.id,status:'connected',metadataJson:{path:['desktop'],equals:true}},
+   document:{projectId:input.projectId,archivedAt:null},
+   documentVersion:{status:{in:['pending','processing','partial','ready']}}},
+  select:{documentId:true,documentVersionId:true,document:{select:{currentVersionId:true}},documentVersion:{select:{status:true}}}
+ });
+ if(!file?.documentId||!file.documentVersionId||file.document?.currentVersionId!==file.documentVersionId||!file.documentVersion)return null;
+ return {documentId:file.documentId,documentVersionId:file.documentVersionId,status:file.documentVersion.status,unchanged:true};
+}
 
 export function driveIdentity(...parts:string[]){
  const hex=createHash('sha256').update(JSON.stringify(['desktop-drive-v1',...parts])).digest('hex');

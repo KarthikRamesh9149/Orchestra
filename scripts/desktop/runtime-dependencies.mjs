@@ -11,6 +11,7 @@ export const PRISMA_RUNTIME_VERSION = '6.6.0';
 // A reviewed CLI-only security upgrade, not a general npm override resolver.
 // Pin the owner identity and original declaration as well as the replacement.
 const REVIEWED_OVERRIDE = {mammoth: {argparse: '2.0.1'}};
+const REVIEWED_BUILD_MATCHER = {picomatch: '$picomatch'};
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 const ordered = values => [...values].sort();
 const execute = promisify(execFile);
@@ -80,9 +81,19 @@ export async function planRuntimeDependencies(sourceRoot) {
     if (!isDeepStrictEqual(metadata[field] ?? {}, lock.packages[''][field] ?? {})) throw new Error('Root dependency manifest/lock drift: ' + field);
   }
   if (metadata.dependencies?.['@prisma/client'] !== PRISMA_RUNTIME_VERSION || metadata.devDependencies?.prisma !== PRISMA_RUNTIME_VERSION) throw new Error('Review the exact Prisma runtime/tooling pins');
+  const hasBuildMatcher = isDeepStrictEqual(metadata.overrides, {...REVIEWED_OVERRIDE, ...REVIEWED_BUILD_MATCHER});
+  const hasReviewedOverride = hasBuildMatcher || isDeepStrictEqual(metadata.overrides, REVIEWED_OVERRIDE);
   if (metadata.overrides !== undefined && !isDeepStrictEqual(metadata.overrides, {})
-    && !isDeepStrictEqual(metadata.overrides, REVIEWED_OVERRIDE)) throw new Error('Unreviewed runtime override');
-  const hasReviewedOverride = isDeepStrictEqual(metadata.overrides, REVIEWED_OVERRIDE);
+    && !hasReviewedOverride) throw new Error('Unreviewed runtime override');
+  if (hasBuildMatcher) {
+    const expected = 'file:scripts/desktop/tooling-glob';
+    const matcher = lock.packages['node_modules/picomatch'];
+    if (metadata.devDependencies?.picomatch !== expected || metadata.dependencies?.picomatch
+      || metadata.optionalDependencies?.picomatch || matcher?.name !== '@orchestra/build-glob'
+      || matcher.version !== '1.0.0' || matcher.resolved !== expected || matcher.dev !== true || matcher.link) {
+      throw new Error('Expected dev-only build matcher outside the shipped runtime graph');
+    }
+  }
   let overrideApplied = false;
   const roots = edges({dependencies: {...metadata.dependencies, prisma: PRISMA_RUNTIME_VERSION}, optionalDependencies: metadata.optionalDependencies});
   const selected = new Map(), queue = [{path: '', metadata, edges: roots}], graph = [], absentOptional = [];
@@ -115,12 +126,13 @@ export async function planRuntimeDependencies(sourceRoot) {
     }
   }
   if (hasReviewedOverride && !overrideApplied) throw new Error('Reviewed runtime override was not applied');
+  if (hasBuildMatcher && selected.has('node_modules/picomatch')) throw new Error('Build matcher cannot enter the shipped runtime');
   return {formatVersion: 1, sourceRoot: root, packageJsonSha256: digest(manifestBytes), lockSha256: digest(lockBytes),
     roots, packages: [...selected.values()].sort((a,b) => a.path.localeCompare(b.path, 'en')), edges: graph, absentOptional,
     excludedLockPackages: ordered(Object.keys(lock.packages).filter(path => path && !selected.has(path))),
     limitations: ['Exact installed versions and metadata graph, not re-verification of archive contents',
       'Optional packages/peers already installed for this host are retained; absent optional edges are recorded',
-      'Only the exact reviewed Mammoth 1.13.0 direct argparse 2.0.1 override is supported; other npm override semantics fail closed',
+      'Only the reviewed Mammoth runtime override is staged; the exact dev-only glob replacement is excluded, and other overrides fail closed',
       'Generated Prisma client is retained separately and must match the pinned client and project schema']};
 }
 

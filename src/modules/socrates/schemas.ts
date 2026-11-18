@@ -30,8 +30,8 @@ export const selectedRefTypeEnum = z.enum([
 ]);
 
 export const viewerStateSchema = z.object({
-  documentId: z.string().uuid().optional(),
-  documentVersionId: z.string().uuid().optional(),
+  documentId: z.string().guid().optional(),
+  documentVersionId: z.string().guid().optional(),
   pageNumber: z.number().int().positive().optional(),
   anchorId: z.string().optional(),
   sectionKey: z.string().optional(),
@@ -86,12 +86,12 @@ export const patchContextBodySchema = z.object({
 });
 
 export const sessionParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  sessionId: z.string().uuid(),
+  projectId: z.string().guid(),
+  sessionId: z.string().guid(),
 });
 
 export const socratesFeedbackParamsSchema = sessionParamsSchema.extend({
-  assistantMessageId: z.string().uuid()
+  assistantMessageId: z.string().guid()
 });
 
 export const socratesFeedbackBodySchema = z.object({
@@ -104,7 +104,7 @@ export const socratesFeedbackBodySchema = z.object({
 });
 
 export const projectParamsSchema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.string().guid(),
 });
 
 // ---------------------------------------------------------------------------
@@ -146,7 +146,7 @@ export const socratesV1AskBodySchema = z.object({
   question: z.string().trim().min(1).max(8000).optional(),
   content: z.string().trim().min(1).max(8000).optional(),
   prompt: z.string().trim().min(1).max(8000).optional(),
-  sessionId: z.string().uuid().optional().nullable(),
+  sessionId: z.string().guid().optional().nullable(),
   mode: socratesV1ModeSchema.optional().default("ask"),
   selectedSources: z.array(socratesV1SourceSchema).max(10).optional(),
   maxEvidence: z.number().int().min(1).max(50).optional(),
@@ -205,14 +205,14 @@ export const openTargetRefSchema = z.union([
     targetType: z.literal("live_doc_section"),
     targetRef: z.object({
       sectionKey: z.string().min(1).max(200),
-      diagramId: z.string().uuid().optional(),
+      diagramId: z.string().guid().optional(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("document_section"),
     targetRef: z.object({
-      documentId: z.string().uuid().optional(),
-      documentVersionId: z.string().uuid().optional(),
+      documentId: z.string().guid().optional(),
+      documentVersionId: z.string().guid().optional(),
       anchorId: z.string(),
       pageNumber: z.number().int().positive().optional(),
     }).strict(),
@@ -220,18 +220,18 @@ export const openTargetRefSchema = z.union([
   z.object({
     targetType: z.literal("google_drive_file"),
     targetRef: z.object({
-      driveFileId: z.string().uuid(),
+      driveFileId: z.string().guid(),
       driveProviderFileId: z.string().min(1).max(300).optional(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("message"),
     targetRef: z.object({
-      messageId: z.string().uuid(),
-      threadId: z.string().uuid().optional(),
-      highlightChunkId: z.string().uuid().optional(),
+      messageId: z.string().guid(),
+      threadId: z.string().guid().optional(),
+      highlightChunkId: z.string().guid().optional(),
       provider: z.enum(["slack", "clickup", "granola", "fireflies_ai", "manual_import"]).optional(),
-      connectorId: z.string().uuid().optional(),
+      connectorId: z.string().guid().optional(),
       channelId: z.string().min(1).max(200).optional(),
       channelName: z.string().min(1).max(200).optional(),
       teamId: z.string().min(1).max(200).optional(),
@@ -243,19 +243,19 @@ export const openTargetRefSchema = z.union([
   }).strict(),
   z.object({
     targetType: z.literal("thread"),
-    targetRef: z.object({ threadId: z.string().uuid() }).strict(),
+    targetRef: z.object({ threadId: z.string().guid() }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("brain_node"),
-    targetRef: z.object({ nodeId: z.string().uuid(), artifactVersionId: z.string().uuid().optional() }).strict(),
+    targetRef: z.object({ nodeId: z.string().guid(), artifactVersionId: z.string().guid().optional() }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("change_proposal"),
-    targetRef: z.object({ proposalId: z.string().uuid() }).strict(),
+    targetRef: z.object({ proposalId: z.string().guid() }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("decision_record"),
-    targetRef: z.object({ decisionId: z.string().uuid() }).strict(),
+    targetRef: z.object({ decisionId: z.string().guid() }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("dashboard_filter"),
@@ -263,88 +263,88 @@ export const openTargetRefSchema = z.union([
   }).strict(),
   z.object({
     targetType: z.literal("project_responsibility"),
-    targetRef: z.object({ projectId: z.string().uuid(), responsibilityId: z.string().uuid() }).strict(),
+    targetRef: z.object({ projectId: z.string().guid(), responsibilityId: z.string().guid() }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("project_context"),
     targetRef: z.object({
-      projectId: z.string().uuid(),
-      contextId: z.string().uuid(),
-      contextChunkId: z.string().uuid().optional(),
-      attachmentId: z.string().uuid().optional(),
+      projectId: z.string().guid(),
+      contextId: z.string().guid(),
+      contextChunkId: z.string().guid().optional(),
+      attachmentId: z.string().guid().optional(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("project_diagram"),
     targetRef: z.object({
-      projectId: z.string().uuid(),
-      diagramId: z.string().uuid(),
+      projectId: z.string().guid(),
+      diagramId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("coding_requirements"),
     targetRef: z.object({
-      projectId: z.string().uuid(),
-      codingRequirementsId: z.string().uuid(),
-      artifactVersionId: z.string().uuid(),
+      projectId: z.string().guid(),
+      codingRequirementsId: z.string().guid(),
+      artifactVersionId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("project_event"),
     targetRef: z.object({
-      projectId: z.string().uuid(),
-      eventId: z.string().uuid(),
+      projectId: z.string().guid(),
+      eventId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_run"),
     targetRef: z.object({
-      agentRunId: z.string().uuid(),
-      contextPackId: z.string().uuid().optional(),
+      agentRunId: z.string().guid(),
+      contextPackId: z.string().guid().optional(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_quality_review"),
     targetRef: z.object({
-      reviewId: z.string().uuid(),
-      agentRunId: z.string().uuid().optional(),
-      contextPackId: z.string().uuid().optional(),
+      reviewId: z.string().guid(),
+      agentRunId: z.string().guid().optional(),
+      contextPackId: z.string().guid().optional(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_markdown_file"),
     targetRef: z.object({
-      fileSetId: z.string().uuid(),
-      fileId: z.string().uuid(),
+      fileSetId: z.string().guid(),
+      fileId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_markdown_file_version"),
     targetRef: z.object({
-      fileSetId: z.string().uuid(),
-      fileId: z.string().uuid(),
-      versionId: z.string().uuid(),
+      fileSetId: z.string().guid(),
+      fileId: z.string().guid(),
+      versionId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_markdown_quality_report"),
     targetRef: z.object({
-      fileSetId: z.string().uuid(),
-      reportId: z.string().uuid(),
+      fileSetId: z.string().guid(),
+      reportId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_markdown_drift_report"),
     targetRef: z.object({
-      fileSetId: z.string().uuid(),
-      reportId: z.string().uuid(),
+      fileSetId: z.string().guid(),
+      reportId: z.string().guid(),
     }).strict(),
   }).strict(),
   z.object({
     targetType: z.literal("agent_markdown_sync_run"),
     targetRef: z.object({
-      fileSetId: z.string().uuid(),
-      syncRunId: z.string().uuid(),
+      fileSetId: z.string().guid(),
+      syncRunId: z.string().guid(),
     }).strict(),
   }).strict(),
 ]);

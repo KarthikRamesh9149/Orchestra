@@ -16,14 +16,14 @@ export const registerTransferRoutes:FastifyPluginAsync=async app=>{
   if(busy)throw app.httpErrors.tooManyRequests('Another project transfer is running. Retry shortly.');
   busy=true;
   try{
-   const {projectId,action}=z.object({projectId:z.string().uuid(),action:transferAction}).parse(request.params),actor=request.authUser!;
+   const {projectId,action}=z.object({projectId:z.string().guid(),action:transferAction}).parse(request.params),actor=request.authUser!;
    const service=new ProjectTransferService(app.appContext.prisma,app.appContext.storage,env.DESKTOP_SHARED_SERVER_ID??actor.orgId);
    if(action==='export'){
     const body=z.object({passphrase:secret}).strict().parse(request.body),bytes=await service.exportProject(projectId,actor,body.passphrase);
     if(bytes.length>nativeArchiveLimit)throw new Error('Archive too large');
     return {data:{archiveBase64:bytes.toString('base64')},error:null};
    }
-   const body=action==='preview'?base.parse(request.body):base.extend({digest:z.string().regex(/^[a-f0-9]{64}$/),identityMap:z.record(z.string().uuid(),z.string().uuid()),acknowledgeHistoricalTruth:z.literal(true)}).parse(request.body);
+   const body=action==='preview'?base.parse(request.body):base.extend({digest:z.string().regex(/^[a-f0-9]{64}$/),identityMap:z.record(z.string().guid(),z.string().guid()),acknowledgeHistoricalTruth:z.literal(true)}).parse(request.body);
    const bytes=Buffer.from(body.archiveBase64,'base64');if(bytes.length>nativeArchiveLimit||bytes.toString('base64')!==body.archiveBase64)throw new Error('Invalid archive');
    const data=action==='preview'?await service.previewImport(bytes,body.passphrase,projectId,actor):await service.importProject({...body as z.infer<typeof base>&{digest:string;identityMap:Record<string,string>;acknowledgeHistoricalTruth:true},archive:bytes,targetProjectId:projectId,actor});
    return {data,error:null};

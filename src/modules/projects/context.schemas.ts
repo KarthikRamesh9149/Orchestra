@@ -35,10 +35,9 @@ const safeText = (label: string, min: number, max: number) =>
 const normalizedTagsSchema = z
   .array(safeText("tag", 1, 50))
   .max(30)
-  .default([])
   .transform((tags) => Array.from(new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean))));
 
-const participantsSchema = z.array(safeText("participant", 1, 120)).max(50).default([]);
+const participantsSchema = z.array(safeText("participant", 1, 120)).max(50);
 
 const attachmentSchema = z.object({
   filename: safeText("filename", 1, 240).optional().nullable(),
@@ -49,18 +48,18 @@ const attachmentSchema = z.object({
 });
 
 export const projectContextParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const projectContextEntryParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  contextId: z.string().uuid()
+  projectId: z.string().guid(),
+  contextId: z.string().guid()
 });
 
 export const projectContextAttachmentParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  contextId: z.string().uuid(),
-  attachmentId: z.string().uuid()
+  projectId: z.string().guid(),
+  contextId: z.string().guid(),
+  attachmentId: z.string().guid()
 });
 
 export const projectContextUploadTypeSchema = z.enum([
@@ -81,9 +80,9 @@ export const createProjectContextEntrySchema = z.object({
   title: safeText("title", 2, 200),
   body: safeText("body", 1, 60000),
   sourceDate: z.string().datetime().optional().nullable(),
-  participants: participantsSchema,
-  tags: normalizedTagsSchema,
-  linkedMemberId: z.string().uuid().optional().nullable(),
+  participants: participantsSchema.default([]),
+  tags: normalizedTagsSchema.default([]),
+  linkedMemberId: z.string().guid().optional().nullable(),
   importance: projectContextImportanceSchema.default("normal"),
   attachments: z.array(attachmentSchema).max(10).default([])
 });
@@ -96,7 +95,7 @@ export const updateProjectContextEntrySchema = z
     sourceDate: z.string().datetime().optional().nullable(),
     participants: participantsSchema.optional(),
     tags: normalizedTagsSchema.optional(),
-    linkedMemberId: z.string().uuid().optional().nullable(),
+    linkedMemberId: z.string().guid().optional().nullable(),
     importance: projectContextImportanceSchema.optional(),
     attachments: z.array(attachmentSchema).max(10).optional()
   })
@@ -107,7 +106,7 @@ export const updateProjectContextEntrySchema = z
 export const listProjectContextEntriesQuerySchema = z.object({
   type: projectContextTypeSchema.optional(),
   importance: projectContextImportanceSchema.optional(),
-  linkedMemberId: z.string().uuid().optional(),
+  linkedMemberId: z.string().guid().optional(),
   q: z.string().trim().min(1).max(120).optional(),
   tag: z.string().trim().min(1).max(50).transform((value) => value.toLowerCase()).optional(),
   page: z.coerce.number().int().min(1).default(1),

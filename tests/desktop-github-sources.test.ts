@@ -29,8 +29,27 @@ describe('desktop GitHub source selection',()=>{
   const normal=provider();const fetcher:typeof fetch=async(url,options)=>String(url).includes('/pulls?')?new Response('',{status:403}):normal(url,options);
   await expect(readGitHubSnapshot(credential,9,fetcher)).rejects.toThrow();
  });
- it('rejects pagination overflow rather than pretending a truncated import is complete',async()=>{
+ it('rejects repeated pages rather than pretending a truncated import is complete',async()=>{
   const normal=provider();const fetcher:typeof fetch=async(url,options)=>String(url).includes('/pulls?')?json(Array.from({length:100},(_,i)=>({number:i+1,title:'Synthetic',body:'',state:'open',updated_at:'2026-09-12T00:00:00Z',head:{sha:'a'.repeat(40)},base:{ref:'main'}}))):normal(url,options);
-  await expect(readGitHubSnapshot(credential,9,fetcher)).rejects.toThrow(/limit|duplicate/);
+  await expect(readGitHubSnapshot(credential,9,fetcher)).rejects.toThrow(/duplicate/);
+ });
+ it.each([199,200,201])('continues a %s-record import after restart without re-reading completed kinds',async total=>{
+  const normal=provider();
+  const fetcher=vi.fn(async(url:Parameters<typeof fetch>[0],options?:RequestInit)=>{
+   if(!String(url).includes('/commits?'))return normal(url,options);
+   const page=Number(new URL(String(url)).searchParams.get('page'));
+   if(page>1)expect(new URL(String(url)).searchParams.get('sha')).toBe('1'.padStart(40,'0'));
+   return json(Array.from({length:Math.min(100,Math.max(0,total-100*(page-1)))},(_,i)=>{
+    const n=100*(page-1)+i+1;return {sha:n.toString(16).padStart(40,'0'),commit:{message:`Synthetic commit ${n}`,committer:{date:'2026-09-11T00:00:00Z'}}};
+   }));
+  });
+  const read=readGitHubSnapshot as Function;
+  const first=await read(credential,9,fetcher);
+  expect(first.items.length).toBe(Math.min(200,total)+1);
+  expect(first.checkpoint!==null).toBe(total>=200);
+  const last=first.checkpoint?await read(credential,9,fetcher,JSON.parse(JSON.stringify(first.checkpoint))):{items:[],checkpoint:null};
+  expect(last.checkpoint).toBeNull();
+  expect(first.items.length+last.items.length).toBe(total+1);
+  expect(fetcher.mock.calls.filter(([url])=>String(url).includes('/pulls?'))).toHaveLength(1);
  });
 });

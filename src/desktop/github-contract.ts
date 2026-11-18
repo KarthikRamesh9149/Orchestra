@@ -7,7 +7,7 @@ export const desktopGitHubItemSchema=z.object({
  branch:z.string().max(255).nullable(),pullRequestNumber:z.number().int().positive().nullable(),
  status:z.string().max(40),sourceUrl:z.string().url().max(1000),occurredAt:z.string().datetime()
 }).strict();
-export const desktopGitHubBatchSchema=z.object({operation:z.literal('desktop.github.ingest'),projectId:z.string().uuid(),repository:desktopGitHubRepositorySchema,items:z.array(desktopGitHubItemSchema).max(400)}).strict().superRefine((value,ctx)=>{
+export const desktopGitHubBatchSchema=z.object({operation:z.literal('desktop.github.ingest'),projectId:z.string().guid(),repository:desktopGitHubRepositorySchema,items:z.array(desktopGitHubItemSchema).max(400)}).strict().superRefine((value,ctx)=>{
  const keys=new Set<string>();
  for(const item of value.items){
   const isPr=item.evidenceType==='github_pull_request';

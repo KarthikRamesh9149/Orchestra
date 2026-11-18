@@ -10,7 +10,7 @@ const exportTypes:Record<string,{type:string;extension:string}>={
 };
 /** Main-process only. Selected file IDs are taken from the encrypted OAuth grant,
  * never a renderer URL. No provider-supplied download links are followed. */
-export async function readSelectedDriveFile(value:DriveCredential,fileId:string,signal?:AbortSignal,fetcher:typeof fetch=fetch){
+async function openSelectedDriveFile(value:DriveCredential,fileId:string,signal?:AbortSignal,fetcher:typeof fetch=fetch){
  const credential=driveCredentialSchema.parse(value);
  if(!credential.fileIds.includes(fileId))throw new Error('Drive file was not explicitly selected');
  signal?.throwIfAborted();
@@ -28,10 +28,28 @@ export async function readSelectedDriveFile(value:DriveCredential,fileId:string,
  const exported=exportTypes[metadata.mimeType];
  const contentType=exported?.type??metadata.mimeType,extension=exported?.extension??blobTypes[metadata.mimeType];
  if(!extension)throw new Error('Selected Drive file type is not supported');
- const bytes=await read(exported?base+'/export?mimeType='+encodeURIComponent(contentType):base+'?alt=media&supportsAllDrives=true',MAX_BYTES);
- if(!bytes.length)throw new Error('Selected Drive file is empty');
- const after=await inspect();
- if(after.id!==fileId||after.version!==metadata.version||after.modifiedTime!==metadata.modifiedTime||after.trashed||!after.capabilities.canDownload)throw new Error('Drive file changed during download; retry to capture a consistent version');
- const stem=metadata.name.replace(/[\x00-\x1f\x7f/\\]/g,'_').slice(0,160);
- return {fileId,name:metadata.name,mimeType:metadata.mimeType,modifiedTime:metadata.modifiedTime,version:metadata.version,sourceUrl:`https://drive.google.com/file/d/${fileId}/view`,contentType,fileName:stem.endsWith(extension)?stem:stem+extension,bytes};
+ return {revision:{fileId,version:metadata.version,modifiedTime:metadata.modifiedTime},download:async()=>{
+  const bytes=await read(exported?base+'/export?mimeType='+encodeURIComponent(contentType):base+'?alt=media&supportsAllDrives=true',MAX_BYTES);
+  if(!bytes.length)throw new Error('Selected Drive file is empty');
+  const after=await inspect();
+  if(after.id!==fileId||after.version!==metadata.version||after.modifiedTime!==metadata.modifiedTime||after.trashed||!after.capabilities.canDownload)throw new Error('Drive file changed during download; retry to capture a consistent version');
+  const stem=metadata.name.replace(/[\x00-\x1f\x7f/\\]/g,'_').slice(0,160);
+  return {fileId,name:metadata.name,mimeType:metadata.mimeType,modifiedTime:metadata.modifiedTime,version:metadata.version,sourceUrl:`https://drive.google.com/file/d/${fileId}/view`,contentType,fileName:stem.endsWith(extension)?stem:stem+extension,bytes};
+ }};
+}
+
+export async function readSelectedDriveFile(value:DriveCredential,fileId:string,signal?:AbortSignal,fetcher:typeof fetch=fetch){
+ return (await openSelectedDriveFile(value,fileId,signal,fetcher)).download();
+}
+
+export async function refreshSelectedDriveFile<T>(
+ value:DriveCredential,fileId:string,lookup:(revision:{fileId:string;version:string;modifiedTime:string})=>Promise<T|null>,
+ store:(file:Awaited<ReturnType<typeof readSelectedDriveFile>>)=>Promise<T>,signal?:AbortSignal,fetcher:typeof fetch=fetch
+){
+ // The metadata read is an authorization check; a cached local revision can
+ // never turn a denied, trashed or otherwise unavailable provider file green.
+ const source=await openSelectedDriveFile(value,fileId,signal,fetcher);
+ const current=await lookup(source.revision);
+ signal?.throwIfAborted();
+ return current??store(await source.download());
 }

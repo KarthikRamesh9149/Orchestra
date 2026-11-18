@@ -143,6 +143,116 @@ for (const file of ['apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pa
 }
 adjustments['src/modules/socrates/service.ts']+=' September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority.';
 adjustments['tests/socrates-v1-service.test.ts']+=' September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads.';
+for (const file of ['src/modules/dashboard/service.ts','src/modules/beta-timeline/beta-timeline.service.ts','src/modules/suggestions/suggestions.service.ts','tests/dashboard-service.test.ts','tests/beta-timeline-service.test.ts','tests/suggestions-service.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations.';
+}
+for (const file of ['src/modules/deep-research/prompts.ts','src/modules/deep-research/service.ts','tests/deep-research-authority-prompt.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal.';
+}
+for (const file of ['src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November retrieval review: bounded semantic recall under All, plus live eligibility for withdrawable communication evidence.';
+}
+for (const file of [
+ "apps/beta-web/package-lock.json",
+ "apps/beta-web/package.json",
+ "apps/desktop/package-lock.json",
+ "apps/desktop/package.json",
+ "apps/desktop/scripts/package.mjs",
+ "apps/vscode-extension/package-lock.json",
+ "apps/vscode-extension/package.json",
+ "package-lock.json",
+ "package.json",
+ "tests/desktop-vscode-package.test.mjs",
+]) {
+ adjustments[file]=(adjustments[file]??'')+' November dependency review: apply supported runtime/security upgrades and pin the package builder to the reviewed Electron lockfile.';
+}
+for (const file of [
+ 'package.json','package-lock.json','apps/beta-web/package.json','apps/beta-web/package-lock.json',
+ 'apps/vscode-extension/package.json','apps/vscode-extension/package-lock.json',
+]) {
+ adjustments[file]+=' November full-tree audit: replace the unpatched registry glob compiler in build tools with the reviewed first-party matcher adapter and retain audited lockfile inputs.';
+}
+for (const file of [
+ "apps/desktop/src/ai-settings-session.ts",
+ "apps/desktop/src/connector-sync-state.ts",
+ "apps/desktop/src/contracts.ts",
+ "apps/desktop/src/document-download.ts",
+ "apps/desktop/src/github-oauth.ts",
+ "apps/desktop/src/local-http.ts",
+ "apps/desktop/src/main.ts",
+ "apps/desktop/src/mcp-pairing.ts",
+ "apps/desktop/src/mcp-relay-policy.ts",
+ "apps/desktop/src/mcp-relay.ts",
+ "apps/desktop/src/project-transfer.ts",
+ "apps/desktop/src/protected-settings.ts",
+ "apps/desktop/src/shared-http.ts",
+ "apps/desktop/src/shared-store.ts",
+ "apps/desktop/src/shared-windows.ts",
+ "src/config/env.ts",
+ "src/desktop/ai-product-schemas.ts",
+ "src/desktop/drive-contract.ts",
+ "src/desktop/github-contract.ts",
+ "src/desktop/local-state.ts",
+ "src/desktop/native-host.ts",
+ "src/desktop/project-transfer.ts",
+ "src/desktop/recovery-archive.ts",
+ "src/desktop/shared-contract.ts",
+ "src/desktop/slack-contract.ts",
+ "src/desktop/transfer-contract.ts",
+ "src/desktop/transfer-routes.ts",
+ "src/lib/jobs/handlers.ts",
+ "src/modules/agent-context/schemas.ts",
+ "src/modules/agent-files/schemas.ts",
+ "src/modules/auth/routes.ts",
+ "src/modules/beta-timeline/schemas.ts",
+ "src/modules/brain/routes.ts",
+ "src/modules/changes/schemas.ts",
+ "src/modules/client-view/client-view.schemas.ts",
+ "src/modules/coding-requirements/schemas.ts",
+ "src/modules/communications/insight-classifier.prompt.ts",
+ "src/modules/communications/schemas.ts",
+ "src/modules/dashboard/schemas.ts",
+ "src/modules/deep-research/schemas.ts",
+ "src/modules/delivery/schemas.ts",
+ "src/modules/diagrams/schemas.ts",
+ "src/modules/documents/schemas.ts",
+ "src/modules/editor-connectors/schemas.ts",
+ "src/modules/engineering-evidence/schemas.ts",
+ "src/modules/fde-readiness/schemas.ts",
+ "src/modules/github/schemas.ts",
+ "src/modules/google-drive/schemas.ts",
+ "src/modules/integrations/integrations.routes.ts",
+ "src/modules/live-doc/schemas.ts",
+ "src/modules/mcp/schemas.ts",
+ "src/modules/me/me.schemas.ts",
+ "src/modules/project-ops/schemas.ts",
+ "src/modules/projects/context.routes.ts",
+ "src/modules/projects/context.schemas.ts",
+ "src/modules/projects/responsibilities.schemas.ts",
+ "src/modules/projects/routes.ts",
+ "src/modules/socrates/actions.schemas.ts",
+ "src/modules/socrates/routes.ts",
+ "src/modules/socrates/schemas.ts",
+ "src/modules/suggestions/suggestions.schemas.ts",
+ "src/modules/truth-inbox/truth-inbox.schemas.ts",
+ "tests/desktop-ai-product-schemas.test.ts",
+ "tests/desktop-ai-schema.test.ts",
+ "tests/retrieval-rerank-provider.test.ts",
+]) {
+ adjustments[file]=(adjustments[file]??'')+' November Zod 4 migration: preserve PostgreSQL UUID spelling, omitted patch fields, validation defaults, and strict provider wire constraints on the patched validator.';
+}
+for (const [files, reason] of [
+ [['apps/beta-web/src/pages/TruthChangePacketPage.tsx','apps/beta-web/src/pages/TruthChangePacketPage.test.tsx'],
+  'November Tier 2: headline persisted proposal state separately from viewer actionability, retaining existing styles.'],
+ [['src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts'],
+  'November Tier 2: distinguish operational advice from elapsed-time assertions without misclassifying cited quantities.'],
+ [['apps/beta-web/src/components/socrates/DeepResearch.tsx','apps/beta-web/src/components/socrates/DeepResearch.test.tsx',
+   'apps/beta-web/src/lib/api.ts','apps/beta-web/src/lib/api/research.ts','apps/beta-web/src/pages/ChatPage.tsx',
+   'apps/beta-web/src/pages/LiveDocViewerPage.tsx','apps/beta-web/src/pages/LiveDocViewerPage.test.tsx','prisma/schema.prisma','src/modules/deep-research/report-render.ts',
+   'src/modules/deep-research/routes.ts','src/modules/deep-research/schemas.ts','src/modules/deep-research/service.ts',
+   'tests/deep-research-citation-contract.test.ts','tests/fix22-deep-research.test.ts'],
+  'November Tier 2: verify research capabilities before quota use, resolve precise project evidence, and persist viewer-scoped recommendations.']
+]) for (const file of files) adjustments[file]=(adjustments[file] ? adjustments[file]+' ' : '')+reason;
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

@@ -23,3 +23,13 @@ it("[R11] distinguishes extracted pages from original evidence and reports downl
   expect(await screen.findByRole("alert")).toHaveTextContent("Original file unavailable");
   expect(mocks.getDocFileBlob).toHaveBeenCalledWith("project", "doc", expect.any(AbortSignal));
 });
+
+it("opens the cited version and section without offering the latest file as that revision", async () => {
+  render(<MemoryRouter initialEntries={["/memory/docs/doc/view?versionId=cited-revision#one"]}><Routes>
+    <Route path="/memory/docs/:docId/view" element={<LiveDocViewerPage />} />
+  </Routes></MemoryRouter>);
+  await screen.findByText("Viewing the cited revision.");
+  expect(mocks.getDocViewer).toHaveBeenCalledWith("project", "doc", { versionId: "cited-revision", anchorId: "one" });
+  expect(screen.getByRole("button", { name: "Paged extracted text" })).toBeVisible();
+  expect(screen.queryByRole("button", { name: "Download original" })).not.toBeInTheDocument();
+});

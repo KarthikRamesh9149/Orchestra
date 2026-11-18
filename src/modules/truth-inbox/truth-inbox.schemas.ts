@@ -14,7 +14,7 @@ const category = z.enum([
 ]);
 
 export const truthInboxProjectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const truthInboxItemParamsSchema = truthInboxProjectParamsSchema.extend({
@@ -40,7 +40,7 @@ export const truthInboxListQuerySchema = z.object({
   category: category.optional(),
   severity: z.enum(["low", "medium", "high", "critical"]).optional(),
   status: z.enum(["active", "deferred", "snoozed", "dismissed", "resolved", "converted_to_review", "converted_to_timeline"]).optional(),
-  owner: z.union([z.string().uuid(), z.literal("unassigned"), z.literal("me")]).optional(),
+  owner: z.union([z.string().guid(), z.literal("unassigned"), z.literal("me")]).optional(),
   source: z.enum(["suggestion", "proposal", "fde", "agent_drift", "connector"]).optional(),
   cursor: z.string().trim().min(4).max(1000).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(30),
@@ -48,7 +48,7 @@ export const truthInboxListQuerySchema = z.object({
 });
 
 export const truthInboxActionBodySchema = z.object({
-  assignedUserId: z.string().uuid().nullable().optional(),
+  assignedUserId: z.string().guid().nullable().optional(),
   note: z.string().trim().min(1).max(2000).optional(),
   until: z.string().datetime({ offset: true }).optional()
 });

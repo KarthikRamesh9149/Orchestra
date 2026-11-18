@@ -493,6 +493,7 @@ type SocratesV1Evidence = {
   datasetProfile?: TabularDatasetProfile | null;
   documentId?: string | null;
   explicitDocumentScopeTitle?: string | null;
+  semanticDocumentMatch?: boolean;
   // Assigned only when projecting an explicit marker from the original prompt.
   evidenceNumber?: number;
 };
@@ -2348,7 +2349,7 @@ export class SocratesService {
     // speculative-read rejection behind.
     const prefetchedDocuments = !input.sessionId && !smallTalkAnswer && !normalChat
       && ["documents", "google_drive", "notion"].some(source => effectiveSources.has(source as SocratesV1SourceKey))
-      ? this.findSocratesV1DocumentEvidence(input.projectId, question, effectiveSources.size <= 3)
+      ? this.findSocratesV1DocumentEvidence(input.projectId, question)
           .then(rows => ({ rows, error: undefined }), error => ({ rows: undefined, error }))
       : undefined;
     let session: { id: string; createdAt: Date; updatedAt: Date };
@@ -2800,7 +2801,6 @@ export class SocratesService {
     const startedAt = Date.now();
     await Promise.all([
       this.findSocratesV1DocumentEvidence(projectId, "project readiness summary architecture ownership changes", false),
-      this.findSocratesV1CommunicationEvidence(projectId, "project readiness summary decisions blockers"),
       this.findSocratesV1ProjectEvents(projectId),
       this.findSocratesV1Proposals(projectId),
       this.findSocratesV1LiveDocRevisions(projectId),
@@ -2900,7 +2900,7 @@ export class SocratesService {
               if (!result.rows) throw result.error;
               return result.rows;
             })
-          : this.findSocratesV1DocumentEvidence(input.projectId, input.question, selected.size <= 3)
+          : this.findSocratesV1DocumentEvidence(input.projectId, input.question)
         : Promise.resolve([]),
       include("slack") || include("communications")
         ? this.findSocratesV1CommunicationEvidence(input.projectId, input.question, communicationProviderFilter)
@@ -3086,9 +3086,10 @@ export class SocratesService {
     // Project/current-state overviews deliberately inspect the available corpus;
     // topical questions need actual content terms, not grammatical scaffolding.
     const documentOverview = /^\s*what\s+is\s+(?:(?:this|the|our)\s+project(?:\s+and\s+what\s+evidence\s+supports\s+it)?|(?:the\s+)?(?:(?:latest|current)\s+){1,2}(?:state|status))\s*\??\s*$/i.test(query);
+    const topicalTerms = buildRecallPreservingWebsearchQuery(query, 24).split(" OR ").filter(Boolean);
     const qualifiedRecent = this.filterRowsByTerms(recent, query, (row) =>
       `${row.documentVersion?.document?.title ?? ""} ${row.section?.headingPath?.join(" ") ?? ""} ${row.lexicalContent ?? ""} ${row.content ?? ""}`,
-      documentOverview ? [] : buildRecallPreservingWebsearchQuery(query, 24).split(" OR ").filter(Boolean)
+      documentOverview ? [] : topicalTerms
     );
     // SQL matches already passed scoped English full-text search. A substring
     // admission check here would discard valid stems such as policies/policy.
@@ -3100,7 +3101,13 @@ export class SocratesService {
       explicitDocumentScopeTitle: explicitDocumentTitles.get(row.documentVersion?.document?.id) ?? null
     }));
     if (explicitDocumentIds.length > 0) return lexicalEvidence;
-    if (!allowSemanticRecall || lexicalEvidence.length >= 2 || this.env.OPENAI_EMBEDDING_MODEL === "mock") {
+    const minimumTermMatches = Math.max(1, Math.min(3, Math.ceil(topicalTerms.length / 2)));
+    const hasStrongLexicalMatch = indexed.some((row) => {
+      const searchable = `${row.documentVersion?.document?.title ?? ""} ${row.lexicalContent ?? ""} ${row.content ?? ""}`.toLowerCase();
+      return topicalTerms.filter((term) => searchable.includes(term.toLowerCase())).length >= minimumTermMatches;
+    });
+    if (!allowSemanticRecall || documentOverview || !topicalTerms.length || hasStrongLexicalMatch ||
+        this.embeddingProvider?.unavailable || this.env.OPENAI_EMBEDDING_MODEL === "mock") {
       return lexicalEvidence;
     }
 
@@ -3124,8 +3131,9 @@ export class SocratesService {
       semanticRows.filter((row) => this.isCurrentParsedChunk(row))
     );
     const selectedIds = new Set(lexicalEvidence.map((row) => row.id));
-    const semanticSupplement = semantic.filter((row) => !selectedIds.has(row.id) && Boolean(selectedIds.add(row.id)));
-    return selectSocratesV1DocumentCoverage([...lexicalEvidence, ...semanticSupplement], 8, documentKey);
+    const semanticSupplement = semantic.filter((row) => !selectedIds.has(row.id) && Boolean(selectedIds.add(row.id)))
+      .slice(0, 2).map((row) => ({ ...row, explicitDocumentScopeTitle: null, semanticDocumentMatch: true }));
+    return selectSocratesV1DocumentCoverage([...semanticSupplement, ...lexicalEvidence], 8, documentKey);
   }
 
   private async findSocratesV1ExplicitDocumentScope(projectId: string, query: string): Promise<Array<{ id: string; title: string }>> {
@@ -3290,8 +3298,9 @@ export class SocratesService {
   private async findSocratesV1CommunicationEvidence(projectId: string, query: string, requestedProviders?: Set<string>) {
     if (!this.prisma.communicationMessageChunk?.findMany) return [];
     const enabledProviders = getMvpEnabledCommunicationProviders(this.env);
-    const recentPromise = this.cachedV1Evidence(projectId, "communications", async () => {
-      return this.prisma.communicationMessageChunk.findMany({
+    // Communication eligibility is mutable: a local connector can withdraw
+    // evidence in another process before this request. Always read live.
+    const recentPromise = this.prisma.communicationMessageChunk.findMany({
         where: {
           projectId,
           provider: { in: enabledProviders },
@@ -3301,7 +3310,6 @@ export class SocratesService {
         include: { message: true, thread: true, connector: true },
         orderBy: [{ createdAt: "desc" }],
         take: 120
-      });
     });
     const providerFilter = requestedProviders ?? this.requestedCommunicationProviderSubTypes(query);
     const allowedProviders = providerFilter.size > 0
@@ -3554,6 +3562,7 @@ export class SocratesService {
       : `${providerPrefix}${row.documentVersion?.document?.title ?? "Document"} - chunk ${(row.chunkIndex ?? 0) + 1}`;
     return {
       evidenceId: `document:${row.id}`,
+      semanticDocumentMatch: row.semanticDocumentMatch === true,
       sourceType: isDrive ? "google_drive_document" : "document",
       sourceSubType: isDrive ? "google_drive_chunk" : isNotion ? "notion_chunk" : "document_chunk",
       title,
@@ -3937,6 +3946,11 @@ export class SocratesService {
         limit -= 1;
       }
     };
+    // A relevant source-text hit must not be displaced by non-topical project
+    // metadata under All. Leave room for explicitly requested sources.
+    if (!honorNarrowSourceSelection && maxEvidence > 1) {
+      add(documentEvidence.filter((item) => item.semanticDocumentMatch), 1);
+    }
     const relevantBuckets = [
       wantsDocuments ? documentEvidence : [],
       wantsGithub ? ranked.filter((item) => item.sourceType === "github_evidence") : [],
@@ -4395,8 +4409,10 @@ export class SocratesService {
   }
 
   private socratesV1HasTemporalArithmetic(answer: string) {
-    return /\b(?:temporal gap|elapsed|earlier|later|ago|since)\b[\s\S]{0,180}\b\d+(?:\.\d+)?\s*(?:d(?:ays?)?|h(?:ours?)?|m(?:in(?:utes?)?)?|s(?:ec(?:onds?)?)?)/i.test(answer) ||
-      /\b\d+(?:\.\d+)?[dhms]\d+(?:\.\d+)?[dhms]/i.test(answer);
+    // A unit must be a word, not the opening letter of "seats" or "deliveries".
+    const duration = String.raw`\b\d+(?:\.\d+)?\s*(?:days?|hours?|minutes?|seconds?|mins?|secs?|[dhms])\b`;
+    return new RegExp(String.raw`\b(?:temporal gap|elapsed(?: time)?)\b[^.!?\n]{0,60}${duration}|${duration}\s+(?:earlier|later|ago|since)\b|\b(?:earlier|later)\b[^.!?\n]{0,60}\bby\s+${duration}`, "i").test(answer) ||
+      /\b(?:\d+(?:\.\d+)?[dhms]){2,}\b/i.test(answer);
   }
 
   private async generateSocratesV1GeneralChatAnswer(input: {
@@ -4711,6 +4727,7 @@ export class SocratesService {
 A document's claim that something is approved does not establish accepted Product Brain truth; attribute it as the document's claim unless supplied truthStatus metadata establishes accepted status.
 Retrieved evidence is a subset, not an exhaustive inventory. Do not describe a retrieved item as the only project source, or another source as overridden, superseded or archived unless supplied evidence explicitly establishes that status.
 Mention temporal uncertainty only when timing materially affects the question or the evidence's applicability. For ordinary factual questions where timing is immaterial, do not print observation/request timestamps or add a temporal caveat merely because timestamp metadata is supplied. A source title containing current does not by itself make the question temporal.
+When asked what to tell someone today, lead with what the cited evidence supports saying. "Today" can be the communication deadline, not a question about elapsed time. Distinguish a source explicitly recording an approval from acceptance recorded in Orchestra; report the former with its source and qualify the latter separately.
 sourceType, truthStatus, observedAt and requestAt are internal reasoning metadata; describe source roles and acceptance status naturally, not as raw keys or enum values. Preserve exact timestamps when needed to explain a material temporal gap.
 ${EVIDENCE_AUTHORITY_AND_COVERAGE_RULES}`;
   }
@@ -4762,7 +4779,7 @@ Return only the answer markdown, with no JSON wrapper or markdown fence.`;
     const promptExcerptChars = Math.min(this.env.SOCRATES_MAX_EVIDENCE_EXCERPT_CHARS, 800);
     const promptEvidence = this.socratesV1PromptEvidence(input.evidence);
     const groundingSummary = buildEvidenceGroundingSummary(promptEvidence.map((item, index) => ({
-      reference: `E${index + 1}`, acceptedDecision: item.truthStatus === "accepted",
+      reference: `E${index + 1}`, acceptedDecision: item.sourceType === "change_proposal" && item.truthStatus === "accepted",
     })));
     const evidence = promptEvidence.map((item, index) => {
       return [

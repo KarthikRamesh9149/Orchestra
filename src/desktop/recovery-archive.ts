@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {z} from 'zod';
 const hash=z.string().regex(/^[a-f0-9]{64}$/);
 const encoded=z.string().max(180*1024*1024);
-const schema=z.object({version:z.literal(1),serverId:z.string().uuid(),configurationHash:hash,image:z.string().regex(/^sha256:[a-f0-9]{64}$/),createdAt:z.string().datetime(),dump:encoded,dumpHash:hash,
+const schema=z.object({version:z.literal(1),serverId:z.string().guid(),configurationHash:hash,image:z.string().regex(/^sha256:[a-f0-9]{64}$/),createdAt:z.string().datetime(),dump:encoded,dumpHash:hash,
  files:z.array(z.object({key:z.string().min(1).max(1024),body:encoded,hash}).strict()).max(10000),
  keys:z.array(z.object({key:z.string().min(1).max(4096),dump:encoded,expires:z.number().int().nonnegative().nullable()}).strict()).max(100000)
 }).strict();

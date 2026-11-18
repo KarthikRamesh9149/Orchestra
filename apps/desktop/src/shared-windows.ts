@@ -60,11 +60,11 @@ export function registerSharedWindows(options:{local:BrowserWindow;resources:str
   }catch{return {ok:false,error:{code:'shared_connect_failed',message:'Connection was not completed. The server must have trusted HTTPS, compatible desktop support and a stable server identity. If it was saved, try Open below.'}};}finally{changing=false;}
  });
  ipcMain.handle('orchestra:shared-open',async(event,value:unknown)=>{
-  if(!trustedLocal(event))throw new Error('Unauthorized frame');const parsed=z.string().uuid().safeParse(value);if(!parsed.success)return {ok:false,error:{message:'Choose a saved server.'}};
+  if(!trustedLocal(event))throw new Error('Unauthorized frame');const parsed=z.string().guid().safeParse(value);if(!parsed.success)return {ok:false,error:{message:'Choose a saved server.'}};
   try{const connection=(await options.store.list()).find(row=>row.id===parsed.data);if(!connection)throw new Error('Unknown connection');await open(connection);return {ok:true,data:{opened:true}};}catch{return {ok:false,error:{message:'The saved server could not be opened.'}};}
  });
  ipcMain.handle('orchestra:shared-remove',async(event,value:unknown)=>{
-  if(!trustedLocal(event))throw new Error('Unauthorized frame');const parsed=z.string().uuid().safeParse(value);if(!parsed.success)return {ok:false,error:{message:'Choose a saved server.'}};
+  if(!trustedLocal(event))throw new Error('Unauthorized frame');const parsed=z.string().guid().safeParse(value);if(!parsed.success)return {ok:false,error:{message:'Choose a saved server.'}};
   if(changing)return {ok:false,error:{message:'Finish the current server operation.'}};changing=true;
   try{
    const connection=(await options.store.list()).find(row=>row.id===parsed.data);if(!connection)throw new Error('Unknown connection');

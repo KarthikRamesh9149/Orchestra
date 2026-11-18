@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const uuidSchema = z.string().uuid();
+const uuidSchema = z.string().guid();
 const isoDateTimeSchema = z.string().datetime({ offset: true });
 const monthSchema = z
   .string()
@@ -23,7 +23,7 @@ const nonNegativeAmountSchema = z
     message: "Amount must have at most 2 decimal places"
   });
 
-function requireAtLeastOneField<T extends z.ZodTypeAny>(schema: T) {
+function requireAtLeastOneField<T extends z.ZodObject>(schema: T) {
   return schema.refine((value) => Object.keys(value).length > 0, {
     message: "At least one field must be provided"
   });

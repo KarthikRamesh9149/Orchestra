@@ -100,6 +100,7 @@ describe("SuggestionsService", () => {
     );
 
     const response = await service.list("project-1", { userId: "manager-1", orgId: "org-1" }, { limit: 20, offset: 0, refresh: true } as any);
+    expect(prisma.socratesMessage.findMany).not.toHaveBeenCalled();
 
     expect(response.sourceStates.notion).toMatchObject({ state: "ready", label: "Notion" });
     const notionSuggestion = response.items.find((item) => item.detectorKey === "notion_doc_review_signal");

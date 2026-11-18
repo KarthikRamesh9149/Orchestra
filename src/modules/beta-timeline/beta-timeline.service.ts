@@ -108,7 +108,7 @@ export class BetaTimelineService {
         take: perSourceLimit
       }),
       this.prisma.socratesMessage.findMany({
-        where: { role: "user", session: { projectId } },
+        where: { role: "user", session: { projectId, userId: actorUserId } },
         include: {
           session: {
             select: {

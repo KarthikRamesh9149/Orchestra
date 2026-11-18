@@ -27,20 +27,20 @@ export const betaMultipartUploadMetadataSchema = multipartUploadMetadataSchema.e
 });
 
 export const documentParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  documentId: z.string().uuid()
+  projectId: z.string().guid(),
+  documentId: z.string().guid()
 });
 
 export const uploadOperationParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  operationId: z.string().uuid()
+  projectId: z.string().guid(),
+  operationId: z.string().guid()
 });
 
-export const uploadOperationIdSchema = z.string().uuid();
+export const uploadOperationIdSchema = z.string().guid();
 
 export const anchorParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  documentId: z.string().uuid(),
+  projectId: z.string().guid(),
+  documentId: z.string().guid(),
   anchorId: z.string().min(1)
 });
 
@@ -50,13 +50,13 @@ export const paginationQuerySchema = z.object({
 });
 
 export const viewerQuerySchema = z.object({
-  versionId: z.string().uuid().optional(),
+  versionId: z.string().guid().optional(),
   page: z.coerce.number().int().min(1).optional(),
   pageSize: z.coerce.number().int().min(1).max(200).optional(),
   anchorId: z.string().min(1).optional(),
-  sectionId: z.string().uuid().optional(),
-  chunkId: z.string().uuid().optional(),
-  highlightCitationId: z.string().uuid().optional()
+  sectionId: z.string().guid().optional(),
+  chunkId: z.string().guid().optional(),
+  highlightCitationId: z.string().guid().optional()
 }).superRefine((value, context) => {
   const exactTargets = [value.anchorId, value.sectionId, value.chunkId].filter((candidate) => candidate !== undefined);
   if (exactTargets.length > 1) {
@@ -69,13 +69,13 @@ export const viewerQuerySchema = z.object({
 });
 
 export const anchorQuerySchema = z.object({
-  versionId: z.string().uuid().optional(),
-  highlightCitationId: z.string().uuid().optional()
+  versionId: z.string().guid().optional(),
+  highlightCitationId: z.string().guid().optional()
 });
 
 export const documentSearchQuerySchema = z.object({
   q: z.string().trim().min(1),
-  versionId: z.string().uuid().optional(),
+  versionId: z.string().guid().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20)
 });
 

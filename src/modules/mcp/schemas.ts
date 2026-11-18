@@ -70,7 +70,7 @@ export const createMcpTokenSchema = z
   .object({
     label: safeText("label", 2, 120),
     mode: mcpTokenModeSchema.default("local_dev"),
-    projectIds: z.array(z.string().uuid()).min(1).max(100),
+    projectIds: z.array(z.string().guid()).min(1).max(100),
     allowedTools: z.array(mcpToolNameSchema).max(50).optional(),
     allowControlledWrites: z.boolean().default(false),
     expiresAt: z.coerce.date().optional()
@@ -78,7 +78,7 @@ export const createMcpTokenSchema = z
   .strict();
 
 export const revokeMcpTokenParamsSchema = z.object({
-  tokenId: z.string().uuid()
+  tokenId: z.string().guid()
 });
 
 export const mcpJsonRpcRequestSchema = z
@@ -97,13 +97,13 @@ export const mcpJsonRpcRequestSchema = z
       "prompts/list",
       "prompts/get"
     ]),
-    params: z.record(z.unknown()).optional().default({})
+    params: z.record(z.string(), z.unknown()).optional().default({})
   })
   .strict();
 
 export const mcpToolCallParamsSchema = z.object({
   name: mcpToolNameSchema,
-  arguments: z.record(z.unknown()).default({})
+  arguments: z.record(z.string(), z.unknown()).default({})
 });
 
 export const mcpResourceReadParamsSchema = z.object({
@@ -112,7 +112,7 @@ export const mcpResourceReadParamsSchema = z.object({
 
 export const mcpPromptGetParamsSchema = z.object({
   name: mcpPromptNameSchema,
-  arguments: z.record(z.unknown()).default({})
+  arguments: z.record(z.string(), z.unknown()).default({})
 });
 
 export type CreateMcpTokenInput = z.infer<typeof createMcpTokenSchema>;

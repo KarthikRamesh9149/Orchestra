@@ -21,13 +21,13 @@ export default function DesktopSlackSettings(){
  async function source(importing=false){const service=api();if(!service||running.current||!activeProject)return;running.current=true;setBusy(true);setError('');setNotice('');try{
   const result=await(importing?service.importChannel({projectId:activeProject.id,channelId:selected}):service.channels());if(!result.ok)throw new Error(result.error?.message??'Slack request failed');
   if(!mounted.current)return;
-  if(importing){const data=result.data as {cancelled?:boolean;messageCount:number};if(!data.cancelled)setNotice(`${data.messageCount} Slack messages saved as evidence. Local indexing continues in the worker.`);}
+  if(importing){const data=result.data as {cancelled?:boolean;messageCount:number;inProgress?:boolean;historyLimited?:boolean};if(!data.cancelled)setNotice(`${data.messageCount} Slack messages saved as evidence. ${data.inProgress?'Import continues in Selected-source refresh.':data.historyLimited?'Slack returned partial history.':'Local indexing continues in the worker.'}`);}
   else{setChannels(result.data as Array<{id:string;name:string}>);setSelected('');}
  }catch(err){if(mounted.current)setError(err instanceof Error?err.message:'Slack request failed');}finally{running.current=false;if(mounted.current)setBusy(false);}}
  return <section aria-labelledby="desktop-slack-heading" className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-5">
   <h2 id="desktop-slack-heading" className="font-sans text-lg text-[var(--text-default)]">Desktop Slack</h2>
   <p role="status" className="mt-2 text-sm text-[var(--text-muted)]">{busy?'Working… Check any native confirmation or Slack browser prompt.':state?.connected?`Credentials saved for ${state.teamName}.`:state?'Not connected on this Mac.':'Reading protected Slack settings…'}</p>
-  <p className="mt-2 text-sm text-[var(--text-muted)]">Read-only public-channel access. Credentials stay encrypted on this Mac. Explicit imports cover up to 200 messages and replies from the past 30 days. Reimport updates existing evidence without accepting it as truth. Automatic background sync is not yet available.</p>
+  <p className="mt-2 text-sm text-[var(--text-muted)]">Read-only public-channel access. Credentials stay encrypted on this Mac. Imports cover the past 30 days in batches of up to 200 messages and replies. Track larger imports and opt in to automatic refresh below.</p>
   {error&&<p role="alert" className="mt-2 text-sm text-[var(--text-default)]">{error}</p>}
   <div className="mt-4 flex gap-3"><button type="button" disabled={!state||busy||!api()} onClick={()=>void change()} className="rounded-lg border border-[var(--border-soft)] px-3 py-2 text-sm text-[var(--text-default)] disabled:opacity-40">{state?.connected?'Disconnect desktop Slack':'Connect desktop Slack'}</button>
    {busy&&!state?.connected&&<button type="button" onClick={()=>{void api()?.cancel().catch(()=>setError('Cancellation could not be confirmed.'));}} className="rounded-lg border border-[var(--border-soft)] px-3 py-2 text-sm text-[var(--text-default)]">Cancel sign-in</button>}

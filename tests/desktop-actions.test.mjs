@@ -33,7 +33,8 @@ test('database migration and recovery checks use only the isolated development f
 });
 
 test('all four dependency trees and source security checks run independently without masking failure',()=>{
-  for(const command of ['npm audit --audit-level=moderate',...['apps/desktop','apps/beta-web','apps/vscode-extension'].map(path=>`npm --prefix ${path} audit --audit-level=moderate`),'npm run security:scan:local','npm run beta:web:no-prod-mocks']){
+  const audit='audit --include=dev --audit-level=info';
+  for(const command of [`npm ${audit}`,...['apps/desktop','apps/beta-web','apps/vscode-extension'].map(path=>`npm --prefix ${path} ${audit}`),'npm run security:scan:local','npm run beta:web:no-prod-mocks']){
     const step=steps.find(step=>step.split('\n').some(line=>line.trim()===`run: ${command}`));
     assert(step,`Missing independently reported gate: ${command}`);
     assert.match(step,/if: \$\{\{ !cancelled\(\) \}\}/,command);

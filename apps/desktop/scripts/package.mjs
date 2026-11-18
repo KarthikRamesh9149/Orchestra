@@ -25,13 +25,16 @@ export async function writeFirstPartyLicense(directory,bytes){
 async function main(){
 const root=resolve(import.meta.dirname,'../../..');
 const firstPartyLicense=await readFirstPartyLicense(join(root,'LICENSE'));
-const {version}=JSON.parse(await readFile(join(root,'apps/desktop/package.json'),'utf8'));
+const {version,devDependencies}=JSON.parse(await readFile(join(root,'apps/desktop/package.json'),'utf8'));
+const lock=JSON.parse(await readFile(join(root,'apps/desktop/package-lock.json'),'utf8'));
+const electronVersion=devDependencies?.electron;
+if(!/^\d+\.\d+\.\d+$/.test(electronVersion)||electronVersion!==lock.packages?.['node_modules/electron']?.version)throw new Error('Electron must use the reviewed, exact locked version');
 const manifest=JSON.parse(await readFile(join(root,'.desktop/runtime/native-manifest.json'),'utf8'));
 if(manifest.platform!==`${process.platform}-${process.arch}`)throw new Error('A matching native runtime is required; cross-platform qualification cannot be skipped');
 await access(join(root,'apps/desktop/dist/main.cjs'));
 const runtime=join(root,'.desktop/runtime');
 await normalizeRuntimeLinks(runtime);
-const outputs=await packager({icon:join(root,'apps/desktop/assets/Orchestra.icns'),protocols:[{name:'Orchestra Desktop Slack authorization',schemes:['orchestra-desktop']}],dir:join(root,'apps/desktop'),name:'Orchestra Desktop Internal',appBundleId:'dev.orchestra.desktop.internal',appVersion:version,electronVersion:'44.3.0',platform:process.platform,arch:process.arch,out:join(root,'.desktop/packages',randomUUID()),overwrite:false,asar:true,prune:false,ignore:[/^\/node_modules($|\/)/,/^\/src($|\/)/,/^\/scripts($|\/)/,/^\/tsconfig\.json$/],extraResource:[runtime],afterCopyExtraResources:[async ({buildPath})=>{
+const outputs=await packager({icon:join(root,'apps/desktop/assets/Orchestra.icns'),protocols:[{name:'Orchestra Desktop Slack authorization',schemes:['orchestra-desktop']}],dir:join(root,'apps/desktop'),name:'Orchestra Desktop Internal',appBundleId:'dev.orchestra.desktop.internal',appVersion:version,electronVersion,platform:process.platform,arch:process.arch,out:join(root,'.desktop/packages',randomUUID()),overwrite:false,asar:true,prune:false,ignore:[/^\/node_modules($|\/)/,/^\/src($|\/)/,/^\/scripts($|\/)/,/^\/tsconfig\.json$/],extraResource:[runtime],afterCopyExtraResources:[async ({buildPath})=>{
  // Packager's default fs.cp expands relative links into absolute paths back to
  // the build machine. Replace only its fresh staging copy, preserving links.
  const destination=join(buildPath,'Orchestra Desktop Internal.app/Contents/Resources/runtime');

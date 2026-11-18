@@ -7,6 +7,8 @@ const patterns=routes.map(route=>({method:route.method,segments:route.path.split
 function validParameter(key:string,value:string){
  if(value.includes('%')||value.includes('\\')||value.includes('\0'))return false;
  if(key===':itemId')return /^(suggestion|proposal|fde|agent_drift|connector):[A-Za-z0-9_.:-]{1,280}$/.test(value);
+ if(key===':actionId')return /^[0-9a-f]{64}$/.test(value);
+ if(key===':sourceRef')return /^E[1-9]\d{0,2}$/.test(value);
  if(key===':filePath')return value.length<=1024&&!value.startsWith('/')&&value.split('/').every(part=>part!=='.'&&part!=='..'&&/^[A-Za-z0-9_. -]+$/.test(part));
  if([':sectionKey',':anchorId',':action'].includes(key))return /^[A-Za-z0-9_ .:-]{1,200}$/.test(value)&&value!=='.'&&value!=='..';
  return uuid.test(value);
@@ -26,7 +28,7 @@ export async function localHttp(request:Request,host:HostClient,nativeCredential
  if(special){
   const method=url.pathname.endsWith('/bootstrap')||url.pathname.endsWith('/switch')?'POST':'GET';if(request.method!==method)return failure(405,'method_not_allowed','Unsupported operation');
   let command:Parameters<HostClient['request']>[0]={operation:'local.bootstrap'};
-  if(url.pathname.endsWith('/switch')){let input:unknown;try{input=await request.json();}catch{return failure(400,'invalid_project','Select a workspace');}const parsed=z.object({projectId:z.string().uuid()}).strict().safeParse(input);if(!parsed.success)return failure(400,'invalid_project','Select a workspace');command={operation:'workspace.select',projectId:parsed.data.projectId};}
+  if(url.pathname.endsWith('/switch')){let input:unknown;try{input=await request.json();}catch{return failure(400,'invalid_project','Select a workspace');}const parsed=z.object({projectId:z.string().guid()}).strict().safeParse(input);if(!parsed.success)return failure(400,'invalid_project','Select a workspace');command={operation:'workspace.select',projectId:parsed.data.projectId};}
   const result=await host.request(command);if(!result.ok)return failure(503,result.error.code,result.error.message);
   const data=result.data as {user:unknown;workspaces:unknown[]};
   return Response.json({data:url.pathname==='/v1/auth/me'?data.user:url.pathname==='/v1/me/workspaces'?data.workspaces:data,error:null});
