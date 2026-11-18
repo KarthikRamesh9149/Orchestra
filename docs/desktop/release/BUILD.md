@@ -1,7 +1,7 @@
 # Source build: Mac ARM internal candidate
 
-This is a maintainer/contributor recipe, not consumer installation. Repository
-access is currently required. No hosted Orchestra credentials or maintainer
+This recipe builds the public source for internal evaluation; it is not a
+consumer installation guide. No hosted Orchestra credentials or maintainer
 signing identity should be needed to build an **unsigned internal** package.
 An independent clean-source reproduction of this recipe remains required before
 public release; previous packaged runtime checks are not that reproduction.

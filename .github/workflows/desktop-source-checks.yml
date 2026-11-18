@@ -32,7 +32,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, Node 24
         with:
-          node-version: '24.19.0'
+          node-version: '24.22.3'
       - name: Install locked dependencies
         run: |
           npm ci
@@ -78,6 +78,7 @@ jobs:
           node scripts/desktop/dev-db.mjs up
           node scripts/desktop/dev-db.mjs migrate
           node scripts/desktop/dev-db.mjs provision-runtime
+          node --import tsx scripts/desktop/verify-fresh-db.mjs
       - name: Durable database job recovery
         run: node scripts/desktop/dev-db.mjs test
       - name: Restricted engine, approvals and backup restoration
@@ -102,7 +103,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6, Node 24
         with:
-          node-version: '24.19.0'
+          node-version: '24.22.3'
       # No install or lifecycle scripts. Audit each locked tree even if
       # another tree fails, without suppressing any severity or exit code.
       - name: Backend dependency audit

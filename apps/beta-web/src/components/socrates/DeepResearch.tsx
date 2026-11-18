@@ -33,7 +33,8 @@ const RESEARCH_SOURCES: { key: DeepResearchSourceKey; label: string; detail: str
   { key: "github", label: "GitHub", detail: "code activity and pull requests", enabled: false },
   { key: "slack", label: "Communications", detail: "connected message evidence", enabled: false },
   { key: "calendar", label: "Google Calendar", detail: "meetings and deadlines", enabled: false },
-  { key: "docs", label: "Uploaded docs", detail: "project memory documents", enabled: true }
+  { key: "docs", label: "Uploaded docs", detail: "project memory documents", enabled: true },
+  { key: "decisions", label: "Recorded decisions", detail: "accepted decisions in this project", enabled: false }
 ];
 
 const PROGRESS_LABELS: Record<string, string> = {

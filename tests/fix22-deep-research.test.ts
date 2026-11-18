@@ -135,6 +135,24 @@ describe("[FIX-22] Deep Research authoritative contracts", () => {
     expect((await service.getRun(run.projectId, run.id, owner)).results?.recommendedActions[0]).toMatchObject({ completed: false });
   });
 
+  it("opens the actual recorded decision, and reports honestly when it is no longer available", async () => {
+    const { service, run, prisma } = createService();
+    const id = "b7ffad33-4d00-4fdd-ba0f-cceabafda0e1";
+    prisma.deepResearchRun.findUnique.mockResolvedValue({ ...run, resultsJson: { ...results, sources: [
+      { provider: "Orchestra decisions", kind: "internal", ref: "E1", label: "Helix ceiling", href: null, target: { kind: "decision_record", id } }
+    ] } });
+    const findFirst = vi.fn().mockResolvedValueOnce({ statement: "Approved ceiling: twenty seats.", acceptedAt: now }).mockResolvedValue(null);
+    prisma.decisionRecord = { findFirst };
+    const actor = { userId: run.createdByUserId, orgId: run.orgId };
+    await expect(service.getSourcePreview(run.projectId, run.id, actor, "E1")).resolves.toMatchObject({
+      title: "Helix ceiling", text: "Approved ceiling: twenty seats."
+    });
+    expect(findFirst.mock.calls[0]?.[0].where).toMatchObject({ id, projectId: run.projectId, status: "accepted" });
+    await expect(service.getSourcePreview(run.projectId, run.id, actor, "E1")).rejects.toMatchObject({ statusCode: 404 });
+    await expect(service.getSourcePreview(run.projectId, run.id, actor, "E2")).rejects.toMatchObject({ statusCode: 404 });
+    expect(findFirst).toHaveBeenCalledTimes(2);
+  });
+
   it("[LR-01] keeps a healthy owner alive through pending work and fences a late failure", async () => {
     vi.useFakeTimers();
     const { service, prisma, run } = createService();

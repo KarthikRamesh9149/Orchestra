@@ -5,15 +5,15 @@
 <p align="center">
   <a href="#watch-orchestra"><strong>Watch Orchestra</strong></a> &nbsp; · &nbsp;
   <a href="#start-with-one-project"><strong>Get started</strong></a> &nbsp; · &nbsp;
-  <a href="#build-from-source">Build from source</a> &nbsp; · &nbsp;
-  <a href="#privacy">Privacy</a>
+  <a href="docs/desktop/release/README.md">Release status</a> &nbsp; · &nbsp;
+  <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
 Your PRD says one thing. A conversation changes the scope. Your coding agent still has yesterday's context.
 
-**Orchestra is a Product Brain for High Speed Teams.** It connects source material, reviewed decisions and implementation evidence, so people and agents can work from the same accepted product context.
+**Orchestra is a Product Brain for High Speed Teams.** Product managers and engineers use it to find the evidence behind a requirement, review what changed, and give coding agents the context the team actually approved.
 
-*Open-source preview for Apple Silicon Macs. Build from source; packaged public downloads are not available yet.*
+*Public source preview for Apple Silicon Macs. [Build an internal app from source](docs/desktop/release/BUILD.md). No public installer is available.*
 
 ## Watch Orchestra
 
@@ -39,7 +39,7 @@ https://github.com/user-attachments/assets/51f3404e-a8e9-4263-9f8a-2cc03149f166
 
 **Socrates** answers from project evidence with citations you can open. **Memory** keeps the underlying documents available for inspection. **Deep Research** turns a larger question into a source-linked report you can save alongside the project.
 
-Accepted decisions and ordinary source material remain distinct. A document saying “approved” is not itself a recorded approval, and a saved AI report remains generated evidence.
+Accepted decisions and ordinary source material remain distinct. Select **Recorded decisions** in Deep Research to check actual project approvals. A document saying “approved” is not itself a recorded approval, and a saved AI report remains generated evidence.
 
 ### Start with a question that matters
 
@@ -115,35 +115,22 @@ Read the [usage, privacy and recovery guide](docs/desktop/release/USER-GUIDE.md)
 
 ## Build from source
 
-Source-build prerequisites: **macOS Apple Silicon, Node.js 24/npm, Xcode command-line tools, Perl/tar and network access**. Use a fresh checkout without production credentials or customer data.
+You’ll need **an Apple Silicon Mac, Node.js 24/npm, Xcode command-line tools, Perl/tar and network access**. Start in a fresh checkout.
 
 ```sh
 git clone https://github.com/KarthikRamesh9149/Orchestra.git
 cd Orchestra
-npm ci --ignore-scripts
-npm --prefix apps/desktop ci
-npm run prisma:generate
-npm run build
-npm --prefix apps/desktop run typecheck
-npm --prefix apps/desktop run build
-mkdir -p .desktop
-export DEVELOPER_DIR=/Library/Developer/CommandLineTools
-export SDKROOT="$(xcrun --sdk macosx --show-sdk-path)"
-node scripts/desktop/build-native-mac.mjs
-node scripts/desktop/prepare-native.mjs
-npm --prefix apps/desktop run package
 ```
 
-Install desktop dependencies before the root build. The internal package path is written to `.desktop/latest-package.txt`. See [BUILD.md](docs/desktop/release/BUILD.md) for native provenance and applicable checks; do not bypass macOS security warnings.
+Follow the [complete build and verification steps](docs/desktop/release/BUILD.md). The packager prints the app path and writes it to `.desktop/latest-package.txt`. The resulting app is for internal evaluation; do not bypass macOS security warnings.
 
 <details>
 <summary><strong>Current qualification and release boundaries</strong></summary>
 
 - **Platform:** Apple Silicon Mac internal beta, unsigned and manual-update-only. Windows, signing/notarisation, automatic updates and two-physical-computer qualification are deferred.
 - **AI:** OpenAI has real-account Socrates, Deep Research, streaming and restart evidence on the tested Mac configuration. Anthropic, Gemini and compatible API adapters remain previews pending real-account workflow qualification; models must meet the required protocols.
-- **Connectors:** Internal real-account checks cover the desktop connector scope. New-account and new-workspace onboarding still needs qualification; a provider app registration does not establish customer onboarding readiness.
-- **Notices:** The latest internal artifact check found no missing notices or listed unresolved bundled packages. Historical artifacts are not retroactively cleared. Final source/history and publication review remains separate.
-- **Distribution:** Source publication was authorised by the owner on 5 October 2026. Packaged public downloads remain pending; local tests and internal packages do not constitute public-release certification.
+- **Connectors:** GitHub, Drive and Slack are available for scoped testing. New-account and new-workspace onboarding still needs qualification before customer rollout.
+- **Distribution:** Internal packages are not public downloads or proof that a shared-team deployment is ready.
 
 [Release status](docs/desktop/release/README.md) · [Desktop contract](docs/desktop/CONTRACT.md) · [Provider guide](docs/desktop/release/USER-GUIDE.md#add-an-api-key) · [Notice review](docs/desktop/THIRD-PARTY-REVIEW.md)
 
@@ -151,11 +138,11 @@ Install desktop dependencies before the root build. The internal package path is
 
 ## Project documentation
 
-[Architecture](docs/desktop/ADR-001.md) · [Feature inventory](docs/desktop/feature-parity.json) · [Threat model](docs/desktop/THREAT-MODEL.md) · [Manual updates and recovery](docs/desktop/INTERNAL-UPDATE-RECOVERY.md) · [Contributing](CONTRIBUTING.md)
+[User guide](docs/desktop/release/USER-GUIDE.md) · [Architecture](docs/desktop/ADR-001.md) · [Self-hosting](infra/self-host/v1/README.md) · [Recovery](docs/desktop/INTERNAL-UPDATE-RECOVERY.md) · [Contributing](CONTRIBUTING.md) · [Report a security issue](SECURITY.md)
 
 Maintainer and recovery owner: **Karthik Ramesh**. Support: **hello@orchestraos.dev**. Include the app version and reproduction steps, not credentials or customer records.
 
-First-party code is [Apache-2.0](LICENSE), approved by the owner after confirming ownership of the original code/assets. Third-party components retain their own licences and notices.
+First-party code is [Apache-2.0](LICENSE). Third-party components retain their own [licences and notices](docs/desktop/THIRD-PARTY-REVIEW.md).
 
 <p align="center">
   <img src="apps/desktop/assets/orchestra-logo.png" alt="Original Orchestra mark" width="56" />

@@ -56,7 +56,7 @@ async function verifyNative(bundle, fixtures, ai) {
       assert(response.ok, `Request ${path.split('/').at(1)} failed: ${response.status} ${payload.error?.code ?? ''}`);
       return payload.data;
     };
-    const documents = ['Helix Rollout Decision', 'Helix Customer Request', 'Helix Engineering Note'];
+    const documents = ['Helix Rollout Decision', 'Helix Customer Request', 'Helix Engineering Note', 'Juniper Exit Runbook', 'Vireo Pilot Readout'];
     for (const title of documents) {
       const fileName = title + '.pdf';
       await request({ operation: 'evidence.upload', projectId: workspace.id, selectionId: randomUUID() }, {
@@ -72,44 +72,69 @@ async function verifyNative(bundle, fixtures, ai) {
       await pause(350);
     }
     assert(indexed, 'Synthetic documents did not become searchable');
-    const start = performance.now();
-    // Use the same versioned stream that the Chat page uses for All sources.
-    const streamed = await fetch(`http://127.0.0.1:${authority.port}/v1/projects/${workspace.id}/socrates/messages/stream/v1`, {
-      method: 'POST', headers: { authorization: 'Bearer ' + authority.bearer,
-        'x-orchestra-local-token': authority.token, 'content-type': 'application/json' },
-      signal: AbortSignal.timeout(60000),
-      body: JSON.stringify({ selectedSources: ['all'], mode: 'ask',
-        question: 'A teammate says Helix has approval for 480 production seats. What should I tell sales today?' }),
-    });
-    assert(streamed.ok && streamed.body, 'Socrates streaming request failed: ' + streamed.status);
-    const decoder = new TextDecoder();
-    let pending = '', answer, firstTextMs;
-    for await (const bytes of streamed.body) {
-      pending += decoder.decode(bytes, { stream: true });
-      let end;
-      while ((end = pending.indexOf('\n\n')) >= 0) {
-        const frame = pending.slice(0, end); pending = pending.slice(end + 2);
-        const event = /^event:\s*(.+)$/m.exec(frame)?.[1], payload = /^data:\s*(.+)$/m.exec(frame)?.[1];
-        if (!payload) continue;
-        const message = JSON.parse(payload);
-        if (event === 'delta' && message.text?.trim()) firstTextMs ??= Math.round(performance.now() - start);
-        if (event === 'done') answer = message.data ?? message;
-        if (event === 'error') throw Error('Socrates stream reported an error');
+    async function ask(question, selectedSources) {
+      const start = performance.now();
+      // Use the same versioned stream as Chat.
+      const streamed = await fetch(`http://127.0.0.1:${authority.port}/v1/projects/${workspace.id}/socrates/messages/stream/v1`, {
+        method: 'POST', headers: { authorization: 'Bearer ' + authority.bearer,
+          'x-orchestra-local-token': authority.token, 'content-type': 'application/json' },
+        signal: AbortSignal.timeout(60000),
+        body: JSON.stringify({ selectedSources, mode: 'ask', question }),
+      });
+      assert(streamed.ok && streamed.body, 'Socrates streaming request failed: ' + streamed.status);
+      const decoder = new TextDecoder();
+      let pending = '', answer, firstTextMs;
+      for await (const bytes of streamed.body) {
+        pending += decoder.decode(bytes, { stream: true });
+        let end;
+        while ((end = pending.indexOf('\n\n')) >= 0) {
+          const frame = pending.slice(0, end); pending = pending.slice(end + 2);
+          const event = /^event:\s*(.+)$/m.exec(frame)?.[1], payload = /^data:\s*(.+)$/m.exec(frame)?.[1];
+          if (!payload) continue;
+          const message = JSON.parse(payload);
+          if (event === 'delta' && message.text?.trim()) firstTextMs ??= Math.round(performance.now() - start);
+          if (event === 'done') answer = message.data ?? message;
+          if (event === 'error') throw Error('Socrates stream reported an error');
+        }
       }
+      assert(answer?.answer_md && Number.isFinite(firstTextMs), 'Missing streamed answer');
+      const answerMs = Math.round(performance.now() - start);
+      assert.equal(answer.modelMetadata.provider, 'openai');
+      assert.equal(answer.modelMetadata.degraded, false);
+      return { answer: answer.answer_md, citations: answer.citations.map(citation => citation.label),
+        sourceTypes: answer.citations.map(citation => citation.sourceType),
+        firstTextMs, answerMs, retrievalMs: answer.retrievalSummary?.performance?.retrievalMs };
     }
-    assert(answer?.answer_md && Number.isFinite(firstTextMs), 'Missing streamed answer');
-    const answerMs = Math.round(performance.now() - start);
-    assert.equal(answer.modelMetadata.provider, 'openai');
-    assert.equal(answer.modelMetadata.degraded, false);
-    assert.match(answer.answer_md, /180/);
-    assert.match(answer.answer_md, /480/);
-    assert.match(answer.answer_md, /pending|not approved|not yet approved|request/i);
-    assert.doesNotMatch(answer.answer_md, /Latest timestamped evidence|No elapsed duration is inferred/i);
-    assert(answer.citations.some(citation => citation.label.includes('Helix Rollout Decision')));
-    assert(answer.citations.some(citation => citation.label.includes('Helix Customer Request')));
+    const retentionQuestion = 'A subscriber leaves. How long do we keep their material and who takes care of getting rid of it?';
+    const retention = [];
+    for (const scope of ['all', 'documents']) {
+      const result = await ask(retentionQuestion, [scope]);
+      assert.match(result.answer, /47[\s*]+days/i);
+      assert.match(result.answer, /Iona Flint/i);
+      assert(result.citations.some(label => label.includes('Juniper Exit Runbook')));
+      retention.push({ scope, ...result });
+    }
+    const sales = await ask('A teammate says Helix has approval for 480 production seats. What should I tell sales today?', ['all']);
+    assert.match(sales.answer, /180/);
+    assert.match(sales.answer, /480/);
+    assert.match(sales.answer, /pending|not approved|not yet approved|request/i);
+    assert.doesNotMatch(sales.answer, /Latest timestamped evidence|No elapsed duration is inferred/i);
+    assert(sales.citations.some(label => label.includes('Helix Rollout Decision')));
+    assert(sales.citations.some(label => label.includes('Helix Customer Request')));
+    const timestamp = Math.floor(Date.now() / 1000 - 60) + '.000001';
+    await request({ operation: 'desktop.slack.ingest', projectId: workspace.id, teamId: 'TPILOT', teamName: 'Synthetic pilot',
+      channel: { id: 'CPILOT', name: 'helix-operations' }, messages: [{ ts: timestamp, threadTs: timestamp,
+        user: 'Reviewer', text: 'Helix escalation window is 83 minutes. No change to approved pilot capacity.' }], deletedTimestamps: [],
+      snapshot: { oldestMs: Date.now() - 30 * 86400_000, latestMs: Date.now(), complete: true },
+    });
+    const combined = await ask('Use the Helix Rollout Decision PDF and Slack helix-operations: what is the pilot seat limit and escalation window?', ['all']);
+    assert.match(combined.answer, /180/);
+    assert.match(combined.answer, /83[\s*]+minutes/i);
+    assert(combined.citations.some(label => label.includes('Helix Rollout Decision')));
+    assert(combined.sourceTypes.some(type => /slack|communication/i.test(type)), 'Both documents and messages must support the answer');
     const researchStart = performance.now();
     const run = await api('/deep-research', { method: 'POST', body: {
-      researchFocus: 'Compare Helix Rollout Decision and Helix Customer Request. Contrast the 180-seat pilot approval with the pending 480-seat request. State what sales should confirm before promising a production rollout.',
+      researchFocus: 'Compare Helix Rollout Decision and Helix Customer Request. Contrast the 180-seat pilot approval with the pending 480-seat request. State whether any actual Orchestra record establishes approval and what sales should confirm before promising production.',
       sources: ['docs'], outputFormat: 'exec_summary', privacyMode: 'internal_only', webSearchEnabled: false,
     } });
     const runPath = '/deep-research/' + run.id;
@@ -122,13 +147,40 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.equal(report.status, 'completed', report.error ?? 'Research did not complete');
     assert.match(report.results.executiveSummary, /180/);
     assert.match(report.results.executiveSummary, /480/);
+    assert.match(report.results.executiveSummary, /(?:no |not |cannot |can’t |unverified)[^.!?]{0,90}(?:record|approv|authoriz)/i);
     assert(report.results.sources.some(source => source.href?.includes('versionId=')));
     const checked = report.results.recommendedActions[0];
     assert(checked?.id, 'No durable recommended action in the report');
     await api(runPath + '/actions/' + checked.id, { method: 'PUT', body: { completed: true } });
     assert.equal((await api(runPath)).results.recommendedActions[0].completed, true);
-    return { passed: true, indexedDocuments: documents.length, provider: answer.modelMetadata.provider, firstTextMs, answerMs,
-      citations: answer.citations.map(citation => citation.label), researchMs: Math.round(performance.now() - researchStart), recommendationSaved: true };
+    const researchMs = Math.round(performance.now() - researchStart);
+    const title = 'Orion evaluation capacity';
+    const statement = 'The authorized evaluation cap is 37 test seats. No production rollout is approved.';
+    const proposal = await api('/change-proposals', { method: 'POST', body: {
+      title, summary: statement, proposalType: 'decision_change', newUnderstanding: { text: statement },
+      externalEvidenceRefs: ['synthetic-human-release-review'],
+    } });
+    const accepted = await api('/change-proposals/' + proposal.id + '/accept', { method: 'POST', body: {} });
+    assert.equal(accepted.status, 'accepted');
+    assert(accepted.decisionRecordId, 'Acceptance must produce a persisted decision record');
+    const actual = await api('/deep-research', { method: 'POST', body: {
+      researchFocus: 'What capacity is recorded by the Orion evaluation capacity decision? Cite the accepted record and do not infer production approval.',
+      sources: ['decisions'], outputFormat: 'exec_summary', privacyMode: 'internal_only', webSearchEnabled: false,
+    } });
+    const actualPath = '/deep-research/' + actual.id;
+    let completed;
+    for (let n = 0; n < 140; n++) {
+      completed = await api(actualPath);
+      if (['failed', 'completed'].includes(completed.status)) break;
+      await pause(450);
+    }
+    assert.equal(completed.status, 'completed', completed.error ?? 'Decision-scope research did not complete');
+    assert.match(completed.results.executiveSummary, /37/);
+    const source = completed.results.sources.find(item => item.target?.kind === 'decision_record' && item.target.id === accepted.decisionRecordId);
+    assert(source?.ref && completed.results.executiveSummary.includes('[' + source.ref + ']'), 'Summary must cite the accepted decision');
+    assert.equal((await api(actualPath + '/sources/' + source.ref)).text, statement);
+    return { passed: true, indexedDocuments: documents.length, provider: 'openai', retention, sales, combined, researchMs,
+      negativeApproval: report.results.executiveSummary, recordedApproval: completed.results.executiveSummary, recommendationSaved: true };
   } finally {
     if (native.connected) native.send({ type: 'shutdown' });
     await exit;

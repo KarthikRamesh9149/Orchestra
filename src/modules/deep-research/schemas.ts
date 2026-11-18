@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const DEEP_RESEARCH_SOURCE_KEYS = ["github", "slack", "calendar", "docs", "web"] as const;
+export const DEEP_RESEARCH_SOURCE_KEYS = ["github", "slack", "calendar", "docs", "decisions", "web"] as const;
 export type DeepResearchSourceKey = (typeof DEEP_RESEARCH_SOURCE_KEYS)[number];
 
 export const DEEP_RESEARCH_OUTPUT_FORMATS = ["exec_summary", "full_report", "action_items"] as const;
@@ -86,7 +86,7 @@ export const deepResearchSourceSchema = z.object({
     }
   }, "Source href must be an internal path or HTTP(S) URL").nullable(),
   target: z.object({
-    kind: z.enum(["message", "brain_node", "brain_version", "github_record"]),
+    kind: z.enum(["message", "brain_node", "brain_version", "github_record", "decision_record"]),
     id: z.string().guid()
   }).optional(),
   excerpt: z.string().max(900).optional()
