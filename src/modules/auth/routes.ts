@@ -60,7 +60,7 @@ const redeemInvitationSchema = z.discriminatedUnion("accountType", [
 
 const legacyJoinWorkspaceSchema = newInvitationAccountSchema.omit({ accountType: true }).required({ code: true });
 
-const requestEmailVerificationSchema = z.object({ projectId: z.string().uuid() }).strict();
+const requestEmailVerificationSchema = z.object({ projectId: z.string().guid() }).strict();
 const confirmEmailVerificationSchema = z.object({ token: z.string().trim().min(32).max(200) }).strict();
 const changePasswordSchema = z.object({ currentPassword: z.string().min(8).max(128), newPassword: z.string().min(12).max(128) }).strict();
 

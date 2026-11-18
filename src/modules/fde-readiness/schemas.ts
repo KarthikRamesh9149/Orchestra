@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const fdeReadinessParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const fdeTraceParamsSchema = fdeReadinessParamsSchema.extend({
-  traceId: z.string().uuid()
+  traceId: z.string().guid()
 });
 
 export const safeToTouchFileQuerySchema = z.object({
@@ -27,7 +27,7 @@ export const rationaleTraceInputSchema = z.object({
 });
 
 export const decisionEngineeringLinkInputSchema = z.object({
-  decisionId: z.string().uuid(),
+  decisionId: z.string().guid(),
   targetType: z.enum(["file", "module", "route", "branch", "pull_request", "product_brain_node", "live_doc_section", "document_section", "agent_run", "manual"]),
   targetRef: z.string().trim().min(1).max(1000),
   relationshipType: z.enum([
@@ -40,11 +40,11 @@ export const decisionEngineeringLinkInputSchema = z.object({
     "manual_linked"
   ]),
   confidence: z.enum(["exact_link", "strong_semantic", "weak_semantic", "manual_linked", "unverified"]).default("manual_linked"),
-  evidenceIds: z.array(z.string().uuid()).max(100).default([]),
-  citations: z.array(z.record(z.unknown())).max(50).default([]),
-  openTargets: z.array(z.record(z.unknown())).max(50).default([]),
+  evidenceIds: z.array(z.string().guid()).max(100).default([]),
+  citations: z.array(z.record(z.string(), z.unknown())).max(50).default([]),
+  openTargets: z.array(z.record(z.string(), z.unknown())).max(50).default([]),
   limitations: z.array(z.string().trim().max(1000)).max(50).default([]),
-  metadata: z.record(z.unknown()).default({})
+  metadata: z.record(z.string(), z.unknown()).default({})
 });
 
 export type FdeFindingQuery = z.infer<typeof fdeFindingQuerySchema>;

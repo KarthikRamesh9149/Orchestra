@@ -3,7 +3,7 @@ import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
 import {constants} from 'node:fs';
 import {z} from 'zod';
-const schema=z.object({version:z.literal(1),projectId:z.string().uuid().nullable(),onboarded:z.boolean().default(false)}).strict();
+const schema=z.object({version:z.literal(1),projectId:z.string().guid().nullable(),onboarded:z.boolean().default(false)}).strict();
 export async function readLocalState(root:string){
  try{const file=await open(join(root,'workspace-state.json'),constants.O_RDONLY|constants.O_NOFOLLOW);try{const stat=await file.stat();if(!stat.isFile()||stat.size>4096)throw new Error('Invalid workspace state');return schema.parse(JSON.parse(await file.readFile('utf8')));}finally{await file.close();}}
  catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')return {version:1 as const,projectId:null,onboarded:false};throw error;}

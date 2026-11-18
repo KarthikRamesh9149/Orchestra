@@ -21,11 +21,11 @@ const updateProjectSettingsSchema = z
   });
 
 const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 const auditEventsQuerySchema = z.object({
-  actorUserId: z.string().uuid().optional(),
+  actorUserId: z.string().guid().optional(),
   eventType: z.string().trim().min(1).max(120).optional(),
   entityType: z.string().trim().min(1).max(120).optional(),
   from: z.string().datetime().optional(),
@@ -35,15 +35,15 @@ const auditEventsQuerySchema = z.object({
 });
 
 const memberParamsSchema = projectParamsSchema.extend({
-  memberId: z.string().uuid()
+  memberId: z.string().guid()
 });
 
 const joinCodeParamsSchema = projectParamsSchema.extend({
-  codeId: z.string().uuid()
+  codeId: z.string().guid()
 });
 
 const truthApproverBodySchema = z.object({
-  memberId: z.string().uuid()
+  memberId: z.string().guid()
 });
 
 const projectRoleSchema = z.enum(["manager", "dev", "client"]);

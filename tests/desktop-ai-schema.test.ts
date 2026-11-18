@@ -38,7 +38,9 @@ describe('verified SDK root-definition compaction',()=>{
   const original=zodTextFormat(getDesktopProductWireSchema(answerSchema),'orchestra_result').schema;
   const compact=compactDesktopWireSchema(original) as Record<string,any>;
   expect(compact.definitions?.orchestra_result).toBeUndefined();
-  expect(Buffer.byteLength(JSON.stringify(compact))).toBeLessThan(Buffer.byteLength(JSON.stringify(original))*.7);
+  // The v4 SDK no longer emits a redundant named root in this schema.
+  // The synthetic cases above still require duplicate removal when present.
+  expect(Buffer.byteLength(JSON.stringify(compact))).toBeLessThan(40_000);
   expect(compact.properties.suggested_actions).toBeDefined();
  });
 });
@@ -74,9 +76,12 @@ describe('Anthropic native structured result channel',()=>{
   await expect(provider().generateObject({prompt:'Synthetic evidence.',schema:deepResearchStructuredSchema,fallback})).rejects.toMatchObject({code:'ai_provider_failed'});expect(fallback).not.toHaveBeenCalled();expect(post).toHaveBeenCalledTimes(1);
  });
  it('rejects real Socrates numeric constraints after a completed result',async()=>{
-  reply({type:'document_chunk',refId:'E1',label:'Synthetic',confidence:2});
+  const value={type:'document_chunk',refId:'E1',label:'Synthetic',confidence:0.8,pageNumber:null};
+  reply(value);
+  await expect(provider().generateObject({prompt:'Synthetic evidence.',schema:citationSchema,fallback:()=>{throw new Error('No fallback');}})).resolves.toMatchObject({confidence:0.8});
+  reply({...value,confidence:2});
   await expect(provider().generateObject({prompt:'Synthetic evidence.',schema:citationSchema,fallback:()=>{throw new Error('No fallback');}})).rejects.toMatchObject({code:'ai_provider_failed'});
-  expect(transmitted().properties.confidence).toMatchObject({minimum:0,maximum:1});
+  expect(transmitted().properties.confidence.anyOf).toContainEqual(expect.objectContaining({type:'number',minimum:0,maximum:1}));
  });
  it.each([
   {type:'message',stop_reason:'end_turn',content:[{type:'text',text:'{"ok":true}'}]},

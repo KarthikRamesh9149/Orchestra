@@ -102,7 +102,7 @@ else {
   ipcMain.handle('orchestra:sync-inspect',async event=>{if(!trusted(event))throw new Error('Unauthorized frame');try{return {ok:true,data:{targets:(await settings.read()).syncTargets??[],running:!!syncController}};}catch{return {ok:false,error:{code:'sync_status_unavailable',message:'Source refresh status could not be read.'}};}});
   ipcMain.handle('orchestra:sync-cancel',event=>{if(!trusted(event))throw new Error('Unauthorized frame');syncController?.abort();return {ok:true,data:{cancelled:true}};});
   ipcMain.handle('orchestra:sync-update',async(event,value:unknown)=>{
-   if(!trusted(event))throw new Error('Unauthorized frame');const input=z.object({id:z.string().uuid(),action:z.enum(['enable','pause','remove','refresh'])}).strict().safeParse(value);
+   if(!trusted(event))throw new Error('Unauthorized frame');const input=z.object({id:z.string().guid(),action:z.enum(['enable','pause','remove','refresh'])}).strict().safeParse(value);
    if(!input.success)return {ok:false,error:{code:'invalid_sync_selection',message:'Choose a saved source selection.'}};
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'A native operation is active. Cancel refresh or retry when it finishes.'}};configuringAi=true;
    try{const state=await settings.read(),target=state.syncTargets?.find(t=>t.id===input.data.id);if(!target)throw new Error('Selection missing');
@@ -151,7 +151,7 @@ else {
   });
   ipcMain.handle('orchestra:github-import',async(event,value:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
-   const input=z.object({projectId:z.string().uuid(),repositoryId:z.number().int().positive()}).strict().safeParse(value);
+   const input=z.object({projectId:z.string().guid(),repositoryId:z.number().int().positive()}).strict().safeParse(value);
    if(!input.success)return {ok:false,error:{code:'invalid_github_selection',message:'Choose a workspace and authorized repository.'}};
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
    configuringAi=true;
@@ -175,7 +175,7 @@ else {
   });
   ipcMain.handle('orchestra:slack-import',async(event,value:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
-   const input=z.object({projectId:z.string().uuid(),channelId:z.string().regex(/^C[A-Z0-9]+$/)}).strict().safeParse(value);
+   const input=z.object({projectId:z.string().guid(),channelId:z.string().regex(/^C[A-Z0-9]+$/)}).strict().safeParse(value);
    if(!input.success)return {ok:false,error:{code:'invalid_slack_selection',message:'Select a project and public channel.'}};
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current operation.'}};
    configuringAi=true;try{
@@ -272,7 +272,7 @@ else {
   });
   ipcMain.handle('orchestra:drive-import',async(event,value:unknown)=>{
    if(!trusted(event))throw new Error('Unauthorized frame');
-   const project=z.string().uuid().safeParse(value);if(!project.success)return {ok:false,error:{code:'invalid_workspace',message:'Choose a workspace before importing.'}};
+   const project=z.string().guid().safeParse(value);if(!project.success)return {ok:false,error:{code:'invalid_workspace',message:'Choose a workspace before importing.'}};
    if(configuringAi)return {ok:false,error:{code:'settings_busy',message:'Finish the current native operation.'}};
    configuringAi=true;driveAuthorization=new AbortController();let saved=0;
    try{

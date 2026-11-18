@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const generalDashboardQuerySchema = z.object({

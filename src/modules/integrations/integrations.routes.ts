@@ -3,7 +3,7 @@ import { z } from "zod";
 import { internalAuthGuard } from "../../app/auth.js";
 
 const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const registerIntegrationManagementRoutes: FastifyPluginAsync = async (app) => {

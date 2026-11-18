@@ -45,9 +45,8 @@ describe("rerank provider layer", () => {
   });
 
   it("uses OpenAI LLM reranker only for hard eligible queries and never sends client internal evidence", async () => {
-    const provider: GenerationProvider = {
-      generateObject: vi.fn(async () => ({ ranked: [{ id: "safe", score: 0.9, reason: "safe" }] }))
-    };
+    const generate = vi.fn((_: unknown) => ({ ranked: [{ id: "safe", score: 0.9, reason: "safe" }] }));
+    const provider: GenerationProvider = { generateObject: async (input) => input.schema.parse(generate(input)) };
     const result = await rerankWithProvider({
       deterministicInput: {
         candidates: [
@@ -76,7 +75,7 @@ describe("rerank provider layer", () => {
     });
 
     expect(result.candidates.every((item) => !item.isInternalOnly)).toBe(true);
-    expect(provider.generateObject).toHaveBeenCalledWith(expect.objectContaining({
+    expect(generate).toHaveBeenCalledWith(expect.objectContaining({
       task: "rerank",
       model: "gpt-5.4-nano",
       maxOutputTokens: 222,
@@ -85,9 +84,8 @@ describe("rerank provider layer", () => {
   });
 
   it("does not send client candidates to external rerankers unless explicitly client-safe", async () => {
-    const provider: GenerationProvider = {
-      generateObject: vi.fn(async () => ({ ranked: [{ id: "unsafe", score: 0.9, reason: "unsafe" }] }))
-    };
+    const generate = vi.fn((_: unknown) => ({ ranked: [{ id: "unsafe", score: 0.9, reason: "unsafe" }] }));
+    const provider: GenerationProvider = { generateObject: async (input) => input.schema.parse(generate(input)) };
 
     const result = await rerankWithProvider({
       deterministicInput: {
@@ -112,7 +110,7 @@ describe("rerank provider layer", () => {
       }
     });
 
-    expect(provider.generateObject).not.toHaveBeenCalled();
+    expect(generate).not.toHaveBeenCalled();
     expect(result.telemetry.fallbackUsed).toBe(true);
     expect(result.telemetry.error).toBe("no_provider_safe_candidates");
   });

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const vscodeProjectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const vscodeCreatePairingBodySchema = z.object({

@@ -17,18 +17,18 @@ export const responsibilityStatusSchema = z.enum(["open", "in_progress", "done",
 export const responsibilitySourceSchema = z.enum(["manual", "socrates"]);
 
 export const responsibilityParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  responsibilityId: z.string().uuid()
+  projectId: z.string().guid(),
+  responsibilityId: z.string().guid()
 });
 
 export const projectResponsibilitiesParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const listResponsibilitiesQuerySchema = z.object({
   status: responsibilityStatusSchema.optional(),
   area: responsibilityAreaSchema.optional(),
-  memberId: z.string().uuid().optional(),
+  memberId: z.string().guid().optional(),
   q: z.string().trim().min(1).max(120).optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(25)
@@ -36,7 +36,7 @@ export const listResponsibilitiesQuerySchema = z.object({
 
 export const createResponsibilitySchema = z
   .object({
-    memberId: z.string().uuid().optional().nullable(),
+    memberId: z.string().guid().optional().nullable(),
     assigneeName: z.string().trim().min(1).max(120).optional().nullable(),
     title: z.string().trim().min(2).max(200),
     description: z.string().trim().min(1).max(2000).optional().nullable(),
@@ -56,7 +56,7 @@ export const createResponsibilitySchema = z
 
 export const updateResponsibilitySchema = z
   .object({
-    memberId: z.string().uuid().optional().nullable(),
+    memberId: z.string().guid().optional().nullable(),
     assigneeName: z.string().trim().min(1).max(120).optional().nullable(),
     title: z.string().trim().min(2).max(200).optional(),
     description: z.string().trim().min(1).max(2000).optional().nullable(),

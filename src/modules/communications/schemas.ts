@@ -72,16 +72,16 @@ export const messageInsightStatusSchema = z.enum([
 export const proposalStatusSchema = z.enum(["detected", "needs_review", "accepted", "rejected", "superseded"]);
 
 export const projectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const connectorParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  connectorId: z.string().uuid()
+  projectId: z.string().guid(),
+  connectorId: z.string().guid()
 });
 
 export const providerConnectParamsSchema = z.object({
-  projectId: z.string().uuid(),
+  projectId: z.string().guid(),
   provider: communicationProviderSchema
 });
 
@@ -101,18 +101,18 @@ export const webhookChallengeQuerySchema = z.object({
 });
 
 export const threadParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  threadId: z.string().uuid()
+  projectId: z.string().guid(),
+  threadId: z.string().guid()
 });
 
 export const messageParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  messageId: z.string().uuid()
+  projectId: z.string().guid(),
+  messageId: z.string().guid()
 });
 
 export const messageInsightParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  insightId: z.string().uuid()
+  projectId: z.string().guid(),
+  insightId: z.string().guid()
 });
 
 export const connectorPatchBodySchema = z.object({
@@ -143,7 +143,7 @@ export const jobRunQuerySchema = z.object({
 
 export const connectorSyncBodySchema = z.object({
   syncType: syncTypeSchema.default("manual"),
-  idempotencyKey: z.string().uuid().optional()
+  idempotencyKey: z.string().guid().optional()
 });
 
 export const participantSchema = z.object({
@@ -247,7 +247,7 @@ export const communicationImportBodySchema = z.union([
 
 export const timelineQuerySchema = z.object({
   provider: communicationProviderSchema.optional(),
-  connectorId: z.string().uuid().optional(),
+  connectorId: z.string().guid().optional(),
   sourceSubType: z.string().trim().min(1).max(80).optional(),
   insightType: messageInsightTypeSchema.optional(),
   insightStatus: messageInsightStatusSchema.optional(),
@@ -282,8 +282,8 @@ export const threadListQuerySchema = z.object({
 export const messageInsightListQuerySchema = z.object({
   status: messageInsightStatusSchema.optional(),
   insightType: messageInsightTypeSchema.optional(),
-  threadId: z.string().uuid().optional(),
-  messageId: z.string().uuid().optional(),
+  threadId: z.string().guid().optional(),
+  messageId: z.string().guid().optional(),
   provider: communicationProviderSchema.optional(),
   minConfidence: z.coerce.number().min(0).max(1).optional(),
   hasProposal: z

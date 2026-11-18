@@ -33,7 +33,7 @@ const multipartFieldSchema = z.object({
     .max(30)
     .default([])
     .transform((tags) => Array.from(new Set(tags.map((tag) => tag.trim().toLowerCase()).filter(Boolean)))),
-  linkedMemberId: z.string().uuid().optional(),
+  linkedMemberId: z.string().guid().optional(),
   importance: z.enum(["normal", "high"]).default("normal")
 });
 

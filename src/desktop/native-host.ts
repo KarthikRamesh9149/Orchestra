@@ -148,19 +148,19 @@ async function command(value:unknown,selection?:unknown){
   case 'local.onboard':{z.object({operation:z.literal('local.onboard')}).strict().parse(value);await saveLocalState(installationRoot,undefined,true);return bootstrap();}
   case 'workspace.list':z.object({operation:z.literal('workspace.list')}).strict().parse(value);return services.projectService.listProjects(owner.id,owner.orgId);
   case 'workspace.create':{const input=z.object({operation:z.literal('workspace.create'),name:z.string().trim().min(1).max(100)}).strict().parse(value);return services.projectService.createProject({orgId:owner.orgId,actorUserId:owner.id,name:input.name});}
-  case 'workspace.select':{const input=z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict().parse(value);const available=await services.projectService.listProjects(owner.id,owner.orgId);const selected=available.find(project=>project.id===input.projectId);if(!selected)throw new Error('Unauthorized workspace');await saveLocalState(installationRoot,input.projectId);const result=await bootstrap();return {...result,workspace:result.workspaces.find(project=>project.projectId===input.projectId)};}
+  case 'workspace.select':{const input=z.object({operation:z.literal('workspace.select'),projectId:z.string().guid()}).strict().parse(value);const available=await services.projectService.listProjects(owner.id,owner.orgId);const selected=available.find(project=>project.id===input.projectId);if(!selected)throw new Error('Unauthorized workspace');await saveLocalState(installationRoot,input.projectId);const result=await bootstrap();return {...result,workspace:result.workspaces.find(project=>project.projectId===input.projectId)};}
   case 'evidence.upload':{
-   const input=z.object({operation:z.literal('evidence.upload'),projectId:z.string().uuid(),selectionId:z.string().uuid()}).strict().parse(value);
+   const input=z.object({operation:z.literal('evidence.upload'),projectId:z.string().guid(),selectionId:z.string().guid()}).strict().parse(value);
    const file=z.object({fileName:z.string().max(255),contentType:z.string().max(150),base64:z.string().max(70*1024*1024),sourceKey:z.string().regex(/^[a-f0-9]{64}$/).optional()}).strict().parse(selection);
    const buffer=Buffer.from(file.base64,'base64');if(buffer.length>50*1024*1024)throw new Error('File too large');
    return services.documentService.uploadFile({projectId:input.projectId,actorUserId:owner.id,...(file.sourceKey?{sourceDocumentId:driveIdentity('local-source',input.projectId,file.sourceKey)}:{}),kind:'reference',title:file.fileName,visibility:'internal',fileName:file.fileName,contentType:file.contentType,buffer});
   }
   case 'socrates.ask':{
-   const input=z.object({operation:z.literal('socrates.ask'),projectId:z.string().uuid(),requestId:z.string().uuid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().uuid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict().parse(value);
+   const input=z.object({operation:z.literal('socrates.ask'),projectId:z.string().guid(),requestId:z.string().guid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().guid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict().parse(value);
    if(streams.size>=2||streams.has(input.requestId))throw new Error('Stream limit');const controller=new AbortController();streams.set(input.requestId,controller);
    try{return await services.socratesService.askV1ProjectMemory({projectId:input.projectId,actorUserId:owner.id,question:input.question,sessionId:input.sessionId,selectedSources:input.selectedSources,signal:controller.signal,onDelta:delta=>{send({type:'delta',requestId:input.requestId,delta});}});}finally{streams.delete(input.requestId);}
   }
-  case 'socrates.cancel':{const input=z.object({operation:z.literal('socrates.cancel'),requestId:z.string().uuid()}).strict().parse(value);streams.get(input.requestId)?.abort();return {cancelled:true};}
+  case 'socrates.cancel':{const input=z.object({operation:z.literal('socrates.cancel'),requestId:z.string().guid()}).strict().parse(value);streams.get(input.requestId)?.abort();return {cancelled:true};}
   default:throw new Error('Unsupported operation');
  }
 }

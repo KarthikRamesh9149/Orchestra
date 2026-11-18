@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const uuidSchema = z.string().uuid();
+const uuidSchema = z.string().guid();
 
 export const googleDriveProjectParamsSchema = z.object({
   projectId: uuidSchema

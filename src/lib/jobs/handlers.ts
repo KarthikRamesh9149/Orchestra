@@ -7,7 +7,7 @@ import { z, type ZodTypeAny } from "zod";
 
 type HandlerContext = Pick<AppContext, "services">;
 
-const uuidSchema = z.string().uuid();
+const uuidSchema = z.string().guid();
 const providerRefSchema = z.string().min(1);
 const optionalIdempotencySchema = z.object({
   idempotencyKey: z.string().min(1).optional()

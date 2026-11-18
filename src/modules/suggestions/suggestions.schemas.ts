@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const suggestionProjectParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const suggestionParamsSchema = suggestionProjectParamsSchema.extend({

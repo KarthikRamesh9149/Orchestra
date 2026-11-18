@@ -41,12 +41,12 @@ export const startDeepResearchSchema = z.object({
 export type StartDeepResearchInput = z.infer<typeof startDeepResearchSchema>;
 
 export const deepResearchParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const deepResearchRunParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  runId: z.string().uuid()
+  projectId: z.string().guid(),
+  runId: z.string().guid()
 });
 
 export const deepResearchExportQuerySchema = z.object({

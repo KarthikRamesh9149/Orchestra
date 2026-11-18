@@ -62,7 +62,7 @@ export async function githubRead(path:string,token:string,fetcher:typeof fetch=f
  if((!inventory.test(path)&&!evidence.test(path))||path.split('/').some(part=>part==='.'||part==='..'))throw new Error('Unapproved GitHub API path');
  return boundedJson(await fetcher(`https://api.github.com${path}`,{headers:{authorization:`Bearer ${token}`,accept:'application/vnd.github+json','X-GitHub-Api-Version':'2026-03-10'},redirect:'error',signal:AbortSignal.timeout(15000)}));
 }
-const installationSchema=z.object({id:z.number().int().positive(),app_id:z.number().int().positive(),permissions:z.record(z.string()),suspended_at:z.string().nullable(),account:z.object({login:z.string().max(100)})});
+const installationSchema=z.object({id:z.number().int().positive(),app_id:z.number().int().positive(),permissions:z.record(z.string(), z.string()),suspended_at:z.string().nullable(),account:z.object({login:z.string().max(100)})});
 export const githubRepositorySchema=z.object({id:z.number().int().positive(),full_name:z.string().regex(/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/),private:z.boolean(),default_branch:z.string().min(1).max(255)});
 export async function listGitHubRepositories(input:GitHubCredential,fetcher:typeof fetch=fetch){
  const value=githubCredentialSchema.parse(input);const installations:z.infer<typeof installationSchema>[]=[];

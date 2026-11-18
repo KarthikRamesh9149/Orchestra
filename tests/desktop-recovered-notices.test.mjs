@@ -2,6 +2,11 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
+async function installedTr46Files(){
+ const lock=JSON.parse(await readFile(new URL('../package-lock.json',import.meta.url),'utf8'));
+ return Object.entries(lock.packages).filter(([path])=>path.endsWith('/tr46'))
+  .map(([path,metadata])=>({path,version:metadata.version}));
+}
 test('recovered notices retain provenance and do not clear unresolved packages', async()=>{
  const base=new URL('../docs/desktop/third-party/',import.meta.url);
  const report=JSON.parse(await readFile(new URL('recovered-notices.json',base),'utf8'));
@@ -31,17 +36,22 @@ test('recovered notices retain provenance and do not clear unresolved packages',
  assert.match(dingbat.basis,/any previous versions/);
  const tr46=report.notices.find(n=>n.package==='tr46');
  assert.match(tr46.source,/3a6f29721e7063b9ffd421e461a54beae6170001\/LICENSE.md$/);
- for(const [file,expected] of Object.entries(tr46.matchedSourceHashes)){
-  const bytes=await readFile(new URL('../node_modules/tr46/'+file,import.meta.url));
-  assert.equal(createHash('sha256').update(bytes).digest('hex'),expected);
+ for(const {path,version} of await installedTr46Files()){
+  assert.equal(version,tr46.version,'Review source attribution when tr46 returns at a new version');
+  for(const [file,expected] of Object.entries(tr46.matchedSourceHashes)){
+   const bytes=await readFile(new URL('../'+path+'/'+file,import.meta.url));
+   assert.equal(createHash('sha256').update(bytes).digest('hex'),expected);
+  }
  }
 });
 test('Unicode mapping attribution pins the generated data and preserves original and current notices',async()=>{
  const base=new URL('../docs/desktop/third-party/',import.meta.url);
  const entry=JSON.parse(await readFile(new URL('unicode-tr46.json',base),'utf8'));
  const notice=await readFile(new URL(entry.notice,base));
- const data=await readFile(new URL('../node_modules/tr46/lib/mappingTable.json',import.meta.url));
- assert.equal(createHash('sha256').update(data).digest('hex'),entry.componentSha256);
+ for(const {path} of await installedTr46Files()){
+  const data=await readFile(new URL('../'+path+'/lib/mappingTable.json',import.meta.url));
+  assert.equal(createHash('sha256').update(data).digest('hex'),entry.componentSha256);
+ }
  assert.equal(createHash('sha256').update(notice).digest('hex'),entry.noticeSha256);
  assert.match(notice.toString(),/Copyright \(c\) 1991-2015 Unicode/);
  const license=notice.toString().slice(notice.toString().indexOf('UNICODE LICENSE V3'));

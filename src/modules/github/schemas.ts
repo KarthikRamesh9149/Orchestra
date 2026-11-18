@@ -1,16 +1,16 @@
 import { z } from "zod";
 
 export const githubInstallationIdParamsSchema = z.object({
-  installationId: z.string().uuid()
+  installationId: z.string().guid()
 });
 
 export const projectGithubParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const projectGithubRepositoryParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  repoLinkId: z.string().uuid()
+  projectId: z.string().guid(),
+  repoLinkId: z.string().guid()
 });
 
 export const githubCallbackQuerySchema = z.object({
@@ -29,7 +29,7 @@ export const githubUserCallbackQuerySchema = z.object({
 });
 
 export const linkGithubRepositorySchema = z.object({
-  installationId: z.string().uuid().optional(),
+  installationId: z.string().guid().optional(),
   githubInstallationId: z.string().min(1).optional(),
   githubRepositoryId: z.string().min(1),
   owner: z.string().min(1).max(100),
@@ -45,7 +45,7 @@ export const linkGithubRepositorySchema = z.object({
 });
 
 export const backfillGithubSchema = z.object({
-  repoLinkId: z.string().uuid().optional(),
+  repoLinkId: z.string().guid().optional(),
   dryRun: z.boolean().default(true),
   mode: z.enum(["repository_metadata", "incremental", "full"]).default("repository_metadata")
 });

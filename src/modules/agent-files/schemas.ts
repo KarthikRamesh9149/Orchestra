@@ -15,23 +15,23 @@ export const agentFileBranchProfileSchema = z.enum(["main", "mvp-v0", "custom"])
 export const agentFileRedactionModeSchema = z.enum(["internal", "implementation_only", "client_safe"]).default("internal");
 
 export const projectAgentFilesParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const agentFileSetParamsSchema = projectAgentFilesParamsSchema.extend({
-  fileSetId: z.string().uuid()
+  fileSetId: z.string().guid()
 });
 
 export const agentFileParamsSchema = agentFileSetParamsSchema.extend({
-  fileId: z.string().uuid()
+  fileId: z.string().guid()
 });
 
 export const agentFileVersionParamsSchema = agentFileParamsSchema.extend({
-  versionId: z.string().uuid()
+  versionId: z.string().guid()
 });
 
 export const agentFileSyncRunParamsSchema = agentFileSetParamsSchema.extend({
-  syncRunId: z.string().uuid()
+  syncRunId: z.string().guid()
 });
 
 export const createAgentFileSetSchema = z
@@ -52,16 +52,16 @@ export const previewAgentFileSetSchema = z
     includeContent: z.boolean().default(true)
   })
   .strict()
-  .default({});
+  .prefault({});
 
 export const refreshAgentFileSetSchema = z
   .object({
     branchProfile: agentFileBranchProfileSchema.optional(),
     staleOnly: z.boolean().default(false),
-    fileIds: z.array(z.string().uuid()).max(20).optional()
+    fileIds: z.array(z.string().guid()).max(20).optional()
   })
   .strict()
-  .default({});
+  .prefault({});
 
 export const agentFileConflictTypeSchema = z.enum([
   "missing_markers",
@@ -75,7 +75,7 @@ export const agentFileConflictTypeSchema = z.enum([
 
 export const reportAgentFileConflictSchema = z
   .object({
-    fileId: z.string().uuid(),
+    fileId: z.string().guid(),
     conflictType: agentFileConflictTypeSchema,
     markerStatus: z.enum(["valid", "missing_markers", "manual_zone_parse_failed"]).default("missing_markers"),
     localContentHash: safeText("localContentHash", 1, 128).optional(),
@@ -91,8 +91,8 @@ export const createAgentFileSyncRunSchema = z
   .object({
     mode: z.enum(["download", "local_cli"]),
     status: syncRunStatusSchema.default("running"),
-    summary: z.record(z.unknown()).optional(),
-    changedFiles: z.array(z.record(z.unknown())).max(100).optional(),
+    summary: z.record(z.string(), z.unknown()).optional(),
+    changedFiles: z.array(z.record(z.string(), z.unknown())).max(100).optional(),
     warnings: z.array(safeText("warning", 1, 500)).max(50).optional()
   })
   .strict();
@@ -100,8 +100,8 @@ export const createAgentFileSyncRunSchema = z
 export const updateAgentFileSyncRunSchema = z
   .object({
     status: syncRunStatusSchema,
-    summary: z.record(z.unknown()).optional(),
-    changedFiles: z.array(z.record(z.unknown())).max(100).optional(),
+    summary: z.record(z.string(), z.unknown()).optional(),
+    changedFiles: z.array(z.record(z.string(), z.unknown())).max(100).optional(),
     warnings: z.array(safeText("warning", 1, 500)).max(50).optional()
   })
   .strict();
@@ -112,19 +112,19 @@ export const githubPrSyncSchema = z
     syncBranch: safeText("syncBranch", 1, 160).optional(),
     title: safeText("title", 1, 180).optional(),
     body: safeText("body", 1, 4000).optional(),
-    selectedFileIds: z.array(z.string().uuid()).max(20).optional(),
+    selectedFileIds: z.array(z.string().guid()).max(20).optional(),
     dryRun: z.boolean().default(true),
     force: z.boolean().default(false)
   })
   .strict()
-  .default({});
+  .prefault({});
 
 export const refreshQualityReportSchema = z
   .object({
     includeEvidence: z.boolean().default(false)
   })
   .strict()
-  .default({});
+  .prefault({});
 
 export const refreshDriftReportSchema = z
   .object({
@@ -132,7 +132,7 @@ export const refreshDriftReportSchema = z
     includeLowConfidenceFindings: z.boolean().default(true)
   })
   .strict()
-  .default({});
+  .prefault({});
 
 export const listAgentFileSetsQuerySchema = z
   .object({

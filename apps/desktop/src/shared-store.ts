@@ -39,9 +39,9 @@ export class SharedConnectionStore{
  }
  async list(){await this.tail.catch(()=>{});return (await this.read()).connections.map(row=>row.connection);}
  async add(value:SavedConnection){const connection=savedConnectionSchema.parse(value);await this.update(state=>{if(state.connections.some(row=>row.connection.id===connection.id||row.connection.origin===connection.origin))throw new Error('Server already saved');state.connections.push({connection,grant:null});});}
- async remove(id:string){z.string().uuid().parse(id);await this.update(state=>{state.connections=state.connections.filter(row=>row.connection.id!==id);});}
+ async remove(id:string){z.string().guid().parse(id);await this.update(state=>{state.connections=state.connections.filter(row=>row.connection.id!==id);});}
  grants(id:string){
-  z.string().uuid().parse(id);
+  z.string().guid().parse(id);
   return {
    read:async()=>{await this.tail.catch(()=>{});const row=(await this.read()).connections.find(item=>item.connection.id===id);if(!row)throw new Error('Connection removed');return row.grant;},
    write:async(value:SharedGrant|null)=>{const grant=value===null?null:sharedGrantSchema.parse(value);await this.update(state=>{const row=state.connections.find(item=>item.connection.id===id);if(!row)throw new Error('Connection removed');row.grant=grant;});}

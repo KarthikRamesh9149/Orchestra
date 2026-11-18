@@ -11,7 +11,7 @@ export const sharedOriginSchema=z.string().trim().max(2048).transform((input,ctx
 });
 
 /** Safe to show in UI; credentials belong to a separate protected envelope. */
-export const sharedConnectionSchema=z.object({id:z.string().uuid(),name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
+export const sharedConnectionSchema=z.object({id:z.string().guid(),name:z.string().trim().min(1).max(100),origin:sharedOriginSchema}).strict();
 export type SharedConnection=z.infer<typeof sharedConnectionSchema>;
 
 /** Explicit server-operator opt-in; desktop enforcement lives in the main process. */
@@ -23,7 +23,7 @@ export const sharedCachePolicySchema=z.discriminatedUnion('enabled',[
 export const sharedManifestSchema=z.object({
  product:z.literal('orchestra'),protocol:z.literal(SHARED_DESKTOP_PROTOCOL),
  minClientProtocol:z.number().int().positive(),maxClientProtocol:z.number().int().positive(),
- serverId:z.string().uuid(),mode:z.enum(['self-hosted','managed']),
+ serverId:z.string().guid(),mode:z.enum(['self-hosted','managed']),
  capabilities:z.array(z.string().min(1).max(100)).max(50),
  offlineCache:sharedCachePolicySchema
 }).strict();

@@ -1,6 +1,6 @@
 import {z} from 'zod';
 export const syncTargetSchema=z.object({
- id:z.string().uuid(),provider:z.enum(['slack','github','drive']),projectId:z.string().uuid(),
+ id:z.string().guid(),provider:z.enum(['slack','github','drive']),projectId:z.string().guid(),
  resourceIds:z.array(z.string().regex(/^[A-Za-z0-9_-]{1,256}$/)).min(1).max(50),teamId:z.string().regex(/^T[A-Z0-9]+$/).optional(),
  enabled:z.boolean(),nextAt:z.number().int().nonnegative(),lastAttemptAt:z.string().datetime().optional(),lastSuccessAt:z.string().datetime().optional(),
  error:z.enum(['source_refresh_failed']).nullable().optional()

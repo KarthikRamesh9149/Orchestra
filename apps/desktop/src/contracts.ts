@@ -5,10 +5,10 @@ export const commandSchema=z.discriminatedUnion('operation',[
  z.object({operation:z.literal('local.onboard')}).strict(),
  z.object({operation:z.literal('workspace.list')}).strict(),
  z.object({operation:z.literal('workspace.create'),name:z.string().trim().min(1).max(100)}).strict(),
- z.object({operation:z.literal('workspace.select'),projectId:z.string().uuid()}).strict(),
- z.object({operation:z.literal('socrates.ask'),requestId:z.string().uuid(),projectId:z.string().uuid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().uuid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict(),
- z.object({operation:z.literal('socrates.cancel'),requestId:z.string().uuid()}).strict(),
- z.object({operation:z.literal('evidence.upload'),projectId:z.string().uuid(),selectionId:z.string().uuid()}).strict()
+ z.object({operation:z.literal('workspace.select'),projectId:z.string().guid()}).strict(),
+ z.object({operation:z.literal('socrates.ask'),requestId:z.string().guid(),projectId:z.string().guid(),question:z.string().trim().min(1).max(10000),sessionId:z.string().guid().optional(),selectedSources:z.array(z.enum(['documents','google_drive','slack','communications','timeline','live_doc','socrates_history','team','subscriptions','github','notion','vscode'])).min(1).max(12).optional()}).strict(),
+ z.object({operation:z.literal('socrates.cancel'),requestId:z.string().guid()}).strict(),
+ z.object({operation:z.literal('evidence.upload'),projectId:z.string().guid(),selectionId:z.string().guid()}).strict()
 ]);
 export type Command=z.infer<typeof commandSchema>;
 export type RuntimeStatus={state:'starting'|'ready'|'failed'|'stopping';message:string};

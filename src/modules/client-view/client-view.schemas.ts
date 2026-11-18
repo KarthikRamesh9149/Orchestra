@@ -8,7 +8,7 @@ export const clientShareConfigSchema = z.object({
   showGraph: z.boolean().default(true),
   showDocuments: z.boolean().default(true),
   enableSocrates: z.boolean().default(false),
-  allowedDocumentIds: z.array(z.string().uuid()).default([]),
+  allowedDocumentIds: z.array(z.string().guid()).default([]),
   showAcceptedChangeSummaries: z.boolean().default(false),
   showAcceptedDecisionSummaries: z.boolean().default(false),
   showCommunicationEvidence: z.boolean().default(false)
@@ -35,12 +35,12 @@ export const updateClientShareBodySchema = z.object({
 // ─── Manager route params ────────────────────────────────────────────────────
 
 export const managerShareParamsSchema = z.object({
-  projectId: z.string().uuid()
+  projectId: z.string().guid()
 });
 
 export const managerShareIdParamsSchema = z.object({
-  projectId: z.string().uuid(),
-  shareId: z.string().uuid()
+  projectId: z.string().guid(),
+  shareId: z.string().guid()
 });
 
 // ─── Public client route params ──────────────────────────────────────────────
@@ -55,12 +55,12 @@ export const clientTokenParamsSchema = z.object({
 
 export const clientDocumentParamsSchema = z.object({
   token: clientShareTokenParamSchema,
-  documentId: z.string().uuid()
+  documentId: z.string().guid()
 });
 
 export const clientAnchorParamsSchema = z.object({
   token: clientShareTokenParamSchema,
-  documentId: z.string().uuid(),
+  documentId: z.string().guid(),
   anchorId: z.string().min(1)
 });
 
@@ -73,7 +73,7 @@ export const clientDocumentSearchQuerySchema = z.object({
 
 export const clientSessionParamsSchema = z.object({
   token: clientShareTokenParamSchema,
-  sessionId: z.string().uuid()
+  sessionId: z.string().guid()
 });
 
 export const clientCreateSessionBodySchema = z.object({

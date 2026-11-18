@@ -24,7 +24,7 @@ export const transferFields={
 export type TransferModel=keyof typeof transferFields;
 export const transferModels=Object.keys(transferFields) as TransferModel[];
 type Row=Record<string,unknown>;
-const uuid=z.string().uuid(),hash=z.string().regex(/^[a-f0-9]{64}$/);
+const uuid=z.string().guid(),hash=z.string().regex(/^[a-f0-9]{64}$/);
 const maxBytes=128*1024*1024;
 const sourceSchema=z.object({projectId:uuid,orgId:uuid,installationId:uuid,name:z.string().min(1).max(200),exportedAt:z.string().datetime()}).strict();
 const actorSchema=z.object({id:uuid,displayName:z.string().max(200)}).strict();

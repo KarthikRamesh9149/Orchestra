@@ -7,7 +7,7 @@ import {isNativeTransferRoute} from '../../../src/desktop/transfer-contract.js';
 
 export const sharedGrantSchema=z.object({accessToken:z.string().min(1).max(16384),refreshToken:z.string().min(1).max(16384)}).strict();
 export type SharedGrant=z.infer<typeof sharedGrantSchema>;
-export const savedConnectionSchema=sharedConnectionSchema.extend({serverId:z.string().uuid()});
+export const savedConnectionSchema=sharedConnectionSchema.extend({serverId:z.string().guid()});
 export type SavedConnection=z.infer<typeof savedConnectionSchema>;
 type GrantStore={read():Promise<SharedGrant|null>;write(value:SharedGrant|null):Promise<void>};
 type Network=(url:string,init:RequestInit)=>Promise<Response>;

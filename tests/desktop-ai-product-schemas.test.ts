@@ -97,7 +97,7 @@ function provider(value:unknown){
 
 describe('desktop product wire schemas',()=>{
  it('converts the actual answer schema into all ten typed suggestion variants without changing the public schema',()=>{
-  const original=zodTextFormat(answerSchema,'orchestra_result').schema as JsonSchema;
+  const original=z.toJSONSchema(answerSchema) as JsonSchema;
   const wire=getDesktopProductWireSchema(answerSchema);
   const converted=zodTextFormat(wire,'orchestra_result').schema as JsonSchema;
   const variants=wireActions(converted);
@@ -111,7 +111,7 @@ describe('desktop product wire schemas',()=>{
    expect(variant.properties.confidence).toBeDefined();
    expect(dereference(variant.properties.requiresConfirmation,converted)).toMatchObject({type:'boolean',const:true});
   }
-  expect(zodTextFormat(answerSchema,'orchestra_result').schema).toEqual(original);
+  expect(z.toJSONSchema(answerSchema)).toEqual(original);
   expect(wire).not.toBe(answerSchema);
  });
  it.each(types)('retains original validation and confirmation for %s',type=>{

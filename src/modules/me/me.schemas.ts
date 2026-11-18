@@ -35,7 +35,7 @@ export const appearancePreferencePatchSchema = z
   .strict();
 
 export const sessionParamsSchema = z.object({
-  sessionId: z.string().uuid()
+  sessionId: z.string().guid()
 });
 
 export const revokeAllSessionsSchema = z
@@ -47,6 +47,6 @@ export const revokeAllSessionsSchema = z
 
 export const switchWorkspaceSchema = z
   .object({
-    projectId: z.string().uuid()
+    projectId: z.string().guid()
   })
   .strict();
