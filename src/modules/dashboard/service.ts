@@ -893,7 +893,7 @@ export class DashboardService {
       ? null
       : getAggregateCache<MissionControlPayload>("mission-control", cacheKey, MISSION_CONTROL_CACHE_TTL_MS);
     if (cached) {
-      return cached;
+      return this.withPersonalSocrates(cached, projectId, actorUserId, limit);
     }
 
     const snapshotCandidate = options.forceRefresh ? null : await this.getMissionControlFromProjectSnapshot(projectId);
@@ -907,7 +907,7 @@ export class DashboardService {
           this.telemetry.increment("orchestra_mission_control_snapshot_refresh_failed_total", { source: "stale_revalidate" });
         });
       }
-      return snapshotPayload;
+      return this.withPersonalSocrates(snapshotPayload, projectId, actorUserId, limit);
     }
 
     this.telemetry.increment("orchestra_mission_control_live_builds_total");
@@ -920,7 +920,29 @@ export class DashboardService {
     void this.persistMissionControlSnapshot(project.orgId, projectId, payload).catch(() => {
       this.telemetry.increment("orchestra_mission_control_snapshot_persist_failed_total");
     });
-    return payload;
+    return this.withPersonalSocrates(payload, projectId, actorUserId, limit);
+  }
+
+  private stripPrivateMissionControl(payload: MissionControlPayload): MissionControlPayload {
+    const activity = payload.activity.filter((item) => item.source !== "socrates");
+    if (activity.length === payload.activity.length && payload.socratesQueries?.length === 0 && payload.featureStates.socrates === "empty") return payload;
+    return {
+      ...payload, activity, socratesQueries: [],
+      featureStates: { ...payload.featureStates, activity: activity.length > 0 ? "ready" : "empty", socrates: "empty" }
+    };
+  }
+
+  private async withPersonalSocrates(payload: MissionControlPayload, projectId: string, actorUserId: string, limit: number): Promise<MissionControlPayload> {
+    const socratesQueries = await this.getRecentSocratesQueries(projectId, actorUserId, limit, true);
+    return socratesQueries.length === 0 ? payload : {
+      ...payload, socratesQueries, featureStates: { ...payload.featureStates, socrates: "ready" }
+    };
+  }
+
+  private sharedProjectSnapshot(payload: ProjectDashboardPayload): ProjectDashboardPayload {
+    return this.isMissionControlPayload(payload.missionControl)
+      ? { ...payload, missionControl: this.stripPrivateMissionControl(payload.missionControl) }
+      : payload;
   }
 
   private async getMissionControlFromProjectSnapshot(projectId: string): Promise<{ payload: MissionControlPayload; stale: boolean } | null> {
@@ -935,7 +957,7 @@ export class DashboardService {
     });
     if (missionControlSnapshot && this.isMissionControlPayload(missionControlSnapshot.payloadJson)) {
       return {
-        payload: missionControlSnapshot.payloadJson,
+        payload: this.stripPrivateMissionControl(missionControlSnapshot.payloadJson),
         stale: this.isSnapshotStale(missionControlSnapshot.computedAt)
       };
     }
@@ -952,7 +974,7 @@ export class DashboardService {
     const payload = latest.payloadJson as Partial<ProjectDashboardPayload> | null;
     const missionControl = payload?.missionControl;
     return this.isMissionControlPayload(missionControl)
-      ? { payload: missionControl, stale: this.isSnapshotStale(latest.computedAt) }
+      ? { payload: this.stripPrivateMissionControl(missionControl), stale: this.isSnapshotStale(latest.computedAt) }
       : null;
   }
 
@@ -984,7 +1006,6 @@ export class DashboardService {
       ["projectEvent", "findMany"],
       ["auditEvent", "findMany"],
       ["communicationSyncRun", "findMany"],
-      ["socratesMessage", "findMany"],
       ["document", "findMany"],
       ["projectEditorConnector", "findMany"],
       ["projectSubscription", "findMany"]
@@ -1024,10 +1045,9 @@ export class DashboardService {
       this.getRecentChanges(projectId, actorUserId, limit, true),
       this.getCalendarEvents(projectId, actorUserId, { from: now.toISOString(), limit }, true)
     ]);
-    const [slackMessages, activity, socratesQueries, subscriptions] = await Promise.all([
+    const [slackMessages, activity, subscriptions] = await Promise.all([
       this.getSlackPreviewMessages(projectId, limit),
       this.getActivityFeed(projectId, actorUserId, activityLimit, true),
-      this.getRecentSocratesQueries(projectId, actorUserId, limit, true),
       this.getMissionControlSubscriptions(projectId)
     ]);
 
@@ -1121,7 +1141,7 @@ export class DashboardService {
       githubPreview: gitPreview,
       googleDrivePreview,
       activity,
-      socratesQueries,
+      socratesQueries: [],
       subscriptions,
       subscriptionSummary,
       featureStates: {
@@ -1136,7 +1156,7 @@ export class DashboardService {
         subscriptions: subscriptions.length > 0 ? "ready" : "empty",
         calendar: calendarEvents.length > 0 ? "ready" : "empty",
         activity: activity.length > 0 ? "ready" : "empty",
-        socrates: socratesQueries.length > 0 ? "ready" : "empty"
+        socrates: "empty"
       },
       updatedAt: now.toISOString()
     };
@@ -1299,7 +1319,7 @@ export class DashboardService {
       orderBy: [{ lastIndexedAt: "desc" }, { lastEditedAt: "desc" }, { updatedAt: "desc" }],
       take: perSourceLimit
     }) ?? Promise.resolve([]);
-    const [audits, messages, syncRuns, driveSyncRuns, socratesMessages, projectEvents, documents, driveFiles, notionResources, editorConnectors, githubEvidence, proposals] =
+    const [audits, messages, syncRuns, driveSyncRuns, projectEvents, documents, driveFiles, notionResources, editorConnectors, githubEvidence, proposals] =
       await Promise.all([
         this.prisma.auditEvent.findMany({
           where: { projectId },
@@ -1322,12 +1342,6 @@ export class DashboardService {
           take: perSourceLimit
         }),
         driveSyncRunsRead,
-        this.prisma.socratesMessage.findMany({
-          where: { role: "user", session: { projectId } },
-          include: { session: { select: { user: { select: { displayName: true } } } } },
-          orderBy: [{ createdAt: "desc" }],
-          take: perSourceLimit
-        }),
         this.prisma.projectEvent.findMany({
           where: { projectId },
           include: { creator: { select: { displayName: true } } },
@@ -1361,7 +1375,7 @@ export class DashboardService {
       ]);
 
     const items: MissionControlActivityItem[] = [
-      ...audits.filter((event) => this.sourceFromAuditEvent(event.eventType) !== "system").map((event) => ({
+      ...audits.filter((event) => !["system", "socrates"].includes(this.sourceFromAuditEvent(event.eventType))).map((event) => ({
         id: `audit:${event.id}`,
         source: this.sourceFromAuditEvent(event.eventType),
         text: this.auditEventText(event.eventType),
@@ -1402,17 +1416,6 @@ export class DashboardService {
         targetType: "google_drive_sync_run",
         targetId: run.id,
         openTarget: { targetType: "google_drive_sync_run", targetRef: { projectId, syncRunId: run.id } }
-      })),
-      ...socratesMessages.map((message) => ({
-        id: `socrates:${message.id}`,
-        source: "socrates" as const,
-        text: `Asked Socrates: ${this.excerpt(message.content, 110)}`,
-        createdAt: message.createdAt.toISOString(),
-        timeAgo: this.timeAgo(message.createdAt),
-        actor: message.session.user.displayName,
-        targetType: "socrates_message",
-        targetId: message.id,
-        openTarget: { targetType: "socrates_session", targetRef: { projectId, sessionId: message.sessionId, messageId: message.id } }
       })),
       ...projectEvents.map((event) => ({
         id: `event:${event.id}`,
@@ -1514,7 +1517,7 @@ export class DashboardService {
       this.assertProjectDashboardRole(member.projectRole);
     }
     const messages = await this.prisma.socratesMessage.findMany({
-      where: { role: "user", session: { projectId } },
+      where: { role: "user", session: { projectId, userId: actorUserId } },
       include: {
         session: {
           select: {
@@ -1945,7 +1948,7 @@ export class DashboardService {
 
     if (!forceRefresh && latest && !this.isSnapshotStale(latest.computedAt)) {
       this.telemetry.increment("orchestra_dashboard_snapshot_cache_hits_total", { scope: "project" });
-      return { snapshot: latest, data: latest.payloadJson as ProjectDashboardPayload };
+      return { snapshot: latest, data: this.sharedProjectSnapshot(latest.payloadJson as ProjectDashboardPayload) };
     }
 
     this.telemetry.increment("orchestra_dashboard_snapshot_rebuilds_total", { scope: "project" });
@@ -1962,7 +1965,7 @@ export class DashboardService {
       }
 
       this.telemetry.increment("orchestra_dashboard_snapshot_fallback_total", { scope: "project" });
-      return { snapshot: latest, data: latest.payloadJson as ProjectDashboardPayload };
+      return { snapshot: latest, data: this.sharedProjectSnapshot(latest.payloadJson as ProjectDashboardPayload) };
     }
   }
 

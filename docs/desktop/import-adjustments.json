@@ -1,6 +1,6 @@
 {
   "sourceSha": "8561d41980e97924db33e0c8f748b7cf576aac83",
-  "unchangedImportedFiles": 719,
+  "unchangedImportedFiles": 713,
   "changes": [
     {
       "path": ".gitattributes",
@@ -429,6 +429,12 @@
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
+      "path": "src/modules/beta-timeline/beta-timeline.service.ts",
+      "sourceSha256": "616cb8142eed5c894727f15494c554f09bbd14aa29be2e8d91c65787ac3becd3",
+      "importedSha256": "5b1f61a4a8b841060b7656a5335753b03b10ce8ac990e5dcdc1386a273bfc49f",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "src/modules/communications/message-indexing.service.ts",
       "sourceSha256": "6acaa121649f7e54594c6338f21b8ccfe924d5f9d14cc5dbc99f467bff0191cf",
       "importedSha256": "d74b3e11fb766aef7f5cf026f513b14c8891bb34873bdd3ef4a776a07279f952",
@@ -439,6 +445,12 @@
       "sourceSha256": "dd0ec2d1f67d7bd0982e1f38ccc0fd8e731af71875fe4cdf7fb02ced76a8a1b2",
       "importedSha256": "62e4ef6982347d01b496a4ba6ac2879a8314da711657c3991b1b8ef32963290c",
       "reason": "Step 6 invitation-only Gmail cannot sync; revoked connectors may start fresh OAuth only when configuration and release gates allow, while sync and webhook remain blocked."
+    },
+    {
+      "path": "src/modules/dashboard/service.ts",
+      "sourceSha256": "4d99b16d92101e9696b9baec680a8b2e1269333ffbf3689b9d645abf771b9f0f",
+      "importedSha256": "aedc848d765e24a4e412d07bb3d88d94d34b0f417c87cbaa2cb293f62b4632df",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
     },
     {
       "path": "src/modules/deep-research/evidence.ts",
@@ -495,6 +507,12 @@
       "reason": "Owner-authorized real OpenAI verification: preserve complete relevant source sentences within the existing excerpt budget and prohibit invented list members; production unchanged. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Readiness follow-up: preserve upstream document relevance in non-temporal score ties and measure stored-vector document ranking without changing project/current-version filters or evidence caps; clarify source identity, source-claim versus accepted-truth status, relevant temporal caveats and uncertainty of offline excerpt matches. Approval/coverage follow-up: compute accepted reference authority from the final prompt evidence, distinguish documentary approval claims from recorded decisions, and prohibit unsupported source-exclusivity wording. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority."
     },
     {
+      "path": "src/modules/suggestions/suggestions.service.ts",
+      "sourceSha256": "d72e9de77ad0c8a6e1af121e92226600fc17d3ebd8c2283786ccfb2ec9f44f32",
+      "importedSha256": "51293c608114cff1f275b655a338c0c9be3b6cee0c91a05f7bac4689be379963",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "src/modules/truth-inbox/truth-change-packet.service.ts",
       "sourceSha256": "add6f4df391aacd88b1b7a2806564a3cce10a8a77eb8096c58351d614793448b",
       "importedSha256": "5aefdad6a8ba349ef02b33b0d7e89b95695494fb09a81dfc6d0cc3d05bb61a98",
@@ -513,10 +531,22 @@
       "reason": "September 22 packaged Preflight correction: only project-scoped recorded accepted changes and decisions establish accepted truth; generated artifacts remain source context. Guard legacy pack retrieval/export, return archive metadata without unsafe content, and separate Context Health approval counts from unverified source coverage. Regression and packaged evidence recorded separately; no visual redesign or hosted deployment."
     },
     {
+      "path": "tests/beta-timeline-service.test.ts",
+      "sourceSha256": "4e42f16df4d9511b97a18e49fa1eaf7973d92f3770825cfcfc518e29315d3911",
+      "importedSha256": "4992ff3e7ac19eca69080b96b35553948a738e11303ffdaf8f3c334bf7b60df8",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
+    },
+    {
       "path": "tests/communication-providers.test.ts",
       "sourceSha256": "ace44a3e8ee112a041f08a30ac32e5a00bbe6b64f294e51f59bb8678c793ea01",
       "importedSha256": "7ccc7cc0d04334cbd6c1d44a43f8f528a1ca38d2fdd6c0c06aa3771101938cd5",
       "reason": "Step 6 regression for revoked connector reconnect, missing credentials and release gates."
+    },
+    {
+      "path": "tests/dashboard-service.test.ts",
+      "sourceSha256": "a192e8ad640e8c296bdfb84203be514127db660efe0672831bace60c0266b9cc",
+      "importedSha256": "e8e465780e60167db981f37468bafc087aa764bc8a8323f66ee2a82961d15edd",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
     },
     {
       "path": "tests/deep-research-citation-contract.test.ts",
@@ -577,6 +607,12 @@
       "sourceSha256": "759f8e89b70fc6b9a1f9ff1f6c99650f450de247459cd486da588b41c3b282a1",
       "importedSha256": "ea1d37b53736ce106c0ccad98cadd3af54c42bc257afa2f8f8e9294d4b7e97c7",
       "reason": "Regression for exact source field lists and acceptance sentences within the existing 800-character prompt budget. September 20: bounded multi-document coverage, strict citation validation and identity-safe bibliography aliases; provider-aware AI readiness and neutral unsupported readiness fallback. Historical reports remain unchanged. Verify the same approval and coverage contracts for streaming and object generation with unaccepted document evidence. September 22: stable explicit evidence ordinals, complete bounded cited-source projection and safe exact-target links; legacy references are not guessed. Red regressions and independent review recorded. September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads."
+    },
+    {
+      "path": "tests/suggestions-service.test.ts",
+      "sourceSha256": "8b64b0db99eb37a48e1383e58139eb46d05e41b9b1513658f80ff592a1a1a791",
+      "importedSha256": "809434b1654153b96b4766c75cdd97d5943f1f120196490f077a1fe63e30b3bb",
+      "reason": " November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations."
     }
   ]
 }

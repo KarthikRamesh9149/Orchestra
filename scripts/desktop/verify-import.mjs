@@ -143,6 +143,9 @@ for (const file of ['apps/beta-web/src/pages/ChatPage.tsx','apps/beta-web/src/pa
 }
 adjustments['src/modules/socrates/service.ts']+=' September 23: retain cached document content but revalidate project-scoped archive, current-version and parse eligibility from authoritative metadata before reuse; recheck provider selection and titles instead of caching authority.';
 adjustments['tests/socrates-v1-service.test.ts']+=' September 23: red-to-green archive, replacement, reparse, in-flight load, database-failure and unchanged-cache regressions; fixtures now model repeatable database reads.';
+for (const file of ['src/modules/dashboard/service.ts','src/modules/beta-timeline/beta-timeline.service.ts','src/modules/suggestions/suggestions.service.ts','tests/dashboard-service.test.ts','tests/beta-timeline-service.test.ts','tests/suggestions-service.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations.';
+}
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

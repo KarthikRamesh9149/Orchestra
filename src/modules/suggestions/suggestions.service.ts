@@ -34,7 +34,6 @@ type EvidenceBundle = {
   driveSyncRuns: any[];
   notionResources: any[];
   notionSections: any[];
-  socratesMessages: any[];
   githubLinks: any[];
   githubSyncRuns: any[];
   githubEvidence: any[];
@@ -387,7 +386,6 @@ export class SuggestionsService {
       driveSections,
       notionSections,
       driveSyncRuns,
-      socratesMessages,
       githubLinks,
       githubSyncRuns,
       vscodeConnectors,
@@ -416,11 +414,6 @@ export class SuggestionsService {
             take: 10
           })
         : Promise.resolve([]),
-      this.prisma.socratesMessage.findMany({
-        where: { role: "user", session: { projectId } },
-        orderBy: { createdAt: "desc" },
-        take: 30
-      }),
       this.prisma.gitHubRepositoryProjectLink.findMany({
         where: { projectId, archivedAt: null },
         include: { repository: true },
@@ -484,7 +477,6 @@ export class SuggestionsService {
       driveSyncRuns,
       notionResources,
       notionSections,
-      socratesMessages,
       githubLinks,
       githubSyncRuns,
       githubEvidence,
@@ -512,7 +504,6 @@ export class SuggestionsService {
         driveSyncRuns,
         notionResources,
         notionSections,
-        socratesMessages,
         githubLinks,
         githubSyncRuns,
         githubEvidence,
@@ -742,19 +733,18 @@ export class SuggestionsService {
   }
 
   private detectDocsMissingForActiveAreas(bundle: EvidenceBundle): ProjectSuggestion[] {
-    const hasActiveAreaAsk = bundle.socratesMessages.some((message) => AREA_KEYWORDS.test(message.content ?? ""));
-    const hasEngineeringActivity = bundle.githubEvidence.length > 0 || bundle.messageInsights.some((insight) => AREA_KEYWORDS.test(insight.summary ?? ""));
-    if (!hasActiveAreaAsk || !hasEngineeringActivity || bundle.documentSectionsCount > 0) return [];
+    const engineeringInsights = bundle.messageInsights.filter((insight) => AREA_KEYWORDS.test(insight.summary ?? ""));
+    if (bundle.documentSectionsCount > 0 || (bundle.githubEvidence.length === 0 && engineeringInsights.length === 0)) return [];
     return [
       this.suggestion(bundle, {
         detectorKey: "docs_missing_for_active_area",
         category: "coverage_gaps",
         title: "Active project area has no uploaded document sections",
-        description: "Socrates/API or engineering activity references an implementation area, but no parsed project document sections are available as source documentation.",
+        description: "Shared engineering evidence exists, but no parsed project document sections are available as source documentation.",
         severity: "medium",
         confidence: 0.66,
         refs: [
-          ...bundle.socratesMessages.slice(0, 2).map(socratesRef),
+          ...engineeringInsights.slice(0, 2).map(insightRef),
           ...bundle.githubEvidence.slice(0, 2).map((item) => githubEvidenceRef(item, item.evidenceType === "github_commit" ? "github_commit" : "github_branch"))
         ],
         limitations: ["This detector only knows about uploaded/parsed docs in Orchestra."]
@@ -990,7 +980,6 @@ export class SuggestionsService {
     driveSyncRuns: any[];
     notionResources: any[];
     notionSections: any[];
-    socratesMessages: any[];
     githubLinks: any[];
     githubSyncRuns: any[];
     githubEvidence: any[];
@@ -1091,7 +1080,7 @@ export class SuggestionsService {
               ? "Latest Google Drive sync had failures; retry sync is available."
               : "Google Drive is connected, but no indexed Drive file evidence is available yet."
       },
-      socrates: { state: input.socratesMessages.length > 0 ? "ready" : "empty", label: "Socrates", detail: "No Socrates question history is available." },
+      socrates: { state: "empty", label: "Socrates", detail: "Private Socrates history is not used by shared Watchtower suggestions." },
       github: {
         state: githubState,
         label: "GitHub",
@@ -1281,17 +1270,6 @@ function responsibilityRef(row: any): SuggestionEvidence {
     excerpt: `${row.title} (${row.area})`,
     occurredAt: toIso(row.updatedAt ?? row.createdAt),
     openTarget: { targetType: "project_responsibility", targetRef: { responsibilityId: row.id } }
-  };
-}
-
-function socratesRef(row: any): SuggestionEvidence {
-  return {
-    source: "socrates_artifact",
-    refId: row.id,
-    label: "Socrates question",
-    excerpt: truncate(row.content ?? "", 160),
-    occurredAt: toIso(row.createdAt),
-    openTarget: { targetType: "socrates_message", targetRef: { messageId: row.id, sessionId: row.sessionId } }
   };
 }
 

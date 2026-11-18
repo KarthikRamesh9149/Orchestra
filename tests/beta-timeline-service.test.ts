@@ -200,6 +200,9 @@ describe("BetaTimelineService", () => {
 
     const result = await service.listTimeline("project-1", "user-1", { view: "detailed", limit: 20 });
 
+    expect(prisma.socratesMessage.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: { role: "user", session: { projectId: "project-1", userId: "user-1" } }
+    }));
     expect(result.items.map((item) => item.source)).toEqual([
       "manual",
       "microsoft_teams",
