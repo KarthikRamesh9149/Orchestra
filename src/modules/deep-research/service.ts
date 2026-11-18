@@ -219,9 +219,18 @@ export class DeepResearchService {
         select: { versionNumber: true }
       });
       if (version) { text = cited?.excerpt; detail = `Product Brain version ${version.versionNumber}`; }
+    } else if (target?.kind === "decision_record") {
+      const decision = await this.prisma.decisionRecord.findFirst({
+        where: { id: target.id, projectId, status: "accepted", acceptedBy: { not: null }, acceptedAt: { not: null } },
+        select: { statement: true, acceptedAt: true }
+      });
+      text = decision?.statement;
+      if (decision?.acceptedAt) detail = `Recorded acceptance · ${decision.acceptedAt.toISOString()}`;
     } else if (target?.kind === "github_record") {
       const evidence = await this.prisma.gitHubEngineeringEvidence.findFirst({
-        where: { id: target.id, projectId, orgId: actor.orgId, evidenceStatus: "active" },
+        where: { id: target.id, projectId, orgId: actor.orgId, evidenceStatus: "active",
+          repositoryLink: { status: "active", archivedAt: null },
+          repository: { status: "active", archivedAt: null }, installation: { status: "active", archivedAt: null } },
         select: { title: true, summary: true, sha: true }
       });
       text = evidence?.summary || evidence?.title;
@@ -624,8 +633,34 @@ export async function collectExplicitDeepResearchSourceCards(
   if (selected.has("github")) {
     tasks.push(collectGitHubCards(prisma, projectId, focus));
   }
+  if (selected.has("decisions")) {
+    tasks.push(collectDecisionCards(prisma, projectId, focus));
+  }
 
   return (await Promise.all(tasks)).flat();
+}
+
+async function collectDecisionCards(prisma: PrismaClient, projectId: string, focus: string): Promise<EvidenceCard[]> {
+  // Only recorded human acceptance is authority. Do not infer acceptance
+  // from Product Brain summaries, proposal wording or imported documents.
+  const rows = await prisma.decisionRecord.findMany({
+    where: { projectId, status: "accepted", acceptedBy: { not: null }, acceptedAt: { not: null } },
+    select: { id: true, title: true, statement: true },
+    orderBy: [{ acceptedAt: "desc" }, { id: "asc" }], take: 60
+  });
+  return rankExplicitRows(rows, focus, (row) => `${row.title} ${row.statement}`)
+    .filter(({ score }) => score > 0).slice(0, 4).map(({ row }) => ({
+      evidenceId: `research-decision:${row.id}`,
+      sourceType: "decision_record",
+      title: row.title,
+      excerpt: cleanExcerpt(row.statement, 4000),
+      whySelected: "Selected recorded decision",
+      confidence: 1,
+      sourcePrecedence: "accepted_decisions",
+      citationRef: { type: "decision_record", id: row.id, label: row.title },
+      openTarget: { targetType: "decision_record", targetRef: { decisionRecordId: row.id } },
+      trace: { decisionRecordId: row.id }
+    }));
 }
 
 const RESEARCH_DOCUMENT_SCAFFOLD = new Set([
@@ -926,6 +961,7 @@ export function mergeDeepResearchCards(base: EvidenceCard[], explicit: EvidenceC
   const documentsFirst = [...ranked.filter(({ card }) => sourceDocumentId(card)), ...ranked.filter(({ card }) => !sourceDocumentId(card))];
   const sourceFamily = (card: EvidenceCard) => {
     if (sourceDocumentId(card)) return "docs";
+    if (card.sourceType === "decision_record" && isAcceptedDecision(card)) return "decisions";
     if (/github|commit|pull_request/.test(card.sourceType)) return "github";
     if (/message|thread|comm|slack|teams|chat/.test(card.sourceType)) return "slack";
     if (/calendar|meeting|event/.test(card.sourceType)) return "calendar";
@@ -1202,6 +1238,7 @@ function safeSourceLabel(value: string, fallback: string) {
 
 function providerLabel(sourceType: string) {
   const value = sourceType.toLowerCase();
+  if (value === "decision_record") return "Orchestra decisions";
   if (isGithubSource(value)) return "GitHub";
   if (/message|thread|comm|slack|teams|chat/.test(value)) return value.includes("teams") ? "Microsoft Teams" : "Communications";
   if (/calendar|meeting|event/.test(value)) return "Calendar";
@@ -1238,6 +1275,7 @@ function researchPreviewTarget(card: EvidenceCard): DeepResearchSource["target"]
   const typed = (kind: NonNullable<DeepResearchSource["target"]>["kind"], id: unknown) =>
     typeof id === "string" && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id) ? { kind, id } : undefined;
   if (card.openTarget?.targetType === "message") return typed("message", ref.messageId);
+  if (card.sourceType === "decision_record" && isAcceptedDecision(card)) return typed("decision_record", card.citationRef?.id);
   if (card.sourceType === "brain_node") return typed("brain_node", ref.brainNodeId ?? card.citationRef?.id);
   if (card.sourceType === "product_brain") return typed("brain_version", ref.artifactVersionId ?? card.citationRef?.id);
   if (card.openTarget?.targetType === "github_evidence" && !safeExternalHref(ref.url ?? ref.sourceUrl)) {

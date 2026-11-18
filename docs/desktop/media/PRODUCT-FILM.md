@@ -56,7 +56,8 @@ After commit `e70596b` was pushed, both embeds were also played directly in the 
 
 [Audio and film provenance](narrated-2026-09-22/PROVENANCE.md) · [Exact file identities and verification record](narrated-2026-09-22/recording-record.json)
 
-The repository remains private. These films do not certify release readiness or authorise public distribution.
+The source repository is public. The films demonstrate an internal build; they
+do not certify the current release or imply public installers are available.
 
 ## Earlier films
 

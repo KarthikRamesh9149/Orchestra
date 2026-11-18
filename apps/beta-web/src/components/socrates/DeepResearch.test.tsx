@@ -125,6 +125,18 @@ describe("[FIX-22] Deep Research truthful UI", () => {
     expect(screen.getByText(/2 GitHub records/)).toBeVisible();
     expect(screen.queryByText(/2 commits/)).not.toBeInTheDocument();
   });
+
+  it("sends recorded decisions as an explicit research source", async () => {
+    const user = userEvent.setup();
+    renderModal();
+    await user.type(screen.getByRole("textbox"), "Which launch decision is recorded?");
+    await user.click(screen.getByRole("button", { name: /Recorded decisions/ }));
+    await user.click(screen.getByRole("button", { name: "Run Research" }));
+    expect(mocks.startDeepResearch).toHaveBeenCalledWith("project-1", expect.objectContaining({
+      sources: ["docs", "decisions"], webSearchEnabled: false,
+    }));
+    expect(await screen.findByText("Deep Research Complete")).toBeVisible();
+  });
   it('lets the native backend validate configured AI instead of blocking every desktop request', async () => {
     vi.stubGlobal('orchestra', {});
     const user = userEvent.setup(); renderModal();

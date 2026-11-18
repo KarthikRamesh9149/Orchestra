@@ -914,7 +914,7 @@ function toDoc(row: any): Doc {
 
 // ─── Deep Research ──────────────────────────────────────────────────────────
 
-export type DeepResearchSourceKey = "github" | "slack" | "calendar" | "docs" | "web";
+export type DeepResearchSourceKey = "github" | "slack" | "calendar" | "docs" | "decisions" | "web";
 
 export interface DeepResearchInput {
   researchFocus: string;
@@ -932,7 +932,7 @@ export interface DeepResearchResults {
   recommendedActions: { priority: "IMMEDIATE" | "THIS WEEK" | "THIS SPRINT"; action: string; source: string; id?: string; completed?: boolean }[];
   stats: { totalSources: number; slackMessages: number; commits: number; docs: number; webSources: number; duration: string };
   sources: { provider: string; label: string; kind: "internal" | "web"; href: string | null; ref?: string; refs?: string[];
-    target?: { kind: "message" | "brain_node" | "brain_version" | "github_record"; id: string }; excerpt?: string }[];
+    target?: { kind: "message" | "brain_node" | "brain_version" | "github_record" | "decision_record"; id: string }; excerpt?: string }[];
 }
 
 export interface DeepResearchRun {

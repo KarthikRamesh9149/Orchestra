@@ -4,6 +4,7 @@ import {normalizeRuntimeLinks} from './runtime-links.mjs';
 import {resolve,join} from 'node:path';
 import {randomUUID,createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
+import {assertNativePackagePins} from '../../../scripts/desktop/native-pins.mjs';
 export const FIRST_PARTY_LICENSE_NAME='ORCHESTRA-LICENSE.txt';
 // Pin the owner-approved, complete Apache-2.0 text. A changed licence requires review.
 const FIRST_PARTY_LICENSE_SHA256='cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30';
@@ -31,6 +32,7 @@ const electronVersion=devDependencies?.electron;
 if(!/^\d+\.\d+\.\d+$/.test(electronVersion)||electronVersion!==lock.packages?.['node_modules/electron']?.version)throw new Error('Electron must use the reviewed, exact locked version');
 const manifest=JSON.parse(await readFile(join(root,'.desktop/runtime/native-manifest.json'),'utf8'));
 if(manifest.platform!==`${process.platform}-${process.arch}`)throw new Error('A matching native runtime is required; cross-platform qualification cannot be skipped');
+assertNativePackagePins(manifest);
 await access(join(root,'apps/desktop/dist/main.cjs'));
 const runtime=join(root,'.desktop/runtime');
 await normalizeRuntimeLinks(runtime);

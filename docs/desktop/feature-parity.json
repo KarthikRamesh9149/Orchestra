@@ -2325,11 +2325,11 @@
     {
       "id": "UI-0106",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 85,
+      "line": 86,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-85",
+      "desktopTestId": "desktop-DeepResearch-86",
       "bindings": [
         {
           "property": "onClick",
@@ -2340,16 +2340,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:85: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:86: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0107",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 91,
+      "line": 92,
       "component": "Link",
       "label": "Link: to",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-91",
+      "desktopTestId": "desktop-DeepResearch-92",
       "bindings": [
         {
           "property": "to",
@@ -2360,16 +2360,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:91: exercise Link: to in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:92: exercise Link: to in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0108",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 92,
+      "line": 93,
       "component": "a",
       "label": "a: href",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-92",
+      "desktopTestId": "desktop-DeepResearch-93",
       "bindings": [
         {
           "property": "href",
@@ -2380,16 +2380,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:92: exercise a: href in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:93: exercise a: href in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0109",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 146,
+      "line": 147,
       "component": "select",
       "label": "select: onChange",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-146",
+      "desktopTestId": "desktop-DeepResearch-147",
       "bindings": [
         {
           "property": "onChange",
@@ -2400,16 +2400,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:146: exercise select: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:147: exercise select: onChange in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0110",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 151,
+      "line": 152,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-151",
+      "desktopTestId": "desktop-DeepResearch-152",
       "bindings": [
         {
           "property": "onClick",
@@ -2420,16 +2420,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:151: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:152: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0111",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 154,
+      "line": 155,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-154",
+      "desktopTestId": "desktop-DeepResearch-155",
       "bindings": [
         {
           "property": "onClick",
@@ -2440,16 +2440,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:154: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:155: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0112",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 234,
+      "line": 235,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-234",
+      "desktopTestId": "desktop-DeepResearch-235",
       "bindings": [
         {
           "property": "onClick",
@@ -2460,16 +2460,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:234: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:235: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0113",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 257,
+      "line": 258,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-257",
+      "desktopTestId": "desktop-DeepResearch-258",
       "bindings": [
         {
           "property": "onClick",
@@ -2480,16 +2480,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:257: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:258: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0114",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 258,
+      "line": 259,
       "component": "button",
       "label": "Close",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-258",
+      "desktopTestId": "desktop-DeepResearch-259",
       "bindings": [
         {
           "property": "onClick",
@@ -2500,16 +2500,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:258: exercise Close in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:259: exercise Close in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0115",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 541,
+      "line": 542,
       "component": "button",
       "label": "\"Close Deep Research\"",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-541",
+      "desktopTestId": "desktop-DeepResearch-542",
       "bindings": [
         {
           "property": "onClick",
@@ -2520,16 +2520,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:541: exercise \"Close Deep Research\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:542: exercise \"Close Deep Research\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0116",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 554,
+      "line": 555,
       "component": "input",
       "label": "\"e.g. auth flow reliability, onboarding drop-off, API latency issues\"",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-554",
+      "desktopTestId": "desktop-DeepResearch-555",
       "bindings": [
         {
           "property": "onChange",
@@ -2540,16 +2540,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:554: exercise \"e.g. auth flow reliability, onboarding drop-off, API latency issues\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:555: exercise \"e.g. auth flow reliability, onboarding drop-off, API latency issues\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0117",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 567,
+      "line": 568,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-567",
+      "desktopTestId": "desktop-DeepResearch-568",
       "bindings": [
         {
           "property": "onClick",
@@ -2560,16 +2560,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:567: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:568: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0118",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 597,
+      "line": 598,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-597",
+      "desktopTestId": "desktop-DeepResearch-598",
       "bindings": [
         {
           "property": "onClick",
@@ -2580,16 +2580,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:597: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:598: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0119",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 616,
+      "line": 617,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-616",
+      "desktopTestId": "desktop-DeepResearch-617",
       "bindings": [
         {
           "property": "onClick",
@@ -2600,16 +2600,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:616: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:617: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0120",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 627,
+      "line": 628,
       "component": "span",
       "label": "span: onMouseEnter, onMouseLeave",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-627",
+      "desktopTestId": "desktop-DeepResearch-628",
       "bindings": [
         {
           "property": "onMouseEnter",
@@ -2624,16 +2624,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:627: exercise span: onMouseEnter, onMouseLeave in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:628: exercise span: onMouseEnter, onMouseLeave in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0121",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 638,
+      "line": 639,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-638",
+      "desktopTestId": "desktop-DeepResearch-639",
       "bindings": [
         {
           "property": "onClick",
@@ -2644,16 +2644,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:638: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:639: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0122",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 657,
+      "line": 658,
       "component": "button",
       "label": "Cancel",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-657",
+      "desktopTestId": "desktop-DeepResearch-658",
       "bindings": [
         {
           "property": "onClick",
@@ -2664,16 +2664,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:657: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:658: exercise Cancel in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0123",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 666,
+      "line": 667,
       "component": "button",
       "label": "button: onClick",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-666",
+      "desktopTestId": "desktop-DeepResearch-667",
       "bindings": [
         {
           "property": "onClick",
@@ -2684,16 +2684,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:666: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:667: exercise button: onClick in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0124",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 699,
+      "line": 700,
       "component": "button",
       "label": "Minimize",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-699",
+      "desktopTestId": "desktop-DeepResearch-700",
       "bindings": [
         {
           "property": "onClick",
@@ -2704,16 +2704,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:699: exercise Minimize in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:700: exercise Minimize in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0125",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 710,
+      "line": 711,
       "component": "button",
       "label": "Try again",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-710",
+      "desktopTestId": "desktop-DeepResearch-711",
       "bindings": [
         {
           "property": "onClick",
@@ -2724,16 +2724,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:710: exercise Try again in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:711: exercise Try again in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0126",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 711,
+      "line": 712,
       "component": "button",
       "label": "Close",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-711",
+      "desktopTestId": "desktop-DeepResearch-712",
       "bindings": [
         {
           "property": "onClick",
@@ -2744,16 +2744,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:711: exercise Close in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:712: exercise Close in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0127",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 718,
+      "line": 719,
       "component": "DeepResearchResults",
       "label": "DeepResearchResults: onToggleAction, onClose, onAddToMemory, onDownload, onDownloadFormatChange, onOpenSaved",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-718",
+      "desktopTestId": "desktop-DeepResearch-719",
       "bindings": [
         {
           "property": "onToggleAction",
@@ -2784,16 +2784,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:718: exercise DeepResearchResults: onToggleAction, onClose, onAddToMemory, onDownload, onDownloadFormatChange, onOpenSaved in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:719: exercise DeepResearchResults: onToggleAction, onClose, onAddToMemory, onDownload, onDownloadFormatChange, onOpenSaved in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0128",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 768,
+      "line": 769,
       "component": "button",
       "label": "View",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-768",
+      "desktopTestId": "desktop-DeepResearch-769",
       "bindings": [
         {
           "property": "onClick",
@@ -2804,16 +2804,16 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:768: exercise View in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:769: exercise View in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0129",
       "source": "apps/beta-web/src/components/socrates/DeepResearch.tsx",
-      "line": 779,
+      "line": 780,
       "component": "button",
       "label": "\"Run Deep Research\"",
       "existingTestFile": "apps/beta-web/src/components/socrates/DeepResearch.test.tsx",
-      "desktopTestId": "desktop-DeepResearch-779",
+      "desktopTestId": "desktop-DeepResearch-780",
       "bindings": [
         {
           "property": "onClick",
@@ -2832,7 +2832,7 @@
       "owner": "Step 4 implementer",
       "ownerStep": 4,
       "status": "planned-not-desktop-verified",
-      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:779: exercise \"Run Deep Research\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
+      "acceptanceTest": "apps/beta-web/src/components/socrates/DeepResearch.tsx:780: exercise \"Run Deep Research\" in packaged UI in applicable modes; verify authorized success, validation/denial/network errors, keyboard access and cancellation; persisted effects survive restart. Link named automated test and evidence before completion."
     },
     {
       "id": "UI-0130",

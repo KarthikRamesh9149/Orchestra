@@ -24,6 +24,14 @@ async function extractFixture(command,args,cwd){
 }
 const options={sources:[source],run:extractFixture,fetchSource:async()=>{throw Error('Unexpected network access');}};
 
+test('a new native build creates a private desktop directory compatible with database verification',async()=>fixture(async({root})=>{
+  const desktop=join(root,'fresh');
+  await withNativeBuildLock(desktop,async()=>{
+    await createNativeBuildWorkspace(desktop,{...options,fetchSource:async()=>bytes});
+    assert.equal((await lstat(desktop)).mode & 0o077,0);
+  });
+}));
+
 test('verified archives feed fresh source, OpenSSL and output paths on every run',async()=>fixture(async({desktop})=>{
   await mkdir(join(desktop,'native-build',source.name));
   await writeFile(join(desktop,'native-build',source.name,'source.c'),'tampered old source');

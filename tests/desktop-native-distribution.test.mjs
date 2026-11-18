@@ -4,6 +4,7 @@ import {mkdtemp,mkdir,writeFile,readFile,unlink,symlink,rm} from 'node:fs/promis
 import {tmpdir} from 'node:os';
 import {join,dirname} from 'node:path';
 import {assertNativePostgresDistribution,requiredPostgresDistributionFiles} from '../scripts/desktop/native-distribution.mjs';
+import {assertNativeBuildPins,assertNativePackagePins,nativeSources,nativeVersions} from '../scripts/desktop/native-pins.mjs';
 
 async function fixture(run){
   const root=await mkdtemp(join(tmpdir(),'orchestra-native-distribution-test-'));
@@ -34,7 +35,19 @@ test('rejects empty files, symlinked dependencies, and wrong-version data',async
 test('assembly checks source before downloads and checks staged copy before publication',async()=>{
   const source=await readFile(new URL('../scripts/desktop/prepare-native.mjs',import.meta.url),'utf8');
   const first=source.indexOf("await assertNativePostgresDistribution(join(native,'pgsql'))");
-  assert(first>0&&first<source.indexOf('await writeFile(archive,bytes)'));
+  assert(first>0&&first<source.indexOf('await fetch('));
+  const pins=source.indexOf('assertNativeBuildPins(JSON.parse');
+  assert(pins>0&&pins<first);
   const staged=source.indexOf("await assertNativePostgresDistribution(join(runtime,'native/pgsql'))");
   assert(staged>first&&staged<source.indexOf("await writeFile(join(runtime,'native-manifest.json')"));
+});
+
+test('native assembly and packaging reject earlier builds and mismatched source pins',()=>{
+  const valid={platform:'darwin-arm64',...nativeVersions,inputPolicy:'fresh-extraction-no-built-cache',sources:nativeSources};
+  assert.doesNotThrow(()=>assertNativeBuildPins(valid));
+  assert.doesNotThrow(()=>assertNativePackagePins(valid));
+  assert.throws(()=>assertNativeBuildPins({...valid,postgres:'17.11'}),/provenance/);
+  assert.throws(()=>assertNativeBuildPins({...valid,sources:valid.sources.map((pin,index)=>index?pin:{...pin,sha256:'0'.repeat(64)})}),/provenance/);
+  assert.throws(()=>assertNativePackagePins({...valid,node:'24.19.0'}),/runtime does not match/);
+  assert.throws(()=>assertNativePackagePins({...valid,openssl:undefined}),/runtime does not match/);
 });

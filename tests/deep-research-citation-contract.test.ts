@@ -1,13 +1,38 @@
-import { describe, expect, it } from "vitest";
-import { groundDeepResearchOutput, assertDeepResearchRetrievalAvailable, computeStats, buildDeepResearchSources, filterCardsBySources } from "../src/modules/deep-research/service.js";
-import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt } from "../src/modules/deep-research/prompts.js";
+import { describe, expect, it, vi } from "vitest";
+import { collectExplicitDeepResearchSourceCards, groundDeepResearchOutput, assertDeepResearchRetrievalAvailable, computeStats, buildDeepResearchSources, filterCardsBySources } from "../src/modules/deep-research/service.js";
+import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt, isAcceptedDecision } from "../src/modules/deep-research/prompts.js";
 import { renderReportMarkdown } from "../src/modules/deep-research/report-render.js";
-import { deepResearchResultsSchema } from "../src/modules/deep-research/schemas.js";
+import { deepResearchResultsSchema, startDeepResearchSchema } from "../src/modules/deep-research/schemas.js";
 
 const card = { evidenceId: "ev_1", title: "Delivery PRD", sourceType: "document_chunk", excerpt: "Product Lead: Maya. Backend Lead: Dev.", citationRef: { type: "document_chunk", id: "chunk-1" } } as any;
 const report = { executiveSummary: "Maya is Product Lead.", findings: [{ category: "PROJECT FACT", severity: "MEDIUM" as const, title: "Owner", description: "Maya is Product Lead.", sources: "Delivery PRD" }], recommendedActions: [], marketContext: [], expansionOpportunities: [] };
 
 describe("Deep Research citation contract", () => {
+  it("retrieves human-accepted records in the explicit decisions scope, not in Docs", async () => {
+    const id = "b7ffad33-4d00-4fdd-ba0f-cceabafda0e1";
+    const findMany = vi.fn().mockResolvedValue([
+      { id, title: "Helix seat ceiling", statement: "Release approval covers twenty production seats." },
+      { id: "unrelated", title: "Lime locale", statement: "Localisation follows catalogue rules." },
+    ]);
+    const prisma = { decisionRecord: { findMany } } as any;
+    const focus = "What is the Helix seat ceiling?";
+    expect(startDeepResearchSchema.parse({ researchFocus: focus, sources: ["decisions"] }).sources).toEqual(["decisions"]);
+    expect(await collectExplicitDeepResearchSourceCards(prisma, {} as any, "project", focus, new Set(["docs"]))).toEqual([]);
+    expect(findMany).not.toHaveBeenCalled();
+    const cards = await collectExplicitDeepResearchSourceCards(prisma, {} as any, "project", focus, new Set(["decisions"]));
+    expect(findMany.mock.calls[0]?.[0].where).toEqual({
+      projectId: "project", status: "accepted", acceptedBy: { not: null }, acceptedAt: { not: null }
+    });
+    expect(cards.map(item => item.citationRef?.id)).toEqual([id]);
+    expect(isAcceptedDecision(cards[0]!)).toBe(true);
+    expect(isAcceptedDecision({ ...cards[0]!, sourcePrecedence: "unknown" })).toBe(false);
+    expect(buildDeepResearchSources(cards, [])[0]).toMatchObject({
+      provider: "Orchestra decisions", ref: "E1", target: { kind: "decision_record", id }
+    });
+    const answer = "Recorded approval was verified for the Helix seat ceiling [E1].";
+    expect(groundDeepResearchOutput({ ...report, executiveSummary: answer }, cards, []).executiveSummary).toBe(answer);
+    expect(groundDeepResearchOutput({ ...report, executiveSummary: answer }, [card], []).executiveSummary).not.toBe(answer);
+  });
   it("counts source documents, not chunks or derived Product Brain cards", () => {
     const a = { ...card, openTarget: { targetRef: { documentId: "doc-a" } } };
     const b = { ...card, evidenceId: "chunk-2", openTarget: { targetRef: { documentId: "doc-a" } } };

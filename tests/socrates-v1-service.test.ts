@@ -715,6 +715,22 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(allSourcesPrompt).not.toContain("Asha Raman");
     expect(prisma.$queryRaw.mock.calls.some(([sql]: [{ values?: unknown[] }]) => sql.values?.includes(deliveryId))).toBe(true);
 
+    prisma.communicationMessageChunk.findMany.mockResolvedValue([{
+      id: "slack-chunk", messageId: "slack-message", threadId: "slack-thread", provider: "slack",
+      content: "Delivery escalation window is 83 minutes.", lexicalContent: "delivery escalation window 83 minutes",
+      message: { senderLabel: "Reviewer", sentAt: new Date("2026-06-02T00:00:00Z") },
+      thread: { subject: "#release" }, connector: { provider: "slack", accountLabel: "Synthetic workspace" },
+    }]);
+    const combinedQuestion = "Use the Orchestra test Delivery PRD and Slack #release: who is the Product Lead and what is the escalation window?";
+    for (const selectedSources of [["all"], ["documents"]] as const) {
+      await service.askV1ProjectMemory({ projectId: PROJECT_ID, actorUserId: USER_ID,
+        question: combinedQuestion, selectedSources: [...selectedSources], maxEvidence: 2, includeArtifacts: false, includeHistory: false });
+      const prompt = String(generationProvider.generateObject.mock.calls.at(-1)?.[0].prompt);
+      expect(prompt).toContain("Maya Reddy");
+      expect(prompt).not.toContain("Asha Raman");
+      expect(prompt.includes("83 minutes")).toBe(selectedSources[0] === "all");
+    }
+
     generationProvider.generateObject.mockRejectedValueOnce(new Error("staging provider unavailable"));
     const failedSynthesis = await service.askV1ProjectMemory({ projectId: PROJECT_ID, actorUserId: USER_ID, question: "In Orchestra test Delivery PRD, who are the Product Lead and Backend Lead? State the non-goals.", selectedSources: ["documents"], includeArtifacts: false, includeHistory: false });
     expect(failedSynthesis.modelMetadata).toMatchObject({ provider: "deterministic", degraded: true });
@@ -734,6 +750,17 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(noKeySynthesis.answer_md).toContain("no provider writes");
     expect(noKeySynthesis.answer_md).not.toContain("Asha Raman");
     expect(generationProvider.generateObject.mock.calls).toHaveLength(callsBeforeNoKey);
+  });
+
+  it("does not mistake a provider in the title of a named document for a requested connector", () => {
+    const { service } = makeService();
+    const document = { evidenceId: "named", documentId: "document", sourceType: "document", title: "Release Slack Policy",
+      explicitDocumentScopeTitle: "Release Slack Policy.pdf", text: "Require confirmation.", truthStatus: "evidence", confidence: .9 };
+    const slack = { evidenceId: "message", sourceType: "slack_message", sourceSubType: "slack", title: "Slack #release",
+      text: "Escalate after 83 minutes.", truthStatus: "evidence", confidence: .9 };
+    const choose = (question: string) => (service as any).selectSocratesV1Evidence([document, slack], question, "general_question", 2, new Set(["documents", "communications", "slack", "github", "timeline"]));
+    expect(choose("In Release-Slack Policy.pdf, what is required?")).toEqual([document]);
+    expect(choose("Compare Release-Slack Policy.pdf and Slack #release.")).toEqual([document, slack]);
   });
 
   it("applies service-level limits to non-route callers and releases concurrency", async () => {
@@ -1627,7 +1654,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
     });
 
     expect(result.citations).toEqual(expect.arrayContaining([
-      expect.objectContaining({ sourceType: "slack_message", label: expect.stringContaining("Slack") })
+      expect.objectContaining({ sourceType: "slack_message", label: expect.stringContaining("Slack #launch") })
     ]));
     expect(JSON.stringify(result)).not.toContain("Teams lead");
     expect(JSON.stringify(result)).not.toContain("Microsoft Teams");

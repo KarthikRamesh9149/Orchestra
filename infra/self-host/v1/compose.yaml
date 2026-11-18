@@ -17,7 +17,7 @@ x-app: &app
     options: {max-size: 10m, max-file: "3"}
 services:
   tls:
-    image: node:24.19.0-bookworm-slim@sha256:3638d9a6fe4030bd716be989438248074489337ba3275657f93595428be4fc03
+    image: node:24.22.3-bookworm-slim@sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54
     profiles: [tls]
     user: node
     init: true
@@ -32,14 +32,14 @@ services:
     ports: ["${SELF_HOST_BIND_HOST:-127.0.0.1}:${SELF_HOST_TLS_PORT:-4446}:4443"]
     depends_on: [web]
   postgres:
-    image: pgvector/pgvector@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+    image: pgvector/pgvector:pg17@sha256:b513c48566e4777cd3370451400000c78eda6a08131d68f4c31d4a76f27bd8fd
     restart: unless-stopped
     environment: {POSTGRES_USER: orchestra_migrator, POSTGRES_DB: orchestra_shared, POSTGRES_PASSWORD_FILE: /run/secrets/migrator_password}
     secrets: [migrator_password]
     volumes: [shared-postgres:/var/lib/postgresql/data, ./bootstrap.sql:/docker-entrypoint-initdb.d/010-orchestra.sql:ro]
     healthcheck: {test: [CMD-SHELL, "pg_isready -U orchestra_migrator -d orchestra_shared"], interval: 2s, timeout: 2s, retries: 30}
   redis:
-    image: redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952
+    image: redis:7.4.12-bookworm@sha256:2e3eb11462c4e3759e6972678dd051d150ff54b1e60714b3c33b701260172a90
     command: [redis-server, --appendonly, "yes", --appendfsync, everysec]
     restart: unless-stopped
     volumes: [shared-redis:/data]
