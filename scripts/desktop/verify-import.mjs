@@ -274,6 +274,7 @@ for (const file of ['src/modules/socrates/service.ts', 'tests/socrates-v1-servic
 for (const file of ['src/modules/deep-research/service.ts', 'tests/fix22-deep-research.test.ts']) {
   adjustments[file]+=' Pre-launch citation recheck: active project link, repository and installation are required for GitHub previews.';
 }
+adjustments['apps/beta-web/src/components/shell/NavRail.tsx']+=' Pre-launch: keep chat history timestamps readable on the selected inset surface in both themes.';
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);
