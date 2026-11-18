@@ -146,6 +146,12 @@ adjustments['tests/socrates-v1-service.test.ts']+=' September 23: red-to-green a
 for (const file of ['src/modules/dashboard/service.ts','src/modules/beta-timeline/beta-timeline.service.ts','src/modules/suggestions/suggestions.service.ts','tests/dashboard-service.test.ts','tests/beta-timeline-service.test.ts','tests/suggestions-service.test.ts']) {
  adjustments[file]=(adjustments[file]??'')+' November desktop privacy review: personal Socrates reads require ownership and are excluded from shared projections and recommendations.';
 }
+for (const file of ['src/modules/deep-research/prompts.ts','src/modules/deep-research/service.ts','tests/deep-research-authority-prompt.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November approval review: generated Brain summaries are not approval authority, and recorded approval claims require a traceable decision or proposal.';
+}
+for (const file of ['src/modules/socrates/service.ts','tests/socrates-v1-service.test.ts']) {
+ adjustments[file]=(adjustments[file]??'')+' November retrieval review: bounded semantic recall under All, plus live eligibility for withdrawable communication evidence.';
+}
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

@@ -23,12 +23,13 @@ You produce an evidence-grounded diagnostic report for a product team. Rules you
 
 ${EVIDENCE_AUTHORITY_AND_COVERAGE_RULES}`;
 
-function isAcceptedDecision(card: EvidenceCard): boolean {
+export function isAcceptedDecision(card: EvidenceCard): boolean {
   // Source prose and confidence are never approval authority. Require the
   // corresponding server-owned retrieval domain/precedence, not a title match.
-  return (card.sourceType === "product_brain" && card.sourcePrecedence === "accepted_truth") ||
-    (card.sourceType === "change_proposal" && card.sourcePrecedence === "accepted_changes") ||
-    (card.sourceType === "decision_record" && card.sourcePrecedence === "accepted_decisions");
+  const ref = card.citationRef;
+  if (!ref?.id || ref.type !== card.sourceType) return false;
+  return (card.sourceType === "change_proposal" && card.sourcePrecedence === "accepted_changes" && card.trace.changeProposalId === ref.id) ||
+    (card.sourceType === "decision_record" && card.sourcePrecedence === "accepted_decisions" && card.trace.decisionRecordId === ref.id);
 }
 
 function formatHint(format: DeepResearchOutputFormat): string {

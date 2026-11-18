@@ -10,8 +10,13 @@ it('lists only joined public non-archived channels',async()=>{
 it('reads only the selected channel and deduplicates thread roots',async()=>{
  const root={ts:'1789000000.000001',text:'Synthetic root',user:'UTEST',reply_count:1};
  const fetcher=vi.fn(async(url:Parameters<typeof fetch>[0],options?:RequestInit)=>{expect(String(options?.body)).toContain('channel=CTEST');return json({messages:String(url).endsWith('history')?[root]:[root,{ts:'1789000001.000001',thread_ts:root.ts,text:'Synthetic reply',user:'UTEST'}]});});
- expect(await readSlackChannel(credential,{id:'CTEST',name:'test'},fetcher)).toHaveLength(2);expect(fetcher).toHaveBeenCalledTimes(2);
+ expect((await readSlackChannel(credential,{id:'CTEST',name:'test'},fetcher)).messages).toHaveLength(2);expect(fetcher).toHaveBeenCalledTimes(2);
 });
 it('rejects incomplete pagination rather than reporting empty success',async()=>{
  await expect(readSlackChannel(credential,{id:'CTEST',name:'test'},async()=>json({messages:[],has_more:true}))).rejects.toThrow('continuation');
+});
+it('preserves the original timestamp of a deletion without declaring a limited history complete',async()=>{
+ const fetcher=async()=>json({is_limited:true,messages:[{subtype:'message_deleted',ts:'1789000002.000001',deleted_ts:'1789000001.000001'}]});
+ const snapshot=await readSlackChannel(credential,{id:'CTEST',name:'test'},fetcher);
+ expect(snapshot).toMatchObject({messages:[],deletedTimestamps:['1789000001.000001'],snapshot:{complete:false}});
 });

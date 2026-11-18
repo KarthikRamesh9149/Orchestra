@@ -1685,7 +1685,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
     ]));
   });
 
-  it("supplements thin lexical document recall with bounded semantic evidence", async () => {
+  it.each(["documents", "all"] as const)("adds bounded semantic evidence for thin lexical recall in %s", async (scope) => {
     const { service } = makeService({
       OPENAI_EMBEDDING_MODEL: "text-embedding-3-small"
     });
@@ -1722,7 +1722,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
       projectId: PROJECT_ID,
       actorUserId: USER_ID,
       question: "What federated login requirement must ship?",
-      selectedSources: ["documents"],
+      selectedSources: [scope],
       includeArtifacts: false
     });
 
@@ -2644,7 +2644,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(second.expiresInMs).toBe(60_000);
     expect(prisma.documentChunk.findMany.mock.calls.filter(([args]: any) => args.include)).toHaveLength(1);
     expect(prisma.documentChunk.findMany.mock.calls.filter(([args]: any) => args.select)).toHaveLength(3);
-    expect(prisma.communicationMessageChunk.findMany).toHaveBeenCalledTimes(1);
+    expect(prisma.communicationMessageChunk.findMany).not.toHaveBeenCalled();
     expect(prisma.gitHubEngineeringEvidence.findMany).toHaveBeenCalledTimes(1);
     expect(generationProvider.streamText).not.toHaveBeenCalled();
     expect(generationProvider.generateObject).not.toHaveBeenCalled();

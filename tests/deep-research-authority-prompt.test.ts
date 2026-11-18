@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { EvidenceCard } from "../src/lib/retrieval/evidence-pack.js";
 import { buildDeepResearchUserPrompt, DEEP_RESEARCH_SYSTEM_PROMPT } from "../src/modules/deep-research/prompts.js";
+import { groundDeepResearchOutput } from "../src/modules/deep-research/service.js";
 
 const card: EvidenceCard = {
   evidenceId: "chunk-1", sourceType: "document_chunk", title: "Launch PRD",
@@ -28,14 +29,27 @@ describe("research approval and coverage prompt contract", () => {
     const prompt = promptFor([
       card,
       { ...card, sourceType: "product_brain", sourcePrecedence: "accepted_truth" },
-      { ...card, sourceType: "change_proposal", sourcePrecedence: "accepted_changes" },
-      { ...card, sourceType: "decision_record", sourcePrecedence: "accepted_decisions" },
+      { ...card, evidenceId: "proposal-1", sourceType: "change_proposal", sourcePrecedence: "accepted_changes", trace: { changeProposalId: "proposal-1" }, citationRef: { type: "change_proposal", id: "proposal-1" } },
+      { ...card, evidenceId: "decision-1", sourceType: "decision_record", sourcePrecedence: "accepted_decisions", trace: { decisionRecordId: "decision-1" }, citationRef: { type: "decision_record", id: "decision-1" } },
       { ...card, sourcePrecedence: "accepted_truth" },
       { ...card, sourceType: "product_brain", sourcePrecedence: "unknown" },
     ]);
-    expect(prompt).toContain('"acceptedDecisionReferences":["E2","E3","E4"]');
-    expect(prompt.match(/approvalAuthority: accepted_decision/g)).toHaveLength(3);
-    expect(prompt.match(/approvalAuthority: source_claim_only/g)).toHaveLength(3);
+    expect(prompt).toContain('"acceptedDecisionReferences":["E3","E4"]');
+    expect(prompt.match(/approvalAuthority: accepted_decision/g)).toHaveLength(2);
+    expect(prompt.match(/approvalAuthority: source_claim_only/g)).toHaveLength(4);
+  });
+
+  it("does not publish recorded approval based only on a generated summary", () => {
+    const brain = { ...card, title: "Product Brain", sourceType: "product_brain", sourcePrecedence: "accepted_truth" } as const;
+    const output = {
+      executiveSummary: "The PRD specifies CSV export [E1]. Recorded approval is established for CSV export [E2].",
+      findings: [{ category: "Status", severity: "HIGH" as const, title: "Orchestra recorded approval", description: "Recorded approval is established for CSV export [E2].", sources: "E2" }],
+      recommendedActions: [], marketContext: [], expansionOpportunities: []
+    };
+    const grounded = groundDeepResearchOutput(output, [card, brain], []);
+    expect(grounded.executiveSummary).toContain("The PRD specifies CSV export [E1].");
+    expect(grounded.executiveSummary).not.toContain("Recorded approval is established");
+    expect(grounded.findings).toEqual([]);
   });
 
   it("labels an empty or bounded retrieval honestly rather than claiming a complete inventory", () => {

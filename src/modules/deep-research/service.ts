@@ -21,7 +21,7 @@ import type { AuditService } from "../audit/service.js";
 import type { ProjectService } from "../projects/service.js";
 import { buildDeepResearchEvidencePack } from "./evidence.js";
 import { renderReportMarkdown, renderReportPdf } from "./report-render.js";
-import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt, buildWebQueries } from "./prompts.js";
+import { DEEP_RESEARCH_SYSTEM_PROMPT, buildDeepResearchUserPrompt, buildWebQueries, isAcceptedDecision } from "./prompts.js";
 import {
   deepResearchLlmSchema,
   deepResearchStructuredSchema,
@@ -1053,13 +1053,27 @@ export function groundDeepResearchOutput(
       return resolved ? [resolved] : [];
     })
   ]));
+  const authority = new Map<string, EvidenceCard>(cards.flatMap((card, index) =>
+    isAcceptedDecision(card) ? [[`E${index + 1}`, card] as const] : []
+  ));
+  const approvalAssertion = /\b(?:recorded approval\s+(?:is|was|has been)\s+(?:only\s+)?(?:established|verified|confirmed|granted|documented)|orchestra\s+(?:has\s+)?recorded approval|(?:was|is|has been)\s+(?:approved|accepted)\s+in\s+orchestra|accepted decision reference\s+(?:is|to|for))\b/i;
+  const normalize = (value: string) => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  const hasGroundedApproval = (value: string, cited = numberedRefs(value)) => !approvalAssertion.test(value) ||
+    cited.some((ref) => {
+      const record = authority.get(ref);
+      const title = record && normalize(record.title);
+      return Boolean(title && ` ${normalize(value)} `.includes(` ${title} `));
+    });
+  const executiveSummary = output.executiveSummary.split(/(?<=[.!?])\s+|\n+/)
+    .filter((part) => hasGroundedApproval(part)).join(" ");
   const findings = output.findings.flatMap((finding) => {
     const valid = refs(finding.sources);
-    return valid.length ? [{ ...finding, sources: valid.join(" · ") }] : [];
+    return valid.length && hasGroundedApproval(`${finding.title} ${finding.description}`, valid)
+      ? [{ ...finding, sources: valid.join(" · ") }] : [];
   });
   const recommendedActions = output.recommendedActions.flatMap((action) => {
     const valid = refs(action.source);
-    return valid.length ? [{ ...action, source: valid.join(" · ") }] : [];
+    return valid.length && hasGroundedApproval(action.action, valid) ? [{ ...action, source: valid.join(" · ") }] : [];
   });
   const validInlineRefs = (value: string, webOnly = false) => {
     const cited = numberedRefs(value);
@@ -1068,15 +1082,15 @@ export function groundDeepResearchOutput(
   return {
     ...output,
     // A citation elsewhere in the report cannot substantiate this summary.
-    executiveSummary: validInlineRefs(output.executiveSummary)
-      ? output.executiveSummary
+    executiveSummary: validInlineRefs(executiveSummary)
+      ? executiveSummary
       : cards.length || webResults.length
         ? "Sources were retrieved, but a citation-backed answer could not be established. Try narrowing the focus; this does not mean the sources contain no answer."
         : "No evidence-grounded findings could be established for this focus from the selected sources.",
     findings,
     recommendedActions,
-    marketContext: output.marketContext.filter(item => validInlineRefs(`${item.title} ${item.body}`, true)),
-    expansionOpportunities: output.expansionOpportunities.filter(item => validInlineRefs(item))
+    marketContext: output.marketContext.filter(item => validInlineRefs(`${item.title} ${item.body}`, true) && hasGroundedApproval(`${item.title} ${item.body}`)),
+    expansionOpportunities: output.expansionOpportunities.filter(item => validInlineRefs(item) && hasGroundedApproval(item))
   };
 }
 

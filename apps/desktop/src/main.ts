@@ -185,8 +185,8 @@ else {
     const channel=(await listSlackChannels(credential)).find(item=>item.id===input.data.channelId);if(!channel)throw new Error('Channel unavailable');
     const consent=await dialog.showMessageBox(window!,{type:'question',message:`Import #${channel.name} into the selected local project?`,detail:'Read up to 200 messages and thread replies from the past 30 days. Messages become local evidence, not accepted truth. Configured AI may process the imported evidence. No other channels or direct messages are read.',buttons:['Cancel','Import selected channel'],defaultId:0,cancelId:0});
     if(consent.response!==1)return {ok:true,data:{cancelled:true}};
-    const messages=await readSlackChannel(credential,channel);
-    const imported=await host.request({operation:'desktop.slack.ingest',projectId:input.data.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,messages});
+    const snapshot=await readSlackChannel(credential,channel);
+    const imported=await host.request({operation:'desktop.slack.ingest',projectId:input.data.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,...snapshot});
     if(imported.ok)await rememberSyncTarget(settings,{provider:'slack',projectId:input.data.projectId,resourceIds:[channel.id],teamId:credential.teamId});return imported;
    }catch{return {ok:false,error:{code:'slack_import_failed',message:'Slack import was not confirmed. Check Memory before retrying. The snapshot is limited to 200 messages and 20 API pages; rate limits and unavailable channels are reported as failures, not empty imports.'}};}finally{configuringAi=false;}
   });

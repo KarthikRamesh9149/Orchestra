@@ -36,8 +36,8 @@ export async function refreshSelectedSource(target:SyncTarget,settings:Protected
   if(!state.slack||state.slack.teamId!==target.teamId||target.resourceIds.length!==1)throw new Error('Slack grant changed');
   const credential=await refreshSlack(state.slack,fetcher);await settings.write({...state,slack:credential});
   const channel=(await listSlackChannels(credential,fetcher)).find(c=>c.id===target.resourceIds[0]);if(!channel)throw new Error('Selected channel unavailable');
-  const messages=await readSlackChannel(credential,channel,fetcher);
-  return persist({operation:'desktop.slack.ingest',projectId:target.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,messages});
+  const snapshot=await readSlackChannel(credential,channel,fetcher);
+  return persist({operation:'desktop.slack.ingest',projectId:target.projectId,teamId:credential.teamId,teamName:credential.teamName,channel,...snapshot});
  }
  if(!state.drive||target.resourceIds.some(id=>!state.drive!.fileIds.includes(id)))throw new Error('Drive selection changed');
  const files=[];
