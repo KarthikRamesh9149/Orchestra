@@ -752,6 +752,17 @@ describe("SocratesService.askV1ProjectMemory", () => {
     expect(generationProvider.generateObject.mock.calls).toHaveLength(callsBeforeNoKey);
   });
 
+  it("does not mistake a provider in the title of a named document for a requested connector", () => {
+    const { service } = makeService();
+    const document = { evidenceId: "named", documentId: "document", sourceType: "document", title: "Release Slack Policy",
+      explicitDocumentScopeTitle: "Release Slack Policy.pdf", text: "Require confirmation.", truthStatus: "evidence", confidence: .9 };
+    const slack = { evidenceId: "message", sourceType: "slack_message", sourceSubType: "slack", title: "Slack #release",
+      text: "Escalate after 83 minutes.", truthStatus: "evidence", confidence: .9 };
+    const choose = (question: string) => (service as any).selectSocratesV1Evidence([document, slack], question, "general_question", 2, new Set(["documents", "communications", "slack", "github", "timeline"]));
+    expect(choose("In Release-Slack Policy.pdf, what is required?")).toEqual([document]);
+    expect(choose("Compare Release-Slack Policy.pdf and Slack #release.")).toEqual([document, slack]);
+  });
+
   it("applies service-level limits to non-route callers and releases concurrency", async () => {
     const limiter = {
       checkRequestLimit: vi.fn(async () => ({ allowed: false, code: "socrates_rate_limited" })),
@@ -1643,7 +1654,7 @@ describe("SocratesService.askV1ProjectMemory", () => {
     });
 
     expect(result.citations).toEqual(expect.arrayContaining([
-      expect.objectContaining({ sourceType: "slack_message", label: expect.stringContaining("Slack") })
+      expect.objectContaining({ sourceType: "slack_message", label: expect.stringContaining("Slack #launch") })
     ]));
     expect(JSON.stringify(result)).not.toContain("Teams lead");
     expect(JSON.stringify(result)).not.toContain("Microsoft Teams");

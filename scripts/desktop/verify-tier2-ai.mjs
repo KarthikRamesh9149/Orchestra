@@ -135,6 +135,7 @@ async function verifyNative(bundle, fixtures, ai) {
     assert.match(combined.answer, /83[\s*]+minutes/i);
     assert(combined.citations.some(label => label.includes('Helix Rollout Decision')));
     assert(combined.sourceTypes.some(type => /slack|communication/i.test(type)), 'Both documents and messages must support the answer');
+    assert(combined.citations.some(label => label.includes('Slack #helix-operations')));
     process.send?.({ observation: { check: 'named document plus Slack', ...combined } });
     const researchStart = performance.now();
     const run = await api('/deep-research', { method: 'POST', body: {
@@ -160,17 +161,21 @@ async function verifyNative(bundle, fixtures, ai) {
     await api(runPath + '/actions/' + checked.id, { method: 'PUT', body: { completed: true } });
     assert.equal((await api(runPath)).results.recommendedActions[0].completed, true);
     const researchMs = Math.round(performance.now() - researchStart);
-    const title = 'Orion evaluation capacity';
+    const graph = await api('/brain/graph/current');
+    const affected = graph.sectionLinks.find(link => graph.nodes.some(node => node.id === link.brainNodeId));
+    assert(affected, 'Qualification proposal needs persisted document and Brain links');
+    const title = 'Helix evaluation capacity';
     const statement = 'The authorized evaluation cap is 37 test seats. No production rollout is approved.';
     const proposal = await api('/change-proposals', { method: 'POST', body: {
       title, summary: statement, proposalType: 'decision_change', newUnderstanding: { text: statement },
+      affectedDocumentSectionIds: [affected.documentSectionId], affectedBrainNodeIds: [affected.brainNodeId],
       externalEvidenceRefs: ['synthetic-human-release-review'],
     } });
     const accepted = await api('/change-proposals/' + proposal.id + '/accept', { method: 'POST', body: {} });
     assert.equal(accepted.status, 'accepted');
     assert(accepted.decisionRecordId, 'Acceptance must produce a persisted decision record');
     const actual = await api('/deep-research', { method: 'POST', body: {
-      researchFocus: 'What capacity is recorded by the Orion evaluation capacity decision? Cite the accepted record and do not infer production approval.',
+      researchFocus: 'What capacity is recorded by the Helix evaluation capacity decision? Cite the accepted record and do not infer production approval.',
       sources: ['decisions'], outputFormat: 'exec_summary', privacyMode: 'internal_only', webSearchEnabled: false,
     } });
     const actualPath = '/deep-research/' + actual.id;

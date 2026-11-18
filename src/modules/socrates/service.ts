@@ -435,7 +435,7 @@ function buildSlackCitationLabel(item: {
   message: { senderLabel: string; sentAt: Date };
 }) {
   const channelName = readStringValue(item.thread.rawMetadataJson, "channelName") ?? item.thread.subject ?? item.connector.accountLabel;
-  return `Slack #${channelName} - ${item.message.senderLabel} - ${item.message.sentAt.toISOString()}`;
+  return `Slack #${channelName.trim().replace(/^#+/, "")} - ${item.message.senderLabel} - ${item.message.sentAt.toISOString()}`;
 }
 
 function retrievalDomainNames(domains: ReturnType<typeof domainsFromPlan>) {
@@ -685,6 +685,15 @@ function normalizeSocratesV1DocumentTitle(value: string) {
 function explicitSocratesV1DocumentTitleMatches(question: string, title: string) {
   const normalizedTitle = normalizeSocratesV1DocumentTitle(title);
   return normalizedTitle.split(" ").length >= 2 && normalizeSocratesV1DocumentTitle(question).includes(normalizedTitle);
+}
+
+function socratesV1OutsideNamedDocuments(question: string, titles: readonly string[]) {
+  if (!titles.length) return question;
+  let request = ` ${normalizeSocratesV1DocumentTitle(question)} `;
+  for (const title of [...new Set(titles.map(normalizeSocratesV1DocumentTitle))].sort((a, b) => b.length - a.length)) {
+    if (title) request = request.replaceAll(` ${title} `, " ");
+  }
+  return request;
 }
 
 export function buildSocratesV1EvidenceExcerpt(content: string, query: string, maxChars = 900, documentTitle?: string | null) {
@@ -2620,7 +2629,8 @@ export class SocratesService {
     const missingExplicitDocuments = explicitDocumentScope.filter((document) => !coveredDocumentIds.has(document.id));
     const explicitDocumentScopeLacksEvidence = missingExplicitDocuments.length > 0;
     const githubWasExplicitlyRequested =
-      (selectedSourceKeys.size < 5 && selectedSourceKeys.has("github")) || this.queryRequestsGithubEvidence(question);
+      (selectedSourceKeys.size < 5 && selectedSourceKeys.has("github")) ||
+      this.queryRequestsGithubEvidence(socratesV1OutsideNamedDocuments(question, explicitDocumentScope.map((document) => document.title)));
     const explicitDocumentComparisonInsufficient =
       explicitDocumentScope.length > 0 && explicitDocumentScopeHasEvidence && githubWasExplicitlyRequested && maxEvidence < 2;
     const refusedMutation = intent === "mutation_request";
@@ -3895,16 +3905,18 @@ export class SocratesService {
       Boolean(item.explicitDocumentScopeTitle)
     );
     if (explicitlyScopedDocumentEvidence.length > 0) {
+      const companionQuery = socratesV1OutsideNamedDocuments(query, explicitlyScopedDocumentEvidence.map((item) => item.explicitDocumentScopeTitle!));
+      const namedProviders = this.requestedCommunicationProviderSubTypes(companionQuery);
       const githubWasExplicitlyRequested =
-        (honorNarrowSourceSelection && selectedSources.has("github")) || this.queryRequestsGithubEvidence(query);
+        (honorNarrowSourceSelection && selectedSources.has("github")) || this.queryRequestsGithubEvidence(companionQuery);
       // Naming a document narrows document selection, not the other sources
       // the user expressly requested. Reserve a slot without dropping a named
       // document, and keep unrequested sources out of a named-document answer.
       const companions = [
         githubWasExplicitlyRequested ? ranked.find((item) => item.sourceType === "github_evidence") : undefined,
-        ...[...requestedCommunicationProviders].map((provider) =>
+        ...[...namedProviders].map((provider) =>
           providerCommunicationEvidence.find((item) => item.sourceSubType === provider)),
-        requestedCommunicationProviders.size === 0 && honorNarrowSourceSelection && (selectedSources.has("slack") || selectedSources.has("communications"))
+        namedProviders.size === 0 && honorNarrowSourceSelection && (selectedSources.has("slack") || selectedSources.has("communications"))
           ? ranked.find(isCommunication) : undefined
       ].filter((item): item is SocratesV1Evidence => item !== undefined);
       const namedDocuments = new Set(explicitlyScopedDocumentEvidence.map((item) => item.documentId ?? item.evidenceId));
