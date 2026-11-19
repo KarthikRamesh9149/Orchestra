@@ -42,6 +42,23 @@ covers an **internal Mac ARM candidate**, not public installer qualification.
    storage. Share only the revision, checksums, pass/fail and non-sensitive
    run links on the source pull request.
 
+### Reproduce the redesigned Mac journeys
+
+With the newly built internal package as `.desktop/latest-package.txt`, run
+`node scripts/desktop/ui-smoke.mjs`. It creates a disposable local profile and
+prints its path. Pass that path to `node scripts/desktop/ui-truth.mjs <profile>`
+and `node scripts/desktop/ui-runtime-recovery.mjs <profile>`. Do not pass an
+existing user profile. The runs cover dark-first onboarding, exact document
+passages, chat drafts, approval persistence, both themes and crash recovery.
+They do not exercise live model providers.
+
+For a populated upgrade use
+`node scripts/desktop/qualify-manual-upgrade.mjs <old-package> <candidate-package> <synthetic-profile> <old-version> <candidate-version>`.
+The script copies the profile before making changes and restores the *whole*
+backup with the prior app. Do not point a prior binary at a migrated production
+profile. A successful run is an internal upgrade check, not notarization or
+independent installation evidence.
+
 ## Advisory cadence
 
 The workflow runs its small audit job daily at 02:23 UTC and on the source

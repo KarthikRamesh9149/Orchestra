@@ -1,5 +1,6 @@
 import {lstat,readFile,realpath} from 'node:fs/promises';
 import {join} from 'node:path';
+import {nativeVersions} from './native-pins.mjs';
 
 // The pinned Mac recipe needs data files as well as executable binaries. A new
 // manifest generated from a truncated cache cannot prove these files existed.
@@ -12,7 +13,7 @@ export const requiredPostgresDistributionFiles=Object.freeze([
   'share/snowball_create.sql','share/sql_features.txt','share/timezonesets/Default','share/timezone/Etc/UTC',
   'share/tsearch_data/english.stop',
   'share/extension/plpgsql.control','share/extension/plpgsql--1.0.sql',
-  'share/extension/vector.control','share/extension/vector--0.8.6.sql',
+  'share/extension/vector.control',`share/extension/vector--${nativeVersions.pgvector}.sql`,
   'share/extension/pgcrypto.control','share/extension/pgcrypto--1.3.sql',
   'share/extension/pg_trgm.control','share/extension/pg_trgm--1.3.sql',
   'share/extension/pg_trgm--1.3--1.4.sql','share/extension/pg_trgm--1.4--1.5.sql','share/extension/pg_trgm--1.5--1.6.sql',
@@ -31,8 +32,9 @@ export async function assertNativePostgresDistribution(input){
   if(invalid.length)throw new Error(`Incomplete PostgreSQL runtime: missing or unsafe distribution files: ${invalid.join(', ')}. Restore a verified complete distribution or rebuild from the pinned sources before packaging.`);
   const bootstrap=await readFile(join(root,'share/postgres.bki'),'utf8');
   const vector=await readFile(join(root,'share/extension/vector.control'),'utf8');
-  if(!/^# PostgreSQL 17(?:\r?\n|$)/.test(bootstrap)||!/^default_version\s*=\s*'0\.8\.6'\s*$/m.test(vector)){
-    throw new Error('Unexpected PostgreSQL or pgvector distribution version; the pinned runtime requires PostgreSQL 17 and pgvector 0.8.6.');
+  const vectorVersion=vector.match(/^default_version\s*=\s*'([^']+)'\s*$/m)?.[1];
+  if(!/^# PostgreSQL 17(?:\r?\n|$)/.test(bootstrap)||vectorVersion!==nativeVersions.pgvector){
+    throw new Error('Unexpected PostgreSQL or pgvector distribution version; the pinned runtime requires PostgreSQL 17 and pgvector 0.8.7.');
   }
-  return {files:requiredPostgresDistributionFiles.length,postgresMajor:17,pgvector:'0.8.6'};
+  return {files:requiredPostgresDistributionFiles.length,postgresMajor:17,pgvector:nativeVersions.pgvector};
 }

@@ -6,7 +6,9 @@ import {execFileSync,spawn} from 'node:child_process';
 import {once} from 'node:events';
 import {join,resolve} from 'node:path';
 import assert from 'node:assert/strict';
-const [oldPackage,newPackage,source]=process.argv.slice(2);
+const [oldPackage,newPackage,source,oldVersion='0.0.4',newVersion='0.0.5']=process.argv.slice(2);
+assert(/^0\.0\.\d+$/.test(oldVersion)&&/^0\.0\.\d+$/.test(newVersion));
+assert.notEqual(resolve(oldPackage),resolve(newPackage));
 assert(oldPackage?.endsWith('/Orchestra Desktop Internal-darwin-arm64'));
 assert(newPackage?.startsWith(resolve('.desktop/packages')+'/'));
 assert(/^\/private\/tmp\/orchestra-step4-acceptance-[A-Za-z0-9]+$/.test(source??''));
@@ -23,7 +25,11 @@ let app;
 async function launch(packageRoot){
  app=await _electron.launch({executablePath:join(packageRoot,appName,'Contents/MacOS/Orchestra Desktop Internal'),args:['--user-data-dir='+profile],env:{PATH:'',HOME:process.env.HOME,TMPDIR:process.env.TMPDIR??''},timeout:60000});
  const page=await app.firstWindow();await page.waitForURL('**/memory',{timeout:180000});
- await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
+ const actions=page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true});
+ const sources=page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true});
+ await Promise.race([actions.waitFor(),sources.waitFor()]);
+ if(await sources.isVisible())await sources.click();
+ await actions.waitFor();
  const state=await page.evaluate(async()=>{
   const boot=await window.orchestra.bootstrap();if(!boot.ok||boot.data.aiConfigured)throw Error('Offline synthetic workspace required');
   const projectId=boot.data.workspaces.find(w=>w.current)?.projectId;if(!projectId)throw Error('Missing project');
@@ -37,8 +43,8 @@ async function launch(packageRoot){
 }
 async function stop(){if(app){await app.close();app=undefined;}for(let n=0;n<100;n++){if(await absent(join(profile,'local-runtime/postgres/postmaster.pid')))break;await new Promise(r=>setTimeout(r,100));}await cold(profile);}
 try{
- const before=await launch(oldPackage);assert.equal(before.version,'0.0.4');await stop();copy(profile,backup);
- proof.passed.push('0.0.4 opens a populated isolated profile; clean shutdown precedes whole-profile backup');
+ const before=await launch(oldPackage);assert.equal(before.version,oldVersion);await stop();copy(profile,backup);
+ proof.passed.push('Prior package opens a populated isolated profile; clean shutdown precedes whole-profile backup');
  // Actually interrupt the copy process; no partially copied application is run.
  const partial=join(root,'interrupted');await mkdir(partial,{mode:0o700});
  const child=spawn('/bin/cp',['-R',join(newPackage,appName),join(partial,appName)],{stdio:'ignore'});
@@ -49,16 +55,16 @@ try{
  const unchanged=await launch(oldPackage);assert.deepEqual(unchanged.state,before.state);await stop();
  proof.passed.push('Actual SIGKILL during candidate copy leaves old application and populated data usable');
  const installed=join(root,'installed');await mkdir(installed,{mode:0o700});copy(join(newPackage,appName),join(installed,appName));
- const upgraded=await launch(installed);assert.equal(upgraded.version,'0.0.5');assert.deepEqual(upgraded.state,before.state);
+ const upgraded=await launch(installed);assert.equal(upgraded.version,newVersion);assert.deepEqual(upgraded.state,before.state);
  // Deliberately create synthetic post-update data so rollback must restore the
  // earlier profile, not merely relaunch old code over the newer state.
  await upgraded.page.evaluate(async projectId=>{const r=await fetch(`/v1/projects/${projectId}/socrates/sessions`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pageContext:'dashboard_project'})});if(!r.ok)throw Error('Synthetic change failed');},before.state.projectId);
- await stop();proof.passed.push('Installed 0.0.5 preserves document IDs and full transcripts and accepts a real new session');
+ await stop();proof.passed.push('Installed candidate preserves document IDs and full transcripts and accepts a real new session');
  await rename(profile,join(root,'retained-post-update-profile'));copy(backup,profile);
  const restored=await launch(oldPackage);assert.deepEqual(restored.state,before.state);await stop();
- proof.passed.push('Whole-profile restore plus 0.0.4 recovers exact pre-update transcripts and sources; newer profile retained separately');
+ proof.passed.push('Whole-profile restore plus prior app recovers exact pre-update transcripts and sources; newer profile retained separately');
  const retry=await launch(installed);assert.deepEqual(retry.state,before.state);await stop();
- proof.passed.push('Retrying 0.0.5 after rollback preserves the restored workspace');
+ proof.passed.push('Retrying the candidate after rollback preserves the restored workspace');
  // Recoverable removal of only our synthetic installed bundle. No global app,
  // Launch Services settings or user data is deleted.
  await rename(join(installed,appName),join(root,'removed-app'));

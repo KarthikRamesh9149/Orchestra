@@ -11,7 +11,7 @@ async function fixture(run){
   try{
     for(const path of requiredPostgresDistributionFiles){await mkdir(dirname(join(root,path)),{recursive:true});await writeFile(join(root,path),'synthetic');}
     await writeFile(join(root,'share/postgres.bki'),'# PostgreSQL 17\nsynthetic');
-    await writeFile(join(root,'share/extension/vector.control'),"default_version = '0.8.6'\n");
+    await writeFile(join(root,'share/extension/vector.control'),`default_version = '${nativeVersions.pgvector}'\n`);
     await run(root);
   }finally{await rm(root,{recursive:true,force:true});}
 }
@@ -30,6 +30,11 @@ test('rejects empty files, symlinked dependencies, and wrong-version data',async
   await writeFile(path,'');await assert.rejects(assertNativePostgresDistribution(root),/postgres.bki/);
   await unlink(path);await symlink(join(root,'share/system_views.sql'),path);await assert.rejects(assertNativePostgresDistribution(root),/postgres.bki/);
   await unlink(path);await writeFile(path,'# PostgreSQL 16\n');await assert.rejects(assertNativePostgresDistribution(root),/version/);
+}));
+
+test('old pgvector control file cannot be shipped with the new binaries',async()=>fixture(async root=>{
+  await writeFile(join(root,'share/extension/vector.control'),"default_version = '0.8.6'\n");
+  await assert.rejects(assertNativePostgresDistribution(root),/distribution version/);
 }));
 
 test('assembly checks source before downloads and checks staged copy before publication',async()=>{

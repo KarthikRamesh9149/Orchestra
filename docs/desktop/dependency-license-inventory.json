@@ -7795,9 +7795,9 @@
     {
       "lock": "apps/desktop/package-lock.json",
       "location": "node_modules/electron",
-      "version": "44.11.4",
+      "version": "44.11.5",
       "license": "MIT",
-      "integrity": "sha512-AJRr0b0F+Kt+iqmdFGLNUhluVHhcNUfFCm6AFXY/l9TmUr+fE6hW4HWVaaJGdhKkZiiVJ7ZgbAo2vQqWJ1C4jQ=="
+      "integrity": "sha512-FgtBBAgWRyT/k2LbXDvlnHQRtc35sfp4UaWjYvktsh2HWWYSnfA/DnYGEOxQUZXpcp4EELj37x5zSSrh585nwg=="
     },
     {
       "lock": "apps/desktop/package-lock.json",
