@@ -1,0 +1,65 @@
+This is Cedar, our sample export project.
+
+Let’s follow one request from evidence to decision.
+
+Cedar already has a CSV export spec.
+
+Socrates names its owner and lists the four fields in this saved OpenAI answer.
+
+Open the citation and you can check those fields in the document, not just in the chat.
+
+Now we know exactly what the baseline says.
+
+Deep Research pulls together a longer view of the project with its sources and open questions.
+
+This saved report is research, though.
+
+It cannot turn a request into an approval.
+
+The Truth Inbox shows what needs review.
+
+Change the view to see work assigned to you, or look back at resolved items.
+
+Let’s review the PDF request.
+
+The change packet shows the recorded wording on the left and the proposed wording on the right.
+
+The reviewer can check the source and what the change affects.
+
+An authorized reviewer can accept the change here.
+
+Finding a document didn’t approve anything.
+
+After saving, the packet shows the approved wording.
+
+The approval has a record of who made it and when.
+
+Open the delivery trace to see what’s still missing.
+
+An accepted requirement is not evidence that the feature shipped.
+
+Project Memory gives you another way into the same work.
+
+Start with the project, choose a change or a source, then follow the branch to its linked records.
+
+Select the document section to read its excerpt underneath the map.
+
+Open the passage and Orchestra takes you to that revision of the source.
+
+The source list still gives you the original document view.
+
+Back in Delivery, prepare the engineering task.
+
+The request is now precise: implement PDF export for Cedar without changing the existing CSV acceptance criteria.
+
+Agent Preflight gathers the relevant project context into a pack with a specific ID.
+
+It keeps approved scope separate from the questions that still need review.
+
+That’s the workflow: find what changed, check the source, make the decision, then hand the approved context to the people or agents doing the work.
+
+Start with one project and one decision that keeps coming up.
+
+Give the team a record they can return to.
+
+Orchestra. Product Brain for High Speed Teams.

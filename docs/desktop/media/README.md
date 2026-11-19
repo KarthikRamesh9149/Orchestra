@@ -1,4 +1,8 @@
-# Private launch assets
+# Orchestra videos
+
+Watch the [current films in the project README](../../../README.md#watch-orchestra), or find their [MP4s, captions and transcripts](PRODUCT-FILM.md).
+
+## Original silent explainer
 
 `Orchestra-launch.mp4`: original 60-second, 1920×1080, 30 fps H.264 silent
 product explainer. The examples are illustrative, not recordings of a live

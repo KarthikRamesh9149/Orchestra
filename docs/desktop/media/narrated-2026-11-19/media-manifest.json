@@ -1,0 +1,24 @@
+{
+  "captureSource": "e8d6c2c602bfdf0bc3b820c7290a9252cfd45185",
+  "width": 1920,
+  "height": 1080,
+  "framesPerSecond": 30,
+  "films": [
+    {
+      "name": "launch",
+      "attachment": "https://github.com/user-attachments/assets/5d189bb8-0307-433b-92e7-6869750fa07f",
+      "seconds": 60,
+      "bytes": 7157230,
+      "sha256": "4ec8fa1eea491fbbaaf5233c650b1a11d3e085c49f6a5ca763d6f312fef5a1e1",
+      "captionCues": 13
+    },
+    {
+      "name": "walkthrough",
+      "attachment": "https://github.com/user-attachments/assets/c08ab2ea-2a30-4df0-83d5-9075798fa05c",
+      "seconds": 180,
+      "bytes": 9872168,
+      "sha256": "ea1ac68d03f243af689902c9c012ac24e6f0d96370479c8251d5c9d72520bc17",
+      "captionCues": 33
+    }
+  ]
+}

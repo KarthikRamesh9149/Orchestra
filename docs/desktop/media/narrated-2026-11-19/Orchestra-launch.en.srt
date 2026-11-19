@@ -1,0 +1,51 @@
+1
+00:00:00,478 --> 00:00:04,522
+A request changes launch scope. Who makes sure the spec catches up?
+
+2
+00:00:05,660 --> 00:00:10,059
+Orchestra gives product teams a queue for changes that need a decision.
+
+3
+00:00:10,289 --> 00:00:13,264
+Here, the team has asked to add PDF export.
+
+4
+00:00:14,409 --> 00:00:18,270
+The change packet puts the previous wording beside the request.
+
+5
+00:00:18,500 --> 00:00:22,591
+The evidence stays attached, so the reviewer can see where it came from.
+
+6
+00:00:23,477 --> 00:00:25,823
+An authorized reviewer makes the call.
+
+7
+00:00:26,053 --> 00:00:29,523
+Now there’s a recorded decision, not just a request.
+
+8
+00:00:30,486 --> 00:00:33,761
+Project Memory shows what the decision connects to.
+
+9
+00:00:33,991 --> 00:00:38,514
+Follow the branch to the underlying document, right down to the passage.
+
+10
+00:00:39,660 --> 00:00:43,723
+With Socrates, a question about the spec gets a cited answer.
+
+11
+00:00:43,953 --> 00:00:47,068
+Open the source to check exactly what the spec says.
+
+12
+00:00:49,660 --> 00:00:54,145
+Use Agent Preflight to package the approved context for your coding agent.
+
+13
+00:00:55,660 --> 00:00:58,776
+Orchestra. Product Brain for High Speed Teams.

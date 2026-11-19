@@ -1,0 +1,131 @@
+1
+00:00:00,660 --> 00:00:03,682
+This is Cedar, our sample export project.
+
+2
+00:00:03,912 --> 00:00:06,969
+Let’s follow one request from evidence to decision.
+
+3
+00:00:08,660 --> 00:00:11,702
+Cedar already has a CSV export spec.
+
+4
+00:00:11,932 --> 00:00:17,418
+Socrates names its owner and lists the four fields in this saved OpenAI answer.
+
+5
+00:00:19,660 --> 00:00:24,959
+Open the citation and you can check those fields in the document, not just in the chat.
+
+6
+00:00:25,189 --> 00:00:27,833
+Now we know exactly what the baseline says.
+
+7
+00:00:30,306 --> 00:00:36,612
+Deep Research pulls together a longer view of the project with its sources and open questions.
+
+8
+00:00:36,842 --> 00:00:39,043
+This saved report is research, though.
+
+9
+00:00:39,273 --> 00:00:41,694
+It cannot turn a request into an approval.
+
+10
+00:00:42,660 --> 00:00:45,266
+The Truth Inbox shows what needs review.
+
+11
+00:00:45,496 --> 00:00:50,124
+Change the view to see work assigned to you, or look back at resolved items.
+
+12
+00:00:50,354 --> 00:00:52,693
+Let’s review the PDF request.
+
+13
+00:00:55,660 --> 00:01:01,027
+The change packet shows the recorded wording on the left and the proposed wording on the right.
+
+14
+00:01:01,257 --> 00:01:04,870
+The reviewer can check the source and what the change affects.
+
+15
+00:01:09,660 --> 00:01:12,624
+An authorized reviewer can accept the change here.
+
+16
+00:01:12,854 --> 00:01:15,397
+Finding a document didn’t approve anything.
+
+17
+00:01:15,627 --> 00:01:18,780
+After saving, the packet shows the approved wording.
+
+18
+00:01:22,660 --> 00:01:25,480
+The approval has a record of who made it and when.
+
+19
+00:01:25,710 --> 00:01:28,574
+Open the delivery trace to see what’s still missing.
+
+20
+00:01:28,804 --> 00:01:32,710
+An accepted requirement is not evidence that the feature shipped.
+
+21
+00:01:35,660 --> 00:01:39,344
+Project Memory gives you another way into the same work.
+
+22
+00:01:39,574 --> 00:01:45,468
+Start with the project, choose a change or a source, then follow the branch to its linked records.
+
+23
+00:01:50,611 --> 00:01:54,775
+Select the document section to read its excerpt underneath the map.
+
+24
+00:01:55,005 --> 00:01:59,680
+Open the passage and Orchestra takes you to that revision of the source.
+
+25
+00:01:59,910 --> 00:02:03,389
+The source list still gives you the original document view.
+
+26
+00:02:04,434 --> 00:02:07,557
+Back in Delivery, prepare the engineering task.
+
+27
+00:02:07,787 --> 00:02:16,566
+The request is now precise: implement PDF export for Cedar without changing the existing CSV acceptance criteria.
+
+28
+00:02:17,660 --> 00:02:23,546
+Agent Preflight gathers the relevant project context into a pack with a specific ID.
+
+29
+00:02:23,776 --> 00:02:27,800
+It keeps approved scope separate from the questions that still need review.
+
+30
+00:02:32,660 --> 00:02:41,742
+That’s the workflow: find what changed, check the source, make the decision, then hand the approved context to the people or agents doing the work.
+
+31
+00:02:45,660 --> 00:02:49,473
+Start with one project and one decision that keeps coming up.
+
+32
+00:02:49,703 --> 00:02:52,237
+Give the team a record they can return to.
+
+33
+00:02:53,660 --> 00:02:56,777
+Orchestra. Product Brain for High Speed Teams.

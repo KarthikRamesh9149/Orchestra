@@ -4,6 +4,9 @@ import {readFile, access, stat} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 
 const root = new URL('../', import.meta.url);
+const currentEdition = new URL('docs/desktop/media/narrated-2026-11-19/', root);
+const readCurrentManifest = async () => JSON.parse(await readFile(new URL('media-manifest.json', currentEdition), 'utf8'));
+
 test('README links resolve locally and distinguish public source from internal packages', async () => {
   const text = await readFile(new URL('README.md', root), 'utf8');
   const links = [...text.matchAll(/(?:href|src)="([^"]+)"|\]\(([^)]+)\)/g)].map(match => match[1] ?? match[2]);
@@ -16,23 +19,59 @@ test('README links resolve locally and distinguish public source from internal p
   assert.match(text, /Public source preview for Apple Silicon Macs/);
   assert.match(text, /No public installer is available\./);
   assert.match(text, /\[Release status\]\(docs\/desktop\/release\/README\.md\)|href="docs\/desktop\/release\/README\.md">Release status/);
-  assert.match(text, /Real OpenAI answers in a sample project; edited timing/);
-  assert.match(text, /\[Recording details\]\(docs\/desktop\/media\/PRODUCT-FILM\.md\)/);
+  assert.match(text, /\[Transcripts and recording details\]\(docs\/desktop\/media\/PRODUCT-FILM\.md\)/);
   assert.doesNotMatch(text, /still being recorded and reviewed/);
   const recordingDetails = await readFile(new URL('docs/desktop/media/PRODUCT-FILM.md', root), 'utf8');
   assert.match(recordingDetails, /evidence-only/);
   assert.match(recordingDetails, /fictional/);
   assert.match(recordingDetails, /not a continuous screen recording or a latency benchmark/);
   assert.match(recordingDetails, /AI-generated/);
+  assert.match(recordingDetails, /saved, real OpenAI output/);
   const embeddedVideos = [...text.matchAll(/^https:\/\/github.com\/user-attachments\/assets\/[a-f0-9-]+$/gm)].map(match => match[0]);
-  assert.deepEqual(embeddedVideos, [
-    'https://github.com/user-attachments/assets/ec16c0f7-5fae-4b9b-ba15-6ce23fe48e7d',
-    'https://github.com/user-attachments/assets/51f3404e-a8e9-4263-9f8a-2cc03149f166',
-  ]);
+  const {films} = await readCurrentManifest();
+  assert.deepEqual(films.map(film => film.name), ['launch', 'walkthrough']);
+  assert.deepEqual(embeddedVideos, films.map(film => film.attachment));
+  assert.equal(new Set(embeddedVideos).size, 2);
   assert(!text.includes('producthunt.com/widgets'), 'No unearned award badges');
 });
 
-test('final narrated films match the reviewed renders and complete transcripts', async () => {
+test('current walkthrough and launch embeds have matching MP4s, captions and transcripts', async () => {
+  const {films} = await readCurrentManifest();
+  const details = await readFile(new URL('../PRODUCT-FILM.md', currentEdition), 'utf8');
+  const time = value => {
+    const [hours, minutes, seconds, millis] = value.split(/[:,]/).map(Number);
+    return 3600 * hours + 60 * minutes + seconds + millis / 1000;
+  };
+  for (const film of films) {
+    const basename = `Orchestra-${film.name}`;
+    for (const suffix of ['mp4', 'en.srt', 'transcript.txt']) {
+      assert(details.includes(`](narrated-2026-11-19/${basename}.${suffix})`), `Missing link: ${basename}.${suffix}`);
+    }
+    const bytes = await readFile(new URL(`${basename}.mp4`, currentEdition));
+    assert.equal(createHash('sha256').update(bytes).digest('hex'), film.sha256);
+    assert.equal(bytes.length, film.bytes);
+    assert(bytes.length < 10_000_000);
+    assert.equal(bytes.subarray(4, 8).toString(), 'ftyp');
+    assert(bytes.indexOf('moov') > 0 && bytes.indexOf('moov') < bytes.indexOf('mdat'), 'MP4 should support fast-start playback');
+    const captions = await readFile(new URL(`${basename}.en.srt`, currentEdition), 'utf8');
+    const transcript = await readFile(new URL(`${basename}.transcript.txt`, currentEdition), 'utf8');
+    const blocks = captions.trim().split(/\r?\n\s*\r?\n/);
+    assert.equal(blocks.length, film.captionCues);
+    let lastEnd = 0;
+    const spoken = blocks.map((block, i) => {
+      const [sequence, interval, ...words] = block.split(/\r?\n/);
+      assert.equal(Number(sequence), i + 1);
+      const [start, end] = interval.split(' --> ').map(time);
+      assert(start >= lastEnd && end > start && end <= film.seconds, `Invalid cue ${sequence}`);
+      lastEnd = end;
+      return words.join(' ');
+    });
+    const normalize = value => value.trim().replace(/\s+/g, ' ');
+    assert.equal(normalize(spoken.join(' ')), normalize(transcript));
+  }
+});
+
+test('archived September films still match their own renders and transcripts', async () => {
   const base = new URL('docs/desktop/media/', root);
   const packet = new URL('narrated-2026-09-22/', base);
   const manifest = JSON.parse(await readFile(new URL('media-manifest.json', packet), 'utf8'));

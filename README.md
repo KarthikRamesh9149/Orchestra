@@ -19,19 +19,19 @@ Your PRD says one thing. A conversation changes the scope. Your coding agent sti
 
 ### Orchestra in 60 seconds
 
-The context problem, the product, and the value of making decisions explicit.
+Someone asks for PDF export. See how the team checks the spec, records its decision, and traces it back to the source.
 
-https://github.com/user-attachments/assets/ec16c0f7-5fae-4b9b-ba15-6ce23fe48e7d
+https://github.com/user-attachments/assets/5d189bb8-0307-433b-92e7-6869750fa07f
 
 <a id="open-the-evidence-behind-an-answer"></a>
 
 ### A three-minute product walkthrough
 
-Follow a launch requirement from its source into Socrates, Deep Research and a scoped agent context pack—with unresolved decisions kept visible.
+Open the passage behind a Socrates answer, compare the proposed change with the original wording, and follow the approval through Project Memory into Agent Preflight.
 
-https://github.com/user-attachments/assets/51f3404e-a8e9-4263-9f8a-2cc03149f166
+https://github.com/user-attachments/assets/c08ab2ea-2a30-4df0-83d5-9075798fa05c
 
-*Sound on for narration. Real OpenAI answers in a sample project; edited timing. [Recording details](docs/desktop/media/PRODUCT-FILM.md).*
+Both films have English captions. [Transcripts and recording details](docs/desktop/media/PRODUCT-FILM.md).
 
 ## Ask a product question. Check the source.
 

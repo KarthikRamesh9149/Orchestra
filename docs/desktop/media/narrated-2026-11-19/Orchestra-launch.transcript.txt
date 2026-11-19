@@ -1,0 +1,25 @@
+A request changes launch scope. Who makes sure the spec catches up?
+
+Orchestra gives product teams a queue for changes that need a decision.
+
+Here, the team has asked to add PDF export.
+
+The change packet puts the previous wording beside the request.
+
+The evidence stays attached, so the reviewer can see where it came from.
+
+An authorized reviewer makes the call.
+
+Now there’s a recorded decision, not just a request.
+
+Project Memory shows what the decision connects to.
+
+Follow the branch to the underlying document, right down to the passage.
+
+With Socrates, a question about the spec gets a cited answer.
+
+Open the source to check exactly what the spec says.
+
+Use Agent Preflight to package the approved context for your coding agent.
+
+Orchestra. Product Brain for High Speed Teams.
