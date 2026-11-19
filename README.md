@@ -3,17 +3,17 @@
 </p>
 
 <p align="center">
-  <a href="#watch-orchestra"><strong>Watch Orchestra</strong></a> &nbsp; · &nbsp;
-  <a href="#start-with-one-project"><strong>Get started</strong></a> &nbsp; · &nbsp;
+  <a href="#orchestra-in-60-seconds"><strong>Watch the 60-second demo</strong></a> &nbsp; · &nbsp;
+  <a href="docs/desktop/release/BUILD.md"><strong>Build on Apple Silicon</strong></a> &nbsp; · &nbsp;
   <a href="docs/desktop/release/README.md">Release status</a> &nbsp; · &nbsp;
   <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
-Your PRD says one thing. A conversation changes the scope. Your coding agent still has yesterday's context.
+A conversation changes the launch scope. Your spec hasn’t caught up.
 
-**Orchestra is a Product Brain for High Speed Teams.** Product managers and engineers use it to find the evidence behind a requirement, review what changed, and give coding agents the context the team actually approved.
+Orchestra shows your team what changed, who approved it, and which source your coding agent should work from.
 
-*Public source preview for Apple Silicon Macs. [Build an internal app from source](docs/desktop/release/BUILD.md). No public installer is available.*
+*Public source preview for Apple Silicon Macs. No public installer is available.*
 
 ## Watch Orchestra
 
@@ -50,15 +50,15 @@ Accepted decisions and ordinary source material remain distinct. Select **Record
 | “What is still missing before we build?” | Evidence gaps, unresolved questions and task-specific Preflight blockers. |
 | “What context should my coding agent use?” | A scoped context pack that the agent retrieves by its exact project and pack ID. |
 
-<p align="center">
-  <img src="docs/desktop/media/orchestra-source-view.png" alt="Orchestra source viewer showing the fictional Northstar launch requirements" width="900" />
-</p>
-
 ## Review a change before it becomes the plan
 
 “Can we add PDF export?” should start a decision, not silently rewrite the requirements.
 
 **Truth Inbox** brings proposed changes and review findings into one place. **Change Packets** connect a proposal to its evidence and affected areas, giving authorised reviewers the context to decide.
+
+<p align="center">
+  <img src="docs/desktop/media/narrated-2026-11-19/cedar-change-packet.png" alt="Cedar Change Packet: CSV is the only approved export format. The request to add PDF is still pending review." width="900" />
+</p>
 
 The decision chain is explicit:
 
@@ -84,7 +84,7 @@ Source selection is explicit. Orchestra does not automatically index your home d
 
 ## Start with one project
 
-After building or receiving an authorised internal package:
+If you don’t have the app yet, [build it on an Apple Silicon Mac](docs/desktop/release/BUILD.md). Once Orchestra is open:
 
 1. Choose **Local** and create a project. No hosted signup is needed.
 2. Add a source document, wait for processing, then open it in Memory.
@@ -122,7 +122,7 @@ git clone https://github.com/KarthikRamesh9149/Orchestra.git
 cd Orchestra
 ```
 
-Follow the [complete build and verification steps](docs/desktop/release/BUILD.md). The packager prints the app path and writes it to `.desktop/latest-package.txt`. The resulting app is for internal evaluation; do not bypass macOS security warnings.
+From that checkout, follow the [build and verification steps](docs/desktop/release/BUILD.md#build-the-app). The packager prints the app path and writes it to `.desktop/latest-package.txt`. The resulting app is for internal evaluation; do not bypass macOS security warnings.
 
 <details>
 <summary><strong>Current qualification and release boundaries</strong></summary>

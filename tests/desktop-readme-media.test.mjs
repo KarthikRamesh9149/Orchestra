@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile, access, stat} from 'node:fs/promises';
+import {readFile, access} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 
 const root = new URL('../', import.meta.url);
@@ -33,6 +33,28 @@ test('README links resolve locally and distinguish public source from internal p
   assert.deepEqual(embeddedVideos, films.map(film => film.attachment));
   assert.equal(new Set(embeddedVideos).size, 2);
   assert(!text.includes('producthunt.com/widgets'), 'No unearned award badges');
+});
+
+test('README offers a demo or a fresh Mac build before the first-project instructions', async () => {
+  const readme = await readFile(new URL('README.md', root), 'utf8');
+  const intro = readme.split('## Watch Orchestra')[0];
+  assert.match(intro, /href="#orchestra-in-60-seconds"/);
+  assert.match(readme, /^### Orchestra in 60 seconds$/m);
+  assert.match(intro, /href="docs\/desktop\/release\/BUILD\.md"/);
+  const buildGuide = await readFile(new URL('docs/desktop/release/BUILD.md', root), 'utf8');
+  assert.match(buildGuide, /git clone https:\/\/github\.com\/KarthikRamesh9149\/Orchestra\.git\ncd Orchestra/);
+  assert.match(buildGuide, /\(\.\.\/\.\.\/\.\.\/README\.md#start-with-one-project\)/);
+  assert.match(readme, /^## Start with one project$/m);
+});
+
+test('the change-review section shows the original pending Cedar packet capture', async () => {
+  const readme = await readFile(new URL('README.md', root), 'utf8');
+  const section = readme.split('## Review a change before it becomes the plan')[1]?.split('\n## ')[0] ?? '';
+  const screenshot = 'docs/desktop/media/narrated-2026-11-19/cedar-change-packet.png';
+  assert(section.includes(`src="${screenshot}"`));
+  const bytes = await readFile(new URL(screenshot, root));
+  assert.equal(createHash('sha256').update(bytes).digest('hex'),
+    'de0fc9e249a2746d7b684460c92265c6a29a899ff4711bf2a570a8889a8bc04e');
 });
 
 test('current walkthrough and launch embeds have matching MP4s, captions and transcripts', async () => {
@@ -110,7 +132,6 @@ test('README walkthrough assets have real media signatures and bounded sizes', a
   const video = await readFile(new URL('orchestra-evidence-walkthrough.mp4', base));
   assert.equal(video.subarray(4, 8).toString(), 'ftyp');
   assert(video.length > 100_000 && video.length < 10_000_000);
-  assert((await stat(new URL('orchestra-source-view.png', base))).size > 10_000);
   const film = await readFile(new URL('Orchestra-product-film.mp4', base));
   assert.equal(film.subarray(4, 8).toString(), 'ftyp');
   assert(film.length > 1_000_000 && film.length < 10_000_000);

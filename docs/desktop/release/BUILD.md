@@ -11,8 +11,16 @@ tools (clang, make, SDK), system Perl/tar and network access to npm, Electron,
 Node, PostgreSQL, OpenSSL and pgvector source distributions. No database needs
 to be installed system-wide. Do not change any existing PostgreSQL installation.
 
-Run from a fresh checkout, not a directory containing customer data or copied
-production environment files:
+Start with a fresh checkout, separate from customer data or production environment files:
+
+```sh
+git clone https://github.com/KarthikRamesh9149/Orchestra.git
+cd Orchestra
+```
+
+## Build the app
+
+Run these commands from the root of that checkout:
 
 ```sh
 npm ci --ignore-scripts
@@ -27,6 +35,8 @@ node scripts/desktop/build-native-mac.mjs
 node scripts/desktop/prepare-native.mjs
 npm --prefix apps/desktop run package
 ```
+
+The packager prints the output directory. Open the app inside it, then [create your first local project](../../../README.md#start-with-one-project).
 
 Install desktop dependencies **before** the root build or typecheck. The root
 TypeScript gate also checks shared download and source-folder tests that import
