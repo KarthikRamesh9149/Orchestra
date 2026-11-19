@@ -1,11 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  Database,
+  BookOpen,
+  Clock3,
   LayoutGrid,
   MessageCircle,
   MonitorSmartphone,
   Moon,
-  Radar,
+  Inbox,
   Workflow,
   Plus,
   Settings2,
@@ -17,7 +18,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { create } from "zustand";
 import Avatar from "../ui/Avatar";
-import { OmniLogo } from "../socrates/OmniLogo";
+import orchestraMark from "../../../../desktop/assets/orchestra-logo.png";
 import { useAuth } from "../../context/AuthContext";
 import { useThemeStore, type ThemeMode } from "../../store/themeStore";
 import { getAppearancePreference, updateAppearancePreference } from "../../lib/api/settings";
@@ -33,14 +34,14 @@ import { useAccessibleDialog } from "../../hooks/useAccessibleDialog";
 
 type RailState = { isExpanded: boolean; setExpanded: (v: boolean) => void };
 export const useRailStore = create<RailState>((set) => ({
-  isExpanded: false,
+  isExpanded: true,
   setExpanded: (isExpanded) => set({ isExpanded }),
 }));
 
 // ─── Dimensions ───────────────────────────────────────────────────────────────
 
 export const COLLAPSED_WIDTH = 52;
-export const EXPANDED_WIDTH = 240;
+export const EXPANDED_WIDTH = 222;
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
@@ -54,33 +55,37 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   {
-    key: "dashboard",
-    Icon: LayoutGrid,
-    route: "/dashboard",
-    label: "Dashboard",
-    checkActive: (p) => p === "/dashboard" || p === "/dashboard/",
+    key: "truth-inbox",
+    Icon: Inbox,
+    route: "/truth-inbox",
+    label: "Truth Inbox",
+    checkActive: (p) => p === "/truth-inbox" || p.startsWith("/truth-inbox/"),
   },
   {
     key: "chat",
     Icon: MessageCircle,
     route: "/chat",
-    label: "Chat",
+    label: "Socrates",
     checkActive: (p) => p === "/chat" || p.startsWith("/chat/"),
   },
   {
     key: "memory",
-    Icon: Database,
+    Icon: BookOpen,
     route: "/memory",
-    label: "Memory",
+    label: "Project Memory",
     checkActive: (p) =>
       p === "/memory" || p === "/memory/" || p.startsWith("/memory/"),
   },
   {
-    key: "truth-inbox",
-    Icon: Radar,
-    route: "/truth-inbox",
-    label: "Truth Inbox",
-    checkActive: (p) => p === "/truth-inbox" || p.startsWith("/truth-inbox/"),
+    key: "timeline", Icon: Clock3, route: "/timeline", label: "Decision log",
+    checkActive: (p) => p === "/timeline" || p === "/timeline/",
+  },
+  {
+    key: "dashboard",
+    Icon: LayoutGrid,
+    route: "/dashboard",
+    label: "Dashboard",
+    checkActive: (p) => p === "/dashboard" || p === "/dashboard/",
   },
   {
     key: "delivery",
@@ -119,7 +124,9 @@ export function NavRail() {
   const { mode: themeMode, setMode } = useThemeStore();
   const [themeBusy, setThemeBusy] = useState(false);
   const { add: showToast } = useToastStore();
-  const conversations = useChatStore((state) => state.conversations);
+  const personalScope = useChatStore(state => !!user && state.identityKey === `${user.id}:${user.orgId}` && state.projectId === activeProject?.id);
+  const savedChats = useChatStore(state=>state.conversations);
+  const conversations = personalScope ? savedChats : [];
   const activeChatId = useChatStore((state) => state.activeId);
   const setChatProject = useChatStore((state) => state.setProject);
   const setActiveId = useChatStore((state) => state.setActiveId);
@@ -141,7 +148,7 @@ export function NavRail() {
     themeMode === "dark" ? "DARK" : themeMode === "auto" ? "AUTO" : "LIGHT";
 
   const displayName = user?.displayName ?? "Account";
-  const chatDestination = activeChatId ? `/chat/${activeChatId}` : "/chat";
+  const chatDestination = personalScope && activeChatId ? `/chat/${activeChatId}` : "/chat";
 
   useEffect(() => {
     if (activeProject?.id) setChatProject(activeProject.id);
@@ -240,30 +247,22 @@ export function NavRail() {
   return (
     <motion.nav
       aria-label="Primary navigation"
-      className="relative flex h-full flex-shrink-0 flex-col"
+      className="orchestra-rail relative flex h-full flex-shrink-0 flex-col"
       animate={{ width: isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH }}
       transition={prefersReducedMotion ? { duration: 0 } : SPRING}
       style={{
-        background: "var(--bg-elevated)",
+        background: "var(--desk-rail)",
         borderRight: "1px solid var(--border-soft)",
       }}
     >
-      {/* ── Brand ── */}
-      <div
-        className="flex h-12 flex-shrink-0 items-center overflow-hidden px-3"
-        style={{ borderBottom: "1px solid var(--border-soft)" }}
-      >
-        <div className="flex h-9 w-[28px] flex-shrink-0 items-center justify-center">
-          <OmniLogo size={14} className="text-[var(--text-default)]" />
-        </div>
-        <LabelIn delay={0.04}>
-          <div className="ml-2 whitespace-nowrap">
-            <p className="font-sans text-[12px] font-semibold leading-none text-[var(--text-default)]">
-              OrchestraOS
-            </p>
-          </div>
-        </LabelIn>
+      <div className="desk-brand" aria-label="Orchestra">
+        <img src={orchestraMark} alt="" width="36" height="36" />
+        {isExpanded && <strong>Orchestra</strong>}
       </div>
+      {isExpanded && activeProject && <div className="desk-project">
+        <BookOpen size={17} aria-hidden="true" /><div><small>{activeProject.organizationName || user?.organization?.name || "Project"}</small>
+        <b title={activeProject.name}>{activeProject.name}</b></div>
+      </div>}
 
       {/* ── Nav items ── */}
       <div className="flex flex-col gap-px px-1.5 pt-2">
@@ -295,7 +294,7 @@ export function NavRail() {
                   "flex h-9 w-full items-center gap-3 rounded-lg transition-colors duration-150",
                   isExpanded ? "px-2.5" : "justify-center",
                   active
-                    ? "bg-[var(--tint-terracotta)]"
+                    ? "bg-[var(--bg-hover)]"
                     : "hover:bg-[var(--bg-hover)]",
                 ].join(" ")}
               >
@@ -303,7 +302,7 @@ export function NavRail() {
                   size={18}
                   strokeWidth={1.6}
                   style={{
-                    color: active ? "var(--terracotta)" : "var(--text-muted)",
+                    color: active ? "var(--text-default)" : "var(--text-muted)",
                     flexShrink: 0,
                   }}
                 />
@@ -311,7 +310,7 @@ export function NavRail() {
                   <span
                     className="whitespace-nowrap font-sans text-[13px]"
                     style={{
-                      color: active ? "var(--terracotta-text)" : "var(--text-default)",
+                      color: active ? "var(--text-default)" : "var(--text-muted)",
                       fontWeight: active ? 500 : 400,
                     }}
                   >
@@ -324,9 +323,9 @@ export function NavRail() {
         })}
       </div>
 
-      {/* ── Chat history sub-list (only on /chat) ── */}
+      {/* Render cached titles only for the authenticated person and selected project. */}
       <AnimatePresence>
-        {isChat && (
+        {(isChat || isExpanded) && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -335,6 +334,7 @@ export function NavRail() {
             className="flex flex-col overflow-hidden px-1.5 pt-1"
             style={{ maxHeight: "calc(100vh - 280px)" }}
           >
+            {isExpanded && <p className="desk-rail-sub">Your conversations</p>}
             {/* New chat button */}
             <button
               type="button"
@@ -366,11 +366,6 @@ export function NavRail() {
 
             {/* Conversation list */}
             <div className="flex-1 overflow-y-auto">
-              {isExpanded && conversations.length > 0 ? (
-                <p className="px-2 pb-1 pt-1 font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--text-faint)]">
-                  Recent chats
-                </p>
-              ) : null}
               {conversations.slice(0, 20).map((conv) => (
                 <div key={conv.id} className="group relative">
                   <NavLink

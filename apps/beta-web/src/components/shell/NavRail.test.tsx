@@ -11,7 +11,7 @@ const apiMocks = vi.hoisted(() => ({
 }));
 
 const authState = vi.hoisted(() => ({
-  user: { displayName: "Karthik" },
+  user: { id:"user-1", orgId:"org-1", displayName: "Karthik" },
   activeProject: { id: "project-1", projectRole: "manager" }
 }));
 
@@ -39,7 +39,7 @@ describe("Socrates conversation navigation", () => {
     }));
     useRailStore.setState({ isExpanded: false });
     apiMocks.deleteSocratesSession.mockClear();
-    useChatStore.setState({
+    useChatStore.setState({ identityKey:"user-1:org-1",
       projectId: "project-1",
       activeId: "chat-1",
       conversations: [
@@ -57,10 +57,18 @@ describe("Socrates conversation navigation", () => {
     );
 
     await waitFor(() => expect(screen.getByRole("button", { name: "Collapse navigation" })).toBeInTheDocument());
-    expect(screen.getByText("Recent chats")).toBeInTheDocument();
+    expect(screen.getByText("Your conversations")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /GitHub launch summary/ })).toHaveAttribute("href", "/chat/chat-1");
     expect(screen.getByRole("link", { name: /Pilot readiness/ })).toHaveAttribute("href", "/chat/chat-2");
     expect(screen.getByRole("button", { name: "New chat" })).toBeInTheDocument();
+  });
+
+  it.each([["another-user:org-1", "project-1"], ["user-1:org-1", "another-project"]])("never previews a different member or project's cached chats", async (identityKey, projectId) => {
+    useRailStore.setState({isExpanded:true});
+    useChatStore.setState({identityKey, projectId});
+    render(<MemoryRouter initialEntries={["/memory"]}><NavRail /></MemoryRouter>);
+    await screen.findByRole("button", {name:"Collapse navigation"});
+    expect(screen.queryByRole("link",{name:/GitHub launch summary/})).not.toBeInTheDocument();
   });
 
   it("deletes a chat only after authoritative confirmation", async () => {

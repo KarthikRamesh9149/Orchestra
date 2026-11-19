@@ -172,6 +172,9 @@ describe("TruthChangePacketPage", () => {
   it("renders the evidence-to-truth boundary and exact packet content", async () => {
     renderPage();
     expect(await screen.findByRole("heading", { name: "Google login before launch" })).toBeVisible();
+    await userEvent.click(screen.getByText("Decision history & interpretation"));
+    await userEvent.click(screen.getByText("Impact & affected areas"));
+    await userEvent.click(screen.getByText("Recorded prior understanding"));
     expect(screen.getByText("Evidence", { exact: true })).toBeVisible();
     expect(screen.getAllByText("Accepted truth", { exact: true }).length).toBeGreaterThan(0);
     expect(screen.getByText("Google login must be included before launch.")).toBeVisible();
@@ -190,9 +193,11 @@ describe("TruthChangePacketPage", () => {
     await user.click(await screen.findByRole("button", { name: "Accept change" }));
     expect(screen.getByText("Confirm this evidence-backed proposal as accepted truth?")).toBeVisible();
     expect(mocks.actOnTruthInboxItem).not.toHaveBeenCalled();
+    mocks.getTruthChangePacket.mockResolvedValue(packet({ proposedChange:{ ...packet().proposedChange!,status:"accepted" }, decision:{required:false,options:[],blockers:[]} }));
     await user.click(screen.getByRole("button", { name: "Confirm" }));
     await waitFor(() => expect(mocks.actOnTruthInboxItem).toHaveBeenCalledWith("project-1", item.id, "accept", {}));
-    expect(await screen.findByText("Inbox destination")).toBeVisible();
+    await waitFor(()=>expect(screen.getByRole("group",{name:"Packet status"})).toHaveTextContent("Accepted"));
+    expect(screen.queryByRole("button",{name:"Accept change"})).not.toBeInTheDocument();
   });
 
   it("does not render acceptance when authoritative context blockers remain", async () => {
@@ -212,9 +217,19 @@ describe("TruthChangePacketPage", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Packet source unavailable");
   });
 
+  it("shows the reviewable packet even when its delivery history cannot load", async () => {
+    mocks.getDecisionDeliveryTrace.mockRejectedValue(new Error("History not available"));
+    renderPage();
+    expect(await screen.findByRole("heading",{name:item.title})).toBeVisible();
+    await userEvent.click(screen.getByText("Decision-to-delivery trace & receipt"));
+    expect(await screen.findByRole("alert")).toHaveTextContent("History not available");
+    expect(screen.getByRole("button",{name:"Retry trace"})).toBeVisible();
+  });
+
   it("describes missing engineering links without obsolete roadmap promises", async () => {
     mocks.getTruthChangePacket.mockResolvedValue(packet({ affected: { productAreas: [], engineering: [], owners: [] } }));
     renderPage();
+    await userEvent.click(await screen.findByText("Impact & affected areas"));
     expect(await screen.findByText("No verified engineering impact links are recorded yet.")).toBeVisible();
     expect(screen.queryByText(/Feature 3 will/)).not.toBeInTheDocument();
   });

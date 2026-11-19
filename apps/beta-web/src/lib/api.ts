@@ -758,9 +758,9 @@ export const cancelSocratesV1 = (
   { method: "POST", body: JSON.stringify({}) }
 );
 
-export const getDocViewer = async (projectId: string, docId: string, target?: { versionId: string; anchorId?: string }): Promise<DocViewerPayload> => {
-  const query = target ? `?${new URLSearchParams({ versionId: target.versionId, ...(target.anchorId ? { anchorId: target.anchorId } : {}) })}` : "";
-  return apiJson<DocViewerPayload>(`/v1/projects/${projectId}/documents/${docId}/view${query}`);
+export const getDocViewer = async (projectId: string, docId: string, target?: { versionId?: string; anchorId?: string }, signal?: AbortSignal): Promise<DocViewerPayload> => {
+  const query = target ? `?${new URLSearchParams({ ...(target.versionId ? { versionId: target.versionId } : {}), ...(target.anchorId ? { anchorId: target.anchorId } : {}) })}` : "";
+  return apiJson<DocViewerPayload>(`/v1/projects/${projectId}/documents/${docId}/view${query}`, { signal });
 };
 
 export const getDocFileBlob = async (projectId: string, docId: string, signal?: AbortSignal): Promise<Blob> => {

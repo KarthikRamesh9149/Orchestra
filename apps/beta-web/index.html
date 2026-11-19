@@ -14,7 +14,8 @@
     <!-- No-flash theme script: apply before first paint -->
     <script>
       (function () {
-        var stored = localStorage.getItem("orchestra-theme") || "auto";
+        var saved = localStorage.getItem("orchestra-theme");
+        var stored = saved === "auto" || saved === "light" ? saved : "dark";
         var resolved =
           stored === "auto"
             ? window.matchMedia("(prefers-color-scheme: dark)").matches

@@ -20,6 +20,7 @@ try{
  const boot=await page.evaluate(()=>window.orchestra.bootstrap());assert(boot.ok&&!boot.data.aiConfigured,'Offline synthetic profile required');
  const projectId=boot.data.workspaces.find(w=>w.current)?.projectId;assert(projectId);
  const title='Synthetic-Corpus-'+Date.now();proof.title=title;
+ await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();
  await page.locator('input[type=file]').first().setInputFiles({name:title+'.pdf',mimeType:'application/pdf',buffer:pdf});
  const start=performance.now();await page.getByRole('button',{name:'Upload',exact:true}).click();
  const sourceActions=page.getByRole('button',{name:new RegExp('^Open actions for '+title+'(?:\\.pdf)?$')});
@@ -47,7 +48,7 @@ try{
  const startRoute=performance.now();await page.goto('orchestra://app/chat/'+session.id);await page.getByPlaceholder('Ask Socrates anything about your project…').waitFor();
  await page.getByText(/Synthetic turn 39:/).first().waitFor();proof.historyUsableMs=performance.now()-startRoute;
  await page.getByPlaceholder('Ask Socrates anything about your project…').fill('Synthetic long-chat draft');
- await page.getByRole('button',{name:'Memory',exact:true}).click();await page.getByRole('button',{name:'Chat',exact:true}).click();
+ await page.getByRole('button',{name:'Project Memory',exact:true}).click();await page.getByRole('button',{name:'Socrates',exact:true}).click();
  assert.equal(await page.getByPlaceholder('Ask Socrates anything about your project…').inputValue(),'Synthetic long-chat draft');
  await page.reload();await page.getByText(/Synthetic turn 39:/).first().waitFor();assert.equal((await history()).length,80);
  proof.passed.push('long-chat rendering, navigation, draft restoration and reload preserve all messages');

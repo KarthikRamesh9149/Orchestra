@@ -55,6 +55,7 @@ export function resolveOpenTarget(target: OpenTarget | undefined): ResolvedOpenT
   if (targetType === "document_section" && id("documentId")) {
     return {
       href: internalUrl(`/memory/docs/${encodeURIComponent(id("documentId")!)}/view`, {
+        versionId: id("versionId") ?? id("documentVersionId"),
         anchor: id("anchorId"),
         page: typeof ref.pageNumber === "number" ? String(ref.pageNumber) : null,
       }),

@@ -10,7 +10,7 @@ describe("Truth Inbox API", () => {
   it("uses one cacheable aggregate read with cursor filters", async () => {
     apiJson.mockResolvedValue({ items: [] });
     await getTruthInbox("project-1", { category: "spec_drift", status: "active", owner: "me", cursor: "next-page", limit: 25 });
-    expect(apiJson).toHaveBeenCalledWith("/v1/projects/project-1/truth-inbox?category=spec_drift&status=active&owner=me&cursor=next-page&limit=25");
+    expect(apiJson).toHaveBeenCalledWith("/v1/projects/project-1/truth-inbox?category=spec_drift&status=active&owner=me&cursor=next-page&limit=25", { signal: undefined });
   });
 
   it("encodes cross-source item ids and preserves structured action input", async () => {
@@ -25,6 +25,6 @@ describe("Truth Inbox API", () => {
   it("loads one cacheable packet contract for an encoded item id", async () => {
     apiJson.mockResolvedValue({ id: "packet-1" });
     await getTruthChangePacket("project-1", "proposal:change one");
-    expect(apiJson).toHaveBeenCalledWith("/v1/projects/project-1/truth-inbox/proposal%3Achange%20one/packet");
+    expect(apiJson).toHaveBeenCalledWith("/v1/projects/project-1/truth-inbox/proposal%3Achange%20one/packet", { signal: undefined });
   });
 });

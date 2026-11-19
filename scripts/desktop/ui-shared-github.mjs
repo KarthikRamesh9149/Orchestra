@@ -32,7 +32,7 @@ try{
  await page.getByRole('status').filter({hasText:'KarthikRamesh9149/Orchestra linked.'}).waitFor();
  await page.reload();await page.getByRole('button',{name:'Sync GitHub',exact:true}).waitFor();
  proof.passed.push('explicit authorized repository link and authoritative reload through native transport');
- await page.goto('orchestra://app/memory');await page.getByRole('button',{name:'Open actions for Orchestra Desktop Synthetic Drive Qualification',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();
+ await page.goto('orchestra://app/memory?view=sources');await page.getByRole('button',{name:'Open actions for Orchestra Desktop Synthetic Drive Qualification',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();
  await page.getByRole('article').filter({hasText:'exactly seven reviewers'}).waitFor();
  proof.passed.push('real imported Drive content opens through packaged shared viewer');
  assert.deepEqual(proof.errors,[]);await page.screenshot({path:join(profile,'shared-github-final.png')});

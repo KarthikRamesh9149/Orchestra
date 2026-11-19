@@ -30,6 +30,7 @@ try{
  const boot=await page.evaluate(()=>window.orchestra.bootstrap());assert(boot.ok&&!boot.data.aiConfigured);
  assert.equal(await query("SELECT count(*) FROM desktop_jobs WHERE status IN ('queued','running')"),'0','Synthetic fixture must be idle');
  const title='Synthetic-Crash-'+Date.now();proof.title=title;
+ await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();
  await page.locator('input[type=file]').first().setInputFiles({name:title+'.pdf',mimeType:'application/pdf',buffer:pdf});
  await page.getByRole('button',{name:'Upload',exact:true}).click();
  let job;

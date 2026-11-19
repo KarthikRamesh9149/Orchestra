@@ -24,8 +24,8 @@ function applyTheme(mode: ThemeMode) {
 }
 
 export const useThemeStore = create<ThemeStore>((set, get) => ({
-  mode: "auto",
-  resolved: "light",
+  mode: "dark",
+  resolved: "dark",
 
   setMode: (mode) => {
     localStorage.setItem("orchestra-theme", mode);
@@ -42,7 +42,8 @@ export const useThemeStore = create<ThemeStore>((set, get) => ({
 
 /** Call once at app startup — reads localStorage, applies theme, wires system preference listener. */
 export function initializeTheme() {
-  const stored = (localStorage.getItem("orchestra-theme") as ThemeMode) ?? "auto";
+  const saved = localStorage.getItem("orchestra-theme");
+  const stored: ThemeMode = saved === "light" || saved === "auto" ? saved : "dark";
   const resolved = applyTheme(stored);
   useThemeStore.setState({ mode: stored, resolved });
 

@@ -24,6 +24,14 @@ it("[R11] distinguishes extracted pages from original evidence and reports downl
   expect(mocks.getDocFileBlob).toHaveBeenCalledWith("project", "doc", expect.any(AbortSignal));
 });
 
+it("honours anchor query links from Socrates without scrolling to the first page", async () => {
+  render(<MemoryRouter initialEntries={["/memory/docs/doc/view?versionId=reviewed&anchor=one"]}><Routes>
+    <Route path="/memory/docs/:docId/view" element={<LiveDocViewerPage />} />
+  </Routes></MemoryRouter>);
+  await screen.findByText("Viewing the cited revision.");
+  expect(mocks.getDocViewer).toHaveBeenCalledWith("project","doc",{versionId:"reviewed",anchorId:"one"});
+});
+
 it("opens the cited version and section without offering the latest file as that revision", async () => {
   render(<MemoryRouter initialEntries={["/memory/docs/doc/view?versionId=cited-revision#one"]}><Routes>
     <Route path="/memory/docs/:docId/view" element={<LiveDocViewerPage />} />

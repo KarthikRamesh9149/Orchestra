@@ -126,6 +126,7 @@ try{
   const fileName=fixture.title+'.'+(fixture.fileType??'pdf'),bytes=fixture.fileType==='docx'?await docx(fixture.pages.flat()):await pdf(fixture.title,fixture.pages),filePath=join(fixtures,fileName);await writeFile(filePath,bytes,{mode:0o600});
   const began=performance.now();let uploaded;
   if(fixture.key==='current'){
+   await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();
    await page.locator('input[type=file]').first().setInputFiles(filePath);await page.getByRole('button',{name:'Upload',exact:true}).click();
    await page.getByRole('button',{name:'Open actions for '+fixture.title,exact:true}).waitFor();
    const listed=await api(`/v1/projects/${projectId}/documents`);uploaded={documentId:listed.find(d=>d.title===fixture.title)?.id};
@@ -234,7 +235,7 @@ try{
  const noExtraCalls=proof.afterAi.providerRequests;
  await app.close();app=undefined;
  for(let i=0;i<20;i++){
-  const began=await launch();await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:/^Open actions for /}).first().waitFor();
+  const began=await launch();await page.waitForURL('**/memory',{timeout:180000});await page.locator('.branch-topics button').first().waitFor();
   await page.evaluate(()=>new Promise(done=>requestAnimationFrame(()=>requestAnimationFrame(done))));proof.coldStarts.push({sample:i+1,usableMs:Math.round(performance.now()-began)});
   console.log('Launch',i+1,proof.coldStarts.at(-1).usableMs,'ms');await checkpoint();if(i===19)break;await app.close();app=undefined;
  }
@@ -246,12 +247,12 @@ try{
  const persistedRendered=(await api(`/v1/projects/${projectId}/socrates/sessions/${renderedSession}/messages`)).find(m=>m.role==='assistant');assert(persistedRendered&&isDeepStrictEqual(persistedRendered.answerPayloadJson,proof.renderedAnswer.authoritativePayload),'Rendered AI payload changed after restart');
  composer=page.getByPlaceholder('Ask Socrates anything about your project…');await page.goto(proof.conversation);await composer.waitFor();assert.equal(await composer.inputValue(),'Unsent packaged qualification draft');
  record('vectors, archived state, exact AI answers/citations, completed research and unsent draft survive 20 restarts without new AI calls');
- await page.goto('orchestra://app/memory');await page.getByRole('tab',{name:/^Source Docs/}).click();await page.getByRole('button',{name:'Open actions for Cedar Current Specification',exact:true}).waitFor();
+ await page.goto('orchestra://app/memory?view=sources');await page.getByRole('tab',{name:/^Source Docs/}).click();await page.getByRole('button',{name:'Open actions for Cedar Current Specification',exact:true}).waitFor();
  record('original named document remains available in the full Source Docs view after restart');
  await page.evaluate(()=>{globalThis.__layout=[];globalThis.__layoutObserver=new PerformanceObserver(list=>{for(const e of list.getEntries())if(!e.hadRecentInput)globalThis.__layout.push(e.value);});globalThis.__layoutObserver.observe({type:'layout-shift',buffered:false});});
- for(let i=0;i<30;i++)for(const name of ['Memory','Chat']){
+ for(let i=0;i<30;i++)for(const name of ['Project Memory','Socrates']){
   const began=performance.now();await page.getByRole('button',{name,exact:true}).click();
-  if(name==='Memory')await page.getByRole('button',{name:/^Open actions for /}).first().waitFor();else {await composer.waitFor();await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled;});}
+  if(name==='Project Memory')await page.locator('.branch-topics button').first().waitFor();else {await composer.waitFor();await page.waitForFunction(()=>{const input=document.querySelector('textarea');return input&&!input.disabled;});}
   await page.evaluate(()=>new Promise(done=>requestAnimationFrame(done)));proof.routes.push({name,usableMs:Math.round(performance.now()-began)});
  }
  for(let i=0;i<30;i++){

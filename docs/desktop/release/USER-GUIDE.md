@@ -15,6 +15,16 @@ correct workspace. That server owns authorization and accepted changes. Connecti
 does not publish local data. Shared offline caching defaults off; enabled caches
 are bounded metadata-only, read-only and expire. Reconnect to make shared changes.
 
+## Review a project change
+
+1. Open **Truth Inbox → Needs review**. Read the proposed wording next to the recorded wording. **Assigned to me** narrows the queue to your work; **Filter** includes snoozed and deferred items.
+2. Choose **Review change** to inspect the Change Packet. Follow its evidence before accepting or rejecting. Approval requires the right project role. A proposed change, generated summary, or older document is not itself proof of approval.
+3. On the saved packet, open the decision history or delivery trace when you need it. Acceptance does not mean the change has shipped.
+
+In **Project Memory → Branches**, pick a change, document or conversation to see its linked records. Select a document passage to read it in context at the cited revision. The branch view is an index of loaded records, not an exhaustive search of every source. **Source list** retains upload, retry, download and the complete paginated document list.
+
+Choose **Socrates** to ask a question or return to one of your own chats. The answer and its primary source are shown first; additional citations and response details can be expanded. New users start in dark mode; an explicit light or system preference takes precedence.
+
 ## Add an API key
 
 In a local workspace, open **Settings → Desktop AI**:

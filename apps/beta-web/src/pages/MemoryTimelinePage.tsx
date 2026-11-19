@@ -1,5 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { MemoryPage } from "./MemoryPage";
 import { TimelinePage } from "./TimelinePage";
@@ -10,13 +9,9 @@ export function MemoryTimelinePage() {
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const requestedPanel: Panel = location.pathname.startsWith("/timeline") || searchParams.get("panel") === "timeline" ? "timeline" : "memory";
-  const [active, setActive] = useState<Panel>(requestedPanel);
-
-  useEffect(() => setActive(requestedPanel), [requestedPanel]);
+  const active: Panel = location.pathname.startsWith("/timeline") || searchParams.get("panel") === "timeline" ? "timeline" : "memory";
 
   const selectPanel = (panel: Panel) => {
-    setActive(panel);
     const next = new URLSearchParams(searchParams);
     next.delete("panel");
     if (panel === "timeline") navigate({ pathname: "/timeline", search: next.toString() ? `?${next}` : "" });
@@ -27,7 +22,7 @@ export function MemoryTimelinePage() {
     <div className="flex h-full flex-col overflow-hidden" style={{ background: "var(--bg-page)" }}>
       {/* Toggle bar */}
       <div
-        className="flex flex-shrink-0 items-center gap-1 px-5 py-3"
+        className="sr-only focus-within:not-sr-only focus-within:flex focus-within:px-4 focus-within:py-2"
         style={{ borderBottom: "1px solid var(--border-soft)" }}
       >
         <div
@@ -74,31 +69,7 @@ export function MemoryTimelinePage() {
 
       {/* Panels */}
       <div className="relative min-h-0 flex-1 overflow-hidden">
-        <AnimatePresence mode="wait" initial={false}>
-          {active === "memory" ? (
-            <motion.div
-              key="memory"
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -24 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-              className="absolute inset-0 overflow-hidden"
-            >
-              <MemoryPage />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="timeline"
-              initial={{ opacity: 0, x: 24 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 24 }}
-              transition={{ duration: 0.18, ease: "easeOut" }}
-              className="absolute inset-0 overflow-hidden"
-            >
-              <TimelinePage />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {active === "memory" ? <MemoryPage /> : <TimelinePage />}
       </div>
     </div>
   );

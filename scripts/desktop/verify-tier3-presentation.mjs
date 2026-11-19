@@ -63,6 +63,7 @@ try {
 
   phase = 'chat';
   const name = 'Desktop-Pilot-Requirements';
+  await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();
   await page.locator('input[type=file]').first().setInputFiles({name: name + '.pdf', mimeType: 'application/pdf', buffer: await createDesktopSmokePdf()});
   await page.getByRole('button', {name: 'Upload', exact: true}).click();
   await page.getByRole('button', {name: 'Open actions for ' + name, exact: true}).waitFor({timeout: 60_000});

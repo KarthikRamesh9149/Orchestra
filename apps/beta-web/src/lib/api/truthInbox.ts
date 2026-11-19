@@ -25,6 +25,13 @@ export type TruthInboxItem = {
   id: string;
   sourceType: "suggestion" | "proposal" | "fde" | "agent_drift" | "connector";
   sourceId: string;
+  comparison?: {
+    status: string;
+    prior: string | null;
+    requested: string;
+    acceptedWording?: string | null;
+    decision: { id: string; statement: string } | null;
+  };
   category: string;
   title: string;
   description: string;
@@ -170,7 +177,7 @@ export type TruthChangePacket = {
   limitations: string[];
 };
 
-export function getTruthInbox(projectId: string, filters: TruthInboxFilters = {}) {
+export function getTruthInbox(projectId: string, filters: TruthInboxFilters = {}, signal?: AbortSignal) {
   const query = new URLSearchParams();
   if (filters.category) query.set("category", filters.category);
   if (filters.severity) query.set("severity", filters.severity);
@@ -180,11 +187,11 @@ export function getTruthInbox(projectId: string, filters: TruthInboxFilters = {}
   if (filters.cursor) query.set("cursor", filters.cursor);
   query.set("limit", String(filters.limit ?? 30));
   if (filters.refresh) query.set("refresh", "true");
-  return apiJson<TruthInboxResponse>(`/v1/projects/${projectId}/truth-inbox?${query}`);
+  return apiJson<TruthInboxResponse>(`/v1/projects/${projectId}/truth-inbox?${query}`, { signal });
 }
 
-export function getTruthChangePacket(projectId: string, itemId: string) {
-  return apiJson<TruthChangePacket>(`/v1/projects/${projectId}/truth-inbox/${encodeURIComponent(itemId)}/packet`);
+export function getTruthChangePacket(projectId: string, itemId: string, signal?: AbortSignal) {
+  return apiJson<TruthChangePacket>(`/v1/projects/${projectId}/truth-inbox/${encodeURIComponent(itemId)}/packet`, { signal });
 }
 export function actOnTruthInboxItem(
   projectId: string,

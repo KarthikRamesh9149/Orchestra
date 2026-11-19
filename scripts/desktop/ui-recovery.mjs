@@ -12,7 +12,7 @@ const app=await _electron.launch({executablePath:join(packageRoot,'Orchestra Des
 const page=await app.firstWindow();page.setDefaultTimeout(15000);
 const results={packageRoot,profile,passed:[],errors:[]},record=name=>{results.passed.push(name);console.log('PASS',name);};page.on('pageerror',e=>results.errors.push(e.message));
 try{
- await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
+ await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
  // A real upload whose transport is stopped before the request is sent. The
  // normal retry must reconcile the operation ID before sending the file once.
  const pdf=await createDesktopRecoveryPdf();const name='Recovery-'+Date.now();
@@ -29,7 +29,7 @@ try{
  results.cancellationOutcome=terminal.includes('Response stopped.')?'cancelled':'completed before cancellation';
  assert.equal(page.url(),stopped);record('cancellation/completion race reaches an honest durable terminal state: '+results.cancellationOutcome);
  await page.goto('orchestra://app/truth-inbox');await page.getByRole('heading',{name:'Truth Inbox',exact:true}).waitFor();
- await page.evaluate(()=>{const original=window.fetch;window.fetch=(input,init)=>String(input).includes('/truth-inbox')?Promise.reject(new TypeError('Synthetic transport outage')):original(input,init);});await page.getByRole('button',{name:'Refresh',exact:true}).click();await page.getByRole('alert').waitFor();record('transport failure remains visible instead of becoming an empty success');await page.reload();await page.getByRole('heading',{name:'Truth Inbox',exact:true}).waitFor();record('reload recovers after a transient transport failure');
+ await page.evaluate(()=>{const original=window.fetch;window.fetch=(input,init)=>String(input).includes('/truth-inbox')?Promise.reject(new TypeError('Synthetic transport outage')):original(input,init);});await page.getByRole('button',{name:'Refresh review queue',exact:true}).click();await page.getByRole('alert').waitFor();record('transport failure remains visible instead of becoming an empty success');await page.reload();await page.getByRole('heading',{name:'Truth Inbox',exact:true}).waitFor();record('reload recovers after a transient transport failure');
  assert.deepEqual(results.errors,[]);await page.screenshot({path:join(profile,'recovery.png'),animations:'disabled'});
 }catch(error){results.failure=String(error);console.log('FAIL',String(error),await page.locator('body').innerText());throw error;}
 finally{await writeFile(join(profile,'recovery.json'),JSON.stringify(results,null,2));await app.close();}

@@ -65,10 +65,13 @@ describe("TruthInboxPage", () => {
     mocks.actOnTruthInboxItem.mockResolvedValue({ item: activeItem, outcome: null, action: "assign_owner" });
   });
 
-  it("shows the unified authoritative queue without changing the existing visual language", async () => {
+  it("leads with the queue and preserves the evidence, approval and secondary controls", async () => {
     render(<MemoryRouter><TruthInboxPage /></MemoryRouter>);
     expect(await screen.findByRole("heading", { name: "Truth Inbox" })).toBeVisible();
     expect(screen.getByText("Google login before launch")).toBeVisible();
+    expect(screen.getByRole("link",{name:"Review change"})).toHaveAttribute("href","/truth-inbox/proposal%3Aproposal-1");
+    await userEvent.click(screen.getByText("Queue coverage and safeguards"));
+    await userEvent.click(screen.getByText("Evidence & actions"));
     expect(screen.getByText(/Only an authorized truth approver/)).toBeVisible();
     expect(screen.getByRole("button", { name: "Ask Socrates" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Accept change" })).toBeVisible();
@@ -81,6 +84,7 @@ describe("TruthInboxPage", () => {
     mocks.actOnTruthInboxItem.mockResolvedValue({ item: assigned, outcome: null, action: "assign_owner" });
     const user = userEvent.setup();
     render(<MemoryRouter><TruthInboxPage /></MemoryRouter>);
+    await user.click(await screen.findByText("Evidence & actions"));
     const owner = await screen.findByRole("combobox", { name: "Owner for Google login before launch" });
     await user.selectOptions(owner, "user-1");
     await waitFor(() => expect(mocks.actOnTruthInboxItem).toHaveBeenCalledWith("project-1", activeItem.id, "assign_owner", { assignedUserId: "user-1" }));
@@ -91,6 +95,7 @@ describe("TruthInboxPage", () => {
   it("requires explicit confirmation before accepting truth", async () => {
     const user = userEvent.setup();
     render(<MemoryRouter><TruthInboxPage /></MemoryRouter>);
+    await user.click(await screen.findByText("Evidence & actions"));
     await user.click(await screen.findByRole("button", { name: "Accept change" }));
     expect(screen.getByText("Confirm this evidence-backed change as accepted truth?")).toBeVisible();
     expect(mocks.actOnTruthInboxItem).not.toHaveBeenCalled();
@@ -102,6 +107,7 @@ describe("TruthInboxPage", () => {
     mocks.actOnTruthInboxItem.mockRejectedValue(new Error("Truth approver required"));
     const user = userEvent.setup();
     render(<MemoryRouter><TruthInboxPage /></MemoryRouter>);
+    await user.click(await screen.findByText("Evidence & actions"));
     await user.click(await screen.findByRole("button", { name: "Reject change" }));
     await user.click(screen.getByRole("button", { name: "Confirm" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Truth approver required");

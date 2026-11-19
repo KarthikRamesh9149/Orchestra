@@ -59,6 +59,13 @@ export type TruthInboxItem = {
   sourceType: TruthInboxSourceType;
   sourceId: string;
   sourceFingerprint: string | null;
+  comparison?: {
+    status: string;
+    prior: string | null;
+    requested: string;
+    acceptedWording?: string | null;
+    decision: { id: string; statement: string } | null;
+  };
   category: TruthInboxCategory;
   title: string;
   description: string;

@@ -131,23 +131,23 @@
 
 [data-theme="dark"] {
   /* Surfaces — DEEP warm black, uniform */
-  --bg-page: #0F0D0B;
+  --bg-page: #141210;
   --bg-card: #1A1714;
   --bg-inset: #221E1A;
-  --bg-hover: #2A2521;
+  --bg-hover: #25201c;
   --bg-elevated: #1F1B17;
 
   /* Borders — subtle, just barely visible */
-  --border-soft: #2A2521;
+  --border-soft: #39322b;
   --border-stronger: #3A342E;
   --border-divider: #1F1B17;
 
   /* Text */
   --text-default: #F5EFE6;
-  --text-muted: #A79F94;
+  --text-muted: #B5AA9D;
   --text-faint: #8D867D;
   --text-inverse: #0F0D0B;
-  --terracotta-text: #F68A65;
+  --terracotta-text: #E69571;
   --teal-text: #55C9BE;
   --amber-text: #F0B86A;
   --red-text: #F28C8C;

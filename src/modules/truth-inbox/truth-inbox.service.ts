@@ -468,7 +468,7 @@ export class TruthInboxService {
       ...(!hasDocumentImpact ? ["An affected LiveDoc or document section must be linked before acceptance."] : []),
       ...(!hasBrainImpact ? ["An affected Product Brain node must be linked before acceptance."] : [])
     ];
-    return this.baseItem({
+    const item = this.baseItem({
       projectId,
       sourceType: "proposal",
       sourceId: proposal.id,
@@ -490,6 +490,17 @@ export class TruthInboxService {
       canCreateReview: false,
       acceptReady: hasSourceEvidence && hasDocumentImpact && hasBrainImpact
     });
+    const decision = proposal.decisionRecord;
+    const requested = firstWording(proposal.newUnderstandingJson) ?? proposal.summary;
+    return { ...item, comparison: {
+      status: proposal.status,
+      prior: firstWording(proposal.oldUnderstandingJson),
+      requested,
+      acceptedWording: proposal.status === "accepted" && proposal.acceptedAt && proposal.acceptedBy ? requested : null,
+      decision: decision?.projectId === projectId && decision.status === "accepted" && decision.statement?.trim()
+        ? { id: decision.id, statement: decision.statement } : null
+    } };
+
   }
 
   private fromFde(projectId: string, finding: any, state: InboxStateRow | undefined, canMutate: boolean, canApprove: boolean): TruthInboxItem {
@@ -897,6 +908,16 @@ function normalizeSuggestionStatus(status: string): TruthInboxStatus {
   return ["dismissed", "resolved", "converted_to_review", "converted_to_timeline"].includes(status)
     ? status as TruthInboxStatus
     : "active";
+}
+
+// The queue carries a compact preview from the same authorized rows, not a packet request per item.
+function firstWording(value: unknown): string | null {
+  if (typeof value === "string") return value.trim().slice(0, 300) || null;
+  const row = asRecord(value);
+  for (const key of ["statement", "requirement", "wording", "summary", "description", "text", "understanding"]) {
+    if (typeof row[key] === "string" && row[key].trim()) return row[key].trim().slice(0, 300);
+  }
+  return null;
 }
 
 function evidenceFromProposalLink(link: any): TruthInboxEvidence {

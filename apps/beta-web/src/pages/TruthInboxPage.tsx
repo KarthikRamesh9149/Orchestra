@@ -1,12 +1,11 @@
 import {
-  AlertTriangle,
-  CheckCircle2,
+  ArrowRight,
   ChevronDown,
   Clock3,
   ExternalLink,
   MessageCircle,
   RefreshCw,
-  ShieldCheck,
+  SlidersHorizontal,
   UserRound
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -44,12 +43,6 @@ const STATUS_OPTIONS = ["active", "deferred", "snoozed", "dismissed", "resolved"
 
 function messageOf(error: unknown) {
   return error instanceof Error ? error.message : "The Truth Inbox request failed.";
-}
-
-function severityClass(severity: string) {
-  if (severity === "critical") return "bg-[var(--tint-red)] text-[var(--red-text)]";
-  if (severity === "high") return "bg-[var(--tint-amber)] text-[var(--amber-text)]";
-  return "bg-[var(--bg-inset)] text-[var(--text-muted)]";
 }
 
 function actionLabel(action: TruthInboxAction) {
@@ -104,6 +97,11 @@ function defaultUntil(hours: number) {
 
 export function TruthInboxPage() {
   const { activeProject, user } = useAuth();
+  return <ScopedInbox key={JSON.stringify([user?.id, user?.orgId, activeProject?.id])} />;
+}
+
+function ScopedInbox() {
+  const { activeProject, user } = useAuth();
   const projectId = activeProject?.id ?? null;
   const navigate = useNavigate();
   const showToast = useToastStore((state) => state.add);
@@ -112,6 +110,7 @@ export function TruthInboxPage() {
   const [state, setState] = useState<LoadState>("loading");
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<TruthInboxFilters>({});
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [composer, setComposer] = useState<{ itemId: string; mode: ComposerMode } | null>(null);
   const [note, setNote] = useState("");
@@ -185,7 +184,10 @@ export function TruthInboxPage() {
     }
   }, [busy, filters, load, navigate, projectId, scopeKey, showToast, user?.id]);
 
-  const summary = payload?.summary ?? { active: 0, critical: 0, awaitingDecision: 0, assignedToMe: 0 };
+  const summary = payload?.summary;
+  const view = filters.status === "resolved" ? "resolved" : filters.owner === "me" && (!filters.status || filters.status === "active") ? "mine" : !filters.status || filters.status === "active" ? "needs" : "";
+  const activeFilters = [filters.category, filters.source, filters.severity, filters.owner && filters.owner !== "me", filters.status && !["active", "resolved"].includes(filters.status)].filter(Boolean).length;
+  const selectView = (key: string) => setFilters((prior) => ({ ...prior, status: key === "resolved" ? "resolved" : undefined, owner: key === "mine" ? "me" : undefined, cursor: undefined }));
   const degradedSources = useMemo(() => Object.values(payload?.sourceStates ?? {}).filter((source) => source.state === "degraded"), [payload]);
 
   const openComposer = (itemId: string, mode: Exclude<ComposerMode, null>) => {
@@ -199,42 +201,21 @@ export function TruthInboxPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-[var(--bg)] px-4 py-5 sm:px-7 lg:px-10" aria-labelledby="truth-inbox-heading">
-      <div className="mx-auto max-w-6xl">
-        {payload?.limitations.filter((text) => text.startsWith("Scope-limited") || text.startsWith("Full source history")).map((text) => <p key={text} role="note" className="mb-3 text-xs text-[var(--text-muted)]">{text}</p>)}
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]">Decision intelligence</p>
-            <h1 id="truth-inbox-heading" className="mt-1 font-sans text-2xl font-semibold text-[var(--text-default)]">Truth Inbox</h1>
-            <p className="mt-1 max-w-2xl text-sm text-[var(--text-muted)]">Changes and issues that need review.</p>
+    <div className="desk-scroll" aria-labelledby="truth-inbox-heading">
+      <div className="desk-page desk-inbox">
+        <header className="desk-head"><h1 id="truth-inbox-heading">Truth Inbox</h1></header>
+        <div className="desk-toolbar">
+          <div className="desk-views" role="group" aria-label="Queue views">
+            {([["needs", "Needs review", summary?.active], ["mine", "Assigned to me", summary?.assignedToMe], ["resolved", "Resolved", payload ? payload.countsByStatus.resolved ?? 0 : undefined]] as const).map(([key, label, count]) =>
+              <button key={key} type="button" aria-pressed={view === key} onClick={() => selectView(key)}>{label}{typeof count === "number" && <small>{count}</small>}</button>)}
           </div>
-          <button type="button" onClick={() => void load(true, false)} disabled={state === "loading" || state === "refreshing"} className="flex items-center gap-2 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)] disabled:opacity-50">
-            <RefreshCw size={14} aria-hidden="true" /> {state === "loading" || state === "refreshing" ? "Refreshing…" : "Refresh"}
-          </button>
-        </div>
-
-        <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Truth Inbox summary">
-          {[
-            { label: "Needs attention", value: summary.active, Icon: AlertTriangle },
-            { label: "Critical", value: summary.critical, Icon: ShieldCheck },
-            { label: "Awaiting decision", value: summary.awaitingDecision, Icon: CheckCircle2 },
-            { label: "Assigned to me", value: summary.assignedToMe, Icon: UserRound }
-          ].map(({ label, value, Icon }) => (
-            <div key={label} className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-3">
-              <div className="flex items-center justify-between gap-2"><p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">{label}</p><Icon size={13} className="text-[var(--text-faint)]" aria-hidden="true" /></div>
-              <p className="mt-1 text-xl font-semibold text-[var(--text-default)]">{value}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-4 flex items-start gap-2 rounded-lg border border-[#2A9D8F]/20 bg-[#2A9D8F]/5 p-3 text-xs text-[var(--text-default)]">
-          <ShieldCheck size={15} className="mt-0.5 flex-shrink-0 text-[#2A9D8F]" aria-hidden="true" />
-          <p>Evidence, interpretation, and proposed changes remain separate. Only an authorized truth approver can accept a review item; no Inbox action silently updates Product Brain or LiveDoc.</p>
+          <div className="desk-tools"><button type="button" aria-label="Refresh review queue" title="Refresh" onClick={() => void load(true)} disabled={state === "loading" || state === "refreshing"}><RefreshCw size={14} /></button>
+          <button type="button" aria-expanded={filtersOpen} aria-controls="inbox-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={14} /> Filter{activeFilters ? ` (${activeFilters})` : ""}</button></div>
         </div>
 
         {degradedSources.length > 0 ? <div role="status" className="mt-3 rounded-lg border border-[var(--amber-text)]/20 bg-[var(--tint-amber)] p-3 text-xs text-[var(--amber-text)]">{degradedSources.map((source) => `${source.label}: ${source.detail ?? "degraded"}`).join(" · ")}</div> : null}
 
-        <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5" aria-label="Truth Inbox filters">
+        <div id="inbox-filters" hidden={!filtersOpen}><div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5" aria-label="Truth Inbox filters">
           <FilterSelect label="Category" value={filters.category ?? ""} onChange={(value) => updateFilter("category", value)} options={CATEGORY_OPTIONS} />
           <FilterSelect label="Severity" value={filters.severity ?? ""} onChange={(value) => updateFilter("severity", value)} options={["low", "medium", "high", "critical"]} />
           <FilterSelect label="Status" value={filters.status ?? ""} onChange={(value) => updateFilter("status", value)} options={STATUS_OPTIONS} />
@@ -242,31 +223,28 @@ export function TruthInboxPage() {
           <FilterSelect label="Owner" value={filters.owner ?? ""} onChange={(value) => updateFilter("owner", value)} options={["me", "unassigned", ...(payload?.members.map((member) => member.userId) ?? [])]} labels={Object.fromEntries(payload?.members.map((member) => [member.userId, member.displayName]) ?? [])} />
         </div>
 
+        </div>
         {error ? <div role="alert" className="mt-4 rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error}</div> : null}
         {state === "loading" ? <p role="status" className="mt-8 text-sm text-[var(--text-muted)]">Loading review queue…</p> : null}
         {state === "failed" ? <button type="button" onClick={() => void load(true, false)} className="mt-4 rounded-lg bg-[var(--terracotta)] px-3 py-2 text-xs text-white">Try again</button> : null}
         {state === "empty" ? <p role="status" className="mt-8 rounded-xl border border-[var(--border-soft)] p-5 text-sm text-[var(--text-muted)]">Nothing currently matches these filters. Deferred, snoozed, and completed items remain available through Status.</p> : null}
 
         {items.length > 0 ? <section className="mt-7" aria-labelledby="truth-queue-heading">
-          <div className="flex items-center justify-between gap-3"><h2 id="truth-queue-heading" className="text-base font-semibold text-[var(--text-default)]">Review queue</h2><p className="font-mono text-[9px] uppercase text-[var(--text-faint)]">{items.length} shown</p></div>
-          <div className="mt-3 grid gap-3">
-            {items.map((item) => (
-              <article key={item.id} className="rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-4">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap gap-2">
-                      <span className={`rounded-full px-2 py-1 font-mono text-[9px] uppercase ${severityClass(item.severity)}`}>{item.severity}</span>
-                      <span className="rounded-full bg-[var(--bg-inset)] px-2 py-1 font-mono text-[9px] uppercase text-[var(--text-muted)]">{item.category.replace(/_/g, " ")}</span>
-                      <span className="rounded-full bg-[var(--bg-inset)] px-2 py-1 font-mono text-[9px] uppercase text-[var(--text-muted)]">{item.status.replace(/_/g, " ")}</span>
-                      <span className="rounded-full bg-[var(--bg-inset)] px-2 py-1 font-mono text-[9px] uppercase text-[var(--text-muted)]">{item.sourceType.replace(/_/g, " ")}</span>
-                    </div>
-                    <h3 className="mt-2 text-sm font-semibold text-[var(--text-default)]">{item.title}</h3>
-                    <p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{item.description}</p>
-                  </div>
-                  <span className="font-mono text-[10px] text-[var(--text-faint)]">{Math.round(item.confidence * 100)}% confidence</span>
+          <h2 className="sr-only" id="truth-queue-heading">Review queue</h2>
+          <div className="desk-queue">
+            {items.map((item,index) => (
+              <article key={item.id} className="desk-row">
+                <div className="desk-row-main">
+                  <p className="desk-meta">{item.sourceType.replace(/_/g, " ")} <span aria-hidden="true">—</span> {item.category.replace(/_/g, " ")}
+                    {item.severity === "critical" && <strong>Critical</strong>}{item.status !== "active" && <span>{item.comparison?.status ?? item.status.replace(/_/g, " ")}</span>}</p>
+                  <h3><Link to={`/truth-inbox/${encodeURIComponent(item.id)}`}>{item.title}</Link></h3>
+                  <QueueComparison item={item} />
                 </div>
-
-                <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-[var(--text-muted)]">
+                <div className="desk-row-action"><Link className={index === 0 ? "desk-primary" : "desk-link"} to={`/truth-inbox/${encodeURIComponent(item.id)}`}>{item.status === "resolved" ? "View decision" : item.sourceType === "proposal" ? "Review change" : "Review signal"} <ArrowRight size={14} /></Link>
+                  <small>Owner · {item.owner?.displayName ?? "Unassigned"}</small>
+                </div>
+                <details className="desk-row-more"><summary>Evidence &amp; actions <ChevronDown size={12} /></summary>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--text-muted)]">
                   <label className="flex items-center gap-2">
                     <UserRound size={13} aria-hidden="true" />
                     <span className="sr-only">Owner for {item.title}</span>
@@ -287,12 +265,11 @@ export function TruthInboxPage() {
 
                 <details className="mt-3 group">
                   <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-medium text-[var(--text-default)]">View evidence ({item.evidence.length}) <ChevronDown size={13} className="transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
-                  {item.evidence.length === 0 ? <p className="mt-2 rounded-lg bg-[var(--bg-inset)] p-2 text-xs text-[var(--text-muted)]">No directly openable citation is stored. Review the limitation before acting.</p> : <ul className="mt-2 space-y-2">{item.evidence.map((evidence) => <EvidenceRow key={evidence.id} evidence={evidence} />)}</ul>}
+                  {item.evidence.length === 0 ? <p className="mt-2 rounded-lg bg-[var(--bg-inset)] p-2 text-xs text-[var(--text-muted)]">No directly openable citation is stored. Review the limitation before acting.</p> : <ul className="mt-2 space-y-2">{item.evidence.map((evidence) => <EvidenceRow key={evidence.id} item={item} evidence={evidence} />)}</ul>}
                   {item.limitations.length > 0 ? <p className="mt-2 text-[11px] text-[var(--text-faint)]">Limitation: {item.limitations.join(" ")}</p> : null}
                 </details>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <Link to={`/truth-inbox/${encodeURIComponent(item.id)}`} className="flex items-center gap-1 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs font-medium text-[var(--terracotta-text)]">Open change packet <ExternalLink size={13} aria-hidden="true" /></Link>
                   {item.capabilities.ask_socrates ? <ActionButton item={item} action="ask_socrates" busy={busy} onClick={() => void execute(item, "ask_socrates")} icon={<MessageCircle size={13} aria-hidden="true" />} /> : null}
                   {item.capabilities.create_review_item ? <ActionButton item={item} action="create_review_item" busy={busy} onClick={() => void execute(item, "create_review_item")} primary /> : null}
                   {item.capabilities.accept ? <ActionButton item={item} action="accept" busy={busy} onClick={() => openComposer(item.id, "accept")} primary /> : null}
@@ -322,24 +299,52 @@ export function TruthInboxPage() {
                     });
                   }}
                 /> : null}
+                </details>
               </article>
             ))}
           </div>
         </section> : null}
 
         {payload?.page.hasMore ? <div className="mt-5 flex justify-center"><button type="button" disabled={state === "refreshing"} onClick={() => void load(false, true, payload.page.nextCursor ?? undefined)} className="rounded-lg border border-[var(--border-soft)] px-4 py-2 text-xs text-[var(--text-default)] disabled:opacity-50">{state === "refreshing" ? "Loading…" : "Load more"}</button></div> : null}
-        {payload?.generatedAt ? <p className="mt-5 pb-4 text-center font-mono text-[9px] uppercase text-[var(--text-faint)]">Authoritative snapshot {new Date(payload.generatedAt).toLocaleString()}</p> : null}
+        {payload && <details className="desk-safeguards"><summary>Queue coverage and safeguards</summary>
+          <p>Only an authorized truth approver can accept a change. A source or suggestion is not an approval.</p>
+          {payload.limitations.map(text => <p key={text}>{text}</p>)}<p>Updated {new Date(payload.generatedAt).toLocaleString()}</p></details>}
       </div>
     </div>
   );
+}
+
+function inboxEvidenceLink(item: TruthInboxItem, evidence: TruthInboxItem["evidence"][number]) {
+  if (!evidence.openTarget) return null;
+  if (item.sourceType === "proposal" && evidence.openTarget.targetType === "live_doc_section") {
+    // The queue only has the section ID; the packet resolves the document, revision and anchor.
+    return { href: `/truth-inbox/${encodeURIComponent(item.id)}#affected-areas`, label: "Linked document sections", external: false };
+  }
+  return resolveOpenTarget({ id: evidence.id, sourceType: evidence.source, ...evidence.openTarget });
+}
+
+function QueueComparison({ item }: {item: TruthInboxItem}) {
+  const c = item.comparison;
+  const accepted = c?.status === "accepted";
+  const title = c?.decision ? (c.status === "superseded" ? "Earlier decision" : "Accepted decision")
+    : accepted ? "Accepted wording" : "Recorded before";
+  const secondTitle = accepted ? "Previously" : c?.status === "rejected" ? "Not accepted" : c?.status === "superseded" ? "Superseded" : "Requested";
+  const primary = item.evidence.find(e => inboxEvidenceLink(item, e));
+  const target = primary && inboxEvidenceLink(item, primary);
+  return <dl className="desk-comparison">
+    {c && <div><dt>{title}</dt><dd>{c.decision?.statement || (accepted ? c.acceptedWording : c.prior) || (accepted ? "No accepted wording linked" : "No earlier wording recorded")}
+      {c.decision && <Link className="desk-citation" to={`/truth-inbox/${encodeURIComponent(item.id)}#decision-evidence`}>Decision record ↗</Link>}</dd></div>}
+    <div><dt>{c ? secondTitle : item.sourceType === "proposal" ? "Proposal" : "Signal"}</dt><dd>{c ? (accepted ? c.prior ?? "No earlier wording recorded" : c.requested) : item.description}
+      {!accepted && primary && target && (target.external ? <a className="desk-citation" href={target.href} rel="noreferrer" target="_blank">{target.label === "Linked document sections" ? target.label : primary.label} ↗</a> : <Link className="desk-citation" to={target.href}>{target.label === "Linked document sections" ? target.label : primary.label} ↗</Link>)}</dd></div>
+  </dl>;
 }
 
 function FilterSelect({ label, value, options, labels = {}, onChange }: { label: string; value: string; options: string[]; labels?: Record<string, string>; onChange: (value: string) => void }) {
   return <label className="text-[10px] text-[var(--text-muted)]"><span className="mb-1 block font-mono uppercase tracking-[0.1em]">{label}</span><select aria-label={label} value={value} onChange={(event) => onChange(event.target.value)} className="w-full rounded-lg border border-[var(--border-soft)] bg-[var(--bg-elevated)] px-2 py-2 text-xs text-[var(--text-default)]"><option value="">{label === "Status" ? "Needs attention" : `All ${label.toLowerCase()}`}</option>{options.map((option) => <option key={option} value={option}>{labels[option] ?? option.replace(/_/g, " ")}</option>)}</select></label>;
 }
 
-function EvidenceRow({ evidence }: { evidence: TruthInboxItem["evidence"][number] }) {
-  const resolved = evidence.openTarget ? resolveOpenTarget({ id: evidence.id, sourceType: evidence.source, ...evidence.openTarget }) : null;
+function EvidenceRow({ item, evidence }: { item: TruthInboxItem; evidence: TruthInboxItem["evidence"][number] }) {
+  const resolved = inboxEvidenceLink(item, evidence);
   return <li className="rounded-lg bg-[var(--bg-inset)] p-2 text-xs text-[var(--text-muted)]"><div className="flex flex-wrap items-start justify-between gap-2"><span className="font-medium text-[var(--text-default)]">{evidence.label}</span>{resolved ? resolved.external ? <a href={resolved.href} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[var(--terracotta-text)]">{resolved.label}<ExternalLink size={11} aria-hidden="true" /></a> : <Link to={resolved.href} className="text-[var(--terracotta-text)]">{resolved.label}</Link> : null}</div>{evidence.excerpt ? <p className="mt-1 leading-5">{evidence.excerpt}</p> : null}{evidence.occurredAt ? <p className="mt-1 font-mono text-[9px] text-[var(--text-muted)]">{new Date(evidence.occurredAt).toLocaleString()}</p> : null}</li>;
 }
 

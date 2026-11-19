@@ -8,6 +8,7 @@ import { initializeTheme } from "./store/themeStore";
 import { Toaster } from "./components/ui/Toaster";
 import { warmStartupCode } from "./lib/performance/startupCode";
 import "./index.css";
+import "./decision-desk.css";
 
 // Initialize theme before first render (handles localStorage + system pref)
 initializeTheme();

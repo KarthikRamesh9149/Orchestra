@@ -7,7 +7,7 @@ import tailwind from "@tailwindcss/postcss";
 import { chromium } from "@playwright/test";
 
 // These values were captured from Orchestra's Tailwind 3 stylesheet before the
-// compiler upgrade. Run in a real browser: jsdom cannot evaluate CSS layers.
+// compiler upgrade, except the approved decision-desk dark border token. Run in a real browser: jsdom cannot evaluate CSS layers.
 const root = new URL("../", import.meta.url);
 let browser;
 let css;
@@ -72,7 +72,7 @@ for (const theme of ["light", "dark"]) {
   test(`${theme}: transparent outline, visible focus and honest disabled controls survive`, async () => {
     await probe('<label>Email<input id="email" class="outline-none border" placeholder="Email"></label><button id="button">Continue</button><button id="disabled" disabled class="disabled:opacity-40 disabled:cursor-not-allowed">Busy</button>', async (page) => {
       assert.deepEqual(await page.locator("#email").evaluate((el) => { const s = getComputedStyle(el); return [s.outlineWidth, s.outlineStyle, s.outlineColor, s.outlineOffset, s.borderTopColor, getComputedStyle(el, "::placeholder").color]; }),
-        ["2px", "solid", "rgba(0, 0, 0, 0)", "2px", theme === "light" ? "rgb(229, 231, 235)" : "rgb(42, 37, 33)", "rgb(156, 163, 175)"]);
+        ["2px", "solid", "rgba(0, 0, 0, 0)", "2px", theme === "light" ? "rgb(229, 231, 235)" : "rgb(57, 50, 43)", "rgb(156, 163, 175)"]);
       await page.locator("#email").focus();
       assert.deepEqual(await page.locator("#email").evaluate((el) => { const s = getComputedStyle(el); return [s.outlineWidth, s.outlineStyle, s.outlineColor, s.outlineOffset]; }),
         ["2px", "solid", "rgba(184, 84, 61, 0.4)", "2px"]);

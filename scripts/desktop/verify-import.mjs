@@ -275,6 +275,20 @@ for (const file of ['src/modules/deep-research/service.ts', 'tests/fix22-deep-re
   adjustments[file]+=' Pre-launch citation recheck: active project link, repository and installation are required for GitHub previews.';
 }
 adjustments['apps/beta-web/src/components/shell/NavRail.tsx']+=' Pre-launch: keep chat history timestamps readable on the selected inset surface in both themes.';
+// The desktop decision desk changes presentation, not existing approval authority.
+for (const [files, reason] of [
+  [['apps/beta-web/index.html','apps/beta-web/src/index.css','apps/beta-web/src/main.tsx','apps/beta-web/src/store/themeStore.ts','src/modules/me/me.service.ts'],
+   'Decision desk: dark first run with no flash; preserve explicit light and system preferences.'],
+  [['apps/beta-web/src/components/shell/AppShell.tsx','apps/beta-web/src/components/shell/NavRail.tsx','apps/beta-web/src/components/shell/NavRail.test.tsx','apps/beta-web/src/pages/ChatPage.tsx'],
+   'Decision desk: branded project-scoped navigation, private recent conversations, and an answer-first reading column.'],
+  [['src/modules/truth-inbox/truth-inbox.service.ts','src/modules/truth-inbox/truth-inbox.types.ts','tests/truth-inbox-service.test.ts',
+    'apps/beta-web/src/lib/api/truthInbox.ts','apps/beta-web/src/lib/api.truthInbox.test.ts','apps/beta-web/src/pages/TruthInboxPage.tsx','apps/beta-web/src/pages/TruthInboxPage.test.tsx',
+    'apps/beta-web/src/pages/TruthChangePacketPage.tsx','apps/beta-web/src/pages/TruthChangePacketPage.test.tsx'],
+   'Decision desk: compare recorded and requested wording; distinguish a same-project decision record and a human-approved proposal from requested wording; retain original actions and authorizations.'],
+  [['apps/beta-web/src/pages/MemoryPage.tsx','apps/beta-web/src/pages/MemoryPage.test.tsx','apps/beta-web/src/pages/MemoryTimelinePage.tsx',
+    'apps/beta-web/src/pages/LiveDocViewerPage.tsx','apps/beta-web/src/pages/LiveDocViewerPage.test.tsx','apps/beta-web/src/lib/api.ts','apps/beta-web/src/lib/socratesPresentation.ts','src/modules/truth-inbox/truth-change-packet.service.ts'],
+   'Decision desk: real linked records in Project Memory, original document revisions and exact passage targets, with the full source list still available.']
+]) for (const file of files) adjustments[file]=[adjustments[file],reason].filter(Boolean).join(' ');
 for(const entry of manifest.files){
  if(entry.disposition!=='included')continue;
  if(!fs.existsSync(entry.path))throw new Error(`Missing imported source: ${entry.path}`);

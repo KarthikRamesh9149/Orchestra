@@ -19,18 +19,18 @@ try{
  const page=await app.firstWindow();page.setDefaultTimeout(20000);
  page.on('pageerror',e=>results.errors.push(e.message));
  await page.waitForURL('**/memory',{timeout:180000});
- await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
+ await page.getByRole('button',{name:/Transfer-Requirement.*Document/i}).first().waitFor();
  results.populatedLaunchMs=performance.now()-start;
  await page.evaluate(()=>{window.__step7Shifts=[];new PerformanceObserver(list=>{for(const e of list.getEntries())if(!e.hadRecentInput)window.__step7Shifts.push({at:e.startTime,value:e.value});}).observe({type:'layout-shift',buffered:false});});
  for(let n=0;n<30;n++){
-  for(const name of ['Chat','Memory']){
+  for(const name of ['Socrates','Project Memory']){
    const began=performance.now();await page.getByRole('button',{name,exact:true}).click();
-   if(name==='Memory')await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
+   if(name==='Project Memory')await page.getByRole('button',{name:/Transfer-Requirement.*Document/i}).first().waitFor();
    else await page.getByPlaceholder('Ask Socrates anything about your project…').waitFor();
    results.samples.routes.push({route:name,ms:performance.now()-began});
   }
  }
- await page.getByRole('button',{name:'Chat',exact:true}).click();
+ await page.getByRole('button',{name:'Socrates',exact:true}).click();
  const composer=page.getByPlaceholder('Ask Socrates anything about your project…');
  const draft=await composer.inputValue();
  try{

@@ -107,7 +107,7 @@ export class MeService {
     await this.findActiveUser(actor);
     const prefs = await this.prisma.userNotificationPreference.upsert({
       where: { userId: actor.userId },
-      create: { userId: actor.userId, orgId: actor.orgId, ...DEFAULT_NOTIFICATION_PREFERENCES },
+      create: { userId: actor.userId, orgId: actor.orgId, appearanceTheme: "dark", ...DEFAULT_NOTIFICATION_PREFERENCES },
       update: {}
     });
     return this.toNotificationDto(prefs);
@@ -124,6 +124,7 @@ export class MeService {
         userId: actor.userId,
         orgId: actor.orgId,
         ...DEFAULT_NOTIFICATION_PREFERENCES,
+        appearanceTheme: "dark",
         ...input,
         securityAlerts: true
       },
@@ -147,7 +148,7 @@ export class MeService {
     await this.findActiveUser(actor);
     const preference = await this.prisma.userNotificationPreference.upsert({
       where: { userId: actor.userId },
-      create: { userId: actor.userId, orgId: actor.orgId, ...DEFAULT_NOTIFICATION_PREFERENCES },
+      create: { userId: actor.userId, orgId: actor.orgId, appearanceTheme: "dark", ...DEFAULT_NOTIFICATION_PREFERENCES },
       update: {},
       select: { appearanceTheme: true, updatedAt: true }
     });

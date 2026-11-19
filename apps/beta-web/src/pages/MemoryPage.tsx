@@ -17,8 +17,9 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SiSlack } from "react-icons/si";
-import { TbChevronDown } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { GitBranch, List, Plus } from "lucide-react";
+import { MemoryBranches } from "../components/memory/MemoryBranches";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Avatar from "../components/ui/Avatar";
 import { OperationalStateNotice } from "../components/ui/OperationalStateNotice";
 import { SavedResearchSection } from "../components/memory/SavedResearchSection";
@@ -50,13 +51,6 @@ import { safeExternalUrl } from "../lib/socratesPresentation";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type MemoryTab = "all" | "source-docs" | "communications";
-
-const SEARCH_PLACEHOLDERS = [
-  "Ask anything about project documents or discussions…",
-  "What did we decide about auth?",
-  "Summarize this week's spec changes",
-  "Who owns the assignment module?",
-];
 
 const isEvidenceConnector = (connector: CommunicationConnector) => !(
   connector.provider === "gmail" && connector.readiness?.deferredFeatures?.includes("gmail_mailbox_sync_disabled_for_invitation_sender")
@@ -387,7 +381,7 @@ function DocMenu({ doc, onRemove, onDownload, onRetry }: { doc: Doc; onRemove: (
                 <Icon size={14} strokeWidth={1.7} className="text-[var(--text-muted)]" /> {label}
               </button>
             ))}
-            <div className="h-px bg-[#F2EDE6]" />
+            <div className="h-px bg-[var(--border-soft)]" />
             <button type="button" onClick={() => { onRemove(); setOpen(false); }} className="flex w-full items-center gap-3 px-4 py-2.5 font-sans text-[13px] text-[#C84A4A] hover:bg-[rgba(200,74,74,0.04)]">
               <X size={14} strokeWidth={1.7} /> Remove from memory
             </button>
@@ -558,7 +552,7 @@ function CommunicationsPanel({
             Connect a Slack workspace to search selected discussions. Orchestra stores synchronized message content and retrieval indexes; the originals remain in Slack.
           </p>
         </div>
-        <div className="w-full rounded-xl border border-[rgba(200,74,31,0.2)] bg-[#FBEEE8] px-5 py-4">
+        <div className="w-full rounded-xl border border-[rgba(200,74,31,0.2)] bg-[var(--tint-terracotta)] px-5 py-4">
           <div className="flex items-center justify-between">
             <div>
               <p className="font-sans text-[13px] font-medium text-[var(--text-default)]">No Slack workspace connected yet</p>
@@ -677,7 +671,7 @@ function CommunicationsPanel({
         </div>
       )}
 
-      <div className="mt-8 w-full rounded-xl border border-[rgba(200,74,31,0.2)] bg-[#FBEEE8] px-5 py-4">
+      <div className="mt-8 w-full rounded-xl border border-[rgba(200,74,31,0.2)] bg-[var(--tint-terracotta)] px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-sans text-[13px] font-medium text-[var(--text-default)]">Manage connectors</p>
@@ -695,6 +689,11 @@ function CommunicationsPanel({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function MemoryPage() {
+  const { activeProject } = useAuth();
+  return <MemoryWorkspace key={activeProject?.id ?? "no-project"}/>;
+}
+
+function MemoryWorkspace() {
   const navigate = useNavigate();
   const { activeProject, projects, selectProject } = useAuth();
   const projectId = activeProject?.id;
@@ -711,8 +710,13 @@ export function MemoryPage() {
   const [activeTab, setActiveTab] = useState<MemoryTab>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchFocused, setSearchFocused] = useState(false);
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [workspaceMenuOpen, setWorkspaceMenuOpen] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const sourceView = params.get("view") === "sources" || params.has("thread") || params.has("message") || params.has("file") || params.has("section");
+  const selectView = (sources: boolean) => {
+    const next = new URLSearchParams(params);
+    if (sources) next.set("view","sources"); else { next.delete("view"); next.delete("thread"); next.delete("message"); next.delete("file"); next.delete("section"); }
+    setParams(next, {replace:true});
+  };
   const { toastState, showToast, dismissToast } = useToast();
   const [nextDocumentPage, setNextDocumentPage] = useState(2);
   const [hasMoreDocuments, setHasMoreDocuments] = useState(false);
@@ -821,17 +825,10 @@ export function MemoryPage() {
     return () => { cancelled = true; };
   }, [projectId]);
 
-  // Cycle search placeholder
-  useEffect(() => {
-    if (searchFocused || searchQuery) return;
-    const t = setInterval(() => setPlaceholderIndex((i) => (i + 1) % SEARCH_PLACEHOLDERS.length), 4000);
-    return () => clearInterval(t);
-  }, [searchFocused, searchQuery]);
-
   // CMD+K focus
   useEffect(() => {
     const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); searchRef.current?.focus(); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); (searchRef.current ?? document.querySelector<HTMLInputElement>(".branch-search input"))?.focus(); }
     };
     document.addEventListener("keydown", h);
     return () => document.removeEventListener("keydown", h);
@@ -938,59 +935,27 @@ export function MemoryPage() {
   const commsCount = connectors.length;
 
   return (
-    <section className="relative h-full overflow-y-auto" style={{ background: "var(--bg-page)" }}>
-      <div className="flex min-h-full">
-        <div className="min-w-0 flex-1 px-4 py-6 sm:px-8 sm:py-8 lg:px-10 lg:py-10">
-          <div className="max-w-[900px]">
-
-            {/* Page header */}
-            <div className="mb-8 flex flex-col items-start gap-4 sm:flex-row sm:justify-between">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]">Memory</p>
-                <h1 className="mt-2 font-sans text-[36px] font-medium leading-none tracking-tight text-[var(--text-default)] sm:text-[46px] lg:text-[52px]">Project memory</h1>
-                <div className="mt-3 flex flex-col gap-1.5">
-                  <span className="h-[3px] w-20 rounded-full bg-[#C84A1F]" />
-                  <span className="h-[3px] w-10 rounded-full bg-[var(--border-soft)]" />
-                </div>
-                <p className="mt-4 max-w-[600px] font-sans text-[14px] leading-relaxed text-[var(--text-muted)]">
-                  Upload project docs, connect supported communication sources, and ask Socrates from one shared project memory.
-                </p>
-              </div>
-              <p className="flex-shrink-0 font-mono text-[10px] text-[var(--text-muted)] sm:mt-2">
-                {docsLoading || commsLoading ? "Loading memory…" : `${docs.length} ${docs.length === 1 ? "doc" : "docs"} · ${commsCount} ${commsCount === 1 ? "connector" : "connectors"}`}
-              </p>
-            </div>
-
-            {/* Workspace selector (multi-project) */}
-            {projects.length > 1 && (
-              <div className="relative mb-8 max-w-[460px]">
-                <p className="font-mono text-[11px] tracking-[0.16em] text-[var(--text-muted)]">WORKSPACE</p>
-                <button type="button" onClick={() => setWorkspaceMenuOpen((o) => !o)}
-                  className="mt-2 flex w-full items-center justify-between gap-4 rounded-2xl border border-[var(--border-soft)] bg-[var(--bg-card)] px-4 py-3.5 font-sans text-[14px] text-[var(--text-default)] shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-colors hover:border-[#C84A1F]/40">
-                  <span className="truncate">{activeProject?.name ?? "Choose workspace"}</span>
-                  <TbChevronDown className={`h-4 w-4 flex-shrink-0 text-[var(--terracotta-text)] transition-transform ${workspaceMenuOpen ? "rotate-180" : ""}`} />
-                </button>
-                <AnimatePresence>
-                  {workspaceMenuOpen && (
-                    <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.14 }}
-                      className="absolute z-30 mt-2 w-full overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-2 shadow-[0_18px_50px_rgba(0,0,0,0.12)]">
-                      {projects.map((p) => (
-                        <button key={p.id} type="button" onClick={() => { void selectProject(p.id); setWorkspaceMenuOpen(false); }}
-                          className={`block w-full rounded-xl px-3 py-2.5 text-left font-sans text-[13px] transition-colors ${activeProject?.id === p.id ? "bg-[#1A1714] text-white" : "text-[#3D3834] hover:bg-[var(--bg-inset)]"}`}>
-                          {p.name}
-                        </button>
-                      ))}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
+    <section className="desk-scroll" aria-labelledby="memory-title">
+      <div className="desk-page desk-memory">
+        <header className="desk-head desk-memory-head"><div><h1 id="memory-title">Project Memory</h1><p>Trace each change to the records behind it.</p></div>
+          <div className="desk-switch" role="group" aria-label="Memory view">
+            <button aria-pressed={!sourceView} onClick={()=>selectView(false)}><GitBranch size={14}/>Branches</button>
+            <button aria-pressed={sourceView} onClick={()=>selectView(true)}><List size={14}/>Source list</button>
+          </div>
+        </header>
+        {projects.length > 1 && <label className="desk-project-picker">Project <select aria-label="Choose project" value={projectId || ""} onChange={event=>void selectProject(event.target.value)}>{projects.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>}
+        {!sourceView && projectId && <>
+          {(docsState.state !== "ready" && docsState.state !== "empty" && docsState.state !== "loading") && <OperationalStateNotice value={docsState}/>}
+          {(commsState.state !== "ready" && commsState.state !== "empty" && commsState.state !== "loading") && <OperationalStateNotice value={commsState}/>}
+          <MemoryBranches key={projectId} projectId={projectId} projectName={activeProject?.name || "Project"} documents={docs} threads={threads} loading={docsLoading || commsLoading} onSources={()=>selectView(true)}/>
+          <button className="desk-secondary" type="button" onClick={()=>selectView(true)}><Plus size={14}/>Add documents</button>
+        </>}
+        {sourceView && <div className="desk-sources">
+            <p className="desk-source-count">{docsLoading || commsLoading ? "Loading memory…" : `${docs.length} ${docs.length===1?"doc":"docs"} · ${commsCount} ${commsCount===1?"connector":"connectors"}`}</p>
             {/* Upload card */}
-            <div className="mb-8 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-card)] p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] sm:p-7">
+            <div className="mb-8 desk-upload">
               <div className="mb-5 flex flex-col items-start gap-3 sm:flex-row sm:justify-between">
                 <div>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Upload</p>
                   <p className="mt-1.5 font-sans text-[18px] font-medium text-[var(--text-default)]">Add project documents</p>
                   <p className="mt-1.5 font-sans text-[13px] leading-relaxed text-[var(--text-muted)]">
                     Socrates uses evidence from your selected, available project sources.
@@ -1019,7 +984,8 @@ export function MemoryPage() {
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setSearchFocused(false)}
                 onKeyDown={handleSearchKey}
-                placeholder={SEARCH_PLACEHOLDERS[placeholderIndex]}
+                aria-label="Search sources or ask Socrates"
+                placeholder="Find a document, or press Enter to ask Socrates…"
                 className="min-w-0 flex-1 bg-transparent font-sans text-[14px] text-[var(--text-default)] outline-none placeholder:text-[var(--text-faint)] placeholder:transition-all"
               />
               <kbd className="flex-shrink-0 rounded-md border border-[var(--border-soft)] bg-[var(--bg-inset)] px-2.5 py-1 font-mono text-[11px] text-[var(--text-muted)]">⌘K</kbd>
@@ -1122,8 +1088,7 @@ export function MemoryPage() {
               )}
             </AnimatePresence>
 
-          </div>
-        </div>
+        </div>}
       </div>
       <Toast message={toastState.message} visible={toastState.visible} type={toastState.type} onClose={dismissToast} />
     </section>

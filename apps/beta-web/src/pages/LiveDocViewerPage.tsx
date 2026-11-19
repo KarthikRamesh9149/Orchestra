@@ -44,7 +44,7 @@ export function LiveDocViewerPage() {
   const { docId = "" } = useParams();
   const location = useLocation();
   const versionId = new URLSearchParams(location.search).get("versionId");
-  const citedAnchor = versionId ? safeAnchor(location.hash) : null;
+  const citedAnchor = safeAnchor(location.hash) || new URLSearchParams(location.search).get("anchor");
   const projectId = useWorkspaceStore((state) => state.activeProjectId);
   const selectionChat = useAddSelectionToChat();
   const [payload, setPayload] = useState<DocViewerPayload | null>(null);
@@ -59,8 +59,8 @@ export function LiveDocViewerPage() {
     setError(null);
     setDownloading(false);
     if (!projectId) return;
-    const request = versionId
-      ? getDocViewer(projectId, docId, { versionId, ...(citedAnchor ? { anchorId: citedAnchor } : {}) })
+    const request = versionId || citedAnchor
+      ? getDocViewer(projectId, docId, { ...(versionId ? { versionId } : {}), ...(citedAnchor ? { anchorId: citedAnchor } : {}) })
       : getDocViewer(projectId, docId);
     void request
       .then((nextPayload) => {
@@ -79,19 +79,19 @@ export function LiveDocViewerPage() {
   }, [docId, projectId, versionId, citedAnchor]);
 
   useEffect(() => {
-    if (!payload || !location.hash) return;
+    if (!payload || !citedAnchor) return;
     const timer = window.setTimeout(() => {
-      const target = document.getElementById(safeAnchor(location.hash) ?? "");
+      const target = document.getElementById(citedAnchor);
       target?.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     }, 50);
     return () => window.clearTimeout(timer);
-  }, [location.hash, payload]);
+  }, [citedAnchor, payload]);
 
   const title = payload?.document?.title ?? payload?.title ?? "Uploaded document";
   const status = versionStatus(payload);
   const sections = payload?.sections ?? [];
   const hasExtractedText = sections.some((section) => sectionText(section).length > 0);
-  const activeAnchor = safeAnchor(location.hash);
+  const activeAnchor = citedAnchor;
   const isPdf = useMemo(() => {
     const version = payload?.version;
     return typeof version !== "string" && version?.mimeType === "application/pdf";

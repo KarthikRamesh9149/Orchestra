@@ -5,8 +5,6 @@ import {
   CheckCircle2,
   CircleDashed,
   ExternalLink,
-  FileSearch,
-  GitBranch,
   GitFork,
   Layers3,
   Link2,
@@ -15,8 +13,8 @@ import {
   ShieldCheck,
   UserRound
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useToastStore } from "../components/ui/Toaster";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -51,9 +49,11 @@ function actionLabel(action: Exclude<ComposerMode, null>) {
 
 export function TruthChangePacketPage() {
   const { activeProject } = useAuth();
-  const projectId = activeProject?.id ?? null;
-  const { itemId: rawItemId } = useParams();
-  const itemId = rawItemId ? decodeURIComponent(rawItemId) : null;
+  const { itemId } = useParams();
+  if (!activeProject || !itemId) return <p className="desk-empty">Choose a project to open this change packet.</p>;
+  return <PacketView key={JSON.stringify([activeProject.id, itemId])} projectId={activeProject.id} itemId={itemId} />;
+}
+function PacketView({ projectId, itemId }: { projectId: string; itemId: string }) {
   const navigate = useNavigate();
   const showToast = useToastStore((state) => state.add);
   const [packet, setPacket] = useState<TruthChangePacket | null>(null);
@@ -61,29 +61,42 @@ export function TruthChangePacketPage() {
   const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<TruthInboxAction | null>(null);
+  const [traceError, setTraceError] = useState<string | null>(null);
   const [receiptBusy, setReceiptBusy] = useState(false);
   const [composer, setComposer] = useState<ComposerMode>(null);
   const [note, setNote] = useState("");
   const [until, setUntil] = useState(futureDate(72));
 
+  const generation = useRef(0);
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (state !== "ready" || !["#decision-evidence", "#affected-areas"].includes(hash)) return;
+    const section = document.getElementById(hash.slice(1));
+    if (section instanceof HTMLDetailsElement) section.open = true;
+    section?.scrollIntoView?.({ block: "nearest" });
+  }, [state, hash]);
+
   const load = useCallback(async () => {
     if (!projectId || !itemId) return;
+    const request = ++generation.current;
     setError(null);
     try {
-      const [result, deliveryTrace] = await Promise.all([
-        getTruthChangePacket(projectId, itemId),
-        getDecisionDeliveryTrace(projectId, itemId)
-      ]);
+      setTraceError(null);
+      const result = await getTruthChangePacket(projectId, itemId);
+      if (request !== generation.current) return;
       setPacket(result);
-      setTrace(deliveryTrace);
+      void getDecisionDeliveryTrace(projectId, itemId).then(value => { if (request === generation.current) setTrace(value); }, failure => {
+        if (request === generation.current) { setTrace(null); setTraceError(messageOf(failure)); }
+      });
       setState("ready");
     } catch (caught) {
+      if (request !== generation.current) return;
       setError(messageOf(caught));
       setState("failed");
     }
   }, [itemId, projectId]);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { void load(); return () => { generation.current++; }; }, [load]);
 
   const execute = async (action: TruthInboxAction, input: { note?: string; until?: string } = {}) => {
     if (!packet || !projectId || busy) return;
@@ -104,7 +117,10 @@ export function TruthChangePacketPage() {
       }
       if (action === "accept" || action === "reject") {
         showToast(`${action === "accept" ? "Accepted" : "Rejected"} change saved.`, "success");
-        navigate("/truth-inbox");
+        setComposer(null);
+        setTrace(null);
+        setState("loading");
+        await load();
         return;
       }
       showToast(`${action === "request_clarification" ? "Clarification request" : "Deferral"} saved.`, "success");
@@ -137,6 +153,9 @@ export function TruthChangePacketPage() {
   if (state === "failed" || !packet) return <div className="h-full overflow-y-auto bg-[var(--bg)] p-6"><div role="alert" className="rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error ?? "Truth Change Packet unavailable."}</div><button type="button" onClick={() => { setState("loading"); void load(); }} className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)]">Try again</button></div>;
 
   const proposalStatus = packet.proposedChange?.status;
+  const decisionStatements = packet.currentAcceptedTruth.filter(ref => ref.type === "accepted_decision").map(ref => ref.detail);
+  const acceptedLines = decisionStatements.length > 0 ? decisionStatements
+    : packet.item.comparison?.acceptedWording ? (packet.proposedChange?.statements.length ? packet.proposedChange.statements : [packet.item.comparison.acceptedWording]) : [];
   const decided = proposalStatus === "accepted" || proposalStatus === "rejected" || proposalStatus === "superseded";
   const packetStatus = !proposalStatus ? "Review signal"
     : proposalStatus === "accepted" ? "Accepted"
@@ -144,65 +163,34 @@ export function TruthChangePacketPage() {
     : proposalStatus === "superseded" ? "Superseded" : "Pending";
 
   return (
-    <div className="h-full overflow-y-auto bg-[var(--bg)] px-4 py-5 sm:px-7 lg:px-10" aria-labelledby="packet-heading">
-      <div className="mx-auto max-w-6xl pb-8">
-        <Link to="/truth-inbox" className="inline-flex items-center gap-1 text-xs text-[var(--text-muted)]"><ArrowLeft size={13} aria-hidden="true" /> Back to Truth Inbox</Link>
-        <div className="mt-4 flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--terracotta-text)]">Truth Change Packet</p>
-            <h1 id="packet-heading" className="mt-1 max-w-3xl text-2xl font-semibold text-[var(--text-default)]">{packet.item.title}</h1>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-[var(--text-muted)]">{packet.item.description}</p>
+    <div className="desk-scroll" aria-labelledby="packet-heading">
+      <div className="desk-page desk-packet">
+        <Link to="/truth-inbox" className="desk-back"><ArrowLeft size={14} /> Truth Inbox</Link>
+        <header className="desk-head"><div className="desk-meta" role="group" aria-label="Packet status"><span className={proposalStatus === "accepted" ? "desk-accepted" : "desk-pending"}>{packetStatus}</span>
+          <span>Change packet</span>{!decided && <span>{packet.readiness === "review_only" ? "Review only" : packet.readiness.replace(/_/g," ")}</span>}</div>
+          <h1 id="packet-heading">{packet.item.title}</h1><p>{packet.item.description}</p>
+        </header>
+        {error && <div role="alert" className="desk-alert">{error}</div>}
+        <section className="desk-pair" aria-label="Change comparison">
+          <div><h2>{proposalStatus === "accepted" ? "Recorded before" : "In effect"}</h2>
+            {proposalStatus === "accepted" ? <Wording lines={packet.recordedPriorUnderstanding} empty="No earlier wording recorded." /> :
+              <Wording lines={packet.currentAcceptedTruth.map(ref => ref.detail || ref.label)} empty="No linked accepted decision." />}
+            {proposalStatus !== "accepted" && !!packet.recordedPriorUnderstanding.length && <details><summary>Recorded prior understanding</summary><BulletList items={packet.recordedPriorUnderstanding} /></details>}
           </div>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Packet status">
-            <span className="rounded-full bg-[var(--bg-inset)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--text-muted)]">{packetStatus}</span>
-            {!decided && <span className={packet.readiness === "decision_ready" ? "rounded-full bg-[var(--tint-teal)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--teal-text)]" : "rounded-full bg-[var(--tint-amber)] px-3 py-1.5 font-mono text-[9px] uppercase text-[var(--amber-text)]"}>{packet.readiness === "review_only" ? "View only" : packet.readiness.replace(/_/g, " ")}</span>}
-          </div>
-        </div>
-
-        <section className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-4" aria-label="Truth state boundary">
-          {packet.boundaries.map((boundary, index) => <div key={boundary.stage} className="relative rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-3">
-            <div className="flex items-center justify-between gap-2"><p className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">{boundary.label}</p>{index < packet.boundaries.length - 1 ? <ArrowRight size={13} className="hidden text-[var(--text-faint)] lg:block" aria-hidden="true" /> : <ShieldCheck size={13} className="text-[var(--teal-text)]" aria-hidden="true" />}</div>
-            <p className="mt-2 text-xs leading-5 text-[var(--text-muted)]">{boundary.detail}</p>
-            <p className="mt-2 font-mono text-[9px] uppercase text-[var(--text-muted)]">{boundary.state}</p>
-          </div>)}
-        </section>
-
-        <div className="mt-5 rounded-lg border border-[var(--teal-text)]/20 bg-[var(--tint-teal)] p-3 text-xs leading-5 text-[var(--text-default)]"><strong>Truth safety:</strong> Opening this packet is read-only. Evidence is not interpretation; interpretation is not a proposed change; a proposed change is not accepted truth.</div>
-        {error ? <div role="alert" className="mt-4 rounded-lg border border-[var(--red-text)]/20 bg-[var(--tint-red)] p-3 text-sm text-[var(--red-text)]">{error}</div> : null}
-
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <PacketSection title="New evidence" icon={<FileSearch size={15} aria-hidden="true" />}>
-            {packet.newEvidence.length ? <div className="space-y-2">{packet.newEvidence.map((evidence) => <EvidenceCard key={evidence.id} evidence={evidence} />)}</div> : <EmptyState>No source evidence is currently available. This packet cannot be decision-ready.</EmptyState>}
-          </PacketSection>
-
-          <PacketSection title="Current accepted truth" icon={<ShieldCheck size={15} aria-hidden="true" />}>
-            {packet.currentAcceptedTruth.length ? <div className="space-y-2">{packet.currentAcceptedTruth.map((reference) => <ReferenceCard key={`${reference.type}:${reference.id}`} reference={reference} />)}</div> : <EmptyState>No linked accepted Product Brain node or accepted decision was resolved. Nothing is fabricated.</EmptyState>}
-          </PacketSection>
-
-          <PacketSection title="Potential conflict" icon={<AlertTriangle size={15} aria-hidden="true" />}>
-            {packet.potentialConflict ? <div><p className="text-sm leading-6 text-[var(--text-default)]">{packet.potentialConflict.summary}</p><p className="mt-2 font-mono text-[9px] uppercase text-[var(--amber-text)]">Interpretation only</p><BulletList items={packet.potentialConflict.basis} /></div> : <EmptyState>No conflict interpretation is recorded for this review signal.</EmptyState>}
-          </PacketSection>
-
-          <PacketSection title="Proposed change" icon={<GitBranch size={15} aria-hidden="true" />}>
-            {packet.proposedChange ? <div><p className="text-sm font-semibold text-[var(--text-default)]">{packet.proposedChange.title}</p><p className="mt-1 text-xs leading-5 text-[var(--text-muted)]">{packet.proposedChange.summary}</p>{packet.recordedPriorUnderstanding.length ? <StatementGroup title="Recorded prior understanding" items={packet.recordedPriorUnderstanding} /> : null}{packet.proposedChange.statements.length ? <StatementGroup title="Proposed understanding" items={packet.proposedChange.statements} /> : null}<p className="mt-3 font-mono text-[9px] uppercase text-[var(--text-muted)]">{packet.proposedChange.proposalType?.replace(/_/g, " ")} · {packet.proposedChange.status.replace(/_/g, " ")}</p></div> : <EmptyState>No change proposal exists yet. Create a review item first.</EmptyState>}
-          </PacketSection>
-        </div>
-
-        <section className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-4" aria-labelledby="affected-heading">
-          <h2 id="affected-heading" className="text-base font-semibold text-[var(--text-default)]">Affected areas</h2>
-          <div className="mt-3 grid gap-4 md:grid-cols-3">
-            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Product</h3>{packet.affected.productAreas.length ? <div className="mt-2 space-y-2">{packet.affected.productAreas.map((reference) => <ReferenceCard key={`${reference.type}:${reference.id}`} reference={reference} compact />)}</div> : <EmptyState>No exact product-area link.</EmptyState>}</div>
-            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Engineering</h3>{packet.affected.engineering.length ? <BulletList items={packet.affected.engineering} /> : <EmptyState>No verified engineering impact links are recorded yet.</EmptyState>}</div>
-            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Owners</h3>{packet.affected.owners.length ? <div className="mt-2 space-y-2">{packet.affected.owners.map((owner) => <div key={owner.userId} className="flex items-center gap-2 rounded-lg bg-[var(--bg-inset)] p-2 text-xs text-[var(--text-default)]"><UserRound size={13} aria-hidden="true" /> <span>{owner.displayName}</span></div>)}</div> : <EmptyState>Unassigned. No owner is guessed.</EmptyState>}</div>
+          <div><h2>{proposalStatus === "accepted" ? "Accepted wording" : proposalStatus === "rejected" ? "Not accepted" : proposalStatus === "superseded" ? "Superseded proposal" : packet.proposedChange ? "Requested" : "Review signal"}</h2>
+            <Wording lines={proposalStatus === "accepted" ? acceptedLines : packet.proposedChange?.statements.length ? packet.proposedChange.statements : [packet.proposedChange?.summary || packet.item.description]} empty="The accepted wording is not linked to this packet." />
           </div>
         </section>
+        <div id="decision-evidence" className="desk-decision-byline">
+          {trace?.steps.filter(step=>step.key === "human_approved" && step.status === "complete").map(step=><p key={step.key}><CheckCircle2 size={14} />{step.detail}{step.occurredAt && <time dateTime={step.occurredAt}>{new Date(step.occurredAt).toLocaleString()}</time>}</p>)}
+          {packet.affected.owners.length > 0 && <p><UserRound size={14} /> Owner · {packet.affected.owners.map(o=>o.displayName).join(", ")}</p>}
+        </div>
+        <section className="desk-evidence" aria-label="Source evidence"><h2>New evidence</h2>
+          {packet.newEvidence.length ? packet.newEvidence.map(ev=><EvidenceCard key={ev.id} evidence={ev}/>) : <EmptyState>No source evidence is linked.</EmptyState>}
+        </section>
+        <section className="desk-decision" aria-labelledby="decision-heading">
+          <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 id="decision-heading" className="text-base font-semibold text-[var(--text-default)]">{decided ? "Decision recorded" : packet.decision.required ? "Review this change" : "Next action"}</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Confidence: {Math.round(packet.confidence.score * 100)}% ({packet.confidence.label})</p></div>{packet.item.capabilities.ask_socrates && <button type="button" disabled={Boolean(busy)} onClick={() => void execute("ask_socrates")} className="flex items-center gap-1 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)] disabled:opacity-50"><MessageCircle size={13} aria-hidden="true" /> Ask Socrates</button>}</div>
 
-        <ImpactMapPanel impactMap={packet.impactMap} />
-        {trace ? <DeliveryTracePanel trace={trace} receiptBusy={receiptBusy} onReceipt={() => void createReceipt()} /> : null}
-
-        <section className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-4" aria-labelledby="decision-heading">
-          <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 id="decision-heading" className="text-base font-semibold text-[var(--text-default)]">Decision required</h2><p className="mt-1 text-xs text-[var(--text-muted)]">Confidence: {Math.round(packet.confidence.score * 100)}% ({packet.confidence.label})</p></div><button type="button" disabled={Boolean(busy)} onClick={() => void execute("ask_socrates")} className="flex items-center gap-1 rounded-lg border border-[var(--border-soft)] px-3 py-2 text-xs text-[var(--text-default)] disabled:opacity-50"><MessageCircle size={13} aria-hidden="true" /> Ask Socrates</button></div>
-          {packet.confidence.basis.length ? <BulletList items={packet.confidence.basis} /> : null}
           {packet.decision.blockers.length ? <div className="mt-3 rounded-lg border border-[var(--amber-text)]/20 bg-[var(--tint-amber)] p-3"><p className="text-xs font-medium text-[var(--amber-text)]">Decision blockers</p><BulletList items={packet.decision.blockers} /></div> : null}
           <div className="mt-4 flex flex-wrap gap-2">
             {packet.item.capabilities.create_review_item ? <button type="button" disabled={Boolean(busy)} onClick={() => void execute("create_review_item")} className="rounded-lg bg-[var(--terracotta)] px-3 py-2 text-xs text-white disabled:opacity-50">{busy === "create_review_item" ? "Creating…" : "Create review item"}</button> : null}
@@ -214,11 +202,39 @@ export function TruthChangePacketPage() {
           })} /> : null}
         </section>
 
+
+        <details className="desk-fold"><summary>Decision history &amp; interpretation</summary>
+          <section aria-label="Truth state boundary">{packet.boundaries.map(row=><div key={row.stage} className="desk-history"><b>{row.label}</b><p>{row.detail}</p></div>)}</section>
+          <PacketSection title="Current accepted truth" icon={<ShieldCheck size={15} />}>{packet.currentAcceptedTruth.map(ref=><ReferenceCard key={ref.type+ref.id} reference={ref} />)}</PacketSection>
+          {packet.potentialConflict && <PacketSection title="Potential conflict" icon={<AlertTriangle size={15} />}><small>Interpretation only</small><p>{packet.potentialConflict.summary}</p><BulletList items={packet.potentialConflict.basis}/></PacketSection>}
+        </details>
+        <details id="affected-areas" className="desk-fold"><summary>Impact &amp; affected areas</summary>
+        <section className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-4" aria-labelledby="affected-heading">
+          <h2 id="affected-heading" className="text-base font-semibold text-[var(--text-default)]">Affected areas</h2>
+          <div className="mt-3 grid gap-4 md:grid-cols-3">
+            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Product</h3>{packet.affected.productAreas.length ? <div className="mt-2 space-y-2">{packet.affected.productAreas.map((reference) => <ReferenceCard key={`${reference.type}:${reference.id}`} reference={reference} compact />)}</div> : <EmptyState>No exact product-area link.</EmptyState>}</div>
+            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Engineering</h3>{packet.affected.engineering.length ? <BulletList items={packet.affected.engineering} /> : <EmptyState>No verified engineering impact links are recorded yet.</EmptyState>}</div>
+            <div><h3 className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--text-faint)]">Owners</h3>{packet.affected.owners.length ? <div className="mt-2 space-y-2">{packet.affected.owners.map((owner) => <div key={owner.userId} className="flex items-center gap-2 rounded-lg bg-[var(--bg-inset)] p-2 text-xs text-[var(--text-default)]"><UserRound size={13} aria-hidden="true" /> <span>{owner.displayName}</span></div>)}</div> : <EmptyState>Unassigned. No owner is guessed.</EmptyState>}</div>
+          </div>
+        </section>
+
+        <ImpactMapPanel impactMap={packet.impactMap} />
+        </details>
+        <details className="desk-fold"><summary>Decision-to-delivery trace &amp; receipt</summary>
+        {traceError && <p role="alert">{traceError} <button type="button" className="desk-link" onClick={()=>void load()}>Retry trace</button></p>}
+        {!trace && !traceError && <p role="status">Loading delivery evidence…</p>}
+        {trace ? <DeliveryTracePanel trace={trace} receiptBusy={receiptBusy} onReceipt={() => void createReceipt()} /> : null}
+
+        </details>
         <details className="mt-4 rounded-xl border border-[var(--border-soft)] bg-[var(--bg-elevated)] p-4"><summary className="cursor-pointer text-xs font-medium text-[var(--text-default)]">Limitations and safeguards ({packet.limitations.length})</summary><BulletList items={packet.limitations} /></details>
         <p className="mt-4 text-center font-mono text-[9px] uppercase text-[var(--text-faint)]">Packet generated {new Date(packet.generatedAt).toLocaleString()}</p>
       </div>
     </div>
   );
+}
+
+function Wording({ lines, empty }: { lines: string[]; empty: string }) {
+  return lines.length ? <ul>{lines.map((line,i)=><li key={i}>{line}</li>)}</ul> : <p>{empty}</p>;
 }
 
 function DeliveryTracePanel({ trace, receiptBusy, onReceipt }: { trace: DecisionDeliveryTrace; receiptBusy: boolean; onReceipt: () => void }) {

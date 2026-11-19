@@ -74,7 +74,7 @@ describe("[FIX-20] Memory document persistence", () => {
     // loaded clean-build machines before it could observe Processing.
     let complete!:(value:Doc)=>void;
     mocks.getDocumentStatus.mockImplementation(()=>new Promise(resolve=>{complete=resolve;}));
-    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const view=render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     try{
       await waitFor(()=>expect(screen.getByText('Processing',{exact:true})).toBeVisible(),{timeout:3500});
       await waitFor(()=>expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1),{timeout:3500});
@@ -91,12 +91,12 @@ describe("[FIX-20] Memory document persistence", () => {
     let complete!:(value:Doc)=>void;
     mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
     mocks.getDocumentStatus.mockImplementation(()=>new Promise(resolve=>{complete=resolve;}));
-    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const view=render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     try{
       await waitFor(()=>expect(mocks.getDocumentStatus).toHaveBeenCalledTimes(1),{timeout:3500});
       const signal=mocks.getDocumentStatus.mock.calls[0][2] as AbortSignal;
       mocks.activeProjectId='project-2';mocks.getDocs.mockResolvedValue([{...doc,id:'other',name:'Other workspace document'}]);
-      view.rerender(<MemoryRouter><MemoryPage /></MemoryRouter>);
+      view.rerender(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
       await waitFor(()=>expect(screen.getByRole('button',{name:'Open actions for Other workspace document'})).toBeInTheDocument());
       expect(signal.aborted).toBe(true);
       await act(async()=>complete({...doc,name:'Obsolete response',status:'ready'}));
@@ -108,7 +108,7 @@ describe("[FIX-20] Memory document persistence", () => {
     const spy=vi.spyOn(desktop,'isDesktop').mockReturnValue(true);
     mocks.getDocs.mockResolvedValue([{...doc,status:'processing'}]);
     mocks.getDocumentStatus.mockRejectedValue(new Error('Synthetic outage'));
-    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const view=render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     try{
       await waitFor(()=>expect(screen.getByText(/Document status could not be refreshed/)).toBeInTheDocument(),{timeout:3500});
       expect(screen.getByRole('button',{name:'Open actions for Core PRD'})).toBeInTheDocument();
@@ -120,7 +120,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getDocs.mockResolvedValue([{...doc,status:'failed'}]);
     mocks.retryDocumentProcessing.mockResolvedValue({queued:true});
     mocks.getDocumentStatus.mockResolvedValue({...doc,status:'partial'});
-    const view=render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const view=render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     try{
       const user=userEvent.setup();
       await user.click(await screen.findByRole('button',{name:'Open actions for Core PRD'}));
@@ -137,7 +137,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getCommunicationReadiness.mockReturnValue(new Promise(() => undefined));
     mocks.listCommunicationConnectors.mockReturnValue(new Promise(() => undefined));
 
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     expect(screen.getByText("Loading memory…")).toBeVisible();
     expect(screen.getByText("Socrates uses evidence from your selected, available project sources.")).toBeVisible();
@@ -146,7 +146,7 @@ describe("[FIX-20] Memory document persistence", () => {
 
   it("does not count a send-only Gmail account as communication evidence", async () => {
     mocks.listCommunicationConnectors.mockResolvedValue([{id:'sender',provider:'gmail',accountLabel:'Synthetic sender',status:'connected',readiness:{deferredFeatures:['gmail_mailbox_sync_disabled_for_invitation_sender']}}]);
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     await waitFor(()=>expect(screen.getByText('1 doc · 0 connectors')).toBeVisible());
     expect(screen.queryByText('Synthetic sender')).not.toBeInTheDocument();
   });
@@ -154,7 +154,7 @@ describe("[FIX-20] Memory document persistence", () => {
   it("keeps the dialog and document visible when the backend rejects removal", async () => {
     mocks.archiveDocument.mockRejectedValue(new Error("Manager access required"));
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     await user.click(await screen.findByRole("button", { name: "Open actions for Core PRD" }));
     await user.click(screen.getByRole("button", { name: "Remove from memory" }));
@@ -166,7 +166,7 @@ describe("[FIX-20] Memory document persistence", () => {
 
   it("closes the document actions disclosure with Escape and restores trigger focus", async () => {
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     const trigger = await screen.findByRole("button", { name: "Open actions for Core PRD" });
     await user.click(trigger);
     await user.keyboard("{Tab}{Escape}");
@@ -178,7 +178,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.archiveDocument.mockResolvedValue({ documentId: doc.id, archivedAt: "2026-08-20T00:00:00.000Z" });
     mocks.getDocs.mockResolvedValueOnce([doc]).mockResolvedValueOnce([]);
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     await user.click(await screen.findByRole("button", { name: "Open actions for Core PRD" }));
     await user.click(screen.getByRole("button", { name: "Remove from memory" }));
@@ -193,7 +193,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getDocs.mockResolvedValue([]);
     mocks.uploadDoc.mockResolvedValue(doc);
     const user = userEvent.setup();
-    const { container } = render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const { container } = render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     await screen.findByText("No documents uploaded yet. Drag a PDF or DOCX above to get started.");
 
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
@@ -213,7 +213,7 @@ describe("[FIX-20] Memory document persistence", () => {
       return new Promise((_resolve, reject) => { rejectUpload = reject; });
     });
     const user = userEvent.setup();
-    const { container } = render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const { container } = render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await user.upload(input, new File(["synthetic"], "core-prd.pdf", { type: "application/pdf" }));
@@ -235,7 +235,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.uploadDoc.mockRejectedValueOnce(Object.assign(new Error("The upload took too long."), { code: "timeout" }));
     mocks.reconcileDocumentUpload.mockResolvedValue({ documentId: doc.id, documentVersionId: "version-1", status: "ready", parseRevision: 1, operationId: "unused" });
     const user = userEvent.setup();
-    const { container } = render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const { container } = render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await user.upload(input, new File(["synthetic"], "core-prd.pdf", { type: "application/pdf" }));
@@ -259,13 +259,13 @@ describe("[FIX-20] Memory document persistence", () => {
       return new Promise((resolve) => { resolveUpload = resolve; });
     });
     const user = userEvent.setup();
-    const view = render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    const view = render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
     const input = view.container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await user.upload(input, new File(["synthetic"], "core-prd.pdf", { type: "application/pdf" }));
     await user.click(screen.getByRole("button", { name: /^Upload$/ }));
     mocks.activeProjectId = "project-2";
-    view.rerender(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    view.rerender(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     expect(options?.signal?.aborted).toBe(true);
     resolveUpload?.(doc);
@@ -276,7 +276,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getDocs.mockResolvedValue([]);
     mocks.uploadDoc.mockResolvedValue(doc);
     const user = userEvent.setup();
-    const { container } = render(<StrictMode><MemoryRouter><MemoryPage /></MemoryRouter></StrictMode>);
+    const { container } = render(<StrictMode><MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter></StrictMode>);
     const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
     await user.upload(input, new File(["synthetic"], "core-prd.pdf", { type: "application/pdf" }));
@@ -297,10 +297,11 @@ describe("[FIX-20] Memory document persistence", () => {
     const revokeObjectUrl = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
     const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /><LocationProbe /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /><LocationProbe /></MemoryRouter>);
 
     await user.click(await screen.findByText("Core PRD"));
     expect(screen.getByLabelText("Current route")).toHaveTextContent("/memory/docs/document-1/view");
+    await user.click(screen.getByRole("button",{name:"Source list"}));
 
     await user.click(screen.getByRole("button", { name: "Open actions for Core PRD" }));
     await user.click(screen.getByRole("button", { name: "Download original" }));
@@ -317,7 +318,7 @@ describe("[FIX-20] Memory document persistence", () => {
     mocks.getCommunicationThreads.mockResolvedValue([{ threadId: "thread-1", connectorId: "teams-1", provider: "microsoft_teams", accountLabel: "Engineering", subject: "Release plan", lastMessageAt: null, latestMessage: null, providerOpenTarget: { targetType: "provider_evidence", provider: "microsoft_teams", url: "https://teams.example/thread/1" } }]);
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     expect(await screen.findByText("Microsoft Teams")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Open Release plan from Microsoft Teams" }));
@@ -334,7 +335,7 @@ describe("[FIX-20] Memory document persistence", () => {
     }]);
     mocks.connectSlack.mockResolvedValue({ connectorId: "slack-1", provider: "slack", status: "pending_auth", redirectUrl: "javascript:alert(1)" });
     const user = userEvent.setup();
-    render(<MemoryRouter><MemoryPage /></MemoryRouter>);
+    render(<MemoryRouter initialEntries={['/memory?view=sources']}><MemoryPage /></MemoryRouter>);
 
     await user.click(await screen.findByRole("button", { name: /Connect Slack/i }));
     expect(await screen.findByText("Slack returned an unsafe redirect URL.")).toBeInTheDocument();

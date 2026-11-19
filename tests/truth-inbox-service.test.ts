@@ -112,6 +112,29 @@ function harness() {
 }
 
 describe("TruthInboxService", () => {
+  it.each([
+    [PROJECT_ID, "accepted", "Three reviewers"],
+    ["another-project", "accepted", null],
+    [PROJECT_ID, "proposed", null],
+  ])("uses only a same-project accepted decision for preview authority", async (projectId, status, expected) => {
+    const { service, prisma } = harness();
+    const base = (await prisma.specChangeProposal.findMany())[0]!;
+    prisma.specChangeProposal.findMany.mockResolvedValue([{ ...base, oldUnderstandingJson: {text:"One reviewer"},
+      newUnderstandingJson: {requirement:"Two reviewers"}, decisionRecord:{ id:"decision", projectId, status, statement:"Three reviewers" } } as typeof base]);
+    const result = await service.list(PROJECT_ID, ACTOR, { source:"proposal", limit:15, refresh:true });
+    expect(result.items[0]?.comparison).toMatchObject({prior:"One reviewer", requested:"Two reviewers",
+      decision: expected ? {id:"decision",statement:expected} : null});
+  });
+
+  it.each([true,false])("does not need a decision record to show human-approved requirement wording (%s)", async (hasApproval) => {
+    const { service, prisma } = harness();
+    const base = (await prisma.specChangeProposal.findMany())[0]!;
+    prisma.specChangeProposal.findMany.mockResolvedValue([{ ...base, status:"accepted", newUnderstandingJson:{ text:"Three reviewers" },
+      acceptedBy:hasApproval ? ACTOR.userId : null, acceptedAt:hasApproval ? new Date() : null } as typeof base]);
+    const result = await service.list(PROJECT_ID, ACTOR, {source:"proposal",status:"resolved",limit:15,refresh:true});
+    expect(result.items[0]?.comparison).toMatchObject({acceptedWording:hasApproval ? "Three reviewers" : null,decision:null});
+  });
+
   it("loads source history without building the unrelated cross-source snapshot", async () => {
     const { service } = harness();
     const buildSnapshot = vi.spyOn(service as any, "buildSnapshot");

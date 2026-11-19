@@ -133,7 +133,7 @@ export class TruthChangePacketService {
         detail: truncate(section.normalizedText, 360),
         status: current ? "current_document_version" : "historical_document_version",
         authority: "affected_reference",
-        openTarget: documentTarget(section.documentVersion.document.id, section.anchorId, section.pageNumber)
+        openTarget: documentTarget(section.documentVersion.document.id, section.documentVersionId, section.anchorId, section.pageNumber)
       });
     }
     for (const nodeId of nodeIds) {
@@ -152,7 +152,7 @@ export class TruthChangePacketService {
     }
 
     const currentAcceptedTruth = affectedProductAreas.filter((reference) => reference.authority === "accepted_truth");
-    if (proposal.decisionRecord?.status === "accepted") {
+    if (proposal.decisionRecord?.status === "accepted" && proposal.decisionRecord.projectId === projectId) {
       currentAcceptedTruth.push({
         id: proposal.decisionRecord.id,
         type: "accepted_decision",
@@ -352,8 +352,8 @@ function textImpact(record: Record<string, unknown>, key: string, label: string)
   return value ? `${label}: ${value}` : null;
 }
 
-function documentTarget(documentId: string, anchorId: string, pageNumber: number | null): TruthInboxOpenTarget {
-  return { targetType: "document_section", targetRef: { documentId, anchorId, ...(pageNumber == null ? {} : { pageNumber }) } };
+function documentTarget(documentId: string, versionId: string, anchorId: string, pageNumber: number | null): TruthInboxOpenTarget {
+  return { targetType: "document_section", targetRef: { documentId, versionId, anchorId, ...(pageNumber == null ? {} : { pageNumber }) } };
 }
 
 function truncate(value: string, max: number) {

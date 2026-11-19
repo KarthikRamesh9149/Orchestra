@@ -19,13 +19,14 @@ try{
  assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.3');proof.previousPackage=previous;
  await page.getByRole('checkbox').check();await page.getByRole('button',{name:'Continue locally'}).click({timeout:180000});
  await page.getByLabel('New workspace name').fill('Synthetic transfer source');await page.getByRole('button',{name:'Create workspace',exact:true}).click();await page.waitForURL('**/memory');
+ await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();
  await page.locator('input[type=file]').first().setInputFiles({name:'Transfer-Requirement.pdf',mimeType:'application/pdf',buffer:pdf});await page.getByRole('button',{name:'Upload',exact:true}).click();
  await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor({timeout:60000});
  await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();await page.waitForURL('**/view');
  await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor({timeout:60000});pass('local packaged upload and parsed viewer');
  await app.close();app=await launch(packaged);page=await app.firstWindow();page.on('pageerror',e=>proof.errors.push(e.message));
  assert.equal(await app.evaluate(({app})=>app.getVersion()),'0.0.4');
- await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
+ await page.waitForURL('**/memory',{timeout:180000});await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();
  pass('populated 0.0.3 to 0.0.4 application upgrade preserves local workspace and document; schema unchanged');
  localProjectId=await page.evaluate(async()=>{const r=await fetch('/v1/me/workspaces');return (await r.json()).data[0].projectId;});
  await app.evaluate(({dialog,clipboard},archive)=>{
@@ -64,7 +65,7 @@ try{
  assert.equal(await page.getByText(/Core import confirmed by the server/).count(),0);pass('cancelled native import does not report a saved result');
  await app.evaluate(({dialog})=>{dialog.showMessageBox=async()=>({response:1,checkboxChecked:false});});await importButton.click();
  await page.getByText(/Core import confirmed by the server/).waitFor({timeout:60000});pass('explicit mapping and native confirmation import into real shared server');
- await page.goto('orchestra://app/memory');await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();await page.reload();await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();await page.waitForURL('**/view');await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor();pass('shared imported viewer survives reload');
+ await page.goto('orchestra://app/memory?view=sources');await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).waitFor();await page.reload();await page.getByRole('button',{name:'Open actions for Transfer-Requirement',exact:true}).click();await page.getByRole('button',{name:'Open',exact:true}).click();await page.waitForURL('**/view');await page.getByText('approval requires three reviewers.',{exact:false}).first().waitFor();pass('shared imported viewer survives reload');
  await page.screenshot({path:join(profile,'imported-viewer.png')});
  const viewer=page.url();
  const projectId=sharedProjectId;

@@ -47,7 +47,7 @@ try{
  composer=page.getByPlaceholder('Ask Socrates anything about your project…');
  assert.equal(await composer.inputValue(),'Synthetic physical wake draft');
  const status=await page.evaluate(()=>window.orchestra.status());assert.equal(status.state,'ready');
- await page.getByRole('button',{name:'Memory',exact:true}).click();await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Project Memory',exact:true}).click();await page.getByRole('group',{name:'Memory view'}).getByRole('button',{name:'Source list',exact:true}).click();await page.getByRole('button',{name:'Open actions for Desktop-Pilot-Requirements',exact:true}).waitFor();
  await page.goto(chatUrl);await page.getByText(/21 October 2026/).first().waitFor();
  await page.reload();await page.getByText(/21 October 2026/).first().waitFor();
  assert.equal(await composer.inputValue(),'Synthetic physical wake draft');

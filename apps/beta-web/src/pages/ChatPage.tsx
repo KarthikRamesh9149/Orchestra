@@ -385,7 +385,7 @@ const AssistantMessage = memo(function AssistantMessage({
         <span style={{ color: "var(--text-faint)" }}>·</span>
         <span className="font-mono text-[10px] text-[var(--text-muted)]">{formatTime(msg.timestamp)}</span>
       </div>
-      <div className="max-w-[92%] sm:max-w-[75%]">
+      <div className="desk-answer">
         {isTyping && !msg.content ? (
           <TypingIndicator />
         ) : (
@@ -440,7 +440,7 @@ const AssistantMessage = memo(function AssistantMessage({
             )}
             {!degraded ? warningPanel : null}
             {!msg.isStreaming && (details.length > 0 || evidenceQuote || (msg.confidence && msg.citations?.length)) ? (
-              <details className="mt-3 rounded-lg border border-[var(--border-soft)] px-3 py-2">
+              <details className="desk-answer-details">
                 <summary className="cursor-pointer font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--text-muted)]">Answer details</summary>
                 <ul className="mt-2 list-disc space-y-1 pl-4 text-[11px] text-[var(--text-muted)]">
                   {evidenceQuote ? <li>Evidence excerpt: <q>{evidenceQuote}</q></li> : null}
@@ -661,85 +661,14 @@ function ChatInput({
   );
 }
 
-// ─── Hero animation ────────────────────────────────────────────────────────────
-
-const HERO_WORD = "Socrates";
-
 function ArtifactsHero() {
-  const prefersReducedMotion = useReducedMotion();
-  const [visibleCount, setVisibleCount] = useState(prefersReducedMotion ? HERO_WORD.length : 0);
-  const [underlineWidth, setUnderlineWidth] = useState(prefersReducedMotion ? "200px" : "0px");
-  const [eyebrowPulse, setEyebrowPulse] = useState(false);
-  const mountedRef = useRef(true);
-
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setVisibleCount(HERO_WORD.length);
-      setUnderlineWidth("200px");
-      setEyebrowPulse(false);
-      return;
-    }
-    mountedRef.current = true;
-    const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-
-    const run = async () => {
-      while (mountedRef.current) {
-        for (let i = 1; i <= HERO_WORD.length; i++) {
-          if (!mountedRef.current) return;
-          setVisibleCount(i);
-          await sleep(80);
-        }
-        await sleep(100);
-        if (!mountedRef.current) return;
-        setUnderlineWidth("200px");
-        await sleep(450);
-        if (!mountedRef.current) return;
-        setEyebrowPulse(true);
-        await sleep(2000);
-        setEyebrowPulse(false);
-        setUnderlineWidth("0px");
-        for (let i = HERO_WORD.length - 1; i >= 0; i--) {
-          if (!mountedRef.current) return;
-          setVisibleCount(i);
-          await sleep(50);
-        }
-        await sleep(400);
-      }
-    };
-
-    void run();
-    return () => { mountedRef.current = false; };
-  }, [prefersReducedMotion]);
-
   return (
-    <div className="flex select-none flex-col items-center">
-      <motion.p
-        animate={eyebrowPulse ? { opacity: [0.8, 1, 0.8] } : { opacity: 1 }}
-        transition={eyebrowPulse ? { duration: 1.4, repeat: Infinity } : {}}
-        className="mb-5 font-mono text-[9px] uppercase tracking-[0.3em] sm:text-[11px] sm:tracking-[0.4em]"
-        style={{ color: "var(--text-muted)" }}
-      >
-        ASK YOUR PROJECT
-      </motion.p>
-      <div data-testid="socrates-hero-word" className="flex max-w-full items-baseline">
-        {HERO_WORD.split("").map((letter, i) => (
-          <motion.span
-            key={i}
-            animate={{ opacity: i < visibleCount ? 1 : 0, y: i < visibleCount ? 0 : 6 }}
-            transition={{ duration: 0.07, ease: "easeOut" }}
-            className="font-mono text-[38px] font-medium leading-none tracking-[0.04em] sm:text-[72px] lg:text-[96px] lg:tracking-wide"
-            style={{ color: "var(--text-default)" }}
-          >
-            {letter}
-          </motion.span>
-        ))}
-      </div>
-      <motion.div
-        animate={{ width: underlineWidth }}
-        transition={{ duration: underlineWidth === "0px" ? 0.22 : 0.35, ease: underlineWidth === "0px" ? "easeIn" : "easeOut" }}
-        className="mt-5 h-0.5 rounded-full"
-        style={{ background: "var(--terracotta)" }}
-      />
+    <div className="flex max-w-full flex-col items-center text-center">
+      <p className="mb-3 text-sm font-medium text-[var(--text-muted)]">Ask your project</p>
+      <h1 data-testid="socrates-hero-word" className="font-sans text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-none tracking-[-0.075em] text-[var(--text-default)]">
+        Socrates
+      </h1>
+      <div className="mt-5 h-px w-12 bg-[var(--terracotta-text)]" aria-hidden="true"/>
     </div>
   );
 }
@@ -1356,7 +1285,7 @@ export function ChatPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.15 }}
-              className="mx-auto max-w-[760px] px-4 py-6 sm:px-6 sm:py-8"
+              className="mx-auto max-w-[820px] px-4 py-6 sm:px-8 sm:py-9"
             >
               <div className="flex flex-col gap-6">
                 <AnimatePresence mode="sync">
